@@ -315,15 +315,17 @@ func fToC(f float64) float64 {
 
 ## 2.3 Variables
 定义变量：如果省略了 type 将会用每个类型的初始值初始化赋值（类似 java）
+
 ```
 var name type = expression
 // 可以一次性定义多个
 var i, j, k int
 var b, f, s  = true, 2.3. "four"    // 同样有类似解包的操作
 
-// 接下来是 short variable declarations， 短赋值，":=" 是声明，而 "=" 是赋值
+// 接下来是 short variable declarations， 短赋值，`:=` 是 声明，而 `=` 是赋值
 freq := rand.Float64() * 3.0
 t := 0.0
+
 // multiple variables declared
 i, j = 0, 1
 i, j = j, i    // swap
@@ -332,3 +334,78 @@ f, err := os.Open()
 f, err := os.Close()     // wrong,  a short variable declaration must declare at least one new variable
 ```
 
+指针: 如果学过 c，这里的指针很类似，表示一个变量的地址
+
+```
+x := 1
+p := &x    // p, of type *int, points to x
+fm.Println(*p) // "1"
+*p = 2
+fmt.Println(x) // "2"
+
+var x, y int
+fmt.Println(&x == &x, &x == &y, &x == nil) // "true false false"，指针可以比较，当指向相同的值的时候相等
+
+// 函数返回一个局部变量的指针也是安全的
+var p = f()
+func f() *int {
+    v:=1
+    return &v
+}
+
+// 可以传入指针给函数改变其所指向的值
+func incr(p *int) int {
+	*p++
+	return *p
+}
+v :=1
+incr(&v)
+fmt.Println(incr(&v))
+```
+
+new 函数：创建一个变量的另一种方式是使用内置函数 new，new(T)创建一个未命名T
+类型的变量，用初始值初始化，然后返回其地址(*T)
+
+```
+func test() {
+	p := new(int)
+	fmt.Println(*p)
+	*p = 2
+	fmt.Println(*p)    //可以不通过变量名就访问它（指针的好处之一）
+}
+
+//两种等价写法
+func newInt() *int {
+	return new(int)
+}
+func newInt2() *int {
+	var dummy int
+	return &dummy
+}
+```
+
+变量生命周期(lifetime):
+package-level变量在整个程序执行过程中都存在。局部变量生存周期是动态的，每次一个实例在生命语句执行的时候被创建，直到不可访问的时候被回收。
+虽然 go 有自己的垃圾回收机制，但是代码里尽量让变量的生存周期更短
+
+## 2.4 赋值
+相较于 python，go 支持自增操作符。和 py相同的是同样支持 tuple 的解包赋值，演示一些例子：
+```
+	a, b, c = 1, 2, 3
+	x,y = y,x   // swap x and y like python
+	x, y = y, x    // swap x and y like python
+
+	v, ok = m[key] // map lookup
+	v, ok = x.(T)  // type assertion
+	v, ok = <-ch   // channel receive
+	_, ok = x.(T)  // check type but discard result
+
+	medals := []string{"gold", "silver", "bronze"}
+	// 隐式赋值等价于
+	medals[0] = "gold"
+	medals[1] = "silver"
+	medals[2] = "bronze"
+```
+可赋值性：For the types we’ve discussed so far, the rules are simple: the types must exactly match, and nil may be assigned to any variable of interface or reference type.
+
+## 2.5 Type Declarations
