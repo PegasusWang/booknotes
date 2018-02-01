@@ -458,72 +458,127 @@ package-level变量在整个程序执行过程中都存在。局部变量生存�
 go程序里每个包都通过一个唯一的 import path 标识，比如 "gopl.io/ch2/tempconv"
 包初始化的顺序：以包级别的变量开始按照声明顺序初始化，但是被依赖的值先初始化
 
-```
-var a=b+c // 3
-var b=f() // 2
-var c=1//1
-func f() int {return c+1}
-```
+    var a=b+c // 3
+    var b=f() // 2
+    var c=1//1
+    func f() int {return c+1}
 
 如果一个包有多个 go 源文件，会被给编译器的顺序执行初始化，go tools 通过把文件名排序后给交给编译器
 可以在文件里定义 init() 函数，他们不能被引用，程序执行的时候会按照被声明顺序自动运行(比如初始化一个查找表)
-```
-//gopl.io/ch2/popcount
-package popcount
 
-var pc [256]byte
+    //gopl.io/ch2/popcount
+    package popcount
 
-func init() {
-	for i := range pc {
-		pc[i] = pc[i/2] + byte(i&1)
-	}
-}
+    var pc [256]byte
 
-func PopCount(x uint64) int {
-	return int(pc[byte(x>>(0*8))] +
-		pc[byte(x>>(1*8))] +
-		pc[byte(x>>(2*8))] +
-		pc[byte(x>>(3*8))] +
-		pc[byte(x>>(4*8))] +
-		pc[byte(x>>(5*8))] +
-		pc[byte(x>>(6*8))] +
-		pc[byte(x>>(7*8))])
-}
-```
+    func init() {
+    	for i := range pc {
+    		pc[i] = pc[i/2] + byte(i&1)
+    	}
+    }
+
+    func PopCount(x uint64) int {
+    	return int(pc[byte(x>>(0*8))] +
+    		pc[byte(x>>(1*8))] +
+    		pc[byte(x>>(2*8))] +
+    		pc[byte(x>>(3*8))] +
+    		pc[byte(x>>(4*8))] +
+    		pc[byte(x>>(5*8))] +
+    		pc[byte(x>>(6*8))] +
+    		pc[byte(x>>(7*8))])
+    }
 
 ## 2.7 Scope
+
 声明绑定了名字和程序实体，比如函数或者变量，一个声明的作用域表示这个声明的名字在哪些代码块起作用。不要和生命周期（lifetime）
 混淆，声明的作用域是一段程序片段，编译时属性，生命周期指的是运行期间可以被程序其他部分所引用的持续时间，运行时属性。
 golang 中通过块（block）来圈定作用域。名字查找遵循『就近』原则，内部声明会屏蔽外部声明（最好不要重名，理解各种重名覆盖问题比较费劲）
 
 # 3. Basic Data Types
+
 go的数据类型分成4类：
-- 基础类型: numbers, strings, booleans
-- 聚合类型: arrays, structs,
-- 引用类型: pointers, slices, maps, functions, channels
-- 接口类型: interface types
 
- ## 3.1 Integers
- int8, int16, int32, int64, uint8, uint16, uint32, uint64
- rune <=> int32 , byte <=> uint8
- 有符号数： -2**(n-1) to 2**(n-1)-1
- 有符号数: 0 to 2**n-1
+-   基础类型: numbers, strings, booleans
+-   聚合类型: arrays, structs,
+-   引用类型: pointers, slices, maps, functions, channels
+-   接口类型: interface types
 
- 注意不同类型之间数字强转可能会有精度损失
+    ## 3.1 Integers
+
+    int8, int16, int32, int64, uint8, uint16, uint32, uint64
+    rune &lt;=> int32 , byte &lt;=> uint8
+    有符号数： -2**(n-1) to 2**(n-1)-1
+    有符号数: 0 to 2\*\*n-1
+
+    注意不同类型之间数字强转可能会有精度损失
 
 ## 3.2 Floating-Point Numbers
-- float32: 1.4e-45 to 3.4e38
-- float64: 1.8e308 to 4.9e-324
-- math package
+
+-   float32: 1.4e-45 to 3.4e38
+-   float64: 1.8e308 to 4.9e-324
+-   math package
 
 ## 3.3 Complex Numbers
-- complex64
-- complex128
-- math/cmplx package
 
-  `var x complex128 = complex(1,2)`
+-   complex64
+-   complex128
+-   math/cmplx package
+
+    `var x complex128 = complex(1,2)`
 
 ## 3.4 booleans
-- true
-- false
-- 短路求值特性
+
+-   true
+-   false
+-   短路求值特性
+
+## 3.5 Strings
+
+不可变字节序列，可以包含任何数据，通常是人类可读的。文本 string 可以方便地解释成 utf8编码的 unicode 码(runes)
+
+-   len: len(string) return number of bytes(not runes), `0 <= i < len(s)`
+-   切片: s[i:j] yield a new substring
+-   字符串字面量: "Hello，世界" (双引号) 。go 源文件总是用 utf8编码，go 文本字符串被解释成 utf8。
+-   raw string literal: 反引号包含的字符串，转义符不会被处理，经常用来写正则
+-   unicode: go 术语里叫做 rune(int32)
+-   utf8: 一种把 unicode 字节码转成字节序列的一种变长编码方案(utf8由 Ken Thompson and Rob Pike发明，同时还是 go 的创造者)
+-   Go’s range loop, when applied to a string, performs UTF-8 decoding implicitly
+-   A \[]rune conversion applied to a UTF-8-encoded string returns the sequence of Unicode code points that the string encodes
+
+
+    package main
+
+    import (
+    	"fmt"
+    	"unicode/utf8"
+    )
+
+    func main() {
+    	s := "hello, 世界"
+    	fmt.Println(len(s))                    // 13
+    	fmt.Println(utf8.RuneCountInString(s)) // 9
+    }
+
+几个用来处理字符串的包：
+
+-   bytes:  操作 slices of bytes, type \[]byte
+-   strings: searching, replacing, comparing, trimming, splitting, joining
+-   srconv: boolean, integer, floating-point values 和 他们的 string 表示形式来回转；
+-   unicode: IsDigit, IsLetter, IsUpper, IsLower识别 runes
+
+## 3.6 Constants
+
+const 表达式的值在编译器确定，无法改变。const 值可以是boolean, string or number
+The const generator iota: 定义从0 开始的递增枚举
+
+    const (
+    	Sunday Weekday = iota
+    	Monday
+    	Tuesday
+    	Wednesday
+    	Thrusday
+    	Friday
+    	Saturday
+    )
+
+# 4. Composite Types
