@@ -582,3 +582,43 @@ The const generator iota: 定义从0 开始的递增枚举
     )
 
 # 4. Composite Types
+本章讨论聚合类型: arrays, slices, maps, structsa
+
+## 4.1 Arrays
+定长的包含0个或多个相同类型元素的序列，因为不可变长所以一般 slices 更常用。
+注意数组的长度也是类型的一部分， [3]int 和 [4]int 是不同类型，相同长度的可以比较。
+
+```
+	var a [3]int // array of 3 integers，第一次看这种写法略奇怪
+	fmt.Println(a[0])
+	for i, v := range a {
+		fmt.Printf("%d %d\n", i, v)
+	}
+
+	var q [3]int = [3]int{1, 2, 3} //初始化
+	p := [...]int{1, 2, 3}         // 省略号代表长度由右边的长度决定
+
+	// 数组还支持用 下标和值 初始化
+	type Currency int
+	const (
+		USD currency = iota
+		EUR
+		GBP
+		RMB
+	)
+	symbol:= [...]string{USD: "$", EUR: "€", GBP: "₤", RMB: "￥"}
+	fmt.Println(RMB, symbol[RMB]) // "3 ￥"
+
+```
+数组传值传过去拷贝，可以通过传递指针
+
+```
+func zero(ptr *[32]byte) {
+	for i := range ptr {
+		ptr[i] = 0
+	}
+}
+func zero(ptr *[32]byte) {
+	*ptr = [32]byte{}
+}
+```
