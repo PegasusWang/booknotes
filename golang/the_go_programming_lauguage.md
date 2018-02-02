@@ -1045,3 +1045,119 @@ func main() {
 
 注意到 field 后边的 `json:"released"` 叫做 field tags，是在编译器旧绑定到 field 上的元信息，可以控制序列化/反序列化的行为。
 field tag 第一部分指定了 field 的 json 名称（比如从骆驼命名改成下划线命名），第二个可选的选项（imitempty），指定了当如果该 field 是零值的时候不会输出该字段.
+
+## 4.6 Text and HTML Templates
+text/template and html/template packages
+
+
+# 5. Functions
+
+## 5.1 Function Declarations
+```
+func name(parameter-list) (result-list) {
+	body
+}
+```
+定义演示：
+```
+func f(i, j, k int, s, t string)                { /* ... */ }
+func f(i int, j int, k int, s string, t string) { /* ... */ }
+func add(x int, y int) int                      { return x + y }
+func sub(x, y int) (z int)                      { z = x - y; return }
+func first(x int, _ int) int                    { return x }
+func zero(int, int) int                         { return 0 }
+
+// 函数类型通常叫做函数签名(signature)
+fmt.Printf("%T\n", add)
+fmt.Printf("%T\n", sub)
+fmt.Printf("%T\n", first) // "func(int, int) int"
+fmt.Printf("%T\n", zero)  // "func(int, int) int"
+```
+
+注意 go 里参数传的是值的拷贝，如果是不可变类型不会影响原参数，但是如果是引用类型比如 pointer, slice, map, function or
+channel ，函数是可以修改参数指向的内容的。
+
+## 5.2 Recursion
+函数可以直接或者间接调用自己，称为递归
+```
+func fib(n int) int {
+	if n <= 1 {
+		return 1
+	}
+	return fib(n-1) + fib(n-2)
+}
+```
+
+## 5.3 Multiple Return values
+go和 python 一样可以返回多个值：
+```
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"os"
+
+	"golang.org/x/net/html"
+)
+
+func main() {
+	for _, url := range os.Args[1:] {
+		links, err := findLinks(url)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "findlinks2: %v\n", err)
+			continue
+		}
+		for _, link := range links {
+			fmt.Println(link)
+		}
+	}
+}
+
+// findLinks performs an HTTP GET request for url, parses the
+// response as HTML, and extracts and returns the links.
+
+func findLinks(url string) ([]string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		resp.Body.Close() //必须显示 close，垃圾回收不会回收系统资源比如打开的文件、网络连接等
+		return nil, fmt.Errorf("getting %s: %s", url, resp.Status)
+	}
+	doc, err := html.Parse(resp.Body)
+	resp.Body.Close()
+	if err != nil {
+		return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+	}
+	return visit(nil, doc), nil
+}
+```
+
+当函数返回多个同类型的值的时候，挑选好名字可以使返回结构更有意义
+```
+func Size(rect image.Rectangle) (width, height int)
+func Split(path string) (dir, file string)
+func HourMinSec(t time.Time) (hour, minute, second int)
+```
+bare return: 如果函数命名了返回值，return 后的返回结果可以省略
+```
+func CountWordsAndImages(url string) (words, images int, err error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return // 等价于 return words, images, err
+	}
+	doc, err := html.Parse(resp.Body)
+	resp.Body.Close()
+	if err != nil {
+		err = fmt.Errorf("parsing HTML: %s", err)
+		return // 等价于 return words, images, err
+	}
+	words, images = countWordsAndImages(doc)
+	return // 等价于 return words, images, err
+}
+```
+
+
+## 5.4 Errors
