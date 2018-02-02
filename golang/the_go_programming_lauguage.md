@@ -582,43 +582,466 @@ The const generator iota: 定义从0 开始的递增枚举
     )
 
 # 4. Composite Types
+
 本章讨论聚合类型: arrays, slices, maps, structsa
 
 ## 4.1 Arrays
+
 定长的包含0个或多个相同类型元素的序列，因为不可变长所以一般 slices 更常用。
 注意数组的长度也是类型的一部分， [3]int 和 [4]int 是不同类型，相同长度的可以比较。
 
-```
-	var a [3]int // array of 3 integers，第一次看这种写法略奇怪
-	fmt.Println(a[0])
-	for i, v := range a {
-		fmt.Printf("%d %d\n", i, v)
-	}
+    	var a [3]int // array of 3 integers，第一次看这种写法略奇怪
+    	fmt.Println(a[0])
+    	for i, v := range a {
+    		fmt.Printf("%d %d\n", i, v)
+    	}
 
-	var q [3]int = [3]int{1, 2, 3} //初始化
-	p := [...]int{1, 2, 3}         // 省略号代表长度由右边的长度决定
+    	var q [3]int = [3]int{1, 2, 3} //初始化
+    	p := [...]int{1, 2, 3}         // 省略号代表长度由右边的长度决定
 
-	// 数组还支持用 下标和值 初始化
-	type Currency int
-	const (
-		USD currency = iota
-		EUR
-		GBP
-		RMB
-	)
-	symbol:= [...]string{USD: "$", EUR: "€", GBP: "₤", RMB: "￥"}
-	fmt.Println(RMB, symbol[RMB]) // "3 ￥"
+    	// 数组还支持用 下标和值 初始化
+    	type Currency int
+    	const (
+    		USD currency = iota
+    		EUR
+    		GBP
+    		RMB
+    	)
+    	symbol:= [...]string{USD: "$", EUR: "€", GBP: "₤", RMB: "￥"}
+    	fmt.Println(RMB, symbol[RMB]) // "3 ￥"
 
-```
 数组传值传过去拷贝，可以通过传递指针
 
+    func zero(ptr *[32]byte) {
+    	for i := range ptr {
+    		ptr[i] = 0
+    	}
+    }
+    func zero(ptr *[32]byte) {
+    	*ptr = [32]byte{}
+    }
+
+## 4.2 Slices
+
+包含相同类型元素的可变长序列，写法 \[]T，类似于没有 size 的数组，由三部分组成：
+
+-   a pointer: 指向数组第一个元素
+-   a length: number of slice elements  (len 函数)
+-   a capacity: the number of elements between the start of the slice and the end of the underlying array (cap函数)
+
+slice operator s[i:j], where 0 ≤ i ≤ j ≤ cap(s), 创建一个新的 slice
+
+注意，slice 包含了一个数组的指针，作为函数参数传递的时候允许函数修改数组。
+
+    package main
+
+    import "fmt"
+
+    func reverse(s []int) {
+    	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+    		s[i], s[j] = s[j], s[i]
+    	}
+    }
+
+    func main() {
+    	a := [...]int{0, 1, 2, 3, 4}
+    	reverse(a[:])
+    	fmt.Println(a)
+
+    	s := []int{0, 1, 2, 3, 4, 5} //注意 slice 初始化和数组的区别，没有 size
+    	reverse(s[:2])
+    	reverse(s[2:])
+    	reverse(s)
+    	fmt.Println(s)
+    }
+
+并且 slice 不像数组一样能直接比较，基于两个原因：
+
+-   slice 可以包含自己，深度比较无论是复杂度还是实现效率都不好
+-   不适合作为 map 的 key。对于引用类型（pointers and channels）， == 一般比较引用实体是否是同一个。但是这回导致 slice
+    和数组的 == 一个是 shallow equality，一个是 deep equality，为了防止歧义最安全的方式就是干脆禁止 slice 比较。唯一合法的
+    slice 比较就是判断 `if slice == nil {}`
+
+slice 的初始化值（zero value）是 nil，nil slice没有隐含指向的数组，其 length==capacity==0。但是也有包含 nil
+的slice，我们看几个比较(我感觉这里 python 的 None 用 is 判断比较优雅)：
+
+    var s []int    // len(s) == 0, s == nil
+    s = nil        // len(s) == 0, s == nil
+    s = []int(nil) // len(s) == 0, s == nil
+    s = []int{}    // len(s) == 0, s != nil
+
+所以如果只是判断一个 slice 是否为空，应该用 len(s) == 0，而不是 s == nil。内置的 make 函数用来创建 slice
+
+    	make([]T, len)
+    	make([]T, len, cap)
+
+向 slice 追加元素用内置的 append 函数
+
+    var runes []rune
+    for _, r := range "hello,世界" {
+    	runes = append(runes, r)
+    } // or just use :  []rune("hello,世界")
+
+    // 我们实现一个 appendInt 看下 append 的工作原理
+    func appendInt(x []int, y int) []int {
+    	var z []int
+    	zlen := len(x) + 1
+    	if zlen <= cap(x) { // 容量够用
+    		z = x[:zlen]
+    	} else {
+    		// 如果容量不够 append 的了，将容量扩大两倍(python 的 list 和c 艹 vector 类似扩充策略)
+    		zcap := zlen
+    		if zcap < 2*len(x) {
+    			zcap = 2 * len(x)
+    		}
+    		z = make([]int, zlen, zcap)
+    		copy(z, x) // build int funcion `func copy(dst, src []Type) int`
+    	}
+    	z[len(x)] = y
+    	return z
+    }
+
+任何改变 长度或者容量的操作都会更新 slice，虽然 slice 指向的数组是间接的，但是指针、长度和容量不是，slice
+不是纯引用类型，更像是如下结构：
+
+    type IntSlice struct {
+    	ptr      *int
+    	len, cap int
+    }
+
+可以使用省略号来让函数接受任意多个 final arguments：
+
+    func appendInt(x []int, y ...int) []int{
+    	var z[]int
+    	zlen:=len(x) + len(y)
+    	// ... expand z to at least zlen...
+    	copy(z[len(x):], y)
+    	return z
+    }
+
+## 4.3 Maps
+
+无序键值对，go 里 map 是 哈希表的引用。要求所有 key 类型相同，所有的 value 类型相同，key
+必须是可比较的。不过用法上和 python 的 map 还是比较类似的。
+
+    package main
+
+    import (
+    	"fmt"
+    	"sort"
+    )
+
+    func main() {
+    	ages := make(map[string]int) //创建 map
+    	ages["alice"] = 31
+    	ages["charlie"] = 34
+
+    	ages2 := map[string]int{ //创建并初始化 map
+    		"alice":   31,
+    		"charlie": 34,
+    	}
+    	fmt.Println(ages2)
+
+    	ages["bob"] = ages["bob"] + 1 // bob不存在的 key 默认是0，不像 py 访问不存在的 key 会 KeyError
+    	delete(ages, "alice")         //删除 key
+    	fmt.Println(ages)
+
+    	// 遍历无序的 kv
+    	for name, age := range ages {
+    		fmt.Printf("%s\t%d\n", name, age)
+    	}
+
+    	// 有序遍历，实现有序遍历需要我们把名字先有序排列
+    	var names []string
+    	for name := range ages { // 省略 age 会只遍历 key
+    		names = append(names, name)
+    	}
+    	sort.Strings(names)
+    	for _, name := range names {
+    		fmt.Printf("%s\t%d\n", name, ages[name])
+    	}
+
+    	// map 对于不存在的 key 返回类型默认值，要想判断是否存在 key 得这么写
+    	if age, ok := ages["noexists"]; !ok { /* */
+    		fmt.Printf("not a key in this map, age is %s", age)
+    	}
+    }
+
+map 同样不能直接比较，需要自己写比较函数：
+
+    func equal(x, y map[string]int) bool {
+    	if len(x) != len(y) {
+    		return false
+    	}
+    	for k, xv := range x {
+    		if yv, ok := y[k]; !ok || xv != yv {
+    			return false
+    		}
+    	}
+    	return true
+    }
+
+go 里没提供 set 类型，我们可以通过 map 来模拟。key 不支持 slice 类型，但是如果想用的话可以用转换函数转成 string 后来作为
+map 的 key。
+
+    package main
+
+    import (
+    	"bufio"
+    	"fmt"
+    	"io"
+    	"os"
+    	"unicode"
+    	"unicode/utf8"
+    )
+
+    func main() {
+    	counts := make(map[rune]int) // counts of unicode chars
+    	var utflen [utf8.UTFMax + 1]int
+    	invalid := 0
+
+    	in := bufio.NewReader(os.Stdin)
+    	for {
+    		r, n, err := in.ReadRune() // rune, bytes, error
+    		if err == io.EOF {
+    			break
+    		}
+    		if err != nil {
+    			fmt.Fprintf(os.Stderr, "charcount: %v\n", err)
+    		}
+    		if r == unicode.ReplacementChar && n == 1 {
+    			invalid++
+    			continue
+    		}
+    		counts[r]++
+    		utflen[n]++
+    	}
+    	fmt.Printf("rune\tcount\n")
+    	for c, n := range counts {
+    		fmt.Printf("%q\t%d\n", c, n)
+    	}
+    	fmt.Print("\nlen\tcount\n")
+    	for i, n := range utflen {
+    		if i > 0 {
+    			fmt.Printf("%d\t%d\n", i, n)
+    		}
+    	}
+    	if invalid > 0 {
+    		fmt.Printf("\n%d invalid UTF-8 characters\n", invalid)
+    	}
+
+    }
+
+## 4.4 Structs
+
+结构体是聚合数据类型：结合多个任意类型的数据组成单个实体，每个值都叫做一个
+field，可以被当做一个单元执行拷贝，传递给函数或者返回，存到数组等。
+
 ```
-func zero(ptr *[32]byte) {
-	for i := range ptr {
-		ptr[i] = 0
+package main
+
+import "time"
+
+func main() {
+}
+
+type Employee struct {
+	ID        int
+	Name      string    // 首字母大写 is exported
+	Address   string
+	DoB       time.Time
+	Position  string
+	Salary    int
+	ManagerID int
+}
+
+func main() {
+	var dilbert Employee
+	dilbert.Salary -= 5000 // demoted, for writing too few lines of code
+
+	position := &dilbert.Position
+	*position = "Senior " + *position // promoted, for outsourcing to Elbonia
+
+	var employeeOfTheMonth *Employee = &dilbert
+	employeeOfTheMonth.Position += " (proactive team player)"
+
+}
+
+// NOTE: 一个命名的结构体 S 无法自己包含自己，但是却可以包含指针类型 type *S。方便实现链表、树等结构
+type tree struct {
+	value       int
+	left, right *tree
+}
+
+// sort values in place
+func Sort(values []int) {
+	var root *tree
+	for _, v := range values {
+		root = add(root, v)
 	}
+	appendValues(values[0:], root)
 }
-func zero(ptr *[32]byte) {
-	*ptr = [32]byte{}
+
+func appendValues(values []int, t *tree) []int {
+	if t != nil {
+		values = appendValues(values, t.left)
+		values = append(values, t.value)
+		values = appendValues(values, t.right)
+	}
+	return values
+}
+
+func add(t *tree, value int) *tree {
+	if t == nil {
+		t = new(tree)
+		t.value = value
+		return t
+	}
+	if value < t.value {
+		t.left = add(t.left, value)
+	} else {
+		t.right = add(t.right, value)
+	}
+	return t
 }
 ```
+
+结构体字面量：
+
+```
+package main
+
+import "fmt"
+
+type Point struct{ X, Y int }
+
+func main() {
+
+	p := Point{1, 2} //不指定 field 初始化需要遵守顺序
+	p = Point{X: 1, Y: 2}
+	fmt.Printf("%v", Scale(p, 2))
+	fmt.Printf("%v", ScaleByPointer(&p, 2))
+}
+
+// 结构体作为函数参数
+func Scale(p Point, factor int) Point {
+	return Point{p.X * factor, p.Y * factor}
+}
+
+// 结构体作为函数参数
+func ScaleByPointer(p *Point, factor int) Point {
+	return Point{p.X * factor, p.Y * factor}
+}
+/*
+ppp := new(Point)
+*pp = Point{1, 2}
+//等价写法
+pp := &Point{1, 2}
+*/
+```
+
+可比较性：如果结构体的所有 field 都是可以比较的，struct 本身也可以比较。
+
+golang的 struct 允许嵌套：
+
+
+```
+package main
+
+import "fmt"
+
+type Point struct {
+	X, Y int
+}
+type Circle struct {
+	Center Point
+	Radius int
+}
+type Wheel struct {
+	Circle Circle
+	Spokes int
+}
+
+func main() {
+
+	var w Wheel
+	w.Circle.Center.X = 8
+	w.Circle.Center.Y = 8
+	w.Circle.Radius = 5
+	w.Spokes = 20
+
+}
+```
+
+之前这种连续赋值写起来很繁琐，可以用匿名 field 简化(其实不喜欢这种方式，虽然多写一些麻烦了点，但是很直观)：
+```
+package main
+
+func main() {
+
+	var w Wheel
+	w.X = 8 // equivalent to w.Circle.Point.X = 8
+	w.Y = 8 // equivalent to w.Circle.Point.Y = 8
+}
+
+//go允许匿名 field，但是它的类型必须是命名类型或者其指针
+type Point struct {
+	X, Y int
+}
+type Circle struct {
+	Point
+	Radius int
+}
+
+type Wheel struct {
+	Point
+	Spokes int
+}
+```
+
+## 4.5 JSON
+
+JavaScript Object Notation (JSON) is a standard notation for sending and receiving structured information.
+JSON is an encoding of JavaScript values—strings, numbers, booleans, arrays, and objects—as Unicode text
+Go data structure like movies to JSON is called marshaling. Marshaling is done by json.Marshal:
+
+```
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+// 大写开头的 field 才会被 marshaled
+type Movie struct {
+	Title  string
+	Year   int  `json:"released"`
+	Color  bool `json:"color,omitempty"`
+	Actors []string
+}
+
+func main() {
+	var movies = []Movie{
+		{Title: "Casablanca", Year: 1942, Color: false, Actors: []string{"Humphrey Bogart", "Ingrid Bergman"}},
+		{Title: "Cool Hand Luke", Year: 1967, Color: true, Actors: []string{"Paul Newman"}},
+		{Title: "Bullitt", Year: 1968, Color: true, Actors: []string{"Steve McQueen", "Jacqueline Bisset"}},
+	}
+	// data, err := json.Marshal(movies)
+	data, err := json.MarshalIndent(movies, "", "    ")
+	if err != nil {
+		log.Fatalf("JSON marshaling failed:%s", err)
+	}
+	fmt.Printf("%s\n", data)
+
+	var titles []struct{ Title string }
+	if err := json.Unmarshal(data, &titles); err != nil {    // json.Unmarshal 反序列化
+		log.Fatalf("JSON unmarshaling failed: %s", err)
+	}
+	fmt.Println(titles)
+}
+
+```
+
+注意到 field 后边的 `json:"released"` 叫做 field tags，是在编译器旧绑定到 field 上的元信息，可以控制序列化/反序列化的行为。
+field tag 第一部分指定了 field 的 json 名称（比如从骆驼命名改成下划线命名），第二个可选的选项（imitempty），指定了当如果该 field 是零值的时候不会输出该字段.
