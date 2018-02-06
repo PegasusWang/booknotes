@@ -1027,3 +1027,11 @@ goroutine 能够看到它确实发生了并且之后能看到它已经发生了(
     		fmt.Fprintln(conn, msg)
     	}
     }
+
+
+# 9. Concurrency with Shared Variables
+
+## 9.1 Race Conditions
+
+在有多个 goroutine 执行的程序中，我们无法知道一个 goroutine 中的事件 x 在另一个 goroutine 中的事件
+y之前发生，还是之后发生，或者同时发生。当我们无法确定事件 x 是在 y 之前发生，事件 x 和 y 就是并发的。
