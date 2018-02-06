@@ -292,52 +292,54 @@ go 提供了 range 语法用来迭代 channels，用来接收一个 channel 上�
 在一个已经 close 或者 nil 的channel执行 close 会 panic
 
 ### 8.4.3 Unidirectional Channel Types
+
 上面例子最好能分开成几个函数，如下：
-```
-func counter(out chan int)
-func squarer(out, in chan int)
-func printer(in chan int)
-```
+
+    func counter(out chan int)
+    func squarer(out, in chan int)
+    func printer(in chan int)
+
 go 里提供了单向 channel 允许只接收或者发送值。
-- `chan<- int`, send-only channel of int ，只允许 send
-- `<-chan int`, receive-only channel of int,只允许 receive，close 一个只接收的 channel 会导致编译时错误
+
+-   `chan<- int`, send-only channel of int ，只允许 send
+-   `<-chan int`, receive-only channel of int,只允许 receive，close 一个只接收的 channel 会导致编译时错误
 
 好，重构下上边的代码：
-```
-package main
 
-import "fmt"
+    package main
 
-// counter -> squarer -> printer
-func main() {
-	naturals := make(chan int)
-	squares := make(chan int)
+    import "fmt"
 
-	go counter(naturals) // 允许双向 channel 隐式转成单向的 channel
-	go squarer(squares, naturals)
-	printer(squares)
-}
+    // counter -> squarer -> printer
+    func main() {
+    	naturals := make(chan int)
+    	squares := make(chan int)
 
-func counter(out chan<- int) { // 只发送
-	for x := 0; x < 100; x++ {
-		out <- x
-	}
-	close(out)
-}
-func squarer(out chan<- int, in <-chan int) {
-	for v := range in {
-		out <- v * v
-	}
-	close(out)
-}
-func printer(in <-chan int) {
-	for v := range in {
-		fmt.Println(v)
-	}
-}
-```
+    	go counter(naturals) // 允许双向 channel 隐式转成单向的 channel
+    	go squarer(squares, naturals)
+    	printer(squares)
+    }
+
+    func counter(out chan<- int) { // 只发送
+    	for x := 0; x < 100; x++ {
+    		out <- x
+    	}
+    	close(out)
+    }
+    func squarer(out chan<- int, in <-chan int) {
+    	for v := range in {
+    		out <- v * v
+    	}
+    	close(out)
+    }
+    func printer(in <-chan int) {
+    	for v := range in {
+    		fmt.Println(v)
+    	}
+    }
 
 ### 8.4.4 Buffered Channels
+
 有容量的 channel: `ch = make(chan string, 3)`。当 channel 满的时候会 block send 一直到其他goroutine receive 释放了空间。
 当 channel 为空的时候接收者被 block 一直到其他 goroutine send 值。
 可以用内置 cap 函数获取 channel 容量 `cap(ch)`，而 `len(ch)`返回元素个数。
@@ -345,15 +347,550 @@ func printer(in <-chan int) {
 调度是深度关联的，如果没有另一个 goroutine 从 channel 接收，sender 或者整个程序有可能被永久阻塞。简单的队列应该用
 slice。
 
-```
-func mirroredQuery() string {
-	responses := make(chan string, 3)
-	go func() { responses <- request("asia.gopl.io") }()
-	go func() { responses <- request("europe.gopl.io") }()
-	go func() { responses <- request("americas.gopl.io") }()
-	return <-responses // return the quickest response  ,慢的 gortouine 会泄露
-}
-func request(hostname string) (response string) { /* ... */ }
-```
+    func mirroredQuery() string {
+    	responses := make(chan string, 3)
+    	go func() { responses <- request("asia.gopl.io") }()
+    	go func() { responses <- request("europe.gopl.io") }()
+    	go func() { responses <- request("americas.gopl.io") }()
+    	return <-responses // return the quickest response  ,慢的 gortouine 会泄露
+    }
+    func request(hostname string) (response string) { /* ... */ }
 
 goroutine leak: goroutine 泄露（视为bug）。泄露的 goroutine 不会被自动回收，必须确定不需要的时候自行终结。
+
+## 8.6 Expmple: Conrurrent Web Crawler
+
+    package main
+
+    import (
+    	"fmt"
+    	"log"
+    	"os"
+
+    	"gopl.io/ch5/links"
+    )
+
+    func crawl(url string) []string {
+    	fmt.Println(url)
+    	list, err := links.Extract(url)
+    	if err != nil {
+    		log.Print(err)
+    	}
+    	return list
+    }
+
+    func main() {
+    	worklist := make(chan []string)
+    	go func() { worklist <- os.Args[1:] }()
+    	// crawl the web concurrently
+
+    	seen := make(map[string]bool)
+    	for list := range worklist {
+    		for _, link := range list {
+    			if !seen[link] {
+    				seen[link] = true
+    				go func(link string) {
+    					worklist <- crawl(link)
+    				}(link)
+    			}
+    		}
+    	}
+    }
+
+但是这个程序太 "parallel"，我们想限制下它的并发。可以通过有 n 个容量的bufferd channel来限制并发数(counting semaphore)
+
+    // tokens is a counting semaphore used to
+    // enforce a limit of 20 concurrent requests.
+    var tokens = make(chan struct{}, 20)
+
+    func crawl(url string) []string {
+    	fmt.Println(url)
+    	tokens <- struct{}{} // acquire a token ，初始化一个空 struct
+    	list, err := links.Extract(url)
+    	<-tokens // release the token
+
+    	if er != nil {
+    		log.Print(err)
+    	}
+    	return list
+    }
+
+但是还有个问题，这个程序不会结束。我们需要当 worklist 为空并且没有爬虫 goroutine 活动的时候结束 main 里的循环。
+
+## 8.7  Multiplexing with select
+
+写一个火箭发射的倒计时程序：
+
+    package main
+
+    import (
+    	"fmt"
+    	"time"
+    )
+
+    //!+
+    func main() {
+    	fmt.Println("Commencing countdown.")
+    	tick := time.Tick(1 * time.Second)
+    	for countdown := 10; countdown > 0; countdown-- {
+    		fmt.Println(countdown)
+    		<-tick
+    	}
+    	launch()
+    }
+
+    func launch() {
+    	fmt.Println("Lift off!")
+    }
+
+然后增加一个 abort 功能：
+
+    func main() {
+    	//!+abort
+    	abort := make(chan struct{})
+    	go func() {
+    		os.Stdin.Read(make([]byte, 1)) // read a single byte
+    		abort <- struct{}{}
+    	}()
+    	//!-abort
+
+    	//!+
+    	fmt.Println("Commencing countdown.  Press return to abort.")
+    	select {
+    	case <-time.After(10 * time.Second):
+    		// Do nothing.
+    	case <-abort:
+    		fmt.Println("Launch aborted!")
+    		return
+    	}
+    	launch()
+    }
+
+select 允许我们轮训 channel (polling a channel):
+
+    select {
+    case <-abort:
+    	fmt.Printf("Launch aborted!\n")
+    	return
+    default:
+    	// to nothing
+    }
+
+## 8.8 Example: Concurrent Directory Traversal
+
+这一节实现一个类似 du 的命令，显示目录的使用量。main 函数用两个 goroutine，一个用来背后遍历目录，一个用来打印最后结果。
+
+    package main
+
+    import (
+    	"flag"
+    	"fmt"
+    	"io/ioutil"
+    	"os"
+    	"path/filepath"
+    )
+
+    // 递归访问目录树
+    func walkDir(dir string, fileSizes chan<- int64) {
+    	for _, entry := range dirents(dir) {
+    		if entry.IsDir() {
+    			subdir := filepath.Join(dir, entry.Name())
+    			walkDir(subdir, fileSizes)
+    		} else {
+    			fileSizes <- entry.Size()
+    		}
+    	}
+    }
+
+    // 返回目录的入口
+    func dirents(dir string) []os.FileInfo {
+    	entries, err := ioutil.ReadDir(dir) // returns a slice of os.FileInfo
+    	if err != nil {
+    		fmt.Fprintf(os.Stderr, "du1: %v\n", err)
+    		return nil
+    	}
+    	return entries
+    }
+
+    func main() {
+    	// 获取目录
+    	flag.Parse()
+    	roots := flag.Args()
+    	if len(roots) == 0 {
+    		roots = []string{"."} //没有命令行参数默认是当前目录
+    	}
+
+    	// 遍历文件树
+    	fileSizes := make(chan int64)
+    	go func() {
+    		for _, root := range roots {
+    			walkDir(root, fileSizes)
+    		}
+    		close(fileSizes)
+    	}()
+
+    	// 打印结果
+    	var nfiles, nbytes int64
+    	for size := range fileSizes {
+    		nfiles++
+    		nbytes += size
+    	}
+    	printDiskUsage(nfiles, nbytes)
+    }
+    func printDiskUsage(nfiles, nbytes int64) {
+    	fmt.Printf("%d files %.1f GB\n", nfiles, float64(nbytes)/1e9)
+    }
+
+如果我们加上个进度输出会更好，用户给了 `-v` 参数，就定期打印出来结果
+
+    func main() {
+    	// ...start background goroutine...
+
+    	//!-
+    	// Determine the initial directories.
+    	flag.Parse()
+    	roots := flag.Args()
+    	if len(roots) == 0 {
+    		roots = []string{"."}
+    	}
+
+    	// Traverse the file tree.
+    	fileSizes := make(chan int64)
+    	go func() {
+    		for _, root := range roots {
+    			walkDir(root, fileSizes)
+    		}
+    		close(fileSizes)
+    	}()
+
+    	//!+
+    	// Print the results periodically.
+    	var tick <-chan time.Time
+    	if *verbose {
+    		tick = time.Tick(500 * time.Millisecond)
+    	}
+    	var nfiles, nbytes int64
+    loop:
+    	for {
+    		select {
+    		case size, ok := <-fileSizes:
+    			if !ok {
+    				break loop // fileSizes was closed, labeled break statement breaks out of both the select and the for loop;
+    			}
+    			nfiles++
+    			nbytes += size
+    		case <-tick:
+    			printDiskUsage(nfiles, nbytes)
+    		}
+    	}
+    	printDiskUsage(nfiles, nbytes) // final totals
+    }
+
+但是这个程序还是比较慢，我们还可以对每个 WalkDir 调用都开个 goroutine，我们使用sync.WaitGroup计算有多少个活跃的 WalkDir
+调用，还有计数同步原语来限制太多的并发数。（从这里开始程序就开始难懂了，😢 )
+
+    package main
+    import (
+    	"flag"
+    	"fmt"
+    	"io/ioutil"
+    	"os"
+    	"path/filepath"
+    	"sync"
+    	"time"
+    )
+    var vFlag = flag.Bool("v", false, "show verbose progress messages")
+    func main() {
+    	flag.Parse()
+
+    	// Determine the initial directories.
+    	roots := flag.Args()
+    	if len(roots) == 0 {
+    		roots = []string{"."}
+    	}
+
+    	// Traverse each root of the file tree in parallel.
+    	fileSizes := make(chan int64)
+    	var n sync.WaitGroup
+    	for _, root := range roots {
+    		n.Add(1)
+    		go walkDir(root, &n, fileSizes)
+    	}
+    	go func() {
+    		n.Wait()
+    		close(fileSizes)
+    	}()
+
+    	// Print the results periodically.
+    	var tick <-chan time.Time
+    	if *vFlag {
+    		tick = time.Tick(500 * time.Millisecond)
+    	}
+    	var nfiles, nbytes int64
+    loop:
+    	for {
+    		select {
+    		case size, ok := <-fileSizes:
+    			if !ok {
+    				break loop // fileSizes was closed
+    			}
+    			nfiles++
+    			nbytes += size
+    		case <-tick:
+    			printDiskUsage(nfiles, nbytes)
+    		}
+    	}
+
+    	printDiskUsage(nfiles, nbytes) // final totals
+    }
+
+    func printDiskUsage(nfiles, nbytes int64) {
+    	fmt.Printf("%d files  %.1f GB\n", nfiles, float64(nbytes)/1e9)
+    }
+
+    // walkDir recursively walks the file tree rooted at dir
+    // and sends the size of each found file on fileSizes.
+    func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
+    	defer n.Done()
+    	for _, entry := range dirents(dir) {
+    		if entry.IsDir() {
+    			n.Add(1)
+    			subdir := filepath.Join(dir, entry.Name())
+    			go walkDir(subdir, n, fileSizes)
+    		} else {
+    			fileSizes <- entry.Size()
+    		}
+    	}
+    }
+
+    //!+sema
+    // sema is a counting semaphore for limiting concurrency in dirents.
+    var sema = make(chan struct{}, 20)    // 计数同步原语，限制并发数量
+
+    // dirents returns the entries of directory dir.
+    func dirents(dir string) []os.FileInfo {
+    	sema <- struct{}{}        // acquire token
+    	defer func() { <-sema }() // release token
+
+    	entries, err := ioutil.ReadDir(dir)
+    	if err != nil {
+    		fmt.Fprintf(os.Stderr, "du: %v\n", err)
+    		return nil
+    	}
+    	return entries
+    }
+
+## 8.9 Cancellation
+
+有时候我们想让一个 goroutine 工作的时候指示它结束，并没有直接的方法让一个 goroutine 结束其他的
+goroutine，因为这会导致它们共享的变量处于未定义状态。对于取消，我们需要一个可靠的机制通过一个 channel 广播事件，让很多
+goroutine 能够看到它确实发生了并且之后能看到它已经发生了(For cancellation, what we need is a reliable mechanism to broadcast an event over a channel so that many goroutines can see it as it occurs and can later see that it has occurred.)
+
+    package main
+    import (
+    	"fmt"
+    	"os"
+    	"path/filepath"
+    	"sync"
+    	"time"
+    )
+
+    var done = make(chan struct{})
+
+    func cancelled() bool {
+    	select {
+    	case <-done:
+    		return true
+    	default:
+    		return false
+    	}
+    }
+
+    func main() {
+    	// Determine the initial directories.
+    	roots := os.Args[1:]
+    	if len(roots) == 0 {
+    		roots = []string{"."}
+    	}
+
+    	// Cancel traversal when input is detected.
+    	go func() {
+    		os.Stdin.Read(make([]byte, 1)) // read a single byte
+    		close(done)
+    	}()
+
+    	// Traverse each root of the file tree in parallel.
+    	fileSizes := make(chan int64)
+    	var n sync.WaitGroup
+    	for _, root := range roots {
+    		n.Add(1)
+    		go walkDir(root, &n, fileSizes)
+    	}
+    	go func() {
+    		n.Wait()
+    		close(fileSizes)
+    	}()
+
+    	// Print the results periodically.
+    	tick := time.Tick(500 * time.Millisecond)
+    	var nfiles, nbytes int64
+    loop:
+    	//!+3
+    	for {
+    		select {
+    		case <-done:
+    			// Drain fileSizes to allow existing goroutines to finish.
+    			for range fileSizes {
+    				// Do nothing.
+    			}
+    			return
+    		case size, ok := <-fileSizes:
+    			// ...
+    			//!-3
+    			if !ok {
+    				break loop // fileSizes was closed
+    			}
+    			nfiles++
+    			nbytes += size
+    		case <-tick:
+    			printDiskUsage(nfiles, nbytes)
+    		}
+    	}
+    	printDiskUsage(nfiles, nbytes) // final totals
+    }
+
+    func printDiskUsage(nfiles, nbytes int64) {
+    	fmt.Printf("%d files  %.1f GB\n", nfiles, float64(nbytes)/1e9)
+    }
+
+    // walkDir recursively walks the file tree rooted at dir
+    // and sends the size of each found file on fileSizes.
+    //!+4
+    func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
+    	defer n.Done()
+    	if cancelled() {
+    		return
+    	}
+    	for _, entry := range dirents(dir) {
+    		// ...
+    		//!-4
+    		if entry.IsDir() {
+    			n.Add(1)
+    			subdir := filepath.Join(dir, entry.Name())
+    			go walkDir(subdir, n, fileSizes)
+    		} else {
+    			fileSizes <- entry.Size()
+    		}
+    		//!+4
+    	}
+    }
+
+    //!-4
+
+    var sema = make(chan struct{}, 20) // concurrency-limiting counting semaphore
+
+    // dirents returns the entries of directory dir.
+    //!+5
+    func dirents(dir string) []os.FileInfo {
+    	select {
+    	case sema <- struct{}{}: // acquire token
+    	case <-done:
+    		return nil // cancelled
+    	}
+    	defer func() { <-sema }() // release token
+
+    	// ...read directory...
+    	//!-5
+
+    	f, err := os.Open(dir)
+    	if err != nil {
+    		fmt.Fprintf(os.Stderr, "du: %v\n", err)
+    		return nil
+    	}
+    	defer f.Close()
+
+    	entries, err := f.Readdir(0) // 0 => no limit; read all entries
+    	if err != nil {
+    		fmt.Fprintf(os.Stderr, "du: %v\n", err)
+    		// Don't return: Readdir may return partial results.
+    	}
+    	return entries
+    }
+
+## 8.10. Example: Chat Server
+
+这一节实现一个聊天室功能结束本章。 
+
+    package main
+
+    import (
+    	"bufio"
+    	"fmt"
+    	"log"
+    	"net"
+    )
+
+    func main() {
+    	listener, err := net.Listen("tcp", "localhost:8000")
+    	if err != nil {
+    		log.Fatal(err)
+    	}
+    	go broadcaster()
+
+    	for {
+    		conn, err := listener.Accept()
+    		if err != nil {
+    			log.Print(err)
+    			continue
+    		}
+    		go handleConn(conn)
+    	}
+    }
+
+    type client chan<- string // an outgoing message channel
+    var (
+    	entering = make(chan client)
+    	leaving  = make(chan client)
+    	messages = make(chan string) // all incoming client messages
+    )
+
+    func broadcaster() {
+    	clients := make(map[client]bool) // all connected clients
+    	for {
+    		select {
+    		case msg := <-messages:
+    			for cli := range clients {
+    				cli <- msg
+    			}
+    		case cli := <-entering:
+    			clients[cli] = true
+    		case cli := <-leaving:
+    			delete(clients, cli)
+    			close(cli)
+    		}
+    	}
+    }
+
+    func handleConn(conn net.Conn) {
+    	ch := make(chan string) // outgoing client messages
+    	go clientWriter(conn, ch)
+
+    	who := conn.RemoteAddr().String()
+    	ch <- "You are " + who
+    	messages <- who + "has arrived"
+    	entering <- ch
+
+    	input := bufio.NewScanner(conn)
+    	for input.Scan() {
+    		messages <- who + ": " + input.Text()
+    	}
+
+    	leaving <- ch
+    	messages <- who + " has left"
+    	conn.Close()
+    }
+    func clientWriter(conn net.Conn, ch <-chan string) {
+    	for msg := range ch {
+    		fmt.Fprintln(conn, msg)
+    	}
+    }
