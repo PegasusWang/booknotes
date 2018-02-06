@@ -357,3 +357,140 @@ func request(hostname string) (response string) { /* ... */ }
 ```
 
 goroutine leak: goroutine 泄露（视为bug）。泄露的 goroutine 不会被自动回收，必须确定不需要的时候自行终结。
+
+## 8.5 Looping in Parallel
+本节介绍几个把循环改成并发执行的几种模式。
+
+```
+package thumbnail
+
+import "log"
+
+func ImageFile(infile string) (string, error)
+
+// makeThumbnails makes thumbnails of the specified files.
+func makeThumbnails(filenames []string) {
+	for _, f := range filenames {
+		if _, err := thumbnail.ImageFile(f); err != nil {
+			log.Println(err)
+		}
+	}
+}
+```
+注意这里的循环操作每个都是独立的，互不依赖，叫做 embarrassingly
+parallel，这种方式是最容易实现并发的。你能会立马写出如下代码：
+```
+// NOTE: incorrect!
+func makeThumbnails2(filenames []string) {
+	for _, f := range filenames {
+		go thumbnail.ImageFile(f) // NOTE: ignoring errors
+	}
+}
+```
+但是这是不对的，这段代码会启动所有 goroutine，然后没等他们完成直接退出了(运行它你会发现执行很快，但是没卵用，并非是并发的效果)。并没有一种直接的方法来等待 goroutine
+完成，但是我们可以让内部的 goroutine 通过向一个共享 channel 发送事件来通知外部 goroutine 它完成了。
+
+```
+// makeThumbnails3 makes thumbnails of the specified files in parallel.
+func makeThumbnails3(filenames []string) {
+	ch := make(chan struct{})
+	for _, f := range filenames {
+		go func(f string) {
+			thumbnail.ImageFile(f) // NOTE: ignoring errors
+			ch <- struct{}{}
+		}(f)
+	}
+	// wait for goroutine complete
+	for range filenames {
+		<-ch
+	}
+}
+```
+下面加上错误处理：
+
+```
+// makeThumbnails4 makes thumbnails for the specified files in parallel.
+// It returns an error if any step failed.
+func makeThumbnails4(filenames []string) error {
+	errors := make(chan error)
+	for _, f := range filenames {
+		go func(f string) {
+			_, err := thumbnail.ImageFile(f)
+			errors <- err
+		}(f)
+	}
+	for range filenames {
+		if err := <-errors; err != nil {
+			return err // NOTE: incorrect: goroutine leak! 注意直接返回第一个err 会造成 goroutine 泄露
+		}
+	}
+	return nil
+}
+```
+注意这里有个隐含的bug，当遇到第一个 non-nil error 时， 返回error给调用者，导致没有 goroutine 消费 errors
+channel。每个还在工作的 worker goroutine 想要往 errors channel send 值的时候会被永久阻塞，无法终止，出现了 goroutine
+泄露，程序被阻塞或者出现内存被用光。
+两种解决方式：简单的方式是用一个有足够空间的 bufferd channel，当它发送消息的时候没有工作的 goruotine 被
+block。另一种是在main goroutine 返回第一个 error 的时候创建一个新的 goroutine 消费 channel。
+```
+// makeThumbnails5 makes thumbnails for the specified files in parallel.
+// It returns the generated file names in an arbitrary order,
+// or an error if any step failed.
+func makeThumbnails5(filenames []string) (thumbfiles []string, err error) {
+	type item struct {
+		thumbfile string
+		err       error
+	}
+	ch := make(chan item, len(filenames)) // buffered channel
+	for _, f := range filenames {
+		go func(f string) {
+			var it item
+			it.thumbfile, it.err = thumbnail.ImageFile(f)
+			ch <- it
+		}(f)
+	}
+
+	for range filenames {
+		it := <-ch
+		if it.err != nil {
+			return nil, it.err
+		}
+		thumbfiles = append(thumbfiles, it.thumbfile)
+	}
+	return thumbfiles, nil
+}
+```
+当我们不知道会循环多少次的时候，可以使用 sync.WaitGroup 记录 goroutine 数：
+
+```
+// makeThumbnails6 makes thumbnails for each file received from the channel.
+// It returns the number of bytes occupied by the files it creates.
+func makeThumbnails6(filenames <-chan string) int64 {
+	sizes := make(chan int64)
+	var wg sync.WaitGroup // number of working goroutines
+	for f := range filenames {
+		wg.Add(1)    // Add 必须在 goroutine 前调用
+		// worker
+		go func(f string) {
+			defer wg.Done()    // 等价于 Add(-1)
+			thumb, err := thumbnail.ImageFile(f)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			info, _ := os.Stat(thumb) // OK to ignore error
+			sizes <- info.Size()
+		}(f)
+	}
+	// closer
+	go func() {
+		wg.Wait()
+		close(sizes)
+	}()
+	var total int64
+	for size := range sizes {
+		total += size
+	}
+	return total
+}
+```
