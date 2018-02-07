@@ -1412,20 +1412,20 @@ Where possible, confine variables to a single goroutine; for all other variables
     }
 
 ## 9.8 Goroutines and Threads
-- Growable Stacks: 操作系统线程通常开辟了固定内存(一般最大
-  2M)，保存正在调用函数的局部变量。这个容量不是不够用就是开辟太多有点浪费。而 goroutine
-  起初只需要很小的栈空间，通常只有2KB，并且是按需求增减的。
 
-- Goroutine Scheduling: OS 线程由操作系统调度，线程上下文切换比较耗时。go 运行时包含自己的调度(m:n scheduling, it
-  multiplexes (or schedules) m goroutines on n OS threads)，goroutine 调度非常轻量。
+-   Growable Stacks: 操作系统线程通常开辟了固定内存(一般最大
+    2M)，保存正在调用函数的 局部变量。这个容量不是不够用就是开辟太多有点浪费。而 goroutine
+    起初只需要很小的栈空间，通常只有2KB，并且是按需求增减的。
 
-- GOMAXPROCS: Go 调度器使用一个叫做 GOMAXPROCS 的参数决定在 go 中同时执行几个 OS 线程，就是 m:n scheduling 中的
-  n，默认是用的 cpu 核数。runtime.GOMAXPROCS function
+-   Goroutine Scheduling: OS 线程由操作系统调度，线程上下文切换比较耗时。go 运行时包含自己的调度(m:n scheduling, it
+    multiplexes (or schedules) m goroutines on n OS threads)，goroutine 调度非常轻量。
 
-- Goroutines Have No Identity: 很多系统和编程语言提供了识别线程实体的方式，比如 python 里边的
-  thread.get_ident()，这使得实现 thread-local 存储非常容易。如果你看过 python 的 flask 框架源码，你会发现就是使用了
-  thread local 变量来获取当前请求的 request(这一块是很多初学 flask 的人感觉很魔幻的地方)，thread local 其实就是个全局映射，key
-  就是线程标识符（通常就是个数字），值就是不同线程里存储的值。但是 go 不提供方法获取 goroutine 的标识，go
-  提倡简单易懂的变成方式，让参数对函数的影响是更加直白、明显的。(感觉这就是 python 哲学啊：explicity is better than
-  implicity)
+-   GOMAXPROCS: Go 调度器使用一个叫做 GOMAXPROCS 的参数决定在 go 中同时执行几个 OS 线程，就是 m:n scheduling 中的
+    n，默认是用的 cpu 核数。runtime.GOMAXPROCS function
 
+-   Goroutines Have No Identity: 很多系统和编程语言提供了识别线程实体的方式，比如 python 里边的
+    thread.get_ident()，这使得实现 thread-local 存储非常容易。如果你看过 python 的 flask 框架源码，你会发现就是使用了
+    thread local 变量来获取当前请求的 request(这一块是很多初学 flask 的人感觉很魔幻的地方)，thread local 其实就是个全局映射，key
+    就是线程标识符（通常就是个数字），值就是不同线程里存储的值。但是 go 不提供方法获取 goroutine 的标识，go
+    提倡简单易懂的变成方式，让参数对函数的影响是更加直白、明显的。(感觉这就是 python 哲学啊：explicity is better than
+    implicity)
