@@ -1427,5 +1427,5 @@ Where possible, confine variables to a single goroutine; for all other variables
     thread.get_ident()，这使得实现 thread-local 存储非常容易。如果你看过 python 的 flask 框架源码，你会发现就是使用了
     thread local 变量来获取当前请求的 request(这一块是很多初学 flask 的人感觉很魔幻的地方)，thread local 其实就是个全局映射，key
     就是线程标识符（通常就是个数字），值就是不同线程里存储的值。但是 go 不提供方法获取 goroutine 的标识，go
-    提倡简单易懂的变成方式，让参数对函数的影响是更加直白、明显的。(感觉这就是 python 哲学啊：explicity is better than
+    提倡简单易懂的编程方式，让参数对函数的影响是更加直白、明显。(感觉这就是 python 哲学啊：explicity is better than
     implicity)
