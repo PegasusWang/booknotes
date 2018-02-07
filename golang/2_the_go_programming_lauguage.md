@@ -47,7 +47,7 @@
     }
 
 运行的话就能看到一个指针在转，然后过会就输出了 fib(10)（这个递归计算很耗时）。并没有一种直接的编程方式让一个 goroutine
-去结束掉另一个 goroutine,但是有方式可以结束自己。 
+去结束掉另一个 goroutine,但是有方式可以结束自己。
 
 ## 8.2 Example: Concurrent Clock Server
 
@@ -952,7 +952,7 @@ goroutine 能够看到它确实发生了并且之后能看到它已经发生了(
 
 ## 8.10. Example: Chat Server
 
-这一节实现一个聊天室功能结束本章。 
+这一节实现一个聊天室功能结束本章。
 
     package main
 
@@ -1028,10 +1028,404 @@ goroutine 能够看到它确实发生了并且之后能看到它已经发生了(
     	}
     }
 
-
 # 9. Concurrency with Shared Variables
 
 ## 9.1 Race Conditions
 
 在有多个 goroutine 执行的程序中，我们无法知道一个 goroutine 中的事件 x 在另一个 goroutine 中的事件
 y之前发生，还是之后发生，或者同时发生。当我们无法确定事件 x 是在 y 之前发生，事件 x 和 y 就是并发的。
+考虑下面这段代码：
+
+    var balance int
+
+    func Deposit(amount int) { balance = balance +  amount }    //注意这里不是原子操作，是个先读后写操作
+    func Balance() int       { return balance }
+
+我们考虑两个 goroutine 里并发执行的事务：
+
+    	// Alice:
+    	go func() {
+    		bank.Deposit(200)                // A1，分成读取和更新操作，我们记作 A1r, A1w
+    		fmt.Println("=", bank.Balance()) // A2
+    	}()
+    	// Bob:
+    	go bank.Deposit(100) // B
+
+这里如果 Bob 的Deposit 操作在 Alice 的Deposit 操作之间进行，在存款被读取(balance +
+amout)之后但是在存款被更新之前(balance = )，就会导致 Bob 的事务丢失。因为 `balance = balance +
+amount`操作并非原子的，先读后写，记作 A1r, A1w，数据竞争(data race)问题就出现了：
+
+| opeartion | balance |
+| --------- | ------- |
+|           | 0       |
+| A1r       | 0       |
+| B         | 100     |
+| A1w       | 200     |
+| A2        | "=200"  |
+
+结果是 B 的操作被『丢失』了。**当两个 goroutine 并发访问同一个变量并且至少一个访问包含写操作就会出现数据竞争问题。**
+如果变量是序列类型，可能就会出现访问越界等更难以追踪和调试的严重问题。(C语言中未定义行为)。python 中也有类似的问题，
+即使有 GIL，但是非原子操作在多线程中也会有数据竞争问题。
+根据定义我们有三种解决数据竞争的方式：
+
+-   1.不要写变量。没有被修改或者不可变对象永远是并发安全的，无需同步。
+-   2.避免变量被多个 goroutine 访问。之前很多例子都是变量被限定在只有 main goroutine 能访问。如果我们想要更新变量， 可以通过 channel。(Do not communicate by sharing memory; instead, share memory by communicating.)
+    限定变量只能通过 channel 代理访问的 goroutine 叫做这个变量的 monitor goroutine。
+
+
+    package bank
+
+    var deposits = make(chan int) // send amount to deposit
+    var balances = make(chan int) // receive balance
+
+    func Deposit(amount int) { deposits <- amount }
+    func Balance() int       { return <-balances }
+
+    // 把 balance 变量限定在监控 goroutine teller 中
+    func teller() {
+    	var balance int // balance 被限定在了 teller goroutine
+    	for {
+    		select {
+    		case amount := <-deposits:
+    			balance += amount
+    		case balances <- balance:
+    		}
+    	}
+    }
+    func init() {
+    	go teller() // start monitor goroutine
+    }
+
+我们还可以通过在 pipeline 中的 goroutine 共享变量，如果 pipeline
+中在把变量发送到下一个阶段后都限制访问，所有访问变量就变成了序列化的。In effect, the variable is confined to one stage
+of the pipeline, then confined to the next, and so on.
+
+    type Cake struct{ state string }
+
+    func baker(cooked chan<- *Cake) {
+    	for {
+    		cake := new(Cake)
+    		cake.state = "cooked"
+    		cooked <- cake // baker never touches this cake again
+    	}
+    }
+    func icer(iced chan<- *Cake, cooked <-chan *Cake) {
+    	for cake := range cooked {
+    		cake.state = "iced"
+    		iced <- cake // icer never touches this cake again
+    	}
+    }
+
+-   3.允许多个 gorouitne 访问变量，但是一次只允许一个，互斥访问(mutual exclusion)。下一节讨论。
+
+## 9.2 Mutual Exclusion: sync.Mutex
+
+我们可以使用容量为1的 channel 来保证同一时间最多只有一个 goroutine 访问共享变量。数量为一的的信号量叫做二元信号量。
+
+    var (
+    	sema    = make(chan struct{}, 1) // a binary semaphore guarding balance
+    	balance int
+    )
+
+    func Deposit(amount int) {
+    	sema <- struct{}{} // acquire token
+    	balance = balance + amount
+    	<-sema // release token，这里就没 Python 的 context manager 语法糖爽啊
+    }
+
+    func Balance() int {
+    	sema <- struct{}{} // acquire token
+    	b := balance
+    	<-sema // release token，这里就没 Python 的 context manager 语法糖爽啊
+    	return b
+    }
+
+这种互斥场景太常用了，sync 包提供了 Mutex 类型来支持，调用其 lock 和 unlock 来实现获取和释放 token:
+
+    package bank
+
+    import "sync"
+
+    var (
+    	mu      sync.Mutex
+    	balance int
+    )
+
+    func Deposit(amount int) {
+    	mu.Lock()
+    	balance = balance + amount
+    	mu.Unlock()
+    }    // Lock 和 Unlock 之间的共享变量叫做 "critical section"
+
+    func Balance() int {
+    	mu.Lock()
+    	b := balance
+    	mu.Unlock()
+    	return b
+    }
+
+这样就 ok 了。不过这个例子比较简单，有些复杂的流程里，我们可能会在某些分支忘记 Unlock，或者在 panic 的时候忘记
+Unlock，这时候 defer 语句就很有用了。
+
+    func Balance() int {
+    	mu.Lock()
+    	defer mu.Unlock()   // 使用 defer，连中间变量都不用啦
+    	return balance
+    }
+
+再来看个例子，Withdraw 取款执行成功减少余额并返回 true，如果余额不够了，恢复余额并且 return false
+
+    func Withdraw(amount int) bool {
+    	Deposit(-amount)
+    	if Balance() < 0 {
+    		Deposit(amount)
+    		return false
+    	}
+    	return true
+    }
+
+这里虽然三个操作有 mutex，但是整体上不是序列的，没有锁来保证整个流程。当然，你上来可能会想这么写：
+
+    // NOTE: wrong!!!
+    func Withdraw(amount int) bool {
+    	mu.Lock()
+    	defer mu.Unlock()
+    	Deposit(-amount)
+    	if Balance() < 0 {
+    		Deposit(amount)
+    		return false
+    	}
+    	return true
+    }
+
+注意这样做不行滴，因为 mutex locks 是不可重入的(not re-entrant)，不可重入指的是同一个锁无法多次获取，
+这段代码Deposit函数执行的时候就会产生死锁，程序被永久 block。有一种通用的解决方式是把 Deposit
+函数拆分成俩，一个不可导出函数 deposit(小写)，在工作的时候假定已经持有了锁。一个导出函数 Deposit在调用 deposit
+之前用来获取锁。
+
+    package bank
+
+    import "sync"
+
+    var (
+    	mu      sync.Mutex // 保护 balance 不会同时被多个 goroutine 访问
+    	balance int
+    )
+
+    func Withdraw(amount int) bool {
+    	mu.Lock()
+    	defer mu.Unlock()
+    	deposit(-amount) // 小写的内部函数
+    	if balance < 0 {
+    		deposit(amount)
+    		return false
+    	}
+    	return true
+    }
+
+    func Deposit(amount int) {
+    	mu.Lock()
+    	defer mu.Unlock()
+    	deposit(amount)
+    }
+
+    func Balance() int {
+    	mu.Lock()
+    	defer mu.Unlock()
+    	return balance
+    }
+
+    // NOTE:内部函数，使用之前必须先持有锁
+    func deposit(amount int) { balance += amount }
+
+最后需要注意的就是，当你使用 mutex 的时候，确保它和它保护的变量不要被导出(不要大写首字母)，不管它是包级别的变量还是在
+struct 里的 field。
+
+## 9.3 Read/Write Mutexes: sync.RWMutex
+
+上边的互斥锁影响到了并发读，如果有场景是想并行读取但是互斥写入，可以用读写锁。(multiple readers, single writer lock)
+
+    // It’s only profitable to use an RWMutex when most of the goroutines that acquire the lock are readers, and the lock is under contention, that is, goroutines routinely have to wait to acquire it. 
+    var mu sync.RWMutex
+    var balance int
+
+    func Balance() int {
+    	mu.RLock()
+    	defer mu.RUnlock()
+    	return balance
+    }
+
+## 9.4 Memory Synchronization
+
+现代计算机都有多个处理器，每个处理器有自己的 cache，为了提升写入效率，通常写入到内存通常是 buffer 满了以后刷到主内存。
+go 的同步原语 channel mutex 操作会让处理器把数据刷到主存，这样才能让goroutine的执行结果对跑在其他处理器上的 goroutines
+可见。
+
+Where possible, confine variables to a single goroutine; for all other variables, use mutual exclusion.
+
+## 9.5 LazyInitialization: sync.Once
+
+在程序中经常会把一些晚会才使用的变量初始化操作延后
+
+    var icons map[string]image.Image
+
+    func loadIcons() {
+    	icons = map[string]image.Image{
+    		"spades.png":   loadIcon("spades.png"),
+    		"hearts.png":   loadIcon("hearts.png"),
+    		"diamonds.png": loadIcon("diamonds.png"),
+    		"clubs.png":    loadIcon("clubs.png"),
+    	}
+    }
+
+    // NOTE: not concurrency-safe!
+    func Icon(name string) image.Image {
+    	if icons == nil {
+    		loadIcons() // one-time initialization
+    	}
+    	return icons[name]
+    }
+
+你可能想到了用 互斥锁 或者用 读写锁来处理:
+
+    var mu sync.Mutex // guards icons
+    var icons map[string]image.Image
+
+    // Concurrency-safe.
+    func Icon(name string) image.Image {
+    	mu.Lock()
+    	defer mu.Unlock()
+    	if icons == nil {
+    		loadIcons()
+    	}
+    	return icons[name]
+    }
+
+互斥锁有个问题，限制了多个 goroutine 并发读，那我们用 读写锁
+
+    var mu sync.RWMutex
+    var icons map[string]image.Image
+
+    // Concurrency-safe.
+    func Icon(name string) image.Image {
+    	mu.RLock()
+    	if icons != nil {
+    		icon := icons[name]
+    		mu.RUnlock()
+    		return icon
+    	}
+    	mu.Unlock()
+
+    	// 获取互斥锁
+    	mu.Lock()
+    	if icons == nil {
+    		loadIcons()
+    	}
+    	icon := icons[name]
+    	mu.Unlock()
+    	return icon
+    }
+
+但是这样写比较麻烦，sync 提供了 Once 来简化:
+
+    var loadIconsOnce sync.Once
+    var icons map[string]image.Image
+    // Concurrency-safe.
+    func Icon(name string) image.Image {
+    	loadIconsOnce.Do(loadIcons)
+    	return icons[name]
+    }
+
+## 9.6 The Race Detector
+
+涉及到并发的程序太容易出错了，go 提供了一个好用的动态分析工具 race detector，
+我们只要给 go build, go run, go test 加上 `-race` 参数就行。
+
+## 9.7 Example: Concurrent Non-Blocking Cache
+
+    package memo
+
+    // Func 是需要缓存的函数类型
+    type Func func(key string) (interface{}, error)
+
+    // 调用 Func 的结果
+    type result struct {
+    	value interface{} // 保存任意类型返回值
+    	err   error
+    }
+
+    type entry struct {
+    	res   result
+    	ready chan struct{} // closed when res is ready, to broadcast (§8.9) to any other goroutines that it is now safe for them to read the result from the entry.
+    }
+
+    // A request is a message requesting that the Func be applied to key.
+    type request struct {
+    	key      string
+    	response chan<- result // the client wants a single result
+    }
+
+    type Memo struct{ requests chan request }
+
+    // New returns a memoization of f.  Clients must subsequently call Close.
+    func New(f Func) *Memo {
+    	memo := &Memo{requests: make(chan request)}
+    	go memo.server(f)
+    	return memo
+    }
+
+    func (memo *Memo) Get(key string) (interface{}, error) {
+    	response := make(chan result)
+    	memo.requests <- request{key, response}
+    	res := <-response
+    	return res.value, res.err
+    }
+
+    func (memo *Memo) Close() { close(memo.requests) }
+
+    func (memo *Memo) server(f Func) {
+    	cache := make(map[string]*entry)
+    	for req := range memo.requests {
+    		e := cache[req.key]
+    		if e == nil {
+    			// This is the first request for this key.
+    			e = &entry{ready: make(chan struct{})}
+    			cache[req.key] = e
+    			go e.call(f, req.key) // call f(key)
+    		}
+    		go e.deliver(req.response)
+    	}
+    }
+
+    func (e *entry) call(f Func, key string) {
+    	// Evaluate the function.
+    	e.res.value, e.res.err = f(key)
+    	// Broadcast the ready condition.
+    	close(e.ready)
+    }
+
+    func (e *entry) deliver(response chan<- result) {
+    	// Wait for the ready condition.
+    	<-e.ready
+    	// Send the result to the client.
+    	response <- e.res
+    }
+
+## 9.8 Goroutines and Threads
+- Growable Stacks: 操作系统线程通常开辟了固定内存(一般最大
+  2M)，保存正在调用函数的局部变量。这个容量不是不够用就是开辟太多有点浪费。而 goroutine
+  起初只需要很小的栈空间，通常只有2KB，并且是按需求增减的。
+
+- Goroutine Scheduling: OS 线程由操作系统调度，线程上下文切换比较耗时。go 运行时包含自己的调度(m:n scheduling, it
+  multiplexes (or schedules) m goroutines on n OS threads)，goroutine 调度非常轻量。
+
+- GOMAXPROCS: Go 调度器使用一个叫做 GOMAXPROCS 的参数决定在 go 中同时执行几个 OS 线程，就是 m:n scheduling 中的
+  n，默认是用的 cpu 核数。runtime.GOMAXPROCS function
+
+- Goroutines Have No Identity: 很多系统和编程语言提供了识别线程实体的方式，比如 python 里边的
+  thread.get_ident()，这使得实现 thread-local 存储非常容易。如果你看过 python 的 flask 框架源码，你会发现就是使用了
+  thread local 变量来获取当前请求的 request(这一块是很多初学 flask 的人感觉很魔幻的地方)，thread local 其实就是个全局映射，key
+  就是线程标识符（通常就是个数字），值就是不同线程里存储的值。但是 go 不提供方法获取 goroutine 的标识，go
+  提倡简单易懂的变成方式，让参数对函数的影响是更加直白、明显的。(感觉这就是 python 哲学啊：explicity is better than
+  implicity)
+
