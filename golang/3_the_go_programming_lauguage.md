@@ -47,7 +47,7 @@ pacakge，其他编辑器或者 IDE 都有类似的设置）
 
 ## 10.5 Blank Imports
 
-如果导入包但是不用是会报错的，但是有些场景比如使用是在 init 里的，这个时候就需要使用 empty import 
+如果导入包但是不用是会报错的，但是有些场景比如使用是在 init 里的，这个时候就需要使用 empty import
 
     import _ "image/png"   // 其实就是 rename 成了 _
 
@@ -555,209 +555,492 @@ Example 函数有三种用途：
 -   可以被 go test执行，注意上边例子的 `//Output`
 -   及时测试，godoc server，让用户在网页上直接修改代码测试(Go Playground)
 
-
 # 12. Reflection
+
 go 提供了反射，允许把类型当做一等公民。(在动态语言里很容易实现)
-https://en.wikipedia.org/wiki/Reflection_(computer_programming)
+<https://en.wikipedia.org/wiki/Reflection_(computer_programming>)
 
 ## 12.1 Why Reflection?
+
 有时候我们想写一个函数实现如下需求：处理统一类型的值但是却不满足一个公共的接口；没有一个已知的表示；甚至在设计函数的时候不存在的值。
 比如
-```
-func Sprint(x interface{}) string {
-	type stringer interface {
-		String() string
-	}
-	switch x := x.(type) {
-	case stringer:
-		return x.String()
-	case string:
-		return x
-	case int:
-		return strconv.Itoa(x)
-	// ...similar cases for int16, uint32, and so on...
-	case bool:
-		if x {
-			return "true"
-		}
-		return "false"
-	default:
-		// array, chan, func, map, pointer, slice, struct
-		return "???"
-	}
-}
-```
+
+    func Sprint(x interface{}) string {
+    	type stringer interface {
+    		String() string
+    	}
+    	switch x := x.(type) {
+    	case stringer:
+    		return x.String()
+    	case string:
+    		return x
+    	case int:
+    		return strconv.Itoa(x)
+    	// ...similar cases for int16, uint32, and so on...
+    	case bool:
+    		if x {
+    			return "true"
+    		}
+    		return "false"
+    	default:
+    		// array, chan, func, map, pointer, slice, struct
+    		return "???"
+    	}
+    }
+
 如果我们没法检测到未知类型的表示，就无法实现这种通用的函数。
 
 ## 12.2 reflect.Type and reflect.Value
+
 反射通过 reflect package 实习那，它定义了两种重要类型： Type and Value
-- Type: Type 是一个 Go 个接口，提供了很多方法用来区分不同类型检查它们的组件
 
-```
-t := reflect.TypeOf(3)  // a reflect.Type, TypeOf 接收 interface{} 并且返回它的动态类型
-fmt.Println(t.String()) // "int"
-fmt.Println(t)          // "int"
-fmt.Printf("%T\n", 3)   // 内部也会使用 reflect.TypeOf
-```
+-   Type: Type 是一个 Go 个接口，提供了很多方法用来区分不同类型检查它们的组件
 
-- Value: reflect.Value 能保存任何类型的值，reflect.ValueOf function accepts any interface{} and returns a reflect.Value containing the interface’s dynamic value.
 
-```
-v := reflect.ValueOf(3) // a reflect.Value
-fmt.Println(v)          // "3"
-fmt.Printf("%v\n", v)   // "3"
-fmt.Println(v.String()) // NOTE: "<int Value>"
-```
+    t := reflect.TypeOf(3)  // a reflect.Type, TypeOf 接收 interface{} 并且返回它的动态类型
+    fmt.Println(t.String()) // "int"
+    fmt.Println(t)          // "int"
+    fmt.Printf("%T\n", 3)   // 内部也会使用 reflect.TypeOf
+
+-   Value: reflect.Value 能保存任何类型的值，reflect.ValueOf function accepts any interface{} and returns a reflect.Value containing the interface’s dynamic value.
+
+
+    v := reflect.ValueOf(3) // a reflect.Value
+    fmt.Println(v)          // "3"
+    fmt.Printf("%v\n", v)   // "3"
+    fmt.Println(v.String()) // NOTE: "<int Value>"
+
 reflect.ValueOf 和 reflect.Value.Interface 互为反操作
 
-```
-v := reflect.ValueOf(3) // a reflect.Value
-x := v.Interface() // an interface{}
-i := x.(int) // an int
-fmt.Printf("%d\n", i) // "3"
-```
+    v := reflect.ValueOf(3) // a reflect.Value
+    x := v.Interface() // an interface{}
+    i := x.(int) // an int
+    fmt.Printf("%d\n", i) // "3"
 
 用 reflect 实现上面的函数。 Although there are infinitely many types, there are only a finite number of kinds of type: the basic types Bool, String, and all the numbers; the aggregate types Array and Struct; the ref- erence types Chan, Func, Ptr, Slice, and Map; Interface types; and finally Invalid, meaning no value at all. (The zero value of a reflect.Value has kind Invalid.)
-```
-package format
 
-import (
-	"reflect"
-	"strconv"
-)
+    package format
 
-// Any formats any value as a string.
-func Any(value interface{}) string {
-	return formatAtom(reflect.ValueOf(value))
-}
+    import (
+    	"reflect"
+    	"strconv"
+    )
 
-// formatAtom formats a value without inspecting its internal structure.
-func formatAtom(v reflect.Value) string {
-	switch v.Kind() {
-	case reflect.Invalid:
-		return "invalid"
-	case reflect.Int, reflect.Int8, reflect.Int16,
-		reflect.Int32, reflect.Int64:
-		return strconv.FormatInt(v.Int(), 10)
-	case reflect.Uint, reflect.Uint8, reflect.Uint16,
-		reflect.Uint32, reflect.Uint64, reflect.Uintptr:
-		return strconv.FormatUint(v.Uint(), 10)
-	// ...floating-point and complex cases omitted for brevity...
-	case reflect.Bool:
-		return strconv.FormatBool(v.Bool())
-	case reflect.String:
-		return strconv.Quote(v.String())
-	case reflect.Chan, reflect.Func, reflect.Ptr, reflect.Slice, reflect.Map:
-		return v.Type().String() + " 0x" +
-			strconv.FormatUint(uint64(v.Pointer()), 16)
-	default: // reflect.Array, reflect.Struct, reflect.Interface
-		return v.Type().String() + " value"
-	}
-}
-```
+    // Any formats any value as a string.
+    func Any(value interface{}) string {
+    	return formatAtom(reflect.ValueOf(value))
+    }
+
+    // formatAtom formats a value without inspecting its internal structure.
+    func formatAtom(v reflect.Value) string {
+    	switch v.Kind() {
+    	case reflect.Invalid:
+    		return "invalid"
+    	case reflect.Int, reflect.Int8, reflect.Int16,
+    		reflect.Int32, reflect.Int64:
+    		return strconv.FormatInt(v.Int(), 10)
+    	case reflect.Uint, reflect.Uint8, reflect.Uint16,
+    		reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+    		return strconv.FormatUint(v.Uint(), 10)
+    	// ...floating-point and complex cases omitted for brevity...
+    	case reflect.Bool:
+    		return strconv.FormatBool(v.Bool())
+    	case reflect.String:
+    		return strconv.Quote(v.String())
+    	case reflect.Chan, reflect.Func, reflect.Ptr, reflect.Slice, reflect.Map:
+    		return v.Type().String() + " 0x" +
+    			strconv.FormatUint(uint64(v.Pointer()), 16)
+    	default: // reflect.Array, reflect.Struct, reflect.Interface
+    		return v.Type().String() + " value"
+    	}
+    }
 
 ## 12.3 Display, A Recursive Value Printer
+
 这一节实现一个能递归打印任何类型值的函数（不能自包含或者有环形结构）
-```
-package format
 
-import (
-	"fmt"
-	"reflect"
-)
+    package format
 
-func Display(name string, x interface{}) {
-	fmt.Printf("Display %s (%T):\n", name, x)
-	display(name, reflect.ValueOf(x))
-}
+    import (
+    	"fmt"
+    	"reflect"
+    )
 
-func display(path string, v reflect.Value) {
-	switch v.Kind() {
-	case reflect.Invalid:
-		fmt.Printf("%s = invalid\n", path)
-	case reflect.Slice, reflect.Array:
-		for i := 0; i < v.Len(); i++ {
-			display(fmt.Sprintf("%s[%d]", path, i), v.Index(i))
-		}
-	case reflect.Struct:
-		for i := 0; i < v.NumField(); i++ {
-			fieldPath := fmt.Sprintf("%s.%s", path, v.Type().Field(i).Name)
-			display(fieldPath, v.Field(i))
-		}
-	case reflect.Map:
-		for _, key := range v.MapKeys() {
-			display(fmt.Sprintf("%s[%s]", path,
-				formatAtom(key)), v.MapIndex(key))
-		}
-	case reflect.Ptr:
-		if v.IsNil() {
-			fmt.Printf("%s = nil\n", path)
-		} else {
-			display(fmt.Sprintf("(*%s)", path), v.Elem())
-		}
-	case reflect.Interface:
-		if v.IsNil() {
-			fmt.Printf("%s = nil\n", path)
-		} else {
-			fmt.Printf("%s.type = %s\n", path, v.Elem().Type())
-			display(path+".value", v.Elem())
-		}
-	default: // basic types, channels, funcs
-		fmt.Printf("%s = %s\n", path, formatAtom(v))
-	}
-}
-```
+    func Display(name string, x interface{}) {
+    	fmt.Printf("Display %s (%T):\n", name, x)
+    	display(name, reflect.ValueOf(x))
+    }
+
+    func display(path string, v reflect.Value) {
+    	switch v.Kind() {
+    	case reflect.Invalid:
+    		fmt.Printf("%s = invalid\n", path)
+    	case reflect.Slice, reflect.Array:
+    		for i := 0; i < v.Len(); i++ {
+    			display(fmt.Sprintf("%s[%d]", path, i), v.Index(i))
+    		}
+    	case reflect.Struct:
+    		for i := 0; i < v.NumField(); i++ {
+    			fieldPath := fmt.Sprintf("%s.%s", path, v.Type().Field(i).Name)
+    			display(fieldPath, v.Field(i))
+    		}
+    	case reflect.Map:
+    		for _, key := range v.MapKeys() {
+    			display(fmt.Sprintf("%s[%s]", path,
+    				formatAtom(key)), v.MapIndex(key))
+    		}
+    	case reflect.Ptr:
+    		if v.IsNil() {
+    			fmt.Printf("%s = nil\n", path)
+    		} else {
+    			display(fmt.Sprintf("(*%s)", path), v.Elem())
+    		}
+    	case reflect.Interface:
+    		if v.IsNil() {
+    			fmt.Printf("%s = nil\n", path)
+    		} else {
+    			fmt.Printf("%s.type = %s\n", path, v.Elem().Type())
+    			display(path+".value", v.Elem())
+    		}
+    	default: // basic types, channels, funcs
+    		fmt.Printf("%s = %s\n", path, formatAtom(v))
+    	}
+    }
+
 现在用它来打印一个自定义结构体：
-```
-type Movie struct {
-	Title, Subtitle string
-	Year            int
-	Color           bool
-	Actor           map[string]string
-	Oscars          []string
-	Sequel          *string
-}
 
-func main() {
-	strangelove := Movie{
-		Title:    "Dr. Strangelove",
-		Subtitle: "How I Learned to Stop Worrying and Love the Bomb",
-		Year:     1964,
-		Color:    false,
-		Actor: map[string]string{
-			"Dr. Strangelove":            "Peter Sellers",
-			"Grp. Capt. Lionel Mandrake": "Peter Sellers",
-			"Pres. Merkin Muffley":       "Peter Sellers",
-			"Gen. Buck Turgidson":        "George C. Scott",
-			"Brig. Gen. Jack D. Ripper":  "Sterling Hayden",
-			`Maj. T.J. "King" Kong`:      "Slim Pickens",
-		},
-		Oscars: []string{
-			"Best Actor (Nomin.)",
-			"Best Adapted Screenplay (Nomin.)",
-			"Best Director (Nomin.)",
-			"Best Picture (Nomin.)",
-		},
-	}
-	Display("strangelove", strangelove)
-}
-```
+    type Movie struct {
+    	Title, Subtitle string
+    	Year            int
+    	Color           bool
+    	Actor           map[string]string
+    	Oscars          []string
+    	Sequel          *string
+    }
+
+    func main() {
+    	strangelove := Movie{
+    		Title:    "Dr. Strangelove",
+    		Subtitle: "How I Learned to Stop Worrying and Love the Bomb",
+    		Year:     1964,
+    		Color:    false,
+    		Actor: map[string]string{
+    			"Dr. Strangelove":            "Peter Sellers",
+    			"Grp. Capt. Lionel Mandrake": "Peter Sellers",
+    			"Pres. Merkin Muffley":       "Peter Sellers",
+    			"Gen. Buck Turgidson":        "George C. Scott",
+    			"Brig. Gen. Jack D. Ripper":  "Sterling Hayden",
+    			`Maj. T.J. "King" Kong`:      "Slim Pickens",
+    		},
+    		Oscars: []string{
+    			"Best Actor (Nomin.)",
+    			"Best Adapted Screenplay (Nomin.)",
+    			"Best Director (Nomin.)",
+    			"Best Picture (Nomin.)",
+    		},
+    	}
+    	Display("strangelove", strangelove)
+    }
+
 输出如下：
-```
-Display strangelove (main.Movie):
-strangelove.Title = "Dr. Strangelove"
-strangelove.Subtitle = "How I Learned to Stop Worrying and Love the Bomb"
-strangelove.Year = 1964
-strangelove.Color = false
-strangelove.Actor["Maj. T.J. \"King\" Kong"] = "Slim Pickens"
-strangelove.Actor["Dr. Strangelove"] = "Peter Sellers"
-strangelove.Actor["Grp. Capt. Lionel Mandrake"] = "Peter Sellers"
-strangelove.Actor["Pres. Merkin Muffley"] = "Peter Sellers"
-strangelove.Actor["Gen. Buck Turgidson"] = "George C. Scott"
-strangelove.Actor["Brig. Gen. Jack D. Ripper"] = "Sterling Hayden"
-strangelove.Oscars[0] = "Best Actor (Nomin.)"
-strangelove.Oscars[1] = "Best Adapted Screenplay (Nomin.)"
-strangelove.Oscars[2] = "Best Director (Nomin.)"
-strangelove.Oscars[3] = "Best Picture (Nomin.)"
-strangelove.Sequel = nil
-```
+
+    Display strangelove (main.Movie):
+    strangelove.Title = "Dr. Strangelove"
+    strangelove.Subtitle = "How I Learned to Stop Worrying and Love the Bomb"
+    strangelove.Year = 1964
+    strangelove.Color = false
+    strangelove.Actor["Maj. T.J. \"King\" Kong"] = "Slim Pickens"
+    strangelove.Actor["Dr. Strangelove"] = "Peter Sellers"
+    strangelove.Actor["Grp. Capt. Lionel Mandrake"] = "Peter Sellers"
+    strangelove.Actor["Pres. Merkin Muffley"] = "Peter Sellers"
+    strangelove.Actor["Gen. Buck Turgidson"] = "George C. Scott"
+    strangelove.Actor["Brig. Gen. Jack D. Ripper"] = "Sterling Hayden"
+    strangelove.Oscars[0] = "Best Actor (Nomin.)"
+    strangelove.Oscars[1] = "Best Adapted Screenplay (Nomin.)"
+    strangelove.Oscars[2] = "Best Director (Nomin.)"
+    strangelove.Oscars[3] = "Best Picture (Nomin.)"
+    strangelove.Sequel = nil
+
+## 12.5. Setting Variables with reflect.Value
+
+上边提到的 reflection 仅仅有解释值(interpreted values)，本节讲如何修改它们。
+一个变量定位了内存中的一块包含值的可访问地址，通过这个地址可以更新值。reflect.Values
+类似，有些是可取址的(addressable)，有些不行。
+
+    	x := 2                   // value type variable?
+    	a := reflect.ValueOf(2)  // 2     int   no
+    	b := reflect.ValueOf(x)  // 2     int   no
+    	c := reflect.ValueOf(&x) //&x    *int   no
+    	d := c.Elem()            // 2     int   yes
+
+对任意变量，可用 reflect.ValueOf(&x).Elem() 获取一个可取址的 Value。
+从一个可取址的 reflect.Value 恢复变量需要三步骤：
+
+    	x := 2
+    	d := reflect.ValueOf(&x).Elem()   // d refers to the variable x
+    	px := d.Addr().Interface().(*int) // px := &x
+    	*px = 3                           // x = 3
+    	fmt.Println(x)                    // "3"
+
+reflect.Value.Set 方法简化了这三步，注意类型要是可赋值的：
+
+    	d.set(reflect.ValueOf(4))
+    	fmt.Println(x) // "4"
+
+## 12.7. Accessing Struct Field Tags
+
+本节讲如何获取 struct 的 field tag。通过解析 http 请求参数来示例。
+
+    package main
+
+    import (
+    	"fmt"
+    	"log"
+    	"net/http"
+    	"reflect"
+    	"strconv"
+    	"strings"
+    )
+
+    // search implements the /search URL endpoint.
+    func searchHandler(resp http.ResponseWriter, req *http.Request) {
+    	var data struct {
+    		Labels     []string `http:"l"`
+    		MaxResults int      `http:"max"`
+    		Exact      bool     `http:"x"`
+    	}
+    	data.MaxResults = 10 // set default
+    	if err := Unpack(req, &data); err != nil {
+    		http.Error(resp, err.Error(), http.StatusBadRequest) // 400
+    		return
+    	}
+    	// ...rest of handler...
+    	fmt.Fprintf(resp, "Search: %+v\n", data)
+    }
+
+    func main() {
+    	http.HandleFunc("/search", searchHandler)
+    	log.Fatal(http.ListenAndServe(":12345", nil))
+    }
+
+    func Unpack(req *http.Request, ptr interface{}) error {
+    	if err := req.ParseForm(); err != nil {
+    		return err
+    	}
+    	fields := make(map[string]reflect.Value)
+    	v := reflect.ValueOf(ptr).Elem()
+    	for i := 0; i < v.NumField(); i++ {
+    		fieldInfo := v.Type().Field(i) // a reflect.StructField
+    		tag := fieldInfo.Tag           // a reflect.StructTag
+    		name := tag.Get("http")
+    		if name == "" {
+    			name = strings.ToLower(fieldInfo.Name)
+    		}
+    		fields[name] = v.Field(i)
+    	}
+    	fmt.Println(fields)
+
+    	for name, values := range req.Form {
+    		f := fields[name]
+    		if !f.IsValid() {
+    			continue // 忽略不能识别的 http 参数
+    		}
+    		for _, value := range values {
+    			// fmt.Printf("%v\n", value)
+    			if f.Kind() == reflect.Slice { // 同一个参数可能多次出现
+    				elem := reflect.New(f.Type().Elem()).Elem()
+    				if err := populate(elem, value); err != nil {
+    					return fmt.Errorf("%s: %v", name, err)
+    				}
+    				f.Set(reflect.Append(f, elem))
+    			} else {
+    				if err := populate(f, value); err != nil {
+    					return fmt.Errorf("%s: %v", name, err)
+    				}
+    			}
+    		}
+    	}
+    	return nil
+    }
+
+    func populate(v reflect.Value, value string) error {
+    	switch v.Kind() {
+    	case reflect.String:
+    		v.SetString(value)
+    	case reflect.Int:
+    		i, err := strconv.ParseInt(value, 10, 64)
+    		if err != nil {
+    			return err
+    		}
+    		v.SetInt(i)
+    	case reflect.Bool:
+    		b, err := strconv.ParseBool(value)
+    		if err != nil {
+    			return err
+    		}
+    		v.SetBool(b)
+    		// ... 其他类型
+
+    	default:
+    		return fmt.Errorf("unsupported kinds %s", v.Type())
+    	}
+    	return nil
+    }
+
+## 12.8. Displaying the Methods of a Type
+
+最后一个例子用 reflect.Type 任意类型值和并迭代其方法。
+
+    package main
+
+    import (
+    	"fmt"
+    	"reflect"
+    	"strings"
+    	"time"
+    )
+
+    func Print(x interface{}) {
+    	v := reflect.ValueOf(x)
+    	t := v.Type()
+    	fmt.Printf("type %s\n", t)
+    	for i := 0; i < v.NumMethod(); i++ {
+    		methType := v.Method(i).Type()
+    		fmt.Printf("func (%s) %s%s\n", t, t.Method(i).Name,
+    			strings.TrimPrefix(methType.String(), "func"))
+    	}
+    }
+
+    func main() {
+    	Print(time.Hour)
+    }
+
+## 12.9. A Word of Caution
+
+反射很强大，使用起来需要小心：
+
+-   基于反射的代码比较脆弱，每个编译器报告类型错误的地方，都会有对应的反射使用不当的地方，有可能程序运行很长时间才会发现。
+    最好的避免脆弱代码的方式就是使用反射的地方在包里完全封装，在包的 API 里尽量避免 reflect.Value
+    而使用特定类型，把输入限定在合法的值。如果无法做到就使用动态检测。反射还会减弱静态分析工具的精确性和安全性。
+-   使用反射太多的代码难以理解。应该注释期望的类型值
+-   基于反射的函数执行速度更慢。最好在关键逻辑上避免反射。
+
+# 13 Low-Level Programming
+
+go的很多设计特性保证了用户不会错误使用 go，编辑期类型检查能消除很多类型错误。
+无法静态检测的错误，比如数组越界访问、内存泄露等，go 的动态检测和垃圾回收终结了此类错误。go
+屏蔽了很多内部细节的访问，没法探测聚合类型的内存结构，无法获取 goroutine 标识。综合这些方式减少类似低级 c
+语言的很多奇怪的错误。
+有时候为了提高性能，或者跟其他语言交互等，就无法仅仅用 go 代码满足需求，go 提供了由编译器实现的 unsafe
+包，提供了一些操作内置语言特性的方式。
+
+## 13.1. unsafe.Sizeof, Alignof, and Offsetof
+
+-   Sizeof: unsafe.Sizeof function reports the size in bytes of the representation of its operand,which may be an expression of any type; the expression is not evaluated.
+-   The unsafe.Alignof function reports the required alignment of its argument’s type
+-   The unsafe.Offsetof function, whose operand must be a field selector x.f, computes the offset of field f relative to the start of its enclosing struct x, accounting for holes, if any.
+
+## 13.2. unsafe.Pointer
+
+Most pointer types are written \*T, meaning ‘‘a pointer to a variable of type T.’’ The unsafe.Pointer type is a special kind of pointer that can hold the address of any variable.
+
+## 13.3 Example: Deep Equivalence
+
+reflect.DeepEqual 对于基本类型使用 == 比较，对于复合类型会递归遍历它们比较对应的元素。经常用在测试里，但是是实现有差别。
+比如 DeepEqual 实现认为 nil map 和空 map 是不等的：
+
+    	var a, b []string = nil, []string{}
+    	fmt.Println(reflect.DeepEqual(a, b)) // "false"
+    	var c, d map[string]int = nil, make(map[string]int)
+    	fmt.Println(reflect.DeepEqual(c, d)) // "false"
+
+下边实现一个类似的，但是认为 nil map 和空 map 相等。
+
+    package main
+
+    import (
+    	"reflect"
+    	"unsafe"
+    )
+
+    type comparison struct {
+    	x, y unsafe.Pointer
+    	t    reflect.Type
+    }
+
+    func equal(x, y reflect.Value, seen map[comparison]bool) bool {
+    	if !x.IsValid() || !y.IsValid() {
+    		return x.IsValid() == y.IsValid()
+    	}
+    	if x.Type() != y.Type() {
+    		return false
+    	}
+    	//循环检测
+    	if x.CanAddr() && y.CanAddr() {
+    		xptr := unsafe.Pointer(x.UnsafeAddr())
+    		yptr := unsafe.Pointer(y.UnsafeAddr())
+    		if xptr == yptr {
+    			return true // 同一个引用
+    		}
+    		c := comparison{xptr, yptr, x.Type()}
+    		if seen[c] { // 如果都是 array，x and x[0] have the same address,所以需要区分 x和y  x[0]和y[0] 是否比较过
+    			return true
+    		}
+    		seen[c] = true
+    	}
+
+    	switch x.Kind() {
+    	case reflect.Bool:
+    		return x.Bool() == y.Bool()
+    	case reflect.String:
+    		return x.String() == y.String()
+    	case reflect.Chan, reflect.UnsafePointer, reflect.Func:
+    		return x.Pointer() == y.Pointer()
+    	case reflect.Ptr, reflect.Interface:
+    		return equal(x.Elem(), y.Elem(), seen)
+
+    	case reflect.Array, reflect.Slice:
+    		if x.Len() != y.Len() {
+    			return false
+    		}
+    		for i := 0; i <= x.Len(); i++ {
+    			if !equal(x.Index(i), y.Index(i), seen) {
+    				return false
+    			}
+    		}
+    		return true
+    	}
+    	panic("unreachable")
+
+    }
+
+    func Equal(x, y interface{}) bool {
+    	seen := make(map[comparison]bool)
+    	return equal(reflect.ValueOf(x), reflect.ValueOf(y), seen)
+    }
+
+    func main() {
+    	fmt.Println(Equal([]int{1, 2, 3}, []int{1, 2, 3}))
+    	fmt.Println(Equal([]string{"foo"}, []string{"bar"}))
+    	fmt.Println(Equal([]string(nil), []string{}))
+    	fmt.Println(Equal(map[string]int(nil), map[string]int{}))
+    }
+
+## 13.4. Calling C Code with cgo
+
+cgo, a tool that creates Go bindings for C functions. Such tools are called foreign-function interfaces (FFIs), and cgo is not the only one for Go programs.
+<https://golang.org/cmd/cgo>
+
+## 13.5. Another Word of Caution
+
+Most programmers will never need to use unsafe at all. Nevertheless, there will occasionally be situations where some critical piece of code can be best written using unsafe
+
+# Debug
+
+这本书居然没有讲 debug，从网上搜了下调试工具，然后试用了一把 delve，感觉还不错。目前看到两种用得比较多是 gdb 和 delve，感觉 gdb
+有点原始，可以用下 delve。用起来和 Python 的 pdb 和 ipdb 差不多，都是 gdb 风格的命令，平常笔者调试 python
+代码基本都是用的 ipdb。
+
+[ebugging-with-delve](https://blog.gopheracademy.com/advent-2015/debugging-with-delve/)
+
+<https://github.com/derekparker/delve>
