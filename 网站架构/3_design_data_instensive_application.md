@@ -138,7 +138,7 @@ MapReduce 遵守同样的unix哲学: 把输入当做不可变的并且避免有�
 批处理的输入和输出都是文件，一般处理第一步是分隔文件成记录。流式处理环境里，记录通常作为一个时间(event)，指定时间点内
 包含具体细节的小块、自包含不可变对象，通常包含时间戳。流式处理中，一个 event 被一个
 生产者生成，然后可能被多个消费者消费。一个文件系统中，文件名标志了相关的记录，流式系统，相关事件通常被分组为一个 topic
-或者 stream，然后由消息系统发出。 
+或者 stream，然后由消息系统发出。
 
 ### Messaging Systems
 
@@ -182,3 +182,39 @@ MapReduce 遵守同样的unix哲学: 把输入当做不可变的并且避免有�
 
 一般为了防止消费者崩溃没有处理消息，会使用确认机制：消费者回执处理完消息了然后 broker
 才会把消息从队列移除。但是有可能消费者处理成功了但是回执却失败了，通过原子提交协议(atomic commit protocol)处理
+
+
+### Partitioned Logs
+
+本节介绍的是 log-based message brokers
+
+##### Using logs for message storage
+log 是磁盘上只能追加的一系列记录，同样可以用来实现消息代理。生产者通过在 log 末尾追加消息，消费者通过序列化地读取 log
+来获取消息。如果消费者读取到 log 末尾，就等待新的消息到来。(类似于 tail -f)。log
+可以被分片到多个机器上，每条消息都附加上一个单调递增的数字（因为消息是只能追加的）。Apache Kafka, Amazon Kinesis
+Streams, Twitter's DistributedLog 等消息代理都是这种工作方式。
+
+##### Logs compared to traditional messaging
+log-based 支持辐射型消息，消费者可以独立读取 log
+互不影响。为了实现一组消费者的负载均衡，不是单独的消息发送给消费者们，而是代理把一整个分片分配给一组消费者中的节点。
+然后，消费端处理被分配分片的所有消息，消费者通常单线程顺序读取，这种方式有两个缺点：
+- 消费 topic 的节点数最多只能等于 topic 的 log 分片数目
+- 如果单个消息处理太慢，该分片后续的消息就被阻塞
+
+如果消息希望被并行处理，并且其顺序不重要， AMQP 风格的消息代理更适合。如果是高吞吐、每个消息被很快处理、并且消息顺序比较重要，log-based 会工作很好
+
+##### Consumer offsets
+分片是怎么知道哪些消息被处理了呢：通过当前消费者处理的偏移和分片记录的偏移，所有大于消费者已经处理的偏移的消息是未处理的。
+
+##### Disk space usage
+通常使用环形 buffer 处理旧消息的丢弃问题
+
+##### When consumers cannot keep up with producers
+通常 log-based 代理使用 buffer 来处理消息堆积问题，一旦发现消费者大幅落后处理跟不上会发出警告，因为 buffer
+通常足够大，有时间在消息丢失之前人为干预修复慢消费者。
+
+##### Replaying old messages
+log-based 重放消息就像读文件，不允许改变 log。唯一的影响是会改变 offset，不过 offset
+可以被消费者控制，可以人为地把昨天的 offset 消息重写到另一个地方。这和后边要讲的批处理很像。
+
+### Databases and Streams
