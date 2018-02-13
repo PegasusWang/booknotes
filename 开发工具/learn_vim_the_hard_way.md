@@ -1,4 +1,4 @@
-<http://learnvimscriptthehardway.onefloweroneworld.com/chapters/02.html>
+http://learnvimscriptthehardway.onefloweroneworld.com/ 读书笔记，自定义vim 配置或者一些简单的 vim 插件需求。
 
 # 设置选项
 
