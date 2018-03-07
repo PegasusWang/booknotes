@@ -1,4 +1,4 @@
-http://learnvimscriptthehardway.onefloweroneworld.com/ 读书笔记，自定义vim 配置或者一些简单的 vim 插件需求。
+<http://learnvimscriptthehardway.onefloweroneworld.com/> 读书笔记，自定义vim 配置或者一些简单的 vim 插件需求。
 
 # 设置选项
 
@@ -544,7 +544,6 @@ Vimscript支持使用变量储存函数，但是相关的语法有点愚钝。�
         return new_list
     endfunction
 
-
 # 路径
 
 ### 绝对路径
@@ -557,6 +556,5 @@ Vimscript支持使用变量储存函数，但是相关的语法有点愚钝。�
 
     :echo globpath('.', '*') " Vim将输出当前目录下所有的文件和文件夹
     :echo split(globpath('.', '**'), '\n')  " 你可以用**递归地列出文件。执行这个命令：
-
 
 # 创建一个完整的插件
