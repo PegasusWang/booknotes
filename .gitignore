@@ -1,0 +1,15 @@
+.DS_Store
+.tmp
+
+
+# Git
+*.orig
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+
+# Vim
+.*.sw[a-z]
+*.un~
+Session.vim

@@ -9,7 +9,7 @@
 
 ### 事件监听
 
-```
+```js
  class Title extends Component {
   handleClickOnTitle () {
     console.log('Click on title.')
