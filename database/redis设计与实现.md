@@ -105,3 +105,97 @@ factor）维持在一个合理的范围之内，当哈希表保存的键值对�
 load_factor = ht[0].used / ht[0].size
 
 # 5. 跳跃表
+skiplist: 一种有序数据结构，它通过在每个节点中维持多个指向其他节点的指针，从而达到快速访问节点的目的。
+Redis使用跳跃表作为有序集合键的底层实现之一，如果一个有序集合包含的元素数量比较多，又或者有序集合中元素的成员（member）是比较长的字符串时，Redis就会使用跳跃表来作为有序集合键的底层实现。
+Redis只在两个地方用到了跳跃表，一个是实现有序集合键，另一个是在集群节点中用作内部数据结构，除此之外，跳跃表在Redis里面没有其他用途。
+
+```c
+// redis.h/zskiplistNode
+typedef struct zskiplistNode {
+  // 层
+  struct zskiplistLevel {
+    // 前进指针
+    struct zskiplistNode *forward;
+    // 跨度
+    unsigned int span;
+  } level[]; //每次创建一个新跳跃表节点的时候，程序都根据幂次定律（power law，越大的数出现的概率越小）随机生成一个介于1和32之间的值作为level数组的大小，这个大小就是层的“高度”。
+  // 后退指针
+  struct zskiplistNode *backward;
+  // 分值,跳跃表中的所有节点都按照分值从小到大排序，相同分值按照成员对象字典序排序
+  double score;
+  // 成员对象
+  robj *obj;
+} zskiplistNode;
+
+typedef struct zskiplist {
+  // 表头节点和表尾节点
+  structz skiplistNode *header, *tail;
+  // 表中节点的数量
+  unsigned long length;
+  // 表中层数最大的节点的层数
+  int level;
+} zskiplist;
+```
+
+# 6.整数集合
+整数集合（intset）是集合键的底层实现之一，当一个集合只包含整数值元素，并且这个集合的元素数量不多时，Redis就会使用整数集合作为集合键的底层实现。
+
+```c
+// intset.h/intset
+typedef struct intset {
+  // 编码方式
+  uint32_t encoding;
+  // 集合包含的元素数量
+  uint32_t length;
+  // 保存元素的数组，虽然声明是 int8_t，但是实际类型由 encoding 决定
+  int8_t contents[];  //元素有序
+}intset;
+```
+
+升级操作：
+每当我们要将一个新元素添加到整数集合里面，并且新元素的类型比整数集合现有所有元素的类型都要长时，整数集合需要先进行升级（upgrade），然后才能将新元素添加到整数集合里面。
+
+升级操作的好处：
+- 提升灵活性: 避免类型错误
+- 节省内存: 需要的时候才升级
+
+intset 不支持降级操作
+insert 操作是 O(N)，find 操作是 O(logN)
+
+# 7. 压缩列表
+
+压缩列表（ziplist）是列表键和哈希键的底层实现之一。当一个列表键只包含少量列表项，并且每个列表项要么就是小整数值，要么就是长度比较短的字符串，那么Redis就会使用压缩列表来做列表键的底层实现。
+另外，当一个哈希键只包含少量键值对，比且每个键值对的键和值要么就是小整数值，要么就是长度比较短的字符串，那么Redis就会使用压缩列表来做哈希键的底层实现。
+
+```sh
+redis> RPUSH lst 1 3 5 10086 "hello" "world"
+(integer)6
+redis> OBJECT ENCODING lst
+"ziplist"
+redis> HMSET profile "name" "Jack" "age" 28 "job" "Programmer"
+OK
+redis> OBJECT ENCODING profile
+"ziplist"
+```
+
+压缩列表是Redis为了节约内存而开发的，是由一系列特殊编码的连续内存块组成的顺序型（sequential）数据结构。一个压缩列表可以包含任意多个节点（entry），每个节点可以保存一个字节数组或者一个整数值。
+
+|zlbytes|zltail|zllen|entry1|entry2|...|entryN|zlend|
+
+每个压缩列表节点由 三个部分组成，通过当前指针的值减去 previous_entry_length 可以计算得到上一个节点的开始位置
+
+|previous_entry_length|encoding|content|
+
+连锁更新(cascade update)：特殊情况下产生的连续多次空间扩展操作，增加或者删除节点都可能会引发连锁更新。
+因为连锁更新在最坏情况下需要对压缩列表执行N次空间重分配操作，而每次空间重分配的最坏复杂度为O（N），所以连锁更新的最坏复杂度为O（N
+2）。 要注意的是，尽管连锁更新的复杂度较高，但它真正造成性能问题的几率是很低的:
+
+- 首先，压缩列表里要恰好有多个连续的、长度介于250字节至253字节之间的节点，连锁更新才有可能被引发，在实际中，这种情况并不多见；
+- 其次，即使出现连锁更新，但只要被更新的节点数量不多，就不会对性能造成任何影响：比如说，对三五个节点进行连锁更新是绝对不会影响性能的；
+
+| 函数          | 作用                       | 时间复杂度              |
+|---------------|----------------------------|-------------------------|
+| ziplistPush   | 创建新节点并添加到表头或尾 | avg: O(N) worst: O(N^2) |
+| ziplistInsert |                            | avg: O(N) worst: O(N^2) |
+| ziplistFind   |                            | avg: O(N)               |
+| ziplistDelete |                            | avg: O(N) worst: O(N^2) |
