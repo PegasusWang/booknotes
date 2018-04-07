@@ -199,3 +199,122 @@ redis> OBJECT ENCODING profile
 | ziplistInsert |                            | avg: O(N) worst: O(N^2) |
 | ziplistFind   |                            | avg: O(N)               |
 | ziplistDelete |                            | avg: O(N) worst: O(N^2) |
+
+# 8. 对象
+
+### Redis 对象
+```c
+typedef struct redisObject {
+  // 类型, REDIS_STRING, REDIS_LIST, REDIS_HASH, REDIS_SET, REDIS_ZSET
+  unsigned type:4;
+  // 编码，记录这个对象底层使用了什么数据结构来实现
+  unsigned encoding:4;
+  // 指向底层实现数据结构的指针
+  void *ptr;
+  //...
+} robj;
+```
+
+### 字符串对象
+字符串对象的编码可以是 int , raw 或者 embstr。
+如果一个字符串对象保存的是整数值，并且这个整数值可以用long类型来表示，那么字符串对象会将整数值保存在字符串对象结构的ptr属性里面（将void*转换成long），并将字符串对象的编码设置为int。
+如果字符串对象保存的是一个字符串值，并且这个字符串值的长度小于等于32字节，那么字符串对象将使用embstr编码的方式来保存这个字符串值。
+如果字符串对象保存的是一个字符串值，并且这个字符串值的长度大于32字节，那么字符串对象将使用一个简单动态字符串（SDS）来保存这个字符串值，并将对象的编码设置为raw。
+可以用long double类型表示的浮点数在Redis中也是作为字符串值来保存的。如果我们要保存一个浮点数到字符串对象里面，那么程序会先将这个浮点数转换成字符串值，然后再保存转换所得的字符串值。
+
+### 列表对象
+列表对象的编码可以是ziplist或者linkedlist。
+ziplist编码的列表对象使用压缩列表作为底层实现，每个压缩列表节点（entry）保存了一个列表元素。
+
+当列表对象可以同时满足以下两个条件时，列表对象使用ziplist编码：
+
+- 列表对象保存的所有字符串元素的长度都小于64字节；
+- 列表对象保存的元素数量小于512个；不能满足这两个条件的列表对象需要使用linkedlist编码。
+
+以上两个条件的上限值是可以修改的，具体请看配置文件中关于list-max-ziplist-value选项和list-max-ziplist-entries选项的说明。
+
+#### 哈希对象
+哈希对象的编码可以是ziplist或者hashtable。
+
+当哈希对象可以同时满足以下两个条件时，哈希对象使用ziplist编码：
+
+- 哈希对象保存的所有键值对的键和值的字符串长度都小于64字节；
+- 哈希对象保存的键值对数量小于512个；不能满足这两个条件的哈希对象需要使用hashtable编码。
+
+这两个条件的上限值是可以修改的，具体请看配置文件中关于hash-max-ziplist-value选项和hash-max-ziplist-entries选项的说明。
+
+### 集合对象
+集合对象的编码可以是intset或者hashtable。
+intset编码的集合对象使用整数集合作为底层实现，集合对象包含的所有元素都被保存在整数集合里面。
+hashtable编码的集合对象使用字典作为底层实现，字典的每个键都是一个字符串对象，每个字符串对象包含了一个集合元素，而字典的值则全部被设置为NULL。
+
+当集合对象可以同时满足以下两个条件时，对象使用intset编码：
+
+- 集合对象保存的所有元素都是整数值；
+- 集合对象保存的元素数量不超过512个。
+
+不能满足这两个条件的集合对象需要使用hashtable编码。
+
+#### 有序集合对象
+有序集合的编码可以是ziplist或者skiplist。
+
+当有序集合对象可以同时满足以下两个条件时，对象使用ziplist编码：
+
+- 有序集合保存的元素数量小于128个；
+- 有序集合保存的所有元素成员的长度都小于64字节；
+
+不能满足以上两个条件的有序集合对象将使用skiplist编码。
+
+注意
+
+以上两个条件的上限值是可以修改的，具体请看配置文件中关于zset-max-ziplist-entries选项和zset-max-ziplist-value选项的说明。
+
+### 类型检查与命令多态
+
+其中一种命令可以对任何类型的键执行，比如说DEL命令、EXPIRE命令、RENAME命令、TYPE命令、OBJECT命令等。
+而另一种命令只能对特定类型的键执行，比如说：
+
+- SET、GET、APPEND、STRLEN等命令只能对字符串键执行；
+- HDEL、HSET、HGET、HLEN等命令只能对哈希键执行；
+- RPUSH、LPOP、LINSERT、LLEN等命令只能对列表键执行；
+- SADD、SPOP、SINTER、SCARD等命令只能对集合键执行；
+- ZADD、ZCARD、ZRANK、ZSCORE等命令只能对有序集合键执行；
+
+在执行一个类型特定的命令之前，Redis会先检查输入键的类型是否正确，然后再决定是否执行给定的命令。
+类型特定命令所进行的类型检查是通过redisObject结构的type属性来实现的
+
+### 内存回收
+因为C语言并不具备自动内存回收功能，所以Redis在自己的对象系统中构建了一个引用计数（reference counting）技术实现的内存回收机制，通过这一机制，程序可以通过跟踪对象的引用计数信息，在适当的时候自动释放对象并进行内存回收。
+对象的引用计数信息会随着对象的使用状态而不断变化：
+
+- 在创建一个新对象时，引用计数的值会被初始化为1；
+- 当对象被一个新程序使用时，它的引用计数值会被增一；
+- 当对象不再被一个程序使用时，它的引用计数值会被减一；
+- 当对象的引用计数值变为0时，对象所占用的内存会被释放。
+
+### 对象共享
+目前来说，Redis会在初始化服务器时，创建一万个字符串对象，这些对象包含了从0到9999的所有整数值，当服务器需要用到值为0到9999的字符串对象时，服务器就会使用这些共享对象，而不是新创建对象。
+创建共享字符串对象的数量可以通过修改redis.h/REDIS_SHARED_INTEGERS常量来修改。
+尽管共享更复杂的对象可以节约更多的内存，但受到CPU时间的限制，Redis只对包含整数值的字符串对象进行共享。
+
+### 对象的空转时长
+除了前面介绍过的type、encoding、ptr和refcount四个属性之外，redisObject结构包含的最后一个属性为lru属性，该属性记录了对象最后一次被命令程序访问的时间：
+
+```c
+typedef struct redisObject {
+  // 类型, REDIS_STRING, REDIS_LIST, REDIS_HASH, REDIS_SET, REDIS_ZSET
+  unsigned type:4;
+  // 编码，记录这个对象底层使用了什么数据结构来实现
+  unsigned encoding:4;
+  // 指向底层实现数据结构的指针
+  void *ptr;
+  // 引用计数
+  int refcount;
+  // 对象的空转时长, 记录了最后一次被命令程序访问的时间
+  unsigned lru:22;
+} robj;
+```
+
+除了可以被OBJECT IDLETIME命令打印出来之外，键的空转时长还有另外一项作用：如果服务器打开了maxmemory选项，
+并且服务器用于回收内存的算法为volatile-lru或者allkeys-lru，那么当服务器占用的内存数超过了maxmemory选项所设置的上限值时，
+空转时长较高的那部分键会优先被服务器释放，从而回收内存。
