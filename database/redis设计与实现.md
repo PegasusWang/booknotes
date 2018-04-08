@@ -318,3 +318,57 @@ typedef struct redisObject {
 除了可以被OBJECT IDLETIME命令打印出来之外，键的空转时长还有另外一项作用：如果服务器打开了maxmemory选项，
 并且服务器用于回收内存的算法为volatile-lru或者allkeys-lru，那么当服务器占用的内存数超过了maxmemory选项所设置的上限值时，
 空转时长较高的那部分键会优先被服务器释放，从而回收内存。
+
+# 9. 数据库
+
+```c
+// redis.h/redisDB
+struct redisServer {
+  redisDb *db;
+  int dbnum;    // 默认是 16
+  //...
+}
+
+typedef struct redisClient {
+  //...
+ redisDb *db;  // SELECT 可以选择不同的数据库
+}redisClient;
+```
+
+数据库键空间：
+
+```c
+typedef struct redisDb {
+  //数据库键空间，保存数据库中所有的键值对
+ dict *dict;
+}redisDb;
+```
+
+键的过期时间：
+PEXPIREAT 和 PERSIST  可以设置和移除键过期时间
+
+
+```c
+typedef struct redisDb {
+  //数据库键空间，保存数据库中所有的键值对
+ dict *dict;
+ // 过期字典保存键的过期时间, { *key, long long(毫秒精度的unix时间错) }
+ dict *expires;
+}redisDb;
+```
+
+如果一个键过期了，它什么时候会被删除呢？
+- 定时删除: 设置过期实践的同时创建一个定时器。
+  - 内存友好但是cpu时间不友好
+  - redis 依赖服务器的时间事件处理，当前事件时间由无序链表实现，查找一个事件O(n)，不能高效处理大量事件。不现实
+
+- 惰性删除：放任过期键不管，每次从键空间获取键时，检查是否过期，过期就删除，否则返回该键
+  - cpu 时间最友好，内存不友好。可能出现『泄露』现象
+
+- 定期删除(被动策略)：每个一段时间程序对数据库进行一次检查，删除里面过期的键。由算法决定检查多少个数据库删除多少个键
+  - 折衷策略。难点是如何确定执行的时长和频率
+
+redis 实际上使用了惰性和定期两种策略:
+
+- 过期键的惰性删除策略由db.c/expireIfNeeded函数实现，所有读写数据库的Redis命令在执行之前都会调用expireIfNeeded函数对输入键进行检查：
+- 过期键的定期删除策略由redis.c/activeExpireCycle函数实现，每当Redis的服务器周期性操作redis.c/serverCron函数执行时，activeExpireCycle函数就会被调用，它在规定的时间内，分多次遍历服务器中的各个数据库，从数据库的expires字典中随机检查一部分键的过期时间，并删除其中的过期键。
