@@ -33,6 +33,19 @@ In RESP different parts of the protocol are always terminated with "\r\n" (CRLF)
 Sending commands to a Redis Server:
 A client sends to the Redis server a RESP Array consisting of just Bulk Strings.
 A Redis server replies to clients sending any valid RESP data type as reply.
+
+
+Pipeline:
+A Request/Response server can be implemented so that it is able to process new requests even if the client didn't already read the old responses. This way it is possible to send multiple commands to the server without waiting for the replies at all, and finally read the replies in a single step.
+This is called pipelining.
+
+```
+$ (printf "PING\r\nPING\r\nPING\r\n"; sleep 1) | nc localhost 6379
++PONG
++PONG
++PONG
+```
+server 端需要占用内存让命令入队，所以不要一次性发太多命令。
 """
 
 import os
