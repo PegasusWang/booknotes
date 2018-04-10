@@ -24,7 +24,10 @@
 在批处理系统例如 hadoop 中通常用吞吐量(throughput)衡量，即每秒处理的记录个数。在线系统中通常用响应时间来衡量。
 通常使用 percentiles 而不是算术平均值(average)来衡量响应时间，percentiles
 指的是把响应时间从快到慢排列后取中位数作为分界点。比如如果 p95 响应时间是 1.5秒，意味着 100 个请求有 95 个少于
-1.5秒，5个多于 1.5秒
+1.5秒，5个多于 1.5秒。
+
+- https://en.wikipedia.org/wiki/Percentile
+- https://blogs.dnvgl.com/software/2016/12/p10-p50-and-p90/
 
 ### Maintainability(可维护性)：能够有效率地扩充功能
 
