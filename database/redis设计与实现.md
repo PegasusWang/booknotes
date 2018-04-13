@@ -459,3 +459,52 @@ I/O多路复用程序允许服务器同时监听套接字的AE_READABLE事件和
 ### 调度
 文件事件和时间事件之间是合作关系，服务器会轮流处理这两种事件，并且处理事件的过程中也不会进行抢占。
 ·时间事件的实际处理时间通常会比设定的到达时间晚一些。
+
+
+# 13 客户端
+一对多客户端程序，redis 服务器状态结构的clients 属性是一个链表
+
+```c
+struct redisServer {
+  //...
+  // 一个链表保存了客户端所有状态
+  list *clients;
+}
+
+
+typedef struct  redisClient {
+  // ...
+  int fd;
+  robj *name; // 设置客户端名字指
+  int flags;   // 记录客户端角色
+  sds querybuf;  // 输入缓冲区保存客户端发送的请求命令，根据输入内容动态调整
+  robj **argv; // 客户端发送的请求保存到客户端状态的 querybuf 属性之后，服务器将对命令请求的内容分析，将命令行参数信息保存到 argv, argc
+  int args;
+  struct redisCommand *cmd; // 解析完命令(argv[0])后，根据命令类型调用对应的函数
+
+  // 固定大小的缓冲区保存长度比较小的回复
+  char buf[REDIS_REPLY_CHUNK_BYTES];
+  int bufops;
+
+  // 可变大小的缓冲区保存长度比较大的回复
+  list *reply;
+
+  // 客户端状态的 authenticated 属性用于记录客户端是否通过了身份验证
+  int authenticated;
+
+  time_t ctime; //ctime属性记录了创建客户端的时间，这个时间可以用来计算客户端与服务器已经连接了多少秒
+  time_t lastinteraction; //lastinteraction属性记录了客户端与服务器最后一次进行互动（interaction）的时间，这里的互动可以是客户端向服务器发送命令请求，也可以是服务器向客户端发送命令回复。
+  time_t obuf_soft_limit_reached_time; //记录了输出缓冲区第一次到达软性限制（soft limit）的时间
+
+}redisClient;
+
+```
+
+服务器使用两种模式来限制客户端输出缓冲区的大小：
+
+- 硬性限制（hard limit）：如果输出缓冲区的大小超过了硬性限制所设置的大小，那么服务器立即关闭客户端。
+
+- 软性限制（soft limit）：如果输出缓冲区的大小超过了软性限制所设置的大小，但还没超过硬性限制，那么服务器将使用客户端状态结构的obuf_soft_limit_reached_time属性记录下客户端到达软性限制的起始时间；之后服务器会继续监视客户端，如果输出缓冲区的大小一直超出软性限制，并且持续时间超过服务器设定的时长，那么服务器将关闭客户端；相反地，如果输出缓冲区的大小在指定时间之内，不再超出软性限制，那么客户端就不会被关闭，并且obuf_soft_limit_reached_time属性的值也会被清零。
+
+
+# 14 服务器
