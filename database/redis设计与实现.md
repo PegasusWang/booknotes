@@ -640,3 +640,22 @@ redis2.6 以后引入 lua 脚本的支持，通过在服务器中嵌入 Lua 环�
 
 
 # 21 排序
+redis sort 命令可以对列表键、集合键或者有序集合键的值进行排序。
+
+引入 redisSortObject 结构数组来排序。
+
+`SORT students ALPHA STORE sorted_students`
+
+
+# 22 二进制位数组
+redis 提供了 SETBIT, GETBIT, BITCOUNT, BITOP 四个命令用于处理二进制位数组(bit array)
+
+redis 使用 SDS 结构保存位数组，但是 buf 保存的位数组的顺序和我们平时书写的顺序是相反的。
+
+二进制位统计算法： variable-precision SWAR 算法
+BITCOUNT 要解决的问题-统一一个位数组中非0二进制位的数量，数学上称之为 "计算汉明重量(Hamming Weight)"
+通过一系列位移和位运算操作，可以在常数时间内计算多个字节的汉明重量，并且无需额外内存。
+
+redis 的BITCOUNT实现使用了 查表和 variable-precision 两种算法。
+
+BITOP 直接基于 C 语言的逻辑操作符实现。
