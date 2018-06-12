@@ -24,3 +24,11 @@ A microservice is a lightweight application, which provides a narrowed list of f
 - Greenlet and Gevent: 通过event loop 在不同 greenlet 切换，gevent 简化了 greenlet 使用
 - Twisted and Tornado:
 - asyncio
+
+
+# 2 Discovering Flask
+微框架不意味着只能做小应用，而是把自由交给开发者，可以随意组合，缺点就是容易做出错误决定(选错依赖包)，缺少最佳实践。
+
+flask url_for function, REPL(Read-Eval-Print Loop)
+
+# 3 Coding, Testing, and Documenting - the Virtuous Cycle
