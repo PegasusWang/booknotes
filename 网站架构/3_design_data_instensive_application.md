@@ -218,3 +218,63 @@ log-based 重放消息就像读文件，不允许改变 log。唯一的影响是
 可以被消费者控制，可以人为地把昨天的 offset 消息重写到另一个地方。这和后边要讲的批处理很像。
 
 ### Databases and Streams
+
+##### Keeping Systems in Sync
+双写有并发竞争条件问题，其中一个写失败另一个成功的问题。
+
+##### Change Data Capture(CDC)
+- initial snapshot
+- Log compaction: Kafka
+
+### Event Sourcing
+
+- Deriving current state from the event log
+- Commands and events
+
+### State, Streams and Immutability
+
+
+### Processing Streams
+处理方式：
+- 写入数据库、缓存、查询索引，可以被其他 client 查询
+- 通过某种方式把事件 push 给用户
+- 处理一个或多个输入流产生一个或多个输出流
+
+##### Uses of Stream Processing
+流式处理很长一段时间用来处理监控，当特定事件发生的时候报警
+
+- Complex event processing(CEP):
+- Stream analytics: Apache Storm, Spark Streaming, Flink, Concord, Samza, Kafka Streams
+
+### Reasoning About Time
+时间窗口
+
+type of windows:
+- Tumbling window
+- Hopping window
+- Sliding window
+- Session window
+
+
+### Stream Joins
+
+##### Stream-stream join(window join)
+广告系统。流处理器需要维护状态
+
+##### Stream-table join(stream enrichment)
+
+##### Table-table join(materialized view maintenance)
+tweet的例子，需要维护发送和删除的 tweet 以及关注关系。
+
+### Fault Tolerance
+
+##### Microbatching and checkpointing
+used in spark streaming
+
+##### Atomic commit revisited
+
+##### Rebuilding state after a failure
+
+
+# 12 The Future of Data Systems
+## Data Integration
