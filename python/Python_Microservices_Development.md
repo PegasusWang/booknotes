@@ -32,3 +32,10 @@ A microservice is a lightweight application, which provides a narrowed list of f
 flask url_for function, REPL(Read-Eval-Print Loop)
 
 # 3 Coding, Testing, and Documenting - the Virtuous Cycle
+
+### Different kinds of tests
+- Unit tests: 仅在 IO 操作/CPU密集操作/特定复现行为 才使用 mock。
+- Functional tests: sending http requests and asserting the http responses. 测试能按照预期工作/测试非正常行为被修复且不会再出现
+- Integration tests: 测试真实部署的应用. curl 脚本等。WebTest
+- Load tests
+- End-to-end tests
