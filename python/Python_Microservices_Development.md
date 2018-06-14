@@ -33,9 +33,35 @@ flask url_for function, REPL(Read-Eval-Print Loop)
 
 # 3 Coding, Testing, and Documenting - the Virtuous Cycle
 
+
 ### Different kinds of tests
 - Unit tests: 仅在 IO 操作/CPU密集操作/特定复现行为 才使用 mock。
 - Functional tests: sending http requests and asserting the http responses. 测试能按照预期工作/测试非正常行为被修复且不会再出现
-- Integration tests: 测试真实部署的应用. curl 脚本等。WebTest
-- Load tests
-- End-to-end tests
+- Integration tests: functional test without any mocking. 测试真实部署的应用. curl 脚本等。WebTest
+- Load tests: 发现瓶颈，不过早优化。 工具：Boom, locust, Molotov, flask-profiler
+- End-to-end tests: need real user client
+
+
+### Using WebTest
+
+使用  webtest 来进行 functional test，http 接口级别的测试
+
+### Using pytest and Tox
+
+在 TestClass 中写测试可以保证各种测试发现库兼容， pytest，nose
+tox 支持不同版本的 python 测试
+
+### Developer documentation
+- how it's design
+- how to install it
+- how to run tests
+- what are the exposed APIs and what data comes in and out, and so on
+
+Sphinx, Autodoc extension
+
+### Continuous Integration
+Travis-CI
+ReadTheDocs
+Coveralls
+
+# 4 Designing Runnerly
