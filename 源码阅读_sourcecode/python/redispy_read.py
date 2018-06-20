@@ -12,8 +12,8 @@
 Client: 执行命令
 
 知识点：
-socket 编程
-redis 协议，发送和解析
+- socket 编程
+- redis 协议，发送和解析
 
 
 疑问：？
