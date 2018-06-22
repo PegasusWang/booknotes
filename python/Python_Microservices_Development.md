@@ -74,3 +74,53 @@ Connexion: swagger support for flask
 
 
 # 5 Interacting with Ohter Services
+
+## Synchronous calls
+http: focus resource
+rpc: focus action
+网络交互需要处理 超市、连接错误等异常
+
+#### http connection pooling
+注意 requests session 在 flask 多线程中无法做到线程安全
+
+#### Http cache headers
+Etag:  使用时间计算 Etag 需要处理始同步的问题，使用 hash 是比较耗费 cpu 的
+
+#### Improving data transfer
+json 虽然可读，但是比较冗余，浪费带宽。可以采用数据压缩或者采用二进制传输协议。
+
+###### Gzip 压缩
+nginx/apache 支持，尽量不要在 python 做。requests 库自动会解压 gzip 压缩的数据。
+如果需要压缩发送的数据，使用 gzip 模块并且指定 {'Content-Encoding': 'gzip'} header，需要server端处理。
+
+##### Binary payloads
+两种广泛使用的二进制协议是 Protocol Buffers(protobuf) and MessagePack，但是压缩方面不太好。
+除非尽可能序列化提速，否则还是坚持用 json 吧。
+
+## Asynchronous calls
+
+### Task queues
+celery use push-pull tasks queue。可以使用 RabibitMQ 作为 message brokers 支持消息持久化
+
+### Topic queues
+采用针对某个 topic 的订阅模式, RabibitMQ 实现了 AMQP(Advanced Message Queuing Protocol)，三个概念：
+- queues: 消息接受者，并且等待消费者从中获取消息
+- exchanges: 是发布者向系统添加新消息的入口
+- bindings: 定义了消息如何从 exchanges 路由到 queues
+
+### Publish/subscribe
+如果希望一个消息可以被多个 worker 消费，就需要使用pub/sub
+
+### RPC over AMQP
+AMQP 同样实现了同步的 request/response 模式
+
+## Testing
+functional tests 需要隔离网络调用，通常使用 mock 的方式
+
+### Mocking synchronous calls
+requests: requests-mock 项目实现了 mock adapter
+
+### Mocking asynchronous calls
+讲了如何mock celery 任务
+
+
