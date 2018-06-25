@@ -124,3 +124,40 @@ requests: requests-mock 项目实现了 mock adapter
 讲了如何mock celery 任务
 
 
+# Monitoring Your Services
+
+### Centralizing logs
+中心化日志方便收集和查询。
+
+Sentry 是python社区内知名的错误日志收集工具(知乎也在用)，主要用于收集错误异常，而不是通用的日志查询工具
+Graylog 是一个开源的通用日志收集工具，可以使用内置的收集器或者 fluentd，配合 ES 搜索
+
+### Performance metrics
+如果内存使用过高可能就被 out-of-memory killer(oomkiller)杀掉
+- 应用有内存泄露。经常出现在一些 c 扩展忘记对象解引用
+- 代码使用了太多内存。比如无限增长的内存缓存
+- 服务的内存不够用，服务器接受太多了请求
+
+##### System metrics
+psutil: 跨平台的获取系统信息的库
+system-metrics
+
+##### Code metrics
+最简单的方式写个装饰器记录耗时然后发给 Graylog
+
+#### Web server metrics
+nginx syslog
+
+
+# Securing Your Services
+OAuth2 authorization protocol
+
+### The OAuth2 protocol
+CCG: client credentials grant
+
+### Token-based authentication
+token 可以携带 authentication (认证) 和 authorization(授权)信息
+OAuth2 使用 JWT 生成token
+
+### The JWT standard
+JSON Web Token(JWT) 在 RFC 7519 描述
