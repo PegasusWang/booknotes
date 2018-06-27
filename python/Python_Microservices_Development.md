@@ -155,9 +155,48 @@ OAuth2 authorization protocol
 ### The OAuth2 protocol
 CCG: client credentials grant
 
-### Token-based authentication
+##### Token-based authentication
 token 可以携带 authentication (认证) 和 authorization(授权)信息
 OAuth2 使用 JWT 生成token
 
-### The JWT standard
-JSON Web Token(JWT) 在 RFC 7519 描述
+##### The JWT standard
+JSON Web Token(JWT) 在 RFC 7519 描述, base64 encoded 所以可以被用在 query string
+- Header
+- Payload
+- Signature
+
+PyJWT 模块
+
+##### X.509 certificate-based authentication
+
+### Web application firewall
+common attacks:
+- SQL injection: use sqlalchemy and avoid raw sql
+- Cross Site Scripting(XSS)
+- Cross-Site Request Forgery(XSRF/CSRF)
+
+Open Web Application Security Project(OWASP)
+
+##### OpenResty - Lua and nginx
+REPL(Read Eval Print Loop)
+
+##### Rate and concurrency limting
+lua-resty-limit-traffic, you can use it in a acces_by_lua_block_section
+lua-resty-waf
+
+### Securing Your code
+两个原则：
+- 每个来自外部的请求在对你的应用或数据操作之前都应该估算
+- 每个应用在系统上的操作都应该有良好定义和限制的域
+
+#### Asserting incoming data
+Server-Side TemplateInjection(SSTI): 不要直接使用用户传来的数据渲染模板
+
+#### Limiting your application scope
+- 限定访问的http 方法
+- 限定能访问的资源
+
+web 服务不要用 root 用户启动，尽量避免在 web 服务中执行外部进程
+
+#### Using Bandit linter
+Openstack 开源了一个检测代码安全性的工具 Bandit
