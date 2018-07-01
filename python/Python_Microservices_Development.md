@@ -212,3 +212,42 @@ Openstack 开源了一个检测代码安全性的工具 Bandit
 CORS
 
 ### Authentication and authorication
+
+
+# Packaging and Running Runnerly
+
+### Packaing
+打包 Python 项目：
+- setup.py: 一个特殊的模块，用来驱动一切
+- requirements.txt：依赖文件列表
+- MANIFEST.in: 列出需要发布文件
+
+
+### Process management
+preform model: uwsgi, gunicorn
+
+Circus: 进程管理器
+
+
+# Containerized Services
+
+### What is Docker?
+Docker project is a container platform, which lets you run your application in isolated environments.
+
+### Docker101
+
+
+### Docker Compose
+Docker compose simplifies the task by letting you define multiple containers configuration in a single configuration file.
+
+### Introduction to Clustering and Provisioning
+The collection of containers running the same image is called cluster.
+
+Service discovery and sharing configuration can be done by tools like Consul or Etcd and
+Docker's swarm mode can be configured to interact with those tools.
+
+Provisioning: this term describes the process of creatin new hosts, and therefore, clusters, given the description of the stack you are deploying in some declarative form.
+
+Ansible or Salt provide a  Devops-friendly environment to deploy and manage hosts.
+
+Kubernetes is yet another tool, can be used to deply clusters containers on hosts.
