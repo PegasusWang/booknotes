@@ -75,6 +75,7 @@ while True:
 
 
 import selectors
+import socket
 import threading
 
 
@@ -209,3 +210,24 @@ class BaseServer:
         import traceback
         traceback.print_exc() # XXX But this goes to stderr!
         print('-'*40)
+
+
+"""
+实现了 BaseServer 的基础上，继承它来实现 SocketServer，为后续的 HttpServer 打基础
+这一章需要 socket 编程的知识，可以看看 python 的 socket 模块。
+如果之前对网络编程不熟悉，可以先看看 《unix网络编程》《unix 环境高级编程》涉及到的一些函数，这两本都是砖头书，
+可以针对相关章节看看大致有个 socket 编程的概念。
+也可以直接看 python 网络编程相关的内容然后, 先从实现个简单的 tcp socket server 和 client 来了解下 socket 编程
+"""
+class TCPServer(BaseServer):
+    address_family = socket.AF_INET  # ipv4
+
+    socket_type = socket.SOCK_STREAM  # tcp
+
+    request_queue_size = 5
+
+    allow_reuse_address = False
+
+    def __init__(self, server_address, RequestHandlerClass, bind_and_active=True):
+        super().__init__(server_address, RequestHandlerClass)  # use py3 super()
+        self.socket = socket.socketkj
