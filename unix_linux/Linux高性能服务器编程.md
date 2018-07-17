@@ -26,3 +26,5 @@ RTT: Round Trip Time
 可以用 tcpdump 工具来检查
 
 TCP状态转移，当前状态可以用 netstat 命令查看
+
+如果客户端向处于半打开状态的连接写入数据，对方将回应一个复位报文段

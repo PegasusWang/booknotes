@@ -386,9 +386,9 @@ finally:
 
         # tiny optimization: build first packet manually instead of
         # calling self..write_packet()
-        prelude = struct.pack('<iB', packet_size, command)
+        prelude = struct.pack('<iB', packet_size, command)  # 看下 python struct 文档,This module performs conversions between Python values and C structs represented as Python strings.
         packet = prelude + sql[:packet_size-1]
-        self._write_bytes(packet)
+        self._write_bytes(packet)  # 下边我们先分析 _write_bytes 方法，其实就是调用了 socket.sendall
         if DEBUG: dump_packet(packet)    # 这里 dump_packet 在 pymysql.protocl.py 里，实现了低层的 mysql cliet-server 协议
         self._next_seq_id = 1
 
@@ -398,7 +398,7 @@ finally:
         sql = sql[packet_size-1:]
         while True:   # 如果超过了最大的 packet 长度，分批发送
             packet_size = min(MAX_PACKET_LEN, len(sql))
-            self.write_packet(sql[:packet_size])
+            self.write_packet(sql[:packet_size])  # 后边分析 write_packet 方法
             sql = sql[packet_size:]
             if not sql and packet_size < MAX_PACKET_LEN:
                 break
@@ -410,3 +410,35 @@ finally:
     https://jin-yang.github.io/post/mysql-protocol.html
     https://dev.mysql.com/doc/internals/en/string.html
     """
+    def _write_bytes(self, data):
+        self._sock.settimeout(self._write_timeout)
+        try:
+            self._sock.sendall(data)
+        except IOError as e:
+            self._force_close()
+            raise err.OperationalError(
+                CR.CR_SERVER_GONE_ERROR,
+                "MySQL server has gone away (%r)" % (e,))
+
+    def write_packet(self, payload):
+        """Writes an entire "mysql packet" in its entirety to the network
+        addings its length and sequence number.
+        """
+        # Internal note: when you build packet manualy and calls _write_bytes()
+        # directly, you should set self._next_seq_id properly.
+        def pack_int24(n):
+            # 看 strut 模块文档 '<' 代表 little-endian(小端法), 'I' 是 unsigned int
+            return struct.pack('<I', n)[:3] # MySQL 报文中整型值分别有 1、2、3、4、8 字节长度，使用小字节序传输。
+        def int2byte(i):
+            return struct.pack("!B", i)
+        # 报文分为消息头和消息体两部分，其中消息头占用固定的4个字节，消息体长度由消息头中的长度字段决定，报文结构如下：
+        # 消息长度 + 序号 + 报文数据
+        data = pack_int24(len(payload)) + int2byte(self._next_seq_id) + payload
+        if DEBUG: dump_packet(data)
+        self._write_bytes(data)
+        self._next_seq_id = (self._next_seq_id + 1) % 256
+
+
+"""
+接下来是 Cursor 对象
+"""
