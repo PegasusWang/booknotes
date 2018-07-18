@@ -14,7 +14,7 @@ https://github.com/PyMySQL/PyMySQL
 
 - socket 编程: 看下文档就行，主要是参数有些参数需要参考 unix 网络编程的东西
 
-切入点：从示例 demo 看起，自顶向下看代码
+切入点：从示例 demo 看起，自顶向下看代码。对于有些搞不懂的代码片段，可以通过打断点调试
 
 
 import pymysql.cursors
@@ -351,6 +351,20 @@ finally:
         else:
             self.commit()  # with 如果没有发生异常，自动执行 commit，下边看下 commit rollback 实现
 
+    # The following methods are INTERNAL USE ONLY (called from Cursor)
+    # 这里调用 cursor 的 execute 方法实际上是调用 cursor.connection.query
+    def query(self, sql, unbuffered=False):
+        # if DEBUG:
+        #     print("DEBUG: sending query:", sql)
+        if isinstance(sql, text_type) and not (JYTHON or IRONPYTHON):
+            if PY2:
+                sql = sql.encode(self.encoding)
+            else:
+                sql = sql.encode(self.encoding, 'surrogateescape')
+        self._execute_command(COMMAND.COM_QUERY, sql)
+        self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+        return self._affected_rows
+
     def commit(self):
         """
         Commit changes to stable storage.
@@ -358,7 +372,7 @@ finally:
         See `Connection.commit() <https://www.python.org/dev/peps/pep-0249/#commit>`_
         in the specification.
         """
-        self._execute_command(COMMAND.COM_QUERY, "COMMIT")  # 一层套一层，再来看看这个函数实现
+        self._execute_command(COMMAND.COM_QUERY, "COMMIT")  # 发送 commit 命令
         self._read_ok_packet()
 
     def _execute_command(self, command, sql):
@@ -382,7 +396,7 @@ finally:
         if isinstance(sql, text_type):
             sql = sql.encode(self.encoding)
 
-        packet_size = min(MAX_PACKET_LEN, len(sql) + 1)  # +1 is for command
+        packet_size = min(MAX_PACKET_LEN, len(sql) + 1)  # +1 is for comman, 单个报文的最大长度为 (2^24-1)Bytes ，也即 (16M-1)Bytes
 
         # tiny optimization: build first packet manually instead of
         # calling self..write_packet()
@@ -432,13 +446,194 @@ finally:
         def int2byte(i):
             return struct.pack("!B", i)
         # 报文分为消息头和消息体两部分，其中消息头占用固定的4个字节，消息体长度由消息头中的长度字段决定，报文结构如下：
-        # 消息长度 + 序号 + 报文数据
+        # 消息长度 + 序号 + 报文数据， 参考 https://jin-yang.github.io/post/mysql-protocol.html
+        # +-------------------+--------------+---------------------------------------------------+
+        # |      3 Bytes      |    1 Byte    |                   N Bytes                         |
+        # +-------------------+--------------+---------------------------------------------------+
+        # |<= length of msg =>|<= sequence =>|<==================== data =======================>|
+        # |<============= header ===========>|<==================== body =======================>|
         data = pack_int24(len(payload)) + int2byte(self._next_seq_id) + payload
         if DEBUG: dump_packet(data)
-        self._write_bytes(data)
+        self._write_bytes(data)   # 直接 socket sendall
         self._next_seq_id = (self._next_seq_id + 1) % 256
 
+    def _read_ok_packet(self): # self.commit 第二步
+        pkt = self._read_packet()
+        if not pkt.is_ok_packet():
+            raise err.OperationalError(2014, "Command Out of Sync")
+        ok = OKPacketWrapper(pkt)
+        self.server_status = ok.server_status
+        return ok
+
+    def _read_packet(self, packet_type=MysqlPacket):
+        """Read an entire "mysql packet" in its entirety from the network
+        and return a MysqlPacket type that represents the results.
+
+        :raise OperationalError: If the connection to the MySQL server is lost.
+        :raise InternalError: If the packet sequence number is wrong.
+        """
+        buff = b''
+        while True:
+            packet_header = self._read_bytes(4)  # 从 socket 读取 4 bytes 数据
+            #if DEBUG: dump_packet(packet_header)
+
+            btrl, btrh, packet_number = struct.unpack('<HBB', packet_header)
+            bytes_to_read = btrl + (btrh << 16)
+            if packet_number != self._next_seq_id:
+                self._force_close()
+                if packet_number == 0:
+                    # MariaDB sends error packet with seqno==0 when shutdown
+                    raise err.OperationalError(
+                        CR.CR_SERVER_LOST,
+                        "Lost connection to MySQL server during query")
+                raise err.InternalError(
+                    "Packet sequence number wrong - got %d expected %d"
+                    % (packet_number, self._next_seq_id))
+            self._next_seq_id = (self._next_seq_id + 1) % 256
+
+            recv_data = self._read_bytes(bytes_to_read)
+            if DEBUG: dump_packet(recv_data)
+            buff += recv_data
+            # https://dev.mysql.com/doc/internals/en/sending-more-than-16mbyte.html
+            if bytes_to_read == 0xffffff:
+                continue
+            if bytes_to_read < MAX_PACKET_LEN:
+                break
+
+        packet = packet_type(buff, self.encoding)
+        packet.check_error()
+        return packet
+
+    def _read_bytes(self, num_bytes):
+        self._sock.settimeout(self._read_timeout)
+        while True:
+            try:
+                data = self._rfile.read(num_bytes)
+                break
+            except (IOError, OSError) as e:
+                if e.errno == errno.EINTR:
+                    continue
+                self._force_close()
+                raise err.OperationalError(
+                    CR.CR_SERVER_LOST,
+                    "Lost connection to MySQL server during query (%s)" % (e,))
+        if len(data) < num_bytes:
+            self._force_close()
+            raise err.OperationalError(
+                CR.CR_SERVER_LOST, "Lost connection to MySQL server during query")
+        return data
+
 
 """
-接下来是 Cursor 对象
+接下来是 Cursor 对象，cursor 负责和数据库交互，接受一个 Connection 对象作为参数
+关键方法是 execute and fetchone() fetchall()
 """
+
+class Cursor(object):
+    """
+    This is the object you use to interact with the database.
+
+    Do not create an instance of a Cursor yourself. Call
+    connections.Connection.cursor().
+
+    See `Cursor <https://www.python.org/dev/peps/pep-0249/#cursor-objects>`_ in
+    the specification.
+    """
+
+    #: Max statement size which :meth:`executemany` generates.
+    #:
+    #: Max size of allowed statement is max_allowed_packet - packet_header_size.
+    #: Default value of max_allowed_packet is 1048576.
+    max_stmt_length = 1024000
+
+    _defer_warnings = False
+
+    def __init__(self, connection):
+        self.connection = connection
+        self.description = None
+        self.rownumber = 0
+        self.rowcount = -1
+        self.arraysize = 1
+        self._executed = None
+        self._result = None
+        self._rows = None
+        self._warnings_handled = False
+
+    def execute(self, query, args=None): # 先从 execute 方法看起
+        """Execute a query
+
+        :param str query: Query to execute.
+
+        :param args: parameters used with query. (optional)
+        :type args: tuple, list or dict
+
+        :return: Number of affected rows
+        :rtype: int
+
+        If args is a list or tuple, %s can be used as a placeholder in the query.
+        If args is a dict, %(name)s can be used as a placeholder in the query.
+        """
+        while self.nextset():
+            pass
+
+        query = self.mogrify(query, args)
+
+        result = self._query(query)
+        self._executed = query
+        return result
+
+    def _query(self, q):
+        conn = self._get_db()   # 获取 connection 对象
+        self._last_executed = q
+        self._clear_result()  # 相关属性设置为空
+        conn.query(q)  # 调用 connection 对象的 query 方法, connection.query 执行了其 _execute_command
+        self._do_get_result()  # 获取 connection 的 result 值, MySQLResult 对象
+        return self.rowcount
+
+    ########## _query 调用的方法 beg:##########
+    def _get_db(self):
+        if not self.connection:
+            raise err.ProgrammingError("Cursor closed")
+        return self.connection
+
+    def _clear_result(self):
+        self.rownumber = 0
+        self._result = None
+
+        self.rowcount = 0
+        self.description = None
+        self.lastrowid = None
+        self._rows = None
+
+    def _do_get_result(self):
+        conn = self._get_db()
+
+        self._result = result = conn._result
+
+        self.rowcount = result.affected_rows
+        self.description = result.description
+        self.lastrowid = result.insert_id
+        self._rows = result.rows
+        self._warnings_handled = False
+
+        if not self._defer_warnings:
+            self._show_warnings()
+    ########## _query 调用的方法 :end ##########
+
+    """执行完了 execute 之后调用的的是 fetchone() or fetchall()"""
+    def fetchone(self):
+        """Fetch next row"""
+        self._check_executed() # 检查 if not self._executed:
+        row = self.read_next()
+        if row is None:
+            self._show_warnings()
+            return None
+        self.rownumber += 1
+        return row
+
+    def read_next(self):
+        """Read next row"""
+        def _conv_row(self, row):  # 会被子类覆写用来修改返回的类型
+            return row
+        # MySQLResult 的 _read_rowdata_packet_unbuffered，下边来看看 MySQLResult 的代码
+        return self._conv_row(self._result._read_rowdata_packet_unbuffered())
