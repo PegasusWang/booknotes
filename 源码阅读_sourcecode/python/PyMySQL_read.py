@@ -16,6 +16,24 @@ https://github.com/PyMySQL/PyMySQL
 
 切入点：从示例 demo 看起，自顶向下看代码。对于有些搞不懂的代码片段，可以通过打断点调试
 
+通信过：
+1. 三次握手建立 TCP 连接。
+
+2. 建立 MySQL 连接，也就是认证阶段。
+    服务端 -> 客户端：发送握手初始化包 (Handshake Initialization Packet)。
+    客户端 -> 服务端：发送验证包 (Client Authentication Packet)。
+    服务端 -> 客户端：认证结果消息。
+
+3. 认证通过之后，客户端开始与服务端之间交互，也就是命令执行阶段。
+    客户端 -> 服务端：发送命令包 (Command Packet)。
+    服务端 -> 客户端：发送回应包 (OK Packet, or Error Packet, or Result Set Packet)。
+
+4. 断开 MySQL 连接。
+    客户端 -> 服务器：发送退出命令包。
+
+5. 四次握手断开 TCP 连接。
+
+
 
 import pymysql.cursors
 
@@ -637,3 +655,219 @@ class Cursor(object):
             return row
         # MySQLResult 的 _read_rowdata_packet_unbuffered，下边来看看 MySQLResult 的代码
         return self._conv_row(self._result._read_rowdata_packet_unbuffered())
+
+
+"""
+最后是 MySQLResult 类，可以看到 cursor.read_next 就是直接调用的 MySQLResult._read_rowdata_packet_unbuffered
+"""
+class MySQLResult(object):
+
+    def __init__(self, connection):  # 依然是 Connection 对象
+        """
+        :type connection: Connection
+        """
+        self.connection = connection
+        self.affected_rows = None
+        self.insert_id = None
+        self.server_status = None
+        self.warning_count = 0
+        self.message = None
+        self.field_count = 0
+        self.description = None
+        self.rows = None
+        self.has_next = None
+        self.unbuffered_active = False
+
+    def __del__(self):
+        # 注意py 里的 del魔术方法： del x doesn’t directly call x.__del__() — the former decrements the reference count for x by one, and the latter is only called when x‘s reference count reaches zero<Paste>
+        if self.unbuffered_active:
+            self._finish_unbuffered_query()
+
+    def read(self):
+        """
+
+        3. 认证通过之后，客户端开始与服务端之间交互，也就是命令执行阶段。
+        客户端 -> 服务端：发送命令包 (Command Packet)。
+        服务端 -> 客户端：发送回应包 (OK Packet, or Error Packet, or Result Set Packet)。
+        """
+        try:
+            first_packet = self.connection._read_packet()
+            # 处理 mysql 返回的不同类型回应报文
+            if first_packet.is_ok_packet():
+                self._read_ok_packet(first_packet)
+            elif first_packet.is_load_local_packet():
+                self._read_load_local_packet(first_packet)
+            else:
+                self._read_result_packet(first_packet)
+        finally:
+            self.connection = None
+
+    def init_unbuffered_query(self):
+        """
+        :raise OperationalError: If the connection to the MySQL server is lost.
+        :raise InternalError:
+        """
+        self.unbuffered_active = True
+        first_packet = self.connection._read_packet()
+
+        if first_packet.is_ok_packet():
+            self._read_ok_packet(first_packet)
+            self.unbuffered_active = False
+            self.connection = None
+        elif first_packet.is_load_local_packet():
+            self._read_load_local_packet(first_packet)
+            self.unbuffered_active = False
+            self.connection = None
+        else:
+            self.field_count = first_packet.read_length_encoded_integer()
+            self._get_descriptions()
+
+            # Apparently, MySQLdb picks this number because it's the maximum
+            # value of a 64bit unsigned integer. Since we're emulating MySQLdb,
+            # we set it to this instead of None, which would be preferred.
+            self.affected_rows = 18446744073709551615
+
+    def _read_ok_packet(self, first_packet):
+        ok_packet = OKPacketWrapper(first_packet)
+        self.affected_rows = ok_packet.affected_rows
+        self.insert_id = ok_packet.insert_id
+        self.server_status = ok_packet.server_status
+        self.warning_count = ok_packet.warning_count
+        self.message = ok_packet.message
+        self.has_next = ok_packet.has_next
+
+    def _read_load_local_packet(self, first_packet):
+        if not self.connection._local_infile:
+            raise RuntimeError(
+                "**WARN**: Received LOAD_LOCAL packet but local_infile option is false.")
+        load_packet = LoadLocalPacketWrapper(first_packet)
+        sender = LoadLocalFile(load_packet.filename, self.connection)
+        try:
+            sender.send_data()
+        except:
+            self.connection._read_packet()  # skip ok packet
+            raise
+
+        ok_packet = self.connection._read_packet()
+        if not ok_packet.is_ok_packet(): # pragma: no cover - upstream induced protocol error
+            raise err.OperationalError(2014, "Commands Out of Sync")
+        self._read_ok_packet(ok_packet)
+
+    def _check_packet_is_eof(self, packet):
+        if not packet.is_eof_packet():
+            return False
+        #TODO: Support CLIENT.DEPRECATE_EOF
+        # 1) Add DEPRECATE_EOF to CAPABILITIES
+        # 2) Mask CAPABILITIES with server_capabilities
+        # 3) if server_capabilities & CLIENT.DEPRECATE_EOF: use OKPacketWrapper instead of EOFPacketWrapper
+        wp = EOFPacketWrapper(packet)
+        self.warning_count = wp.warning_count
+        self.has_next = wp.has_next
+        return True
+
+    def _read_result_packet(self, first_packet):
+        self.field_count = first_packet.read_length_encoded_integer()
+        self._get_descriptions()
+        self._read_rowdata_packet()
+
+    def _read_rowdata_packet_unbuffered(self):
+        # Check if in an active query
+        if not self.unbuffered_active:
+            return
+
+        # EOF
+        packet = self.connection._read_packet()
+        if self._check_packet_is_eof(packet):
+            self.unbuffered_active = False
+            self.connection = None
+            self.rows = None
+            return
+
+        row = self._read_row_from_packet(packet)
+        self.affected_rows = 1
+        self.rows = (row,)  # rows should tuple of row for MySQL-python compatibility.
+        return row
+
+    def _finish_unbuffered_query(self):
+        # After much reading on the MySQL protocol, it appears that there is,
+        # in fact, no way to stop MySQL from sending all the data after
+        # executing a query, so we just spin, and wait for an EOF packet.
+        while self.unbuffered_active:
+            packet = self.connection._read_packet()
+            if self._check_packet_is_eof(packet):
+                self.unbuffered_active = False
+                self.connection = None  # release reference to kill cyclic reference.
+
+    def _read_rowdata_packet(self):
+        """Read a rowdata packet for each data row in the result set."""
+        rows = []
+        while True:
+            packet = self.connection._read_packet()
+            if self._check_packet_is_eof(packet):
+                self.connection = None  # release reference to kill cyclic reference.
+                break
+            rows.append(self._read_row_from_packet(packet))
+
+        self.affected_rows = len(rows)
+        self.rows = tuple(rows)
+
+    def _read_row_from_packet(self, packet):
+        row = []
+        for encoding, converter in self.converters:
+            try:
+                data = packet.read_length_coded_string()
+            except IndexError:
+                # No more columns in this row
+                # See https://github.com/PyMySQL/PyMySQL/pull/434
+                break
+            if data is not None:
+                if encoding is not None:
+                    data = data.decode(encoding)
+                if DEBUG: print("DEBUG: DATA = ", data)
+                if converter is not None:
+                    data = converter(data)
+            row.append(data)
+        return tuple(row)
+
+    def _get_descriptions(self):
+        """Read a column descriptor packet for each column in the result."""
+        self.fields = []
+        self.converters = []
+        use_unicode = self.connection.use_unicode
+        conn_encoding = self.connection.encoding
+        description = []
+
+        for i in range_type(self.field_count):
+            field = self.connection._read_packet(FieldDescriptorPacket)
+            self.fields.append(field)
+            description.append(field.description())
+            field_type = field.type_code
+            if use_unicode:
+                if field_type == FIELD_TYPE.JSON:
+                    # When SELECT from JSON column: charset = binary
+                    # When SELECT CAST(... AS JSON): charset = connection encoding
+                    # This behavior is different from TEXT / BLOB.
+                    # We should decode result by connection encoding regardless charsetnr.
+                    # See https://github.com/PyMySQL/PyMySQL/issues/488
+                    encoding = conn_encoding  # SELECT CAST(... AS JSON)
+                elif field_type in TEXT_TYPES:
+                    if field.charsetnr == 63:  # binary
+                        # TEXTs with charset=binary means BINARY types.
+                        encoding = None
+                    else:
+                        encoding = conn_encoding
+                else:
+                    # Integers, Dates and Times, and other basic data is encoded in ascii
+                    encoding = 'ascii'
+            else:
+                encoding = None
+            converter = self.connection.decoders.get(field_type)
+            if converter is converters.through:
+                converter = None
+            if DEBUG: print("DEBUG: field={}, converter={}".format(field, converter))
+            self.converters.append((encoding, converter))
+
+        eof_packet = self.connection._read_packet()
+        assert eof_packet.is_eof_packet(), 'Protocol error, expecting EOF'
+        self.description = tuple(description)
+
