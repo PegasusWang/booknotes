@@ -144,3 +144,89 @@ int close(int fd);  // fd 引用计数-1
 #include＜sys/socket.h＞
 int shutdown(int sockfd,int howto)  // SHUT_RD, SHUT_WR, SHUT_RDWR
 ```
+
+### 5.8 socket 数据读写
+对于文件读写操作 read/write 同样适用于socket，不过socket 提供了专门的系统调用
+
+```c
+#include＜sys/types.h＞
+#include＜sys/socket.h＞
+ssize_t recv(int sockfd,void*buf,size_t len,int flags);
+ssize_t send(int sockfd,const void*buf,size_t len,int flags);
+```
+
+udp 数据包读写系统调用（亦可以用于 stream）:
+
+```c
+#include＜sys/types.h＞
+#include＜sys/socket.h＞
+ssize_t recvfrom(int sockfd,void*buf,size_t len,int flags,struct sockaddr*src_addr,socklen_t*addrlen);
+ssize_t sendto(int sockfd,const void*buf,size_t len,int flags,const struct sockaddr*dest_addr,socklen_t addrlen)
+```
+
+通用数据读写函数：
+
+```c
+#include＜sys/socket.h＞
+ssize_t recvmsg(int sockfd,struct msghdr*msg,int flags);
+ssize_t sendmsg(int sockfd,struct msghdr*msg,int flags);
+```
+
+# 5.9 带外标记
+linux 检测到 TCP 紧急标志时，将通知应用程序有带外数据需要接收。内核通知应用程序带外数据到达有两种常见方式：
+I/O复用产生的异常事件和 SIGURG 信号
+
+```c
+#include＜sys/socket.h＞
+int sockatmark(int sockfd);
+```
+sockatmark判断sockfd是否处于带外标记，即下一个被读取到的数据是否是带外数据。如果是，sockatmark返回1，此时我们就可以利用带MSG_OOB标志的recv调用来接收带外数据。如果不是，则sockatmark返回0。
+
+# 5.10 地址信息函数
+同样 python 在 socket 模块可以查到
+
+```c
+#include＜sys/socket.h＞
+// 获取 sockfd 对应的本端 socket 地址，存储在aaddress 参数指定的内存中
+int getsockname(int sockfd,struct sockaddr*address,socklen_t*address_len);
+// 获取 sockfd 对应的远端 socket 地址
+int getpeername(int sockfd,struct sockaddr*address,socklen_t*address_len);
+```
+
+# 5.11 socket 选项
+下面两个系统调用则是专门用来读取和设置socket文件描述符属性的方法：
+
+```c
+#include＜sys/socket.h＞
+int getsockopt(int sockfd,int level,int option_name,void*option_value,socklen_t*restrict option_len);
+int setsockopt(int sockfd,int level,int option_name,const void*option_value,socklen_t option_len);
+```
+常用:
+- SO_REUSEADDR: 强制使用被处于 TIME_WAIT 状态的连接占用的 socket 地址
+- SO_RCVBUF/SO_SNDBUF: 表示TCP 接收缓冲区和发送缓冲区的大小
+- SO_RECLOWAT/SO_SNDLOWAT: 表示TCP 接收缓冲区和发送缓冲区的低水位标记，一般被I/O
+  复用系统调用用来判断socket是否可读或者可写（默认1字节）
+- SO_LINGER: 控制close系统调用在关闭TCP连接时候的行为
+
+ # 5.12 网络信息 API
+
+```c
+#include＜netdb.h＞
+// 根据主机名获取主机的完整信息
+struct hostent*gethostbyname(const char*name);
+// 根据 IP 地址获取主机的完整信息
+struct hostent*gethostbyaddr(const void*addr,size_t len,int type);
+
+//getservbyname函数根据名称获取某个服务的完整信息，
+struct servent*getservbyname(const char*name,const char*proto);
+// getservbyport函数根据端口号获取某个服务的完整信息。它们实际上都是通过读取/etc/services文件来获取服务的信息的
+struct servent*getservbyport(int port,const char*proto);
+
+// getaddrinfo函数既能通过主机名获取ip地址，也能通过服务名获取端口号
+int getaddrinfo(const char*hostname,const char*service,const struct addrinfo*hints,struct addrinfo**result);
+
+// getnameinfo函数能通过socket地址同时获得以字符串表示的主机名（内部使用的是gethostbyaddr函数）和服务名（内部使用的是getservbyport函数）
+int getnameinfo(const struct sockaddr*sockaddr,socklen_t addrlen,char*host,socklen_t hostlen,char*serv,socklen_t servlen,int flags);
+```
+
+上述4个函数都是不可重入的，即非线程安全的。 <netdb.h> 给出了可重入版本
