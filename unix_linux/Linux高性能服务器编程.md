@@ -230,3 +230,79 @@ int getnameinfo(const struct sockaddr*sockaddr,socklen_t addrlen,char*host,sockl
 ```
 
 上述4个函数都是不可重入的，即非线程安全的。 <netdb.h> 给出了可重入版本
+
+
+# 6 高级 IO 函数
+
+# 6.1 pipe 函数
+创建一个管道以实现进程间通信
+
+```c
+#include <unistd.h>
+int pipe(inf fd[2]);  // f[0] 只能用于从管道读取数据， f[1] 写数据
+
+#include＜sys/types.h＞
+#include＜sys/socket.h＞
+int socketpair(int domain,int type,int protocol,int fd[2]);
+```
+
+# 6.2 dup/dup2 函数
+有时我们希望把标准输入重定向到一个文件，或者把标准输出重定向到一个网络连接（比如CGI编程）。这可以通过下面的用于复制文件描述符的dup或dup2函数来实现：
+```c
+#include＜unistd.h＞
+int dup(int file_descriptor);
+int dup2(int file_descriptor_one,int file_descriptor_two);
+```
+dup函数创建一个新的文件描述符，该新文件描述符和原有文件描述符file_descriptor指向相同的文件、管道或者网络连接。并且dup返回的文件描述符总是取系统当前可用的最小整数值。dup2和dup类似，不过它将返回第一个不小于file_descriptor_two的整数值。dup和dup2系统调用失败时返回-1并设置errno。
+
+# 6.3 readv/writev 函数
+
+readv函数将数据从文件描述符读到分散的内存块中，即分散读；writev函数则将多块分散的内存数据一并写入文件描述符中，即集中写。它们的定义如下：
+
+```c
+#include＜sys/uio.h＞
+ssize_t readv(int fd,const struct iovec*vector,int count)；
+ssize_t writev(int fd,const struct iovec*vector,int count);
+```
+
+# 6.4 sendfile 函数
+
+sendfile函数在两个文件描述符之间直接传递数据（完全在内核中操作），从而避免了内核缓冲区和用户缓冲区之间的数据拷贝，效率很高，这被称为零拷贝。sendfile函数的定义如下：
+```c
+#include＜sys/sendfile.h＞
+ssize_t sendfile(int out_fd,int in_fd,off_t*offset,size_t count);
+```
+
+in_fd参数是待读出内容的文件描述符，out_fd参数是待写入内容的文件描述符。offset参数指定从读入文件流的哪个位置开始读，如果为空，则使用读入文件流默认的起始位置。count参数指定在文件描述符in_fd和out_fd之间传输的字节数。sendfile成功时返回传输的字节数，失败则返回-1并设置errno。该函数的man手册明确指出，in_fd必须是一个支持类似mmap函数的文件描述符，即它必须指向真实的文件，不能是socket和管道；而out_fd则必须是一个socket。由此可见，sendfile几乎是专门为在网络上传输文件而设计的。
+
+# 6.5 mmap/munmap 函数
+mmap函数用于申请一段内存空间。我们可以将这段内存作为进程间通信的共享内存，也可以将文件直接映射到其中。munmap函数则释放由mmap创建的这段内存空间。它们的定义如下：
+
+```c
+#include＜sys/mman.h＞
+void*mmap(void*start,size_t length,int prot,int flags,int fd,off_t offset);
+int munmap(void*start,size_t length);
+```
+
+# 6.6 splice 函数
+splice函数用于在两个文件描述符之间移动数据，也是零拷贝操作。splice函数的定义如下：
+
+```c
+#include＜fcntl.h＞
+ssize_t splice(int fd_in,loff_t*off_in,int fd_out,loff_t*off_out,size_t len,unsigned int flags);
+```
+
+# 6.7 tee
+tee函数在两个管道文件描述符之间复制数据，也是零拷贝操作。它不消耗数据，因此源文件描述符上的数据仍然可以用于后续的读操作。tee函数的原型如下：
+
+```c
+#include＜fcntl.h＞
+ssize_t tee(int fd_in,int fd_out,size_t len,unsigned int flags);
+```
+
+# 6.8 fcntl 函数 (file control)
+
+```c
+#include＜fcntl.h＞
+int fcntl(int fd,int cmd,…);
+```
