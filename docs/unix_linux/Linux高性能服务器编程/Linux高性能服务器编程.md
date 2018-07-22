@@ -568,3 +568,121 @@ epoll对文件描述符的操作有两种模式：LT（Level Trigger，电平触
 Linux因特网服务inetd是超级服务。它同时管理着多个子服务，即监听多个端口。现在Linux系统上使用的inetd服务程序通常是其升级版本xinetd
 
 ![](./xinetd.png)
+
+
+# 10章 信号
+### 10.1 Linux 信号概述
+
+Linux下，一个进程给其他进程发送信号的API是kill函数。其定义如下：
+
+```c
+#include＜sys/types.h＞
+#include＜signal.h＞
+int kill(pid_t pid,int sig);
+```
+
+目标进程在收到信号时，需要定义一个接收函数来处理之。信号处理函数的原型如下：
+
+```c
+#include＜signal.h＞
+typedef void(*__sighandler_t)(int);
+```
+信号处理函数只带有一个整型参数，该参数用来指示信号类型。信号处理函数应该是可重入的，否则很容易引发一些竞态条件。所以在信号处理函数中严禁调用一些不安全的函数。
+
+### 10.2 signal 系统调用
+
+要为一个信号设置处理函数，可以使用下面的signal系统调用：
+
+```c
+#include＜signal.h＞
+_sighandler_t signal(int　sig,_sighandler_t_handler)
+```
+
+设置信号处理函数的更健壮的接口是如下的系统调用：
+
+```c
+#include＜signal.h＞
+int sigaction(int sig,const struct sigaction*act,struct sigaction*oact);
+```
+
+### 10.3 信号集函数
+
+Linux使用数据结构sigset_t来表示一组信号。其定义如下：
+
+```c
+#include＜bits/sigset.h＞
+#define_SIGSET_NWORDS(1024/(8*sizeof(unsigned long int)))
+typedef struct
+{
+unsigned long int__val[_SIGSET_NWORDS];
+}__sigset_t;
+```
+
+### 10.4 统一事件源
+信号是一种异步事件：信号处理函数和程序的主循环是两条不同的执行路线。很显然，信号处理函数需要尽可能快地执行完毕，以确保该信号不被屏蔽（前面提到过，为了避免一些竞态条件，信号在处理期间，系统不会再次触发它）太久。一种典型的解决方案是：把信号的主要处理逻辑放到程序的主循环中，当信号处理函数被触发时，它只是简单地通知主循环程序接收到信号，并把信号值传递给主循环，主循环再根据接收到的信号值执行目标信号对应的逻辑代码。信号处理函数通常使用管道来将信号“传递”给主循环：信号处理函数往管道的写端写入信号值，主循环则从管道的读端读出该信号值。那么主循环怎么知道管道上何时有数据可读呢?这很简单，我们只需要使用I/O复用系统调用来监听管道的读端文件描述符上的可读事件。如此一来，信号事件就能和其他I/O事件一样被处理，即统一事件源。
+
+很多优秀的I/O框架库和后台服务器程序都统一处理信号和I/O事件，比如Libevent I/O框架库和xinetd超级服务。
+
+### 10.5 网络编程相关信号
+- SIGHUP: 当挂起进程的控制终端时， SIGHUP 信号将被触发，对于没有控制终端的网络后台程序而言，它们通常利用该信号来强制服务器重新读取配置文件
+- SIGPIPE: 默认往一个读端关闭的管道或者socket连接中写数据将引发 SIGPIPE 信号
+- SIGURG: 在Linux环境下，内核通知应用程序带外数据到达主要有两种方法：一种是第9章介绍的I/O复用技术，select等系统调用在接收到带外数据时将返回，并向应用程序报告socket上的异常事件，代码清单9-1给出了一个这方面的例子；另外一种方法就是使用SIGURG信号
+
+
+# 11章 定时器
+
+两种高效的管理定时器的容器：时间轮和时间堆
+
+### 11.1 socket 选项 SO_RCVTIMEO 和 SO_SNDTIMEO
+
+![](./timeo.png)
+
+在程序中，我们可以根据系统调用（send、sendmsg、recv、recvmsg、accept和connect）的返回值以及errno来判断超时时间是否已到，进而决定是否开始处理定时任务。
+
+### 11.2 SIGALRM 信号
+第10章提到，由alarm和setitimer函数设置的实时闹钟一旦超时，将触发SIGALRM信号。因此，我们可以利用该信号的信号处理函数来处理定时任务。但是，如果要处理多个定时任务，我们就需要不断地触发SIGALRM信号，并在其信号处理函数中执行到期的任务。一般而言，SIGALRM信号按照固定的频率生成，即由alarm或setitimer函数设置的定时周期T保持不变。如果某个定时任务的超时时间不是T的整数倍，那么它实际被执行的时间和预期的时间将略有偏差。因此定时周期T反映了定时的精度。
+
+### 11.3 I/O 复用系统调用的超时参数
+
+Linux下的3组I/O复用系统调用都带有超时参数，因此它们不仅能统一处理信号和I/O事件，也能统一处理定时事件。但是由于I/O复用系统调用可能在超时时间到期之前就返回（有I/O事件发生），所以如果我们要利用它们来定时，就需要不断更新定时参数以反映剩余的时间，如代码清单11-4所示。
+```c
+#define TIMEOUT 5000
+int timeout=TIMEOUT;
+time_t start=time(NULL);
+time_t end=time(NULL);
+while(1)
+{
+    printf("the timeout is now%d mil-seconds\n",timeout);
+    start=time(NULL);
+    int number=epoll_wait(epollfd,events,MAX_EVENT_NUMBER,timeout);
+    if((number＜0)＆＆(errno!=EINTR))
+    {
+        printf("epoll failure\n");
+        break;
+    }
+    /*如果epoll_wait成功返回0，则说明超时时间到，此时便可处理定时任务，并重置定时时间*/
+    if(number==0)
+    {
+        timeout=TIMEOUT;
+        continue;
+    }
+    end=time(NULL);
+    /*如果epoll_wait的返回值大于0，则本次epoll_wait调用持续的时间是(end-start)*1000 ms，我们需要将定时时间timeout减去这段时间，以获得下次epoll_wait调用的超时参数*/
+    timeout-=(end-start)*1000;
+    /*重新计算之后的timeout值有可能等于0，说明本次epoll_wait调用返回时，不仅有文件描述符就绪，而且其超时时间也刚好到达，此时我们也要处理定时任务，并重置定时时间*/
+    if(timeout＜=0)
+    {
+        timeout=TIMEOUT;
+    }
+    //handle connections
+}
+```
+
+### 11.4 高性能定时器
+- 时间轮: 指针指向轮子上的一个槽（slot）。它以恒定的速度顺时针转动，每转动一步就指向下一个槽（虚线指针指向的槽），每次转动称为一个滴答（tick）。一个滴答的时间称为时间轮的槽间隔si（slot interval），它实际上就是心搏时间。该时间轮共有N个槽，因此它运转一周的时间是N*si。每个槽指向一条定时
+器链表，每条链表上的定时器具有相同的特征：它们的定时时间相差N*si的整数倍。时间轮正是利用这个关系将定时器散列到不同的链表中。假如现在指针指向槽cs，我们要添加一个定时时间为ti的定时器，则该定时器将被插入槽ts（timer
+slot）对应的链表中：ts=(cs+(ti/si))%N
+
+![时间轮](./time_wheel.png)
+
+- 时间堆: 设计定时器的另外一种思路是：将所有定时器中超时时间最小的一个定时器的超时值作为心搏间隔。这样，一旦心搏函数tick被调用，超时时间最小的定时器必然到期，我们就可以在tick函数中处理该定时器。然后，再次从剩余的定时器中找出超时时间最小的一个，并将这段最小时间设置为下一次心搏间隔。如此反复，就实现了较为精确的定时。
