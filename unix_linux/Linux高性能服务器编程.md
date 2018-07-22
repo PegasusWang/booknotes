@@ -306,3 +306,108 @@ ssize_t tee(int fd_in,int fd_out,size_t len,unsigned int flags);
 #include＜fcntl.h＞
 int fcntl(int fd,int cmd,…);
 ```
+
+
+# 7 Linux 服务器程序规范
+
+### 7.1 日志
+linux 提供一个守护进程 来处理日志系统 rsyslogd
+应用程序使用syslog函数与rsyslogd守护进程通信。syslog函数的定义如下：
+
+```c
+#include＜syslog.h＞
+void syslog(int priority,const char*message,...);
+```
+
+### 7.2 用户信息
+
+用户信息对于服务器程序的安全性来说是很重要的，比如大部分服务器就必须以root身份启动，但不能以root身份运行。下面这一组函数可以获取和设置当前进程的真实用户ID（UID）、有效用户ID（EUID）、真实组ID（GID）和有效组ID（EGID）：
+
+```c
+#include＜sys/types.h＞
+#include＜unistd.h＞
+uid_t getuid();/*获取真实用户ID*/,
+uid_t geteuid();/*获取有效用户ID*/
+gid_t getgid();/*获取真实组ID*/
+gid_t getegid();/*获取有效组ID*/
+int setuid(uid_t uid);/*设置真实用户ID*/
+int seteuid(uid_t uid);/*设置有效用户ID*/
+int setgid(gid_t gid);/*设置真实组ID*/
+int setegid(gid_t gid);/*设置有效组ID*/
+```
+
+### 7.3 进程间关系
+Linux下每个进程都隶属于一个进程组，因此它们除了PID信息外，还有进程组ID（PGID）。我们可以用如下函数来获取指定进程的PGID：
+
+```c
+#include＜unistd.h＞
+pid_t getpgid(pid_t pid);
+```
+
+Linux下每个进程都隶属于一个进程组，因此它们除了PID信息外，还有进程组ID（PGID）。我们可以用如下函数来获取指定进程的PGID：
+```c
+#include＜unistd.h＞
+pid_t getpgid(pid_t pid);
+```
+
+### 7.4 系统资源限制
+Linux上运行的程序都会受到资源限制的影响，比如物理设备限制（CPU数量、内存数量等）、系统策略限制（CPU时间等），以及具体实现的限制（比如文件名的最大长度）。Linux系统资源限制可以通过如下一对函数来读取和设置：
+
+```c
+#include＜sys/resource.h＞
+int getrlimit(int resource,struct rlimit*rlim);
+int setrlimit(int resource,const struct rlimit*rlim);
+```
+
+### 7.5 改变工作目录和根目录
+
+获取进程当前工作目录和改变进程工作目录的函数分别是：
+
+```c
+# include＜unistd.h＞
+char*getcwd(char*buf,size_t size);
+int chdir(const char*path);
+```
+
+### 7.6 服务器程序后台化
+
+```c
+#include＜unistd.h＞
+int daemon(int nochdir,int noclose);
+```
+
+
+# 8 高性能服务器程序框架
+
+- I/O 处理单元: 四种 IO 模型，两种高效事件处理模式
+- 逻辑单元: 两种高效的并发模式，以及高效的逻辑处理方式-有限状态机
+- 存储单元
+
+### 8.1 服务器模型
+- C/S 模型: server 端压力大
+- P2P 模型: 网络负载高 (可以看成C/S 模型的扩展)
+
+
+### 8.2 服务器编程框架
+
+- IO 处理单元：服务器管理客户端连接的框架，通常等待并接受新的客户端连接，接受客户端数据，将服务器响应返回给客户端.
+但是数据收发不一定在IO 处理单元，也可能在逻辑单元中执行，取决于事件处理模式。
+- 逻辑单元：通常是一个线程或者进程，分析并处理客户端数据，然后把结果传递给 IO 处理单元或者直接发送客户端
+- 网络存储单元：数据库、缓存、文件等，非必须的
+- 请求队列：各单元之间的通信方式的抽象，通常被实现为池的一部分。对于服务器机群，请求队列是服务器之间预先建立、静态的、永久的
+TCP 连接
+
+# 8.3 I/O 模型
+socket 创建的时候默认是阻塞的，可以传递参数设置成非阻塞。
+针对阻塞I/O执行的系统调用可能因为无法立即完成而被操作系统挂起，直到等待的事件发生为止。比如，客户端通过connect向服务器发起连接时，connect将首先发送同步报文段给服务器，然后等待服务器返回确认报文段。如果服务器的确认报文段没有立即到达客户端，则connect调用将被挂起，直到客户端收到确认报文段并唤醒connect调用。socket的基础API中，可能被阻塞的系统调用包括accept、send、recv和connect。
+针对非阻塞I/O执行的系统调用则总是立即返回，而不管事件是否已经发生。如果事件没有立即发生，这些系统调用就返回-1，和出错的情况一样。此时我们必须根据errno来区分这两种情况。对accept、send和recv而言，事件未发生时errno通常被设置成EAGAIN（意为“再来一次”）或者EWOULDBLOCK（意为“期望阻塞”）；对connect而言，errno则被设置成EINPROGRESS
+很显然，我们只有在事件已经发生的情况下操作非阻塞I/O（读、写等），才能提高程序的效率。因此，非阻塞I/O通常要和其他I/O通知机制一起使用，比如I/O复用和SIGIO信号。
+
+I/O复用是最常使用的I/O通知机制。它指的是，应用程序通过I/O复用函数向内核注册一组事件，内核通过I/O复用函数把其中就绪的事件通知给应用程序。Linux上常用的I/O复用函数是select、poll和epoll_wait，我们将在第9章详细讨论它们。需要指出的是，I/O复用函数本身是阻塞的，它们能提高程序效率的原因在于它们具有同时监听多个I/O事件的能力。
+
+# 8.4 两种高效的事件处理模式
+
+服务器程序通常需要处理三类事件 I/O 事件、信号及定时事件。
+两种高效事件处理模式：
+ - Reactor: 同步 I/O 模型通常用于实现 Reactor
+ - Proactor: 异步 I/O 模型则用于实现 Proactor 模式
