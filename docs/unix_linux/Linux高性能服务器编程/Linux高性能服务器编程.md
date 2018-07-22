@@ -516,3 +516,55 @@ struct pollfd
 ```
 
 ### 9.3 epoll 系列系统调用
+
+epoll是Linux特有的I/O复用函数。它在实现和使用上与select、poll有很大差异。首先，epoll使用一组函数来完成任务，而不是单个函数。其次，epoll把用户关心的文件描述符上的事件放在内核里的一个事件表中，从而无须像select和poll那样每次调用都要重复传入文件描述符集或事件集。但epoll需要使用一个额外的文件描述符，来唯一标识内核中的这个事件表。这个文件描述符使用如下epoll_create函数来创建：
+
+```c
+#include＜sys/epoll.h＞
+int epoll_create(int size)
+```
+
+size参数现在并不起作用，只是给内核一个提示，告诉它事件表需要多大。该函数返回的文件描述符将用作其他所有epoll系统调用的第一个参数，以指定要访问的内核事件表。下面的函数用来操作epoll的内核事件表：
+
+```c
+#include＜sys/epoll.h＞
+int epoll_ctl(int epfd,int op,int fd,struct epoll_event*event)
+struct epoll_event
+{
+__uint32_t events;/*epoll事件*/
+epoll_data_t data;/*用户数据*/
+};
+typedef union epoll_data
+{
+void*ptr;
+int fd;
+uint32_t u32;
+uint64_t u64;
+}epoll_data_t;
+```
+
+epoll系列系统调用的主要接口是epoll_wait函数。它在一段超时时间内等待一组文件描述符上的事件，其原型如下：
+
+```c
+#include＜sys/epoll.h＞
+// 该函数成功时返回就绪的文件描述符的个数，失败时返回-1并设置errno。
+int epoll_wait(int epfd,struct epoll_event*events,int maxevents,int timeout)
+```
+
+epoll对文件描述符的操作有两种模式：LT（Level Trigger，电平触发）模式和ET（Edge Trigger，边沿触发）模式。LT模式是默认的工作模式，这种模式下epoll相当于一个效率较高的poll。当往epoll内核事件表中注册一个文件描述符上的EPOLLET事件时，epoll将以ET模式来操作该文件描述符。ET模式是epoll的高效工作模式。
+
+对于采用LT工作模式的文件描述符，当epoll_wait检测到其上有事件发生并将此事件通知应用程序后，应用程序可以不立即处理该事件。这样，当应用程序下一次调用epoll_wait时，epoll_wait还会再次向应用程序通告此事件，直到该事件被处理。而对于采用ET工作模式的文件描述符，当epoll_wait检测到其上有事件发生并将此事件通知应用程序后，应用程序必须立即处理该事件，因为后续的epoll_wait调用将不再向应用程序通知这一事件。可见，ET模式在很大程度上降低了同一个epoll事件被重复触发的次数，因此效率要比LT模式高。
+
+我们期望的是一个socket连接在任一时刻都只被一个线程处理。这一点可以使用epoll的EPOLLONESHOT事件实现。
+
+
+### 9.4 三组 I/O 复用函数的比较
+![](./io_diff.png)
+
+### 9.5 I/O 复用高级应用一：非阻塞 connect
+
+### 9.8 超级服务 xinetd
+
+Linux因特网服务inetd是超级服务。它同时管理着多个子服务，即监听多个端口。现在Linux系统上使用的inetd服务程序通常是其升级版本xinetd
+
+![](./xinetd.png)
