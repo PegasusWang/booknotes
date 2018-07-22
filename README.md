@@ -1,1 +1,3 @@
-杂书笔记
+# PegasusWang 的读书杂记
+
+> Stay Hungry Stay Foolish.
