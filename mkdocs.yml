@@ -27,7 +27,7 @@ pages:
     - 创业:
       - 《Hello Startup》: 'startup/hello_startup.md'
     - unix/linux:
-      - 《Linux高性能服务器编程》: 'unix_linux/Linux高性能服务器编程.md'
+      - 《Linux高性能服务器编程》: 'unix_linux/Linux高性能服务器编程/Linux高性能服务器编程.md'
     - 分布式:
       - 《分布式框架原理与应用》:  '分布式/分布式框架原理与应用.md'
     - 开发工具:
