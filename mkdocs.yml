@@ -11,38 +11,83 @@ pages:
     - 简介: 'index.md'
     - 职场:
       - 《give and take》: 'career/give_and_take.md'
+      - 《the_effective_engineer》: 'career/the_effective_engineer.md'
+      - 《光速成长》: 'career/光速成长.md'
+      - 《番茄工作法》: 'career/番茄工作法.md'
+      - 《聆听沟通学》: 'career/聆听沟通学.md'
+      - 《聆听沟通学》: 'career/聆听沟通学.md'
+      - 《职场动物进化手册》: 'career/职场动物进化手册.md'
+      - 《职场解释系》: 'career/职场解释系.md'
+      - 《请停止无效努力》: 'career/请停止无效努力.md'
+      - 《软技能》: 'career/软技能.md'
+      - 《高效15法则》: 'career/高效15法则.md'
     - 代码:
+      - 《Work with legacy code》: 'code/work_with_legacy_code.md'
       - 《代码大全》: 'code/代码大全.md'
+      - 《代码的未来》: 'code/代码的未来.md'
+      - 《基本功》: 'code/基本功.md'
+      - 《敏捷技能修炼》: 'code/敏捷技能修炼.md'
+      - 《程序员应该知道的97件事》: 'code/程序员应该知道的97件事.md'
+      - 《编写可读代码的艺术》: 'code/编写可读代码的艺术.md'
+      - 《编程匠艺》: 'code/编程匠艺.md'
+      - 《领域驱动设计》: 'code/领域驱动设计.md'
     - 数据库:
+      - 《Getting started with impala》: 'database/getting_started_with_impala.md'
       - 《mysql必知必会》: 'database/mysql必知必会.md'
+      - 《mysql性能调优与架构实践》: 'database/mysql性能调优与架构实践.md'
+      - 《redis设计与实现》: 'database/redis设计与实现.md'
+      - 《七周七数据库》: 'database/七周七数据库.md'
+      - 《深入浅出mysql》: 'database/深入浅出mysql.md'
+      - 《高性能mysql第三版》: 'database/高性能mysql第三版.md'
     - 前端:
       - 《CSS_The_Missing_Manual》: 'frontend/CSS_The_Missing_Manual.md'
+      - 《reactjs小书》: 'frontend/reactjs_小书.md'
     - golang:
-      - 《The Go Programming Language》: 'golang/1_the_go_programming_lauguage.md'
+      - 《1 The Go Programming Language》: 'golang/1_the_go_programming_lauguage.md'
+      - 《2 The Go Programming Language》: 'golang/2_the_go_programming_lauguage.md'
+      - 《3 The Go Programming Language》: 'golang/3_the_go_programming_lauguage.md'
     - 心理学:
       - 《一切都是童年的错吗》: 'psychology/一切都是童年的错吗.md'
+      - 《亲密关系》: 'psychology/亲密关系.md'
+      - 《积极心理学》: 'psychology/积极心理学.md'
     - python:
       - 《Fluent Python》: 'python/fluent_python.md'
       - 《Python Microservices Development》: 'python/Python_Microservices_Development.md'
     - 创业:
       - 《Hello Startup》: 'startup/hello_startup.md'
+      - 《斯坦福公开课如何创业》: 'startup/斯坦福公开课-如何创业.md'
+      - 《运营其实很简单》: 'startup/运营其实很简单.md'
     - unix/linux:
       - 《Linux高性能服务器编程》: 'unix_linux/Linux高性能服务器编程/Linux高性能服务器编程.md'
+      - 《unix编程艺术》: 'unix_linux/unix编程艺术.md'
     - 分布式:
       - 《分布式框架原理与应用》:  '分布式/分布式框架原理与应用.md'
+      - 《大规模分布式存储系统》: '分布式/大规模分布式存储系统.md'
     - 开发工具:
       - 《Practical Vim》: '开发工具/practical_vim/practical_vim.md'
       - 《Learn vim scrpt the hard way》: '开发工具/learn_vim_the_hard_way.md'
       - 《Pro Git》: '开发工具/pro_git.md'
     - 思维:
+      - 《专注力》: '思维/专注力_化繁为简的惊人力量.md'
+      - 《批判性思维工具》: '思维/批判性思维工具.md'
+      - 《程序员的思维修炼》: '思维/程序员的思维修炼(开发认知潜能的九堂课).md'
+      - 《超效率手册》: '思维/超效率手册.md'
       - 《高效程序员的45个习惯》: '思维/高效程序员的45个习惯.md'
     - 源码:
       - 《源码阅读》: '源码阅读_sourcecode/README.md'
     - 网站架构:
       - 《web scalavility for startup engineers》: '网站架构/web_scalavility_for_startup_engineers.md'
+      - 《design_data_instensive_application》: '网站架构/design_data_instensive_application.md'
+      - 《clean_architecture》: '网站架构/clean_architecture.md'
+      - 《微服务设计》: '网站架构/微服务设计.md'
     - 软件工程/项目管理:
+      - 《人月神话》: '软件工程_项目管理/人月神话.md'
+      - 《代码之殇》: '软件工程_项目管理/代码之殇.md'
+      - 《解析极限编程》: '软件工程_项目管理/解析极限编程-拥抱变化.md'
       - 《构建之法:现代软件工程》: '软件工程_项目管理/构建之法:现代软件工程.md'
+      - 《项目管理修炼之道》: '软件工程_项目管理/项目管理修炼之道.md'
     - 运维:
+      - 《linux集群和自动化运维》: '运维/linux集群和自动化运维.md'
       - 《python自动化运维》: '运维/python自动化运维.md'
     - 金融理财:
       - 《穷查理宝典》: '金融_finance/穷查理宝典.md'
