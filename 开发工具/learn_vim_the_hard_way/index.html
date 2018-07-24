@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>《Learn vim scrpt the hard way》 - 读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300aLearn vim scrpt the hard way\u300b";
+    var mkdocs_page_input_path = "\u5f00\u53d1\u5de5\u5177/learn_vim_the_hard_way.md";
+    var mkdocs_page_url = "/\u5f00\u53d1\u5de5\u5177/learn_vim_the_hard_way/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> 读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《Learn vim scrpt the hard way》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">设置选项</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">基本映射</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_3">模式映射</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_4">精确映射</a></li>
+    
+
+    <li class="toctree-l3"><a href="#leaders">Leaders</a></li>
+    
+
+    <li class="toctree-l3"><a href="#vimrc">编辑你的Vimrc文件</a></li>
+    
+
+    <li class="toctree-l3"><a href="#abbreviations">Abbreviations</a></li>
+    
+
+    <li class="toctree-l3"><a href="#mappings">更多的Mappings</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_5">锻炼你的手指</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_6">本地缓冲区的选项设置和映射</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_7">自动命令</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_8">本地缓冲区缩写</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_9">自动命令组</a></li>
+    
+
+    <li class="toctree-l3"><a href="#operator-pending">Operator-Pending映射</a></li>
+    
+
+    <li class="toctree-l3"><a href="#operator-pending_1">更多Operator-Pending映射</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_10">状态条</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_11">负责任的编码</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_12">变量</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_13">变量作用域</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_14">条件语句</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_15">比较</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_16">函数</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_17">函数参数</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_18">数字</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_19">字符串</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_20">字符串函数</a></li>
+    
+
+    <li class="toctree-l3"><a href="#execute">Execute命令</a></li>
+    
+
+    <li class="toctree-l3"><a href="#normal">Normal命令</a></li>
+    
+
+    <li class="toctree-l3"><a href="#normal_1">执行normal!</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_21">基本的正则表达式</a></li>
+    
+
+    <li class="toctree-l3"><a href="#grep-operator">实例研究：Grep 运算符(Operator)，第一部分</a></li>
+    
+
+    <li class="toctree-l3"><a href="#grepoperator">实例研究：Grep运算符(Operator)，第二部分</a></li>
+    
+
+    <li class="toctree-l3"><a href="#grepoperator_1">实例研究：Grep运算符(Operator)，第三部分</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_22">列表</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_23">循环</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_24">字典</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_25">切换</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_26">函数式编程</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_27">不可变的数据结构</a></li>
+        
+            <li><a class="toctree-l4" href="#_28">作为变量的函数</a></li>
+        
+            <li><a class="toctree-l4" href="#_29">高阶函数</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_30">路径</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_31">绝对路径</a></li>
+        
+            <li><a class="toctree-l4" href="#_32">列出文件</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_33">创建一个完整的插件</a></li>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pro_git/">《Pro Git》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/README/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>开发工具 &raquo;</li>
+        
+      
+    
+    <li>《Learn vim scrpt the hard way》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p><a href="http://learnvimscriptthehardway.onefloweroneworld.com/">http://learnvimscriptthehardway.onefloweroneworld.com/</a> 读书笔记，自定义vim 配置或者一些简单的 vim 插件需求。</p>
+<h1 id="_1">设置选项</h1>
+<p>主要有两种选项：布尔选项（值为"on"或"off"）和键值选项。</p>
+<ul>
+<li>布尔选项设置取消<code>:set number</code> <code>:set nonumber</code></li>
+<li>查看当前值: <code>:set number?</code></li>
+<li>键值选项: <code>:set numberwidth=10</code></li>
+</ul>
+<h1 id="_2">基本映射</h1>
+<p><code>:map - x</code>让减号成为删除</p>
+<h1 id="_3">模式映射</h1>
+<p>你可以使用nmap、vmap和imap命令分别指定映射仅在normal、visual、insert模式有效。</p>
+<ul>
+<li><code>:nmap - dd</code></li>
+<li><code>:nunmap - dd</code></li>
+</ul>
+<p>insert 模式: 比如我们想实现 ctrl+d 在 insert 模式下删除一行</p>
+<ul>
+<li><code>:imap &lt;c-d&gt; dd</code> 你会发现不起作用，因为没有进入 normal 模式</li>
+<li><code>:imap &lt;c-d&gt; &lt;esc&gt;dd</code> 在 insert 模式下输入 ctrl+d 从 esc 进入 normal 模式然后删除一行，但是没有回到 insert 模式</li>
+<li><code>:imap &lt;c-d&gt; &lt;esc&gt;ddi</code> 完成</li>
+</ul>
+<h1 id="_4">精确映射</h1>
+<p><code>*map</code>系列命令的一个缺点就是存在递归的危险。另外一个是如果你安装一个插件，插件 映射了同一个按键为不同的行为，两者冲突，有一个映射就无效了。
+每一个_map系列的命令都有个对应的`_noremap`命令，包括：noremap/nnoremap、 vnoremap和inoremap。这些命令将不递归解释映射的内容。
+该何时使用这些非递归的映射命令呢？ 答案是： 任何时候 。</p>
+<h1 id="leaders">Leaders</h1>
+<pre><code>:let mapleader = ","
+:nnoremap &lt;leader&gt;d dd
+</code></pre>
+<p><code>:let maplocalleader = "\\"</code> Vim有另外一个“leader”成为“local leader“ã这个leader用于那些只对某类文件 （如Python文件、HTML文件）而设置的映射。</p>
+<h1 id="vimrc">编辑你的Vimrc文件</h1>
+<pre><code>" 编辑映射
+:nnoremap &lt;leader&gt;ev :vsplit $MYVIMRC&lt;cr&gt;
+
+" 重读映射配置
+:nnoremap &lt;leader&gt;sv :source $MYVIMRC&lt;cr&gt;
+</code></pre>
+<h1 id="abbreviations">Abbreviations</h1>
+<p>Vim有个称为"abbreviations"的特性，与映射有点类似，但是它用于insert、replace和 command模式。</p>
+<ul>
+<li>用来纠错：<code>:iabbrev adn and</code> 在输入adn之后输入空格键，Vim会将其替换为and。</li>
+<li>用来缩写：<code>:iabbrev @@    steve@stevelosh.com</code></li>
+</ul>
+<h1 id="mappings">更多的Mappings</h1>
+<p>看一个复杂的,一个有趣的mappings！你自己可以先试试。进入normal模式，移动光标至一个单词， 输入<leader>"。Vim将那个单词用双引号包围！
+<code>:nnoremap &lt;leader&gt;" viw&lt;esc&gt;a"&lt;esc&gt;hbi"&lt;esc&gt;lel</code></p>
+<h1 id="_5">锻炼你的手指</h1>
+<p>让我们先创建一个mapping，这个mapping会为你的左手减轻很多负担。
+<code>:inoremap jk &lt;esc&gt;</code>
+重新学习一个mapping的窍门就是强制将之前的按键设置为不可用，强迫自己使用新的mapping。执行下面的命令：
+<code>:inoremap &lt;esc&gt; &lt;nop&gt;</code></p>
+<h1 id="_6">本地缓冲区的选项设置和映射</h1>
+<p>nnoremap命令中的<buffer>告诉Vim这个映射只在定义它的那个缓冲区中有效：
+<code>:nnoremap &lt;buffer&gt; &lt;leader&gt;x dd</code></p>
+<h1 id="_7">自动命令</h1>
+<p><code>:autocmd BufNewFile * :write</code>
+创建空文件就写入到磁盘</p>
+<pre><code>:autocmd BufNewFile * :write
+         ^          ^ ^
+         |          | |
+         |          | 要执行的命令
+         |          |
+         |          用于事件过滤的“模式（pattern）”
+         |
+         要监听的“事件”
+</code></pre>
+<p><code>:autocmd BufWritePre *.html :normal gg=G</code> BufWritePre，这个事件会在你保存任何字符到文件之前触发。保存 html 自动缩进</p>
+<p>多个事件：
+<code>:autocmd BufWritePre,BufRead *.html :normal gg=G</code></p>
+<p>FileType事件:
+这个事件会在Vim设置一个缓冲区的filetype的时候触发。
+通过 <code>&lt;localleader&gt;</code>给不同文件类型注释</p>
+<pre><code>:autocmd FileType javascript nnoremap &lt;buffer&gt; &lt;localleader&gt;c I//&lt;esc&gt;
+:autocmd FileType python     nnoremap &lt;buffer&gt; &lt;localleader&gt;c I#&lt;esc&gt;
+</code></pre>
+<h1 id="_8">本地缓冲区缩写</h1>
+<p><code>:iabbrev &lt;buffer&gt; --- &amp;mdash;</code></p>
+<p>自动命令和缩写:
+使用本地缓冲区的缩写和自动命令来创建一个简单的“snippet”系统。</p>
+<pre><code>:autocmd FileType python     :iabbrev &lt;buffer&gt; iff if:&lt;left&gt;
+:autocmd FileType javascript :iabbrev &lt;buffer&gt; iff if ()&lt;left&gt;
+</code></pre>
+<h1 id="_9">自动命令组</h1>
+<p>Vim可能创建两个完全一样的自动命令,对于这个问题，Vim有一个解决方案。这个解决方案的第一步是将相关的自动命令收集起来放到一个已命名的组（groups）中。</p>
+<pre><code>augroup filetype_html
+    autocmd!
+    autocmd FileType html nnoremap &lt;buffer&gt; &lt;localleader&gt;f Vatzf
+augroup END
+</code></pre>
+<p>当进入filetype_html这个组的时候，我们会立即清除这个组，然后定义一个自动命令，然后退出这个组。当我们再次加载~/.vimrc文件的时候，清除组命令会阻止Vim添加一个一模一样的自动命令。</p>
+<h1 id="operator-pending">Operator-Pending映射</h1>
+<p>一个Operator（操作）就是一个命令，你可以在这个命令的后面输入一个Movement（移动）命令，然后Vim开始对文本执行前面的操作命令，这个操作命令会从你当前所在的位置开始执行，一直到这个移动命令会把你带到的位置结束。
+常用到的Operator有d，y和c。例如：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>操作</th>
+<th>移动</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dw</td>
+<td>删除</td>
+<td>到下一个单词</td>
+</tr>
+<tr>
+<td>ci(</td>
+<td>修改</td>
+<td>在括号内</td>
+</tr>
+<tr>
+<td>yt,</td>
+<td>复制</td>
+<td>到逗号</td>
+</tr>
+</tbody>
+</table>
+<p><code>:onoremap p i(</code>  dp Vim会删除括号内的所有文字</p>
+<p>当你想搞清楚怎么定义一个新的operator-pending movement的时候，你可以从下面几个步骤来思考：</p>
+<ul>
+<li>在光标所在的位置开始。</li>
+<li>进入可视模式(charwise)。</li>
+<li>... 把映射的按键放到这里 ...</li>
+<li>所有你想包含在movement中的文字都会被选中。
+    你所要做的工作就是在第三步中填上合适的按键。
+    <a href="http://learnvimscriptthehardway.onefloweroneworld.com/chapters/15.html">http://learnvimscriptthehardway.onefloweroneworld.com/chapters/15.html</a></li>
+</ul>
+<h1 id="operator-pending_1">更多Operator-Pending映射</h1>
+<p>这个映射有些复杂。现在把你的光标放到文本中的某个位置（不要放到标题上）,然后敲击cih。Vim会删除光标所在章节的标题，然后保持在插入模式，这可以称为"修改所在的标题(change inside heading)"。
+<a href="http://learnvimscriptthehardway.onefloweroneworld.com/chapters/16.html">http://learnvimscriptthehardway.onefloweroneworld.com/chapters/16.html</a>
+<code>:onoremap ih :&lt;c-u&gt;execute "normal! ?^==\\+$\r:nohlsearch\rkvg_"&lt;cr&gt;</code></p>
+<h1 id="_10">状态条</h1>
+<pre><code>:set statusline=%f         " 文件的路径
+:set statusline+=%=        " 切换到右边
+:set statusline+=%l        " 当前行
+:set statusline+=/         " 分隔符
+:set statusline+=%L        " 总行数
+</code></pre>
+<h1 id="_11">负责任的编码</h1>
+<p>注释、分组、不要用缩写、练习并分享你的 vimrc</p>
+<h1 id="_12">变量</h1>
+<pre><code>:let foo = "bar"
+:echo foo
+</code></pre>
+<p>你也可以将寄存器当作变量来读取和设置。执行下面的命令：</p>
+<pre><code>:let @a = "hello!"
+</code></pre>
+<h1 id="_13">变量作用域</h1>
+<p>在两个分隔的窗口中分别打开两个不同的文件，然后在其中一个窗口中执行下面的命令：</p>
+<pre><code>:let b:hello = "world"
+:echo b:hello
+</code></pre>
+<p>当你在变量名中使用b:，这相当于告诉Vim变量hello是当前缓冲区的本地变量。
+当某个变量由一个字符和冒号开头，那么这就表示它是一个作用域变量。</p>
+<h1 id="_14">条件语句</h1>
+<pre><code>:echom "foo" | echom "bar"
+</code></pre>
+<p>Vim会把它当作两个独立的命令。如果你看不到两行输出，执行:messages查看消息日志。</p>
+<pre><code>:echom "hello" + 10
+:echom "10hello" + 10
+:echom "hello10" + 10
+</code></pre>
+<p>Vim不会把非空字符串当作"truthy"
+如有必要，Vim将强制转换变量(和字面量)的类型。在解析10 + "20foo"时，Vim将把 "20foo"转换成一个整数(20)然后加到10上去。
+以一个数字开头的字符串会被强制转换成数字，否则会转换成0
+在所有的强制转换完成后，当if的判断条件等于非零整数时，Vim会执行if语句体。</p>
+<pre><code>:if 0
+:    echom "if"
+:elseif "nope!"
+:    echom "elseif"
+:else
+:    echom "finally!"
+:endif
+</code></pre>
+<h1 id="_15">比较</h1>
+<p>==的行为取决于用户的设置。是否 ignorecase。不要依赖用户配置。所以怎样才能适应这荒谬的现实？好在Vim有额外两种比较操作符来处理这个问题。
+<code>==?</code>是"无论你怎么设都大小写不敏感"比较操作符
+<code>==#</code>是"无论你怎么设都大小写敏感"比较操作符。
+当你比较整数时，这点小不同不会有什么影响。 不过，我还是建议每一次都使用大小写敏感的比较(即使不一定需要这么做)，好过该用的时候忘记用了</p>
+<h1 id="_16">函数</h1>
+<p>没有作用域限制的Vimscript函数必须以一个大写字母开头！</p>
+<pre><code>:function Meow()
+:  echom "Meow!"
+:endfunction
+
+:function GetMeow()
+:  return "Meow String!"
+:endfunction
+</code></pre>
+<p>调用函数</p>
+<pre><code>:call Meow()
+:call GetMeow()
+</code></pre>
+<p>当你使用call时，返回值会被丢弃， 所以这种方法仅在函数具有副作用时才有用。</p>
+<pre><code>:function TextwidthIsTooWide()
+:  if &amp;l:textwidth &gt;# 80
+:    return 1
+:  endif
+:endfunction
+</code></pre>
+<p>一个Vimscript函数不返回一个值，它隐式返回0</p>
+<h1 id="_17">函数参数</h1>
+<pre><code>:function DisplayName(name)
+:  echom "Hello!  My name is:"
+:  echom a:name
+:endfunction
+</code></pre>
+<p>在写需要参数的Vimscript函数的时候，你总需要给参数加上前缀a:，来告诉Vim去参数作用域查找。</p>
+<pre><code>:function Varg(...)
+:  echom a:0  " 0表示参数个数
+:  echom a:1
+:  echo a:000  " a:000将被设置为一个包括所有传递过来的额外参数的列表(list)。
+:endfunction
+
+:call Varg("a", "b")
+</code></pre>
+<p>可变参数</p>
+<pre><code>:function Varg2(foo, ...)
+:  echom a:foo
+:  echom a:0
+:  echom a:1
+:  echo a:000
+:endfunction
+
+:call Varg2("a", "b", "c")
+</code></pre>
+<p>可以用具名参数引用。不能对参数变量重新赋值</p>
+<h1 id="_18">数字</h1>
+<p>Vimscript有两种数值类型：Number和Float。一个Number是32位带符号整数。一个Float是浮点数。
+计算过程中也会转换类型</p>
+<h1 id="_19">字符串</h1>
+<p>写Vimscript的时候，确信你清楚写下的每一个变量的类型。如果需要改变变量类型，你就得使用一个函数显式改变它， 即使那不是必要的。不要依赖Vim的强制转换，毕竟世上没有后悔药。</p>
+<ul>
+<li>连接：<code>:echom "Hello, " . "world"</code> ，</li>
+</ul>
+<p>Vim不会把非空字符串当作"truthy"</p>
+<h1 id="_20">字符串函数</h1>
+<ul>
+<li>strlen(长度): <code>:echom strlen("foo")</code></li>
+<li>split(切割)：<code>:echo split("one two three")</code> <code>:echo split("one,two,three", ",")</code></li>
+<li>join(连接):<code>echo join(["foo", "bar"], "...")</code></li>
+<li>大小写转换: <code>:echom tolower("Foo")</code> <code>:echom toupper("Foo")</code></li>
+</ul>
+<h1 id="execute">Execute命令</h1>
+<p>execute命令用来把一个字符串当作Vimscript命令执行
+<code>:execute "echom 'Hello, world!'"</code>
+ 无需担心 execute 的危险性。</p>
+<h1 id="normal">Normal命令</h1>
+<p><code>:normal G</code>
+Vim将把你的光标移到当前文件的最后一行，就像是在normal模式里按下G。假如G 已经被映射了，我们可以用:
+<code>:normal! G</code>
+在写Vim脚本时，你应该总是使用normal!，永不使用normal。不要信任用户在~/.vimrc中的映射。</p>
+<h1 id="normal_1">执行normal!</h1>
+<p><code>:execute "normal! gg/foo\&lt;cr&gt;dd"</code>
+这将移动到文件的开头，查找foo的首次出现的地方，并删掉那一行。</p>
+<p><code>:execute "normal! mqA;\&lt;esc&gt;</code>q"`</p>
+<p>这个命令做了什么？让我们掰开来讲：</p>
+<ul>
+<li>:execute "normal! ..."：执行命令序列，一如它们是在normal模式下输入的，忽略所有映射， 并替换转义字符串。</li>
+<li>mq：保存当前位置到标记"q"。</li>
+<li>A：移动到当前行的末尾并在最后一个字符后进入insert模式。</li>
+<li>;：我们现在位于insert模式，所以仅仅是写入了一个";"。</li>
+<li>\<esc>：这是一个表示Esc键的转义字符串序列，把我们带离insert模式。</li>
+<li>`q：回到标记"q"所在的位置。</li>
+</ul>
+<p>看上去有点绕，不过它真的很有用：它在当前行的末尾补上一个分号并保持光标不动。 在写Javascript，C或其他以分号作为语句分隔符的语言时，一旦忘记加上分号，这样的映射将助你一臂之力。</p>
+<h1 id="_21">基本的正则表达式</h1>
+<p>高亮: 在开始之前，先花点时间讲讲搜索高亮，这样我们可以让匹配的内容更明显。hlsearch让Vim高亮文件中所有匹配项，incsearch则令Vim在你正打着搜索内容时就高亮下一个匹配项
+<code>:set hlsearch incsearch</code></p>
+<p>搜索: <code>:execute "normal! gg/print\&lt;cr&gt;"</code> 这将移动到文件顶部并开始搜索print，带我们到第一处匹配。</p>
+<p><code>:execute "normal! gg" . '/\vfor .+ in .+:' . "\&lt;cr&gt;"</code> 查找 python 的 for in 语句
+我们又一次把正则表达式放在单独的字面量字符串里，而这次我们用\v来引导模式。 这将告诉Vim使用它的"very magic"正则解析模式，而该模式就跟其他语言的非常相似。</p>
+<h1 id="grep-operator">实例研究：Grep 运算符(Operator)，第一部分</h1>
+<p>简明扼要地说：:grep ...将用你给的参数来运行一个外部的grep程序，解析结果，填充quickfix列表， 这样你就能在Vim里面跳转到对应结果。</p>
+<p>让我们简化我们的目标为"创造一个映射来搜索光标下的词"。这有用而且应该更简单，所以我们能更快得到可运行的成果。 目前我们将映射它到<leader>g。
+<code>:nnoremap &lt;leader&gt;g :grep -R something .&lt;cr&gt;</code></p>
+<p>首先我们需要搜索光标下的词，而不是something。执行下面的命令：</p>
+<p><code>:nnoremap &lt;leader&gt;g :grep -R &lt;cword&gt; .&lt;cr&gt;</code>
+现在试一下。<cword>是一个Vim的command-line模式的特殊变量， Vim会在执行命令之前把它替换为"光标下面的那个词"。</p>
+<p>你可以使用<cWORD>来得到大写形式(WORD)。
+我们将调用参数用引号括起来(防止危险的字符串)。执行这个命令：</p>
+<p><code>:nnoremap &lt;leader&gt;g :grep -R '&lt;cWORD&gt;' .&lt;cr&gt;</code></p>
+<p>搜索部分还有一个问题。在that's上尝试这个映射。它不会工作，因为词里的单引号与grep命令的单引号发生了冲突！
+为了解决问题，我们可以使用Vim的shellescape函数。 阅读:help escape()和:help shellescape()来看它是怎样工作的(真的很简单)。
+因为shellescape()要求Vim字符串，我们需要用execute动态创建命令。 首先执行下面命令来转换:grep映射到:execute "..."形式：</p>
+<p><code>:nnoremap &lt;leader&gt;g :execute "grep -R '&lt;cWORD&gt;' ."&lt;cr&gt;</code></p>
+<p>试一下并确信它可以工作。如果不行，找出拼写错误并改正。 然后执行下面的使用了shellescape的命令。</p>
+<p><code>:nnoremap &lt;leader&gt;g :execute "grep -R " . shellescape("&lt;cWORD&gt;") . " ."&lt;cr&gt;</code></p>
+<p>在一般的词比如foo上执行这个命令试试。它可以工作。再到一个带单引号的词，比如that's，上试试看。 它还是不行！为什么会这样？
+问题在于Vim在拓展命令行中的特殊变量，比如<cWORD>，的之前，就已经执行了shellescape()。 所以Vim shell-escaped了字面量字符串"<cWORD>"(什么都不做，除了给它添上一对单引号)并连接到我们的grep命令上。
+注意引号也是输出字符串的一部分。Vim把它作为shell命令参数保护了起来。
+为解决这个问题，我们将使用expand()函数来强制拓展<cWORD>为对应字符串， 抢在它被传递给shellescape之前。</p>
+<p><code>:nnoremap &lt;leader&gt;g :exe "grep -R " . shellescape(expand("&lt;cWORD&gt;")) . " ."&lt;cr&gt;</code></p>
+<p>在完成映射之前，还要处理一些小问题。首先，我们说过我们不想自动跳到第一个结果， 所以要用grep!替换掉grep。执行下面的命令：</p>
+<p><code>:nnoremap &lt;leader&gt;g :execute "grep! -R " . shellescape(expand("&lt;cWORD&gt;")) . " ."&lt;cr&gt;</code></p>
+<p>再一次试试，发现什么都没发生。Vim用结果填充了quickfix窗口，我们却无法打开。 执行下面的命令：</p>
+<p><code>:nnoremap &lt;leader&gt;g :execute "grep! -R " . shellescape(expand("&lt;cWORD&gt;")) . " ."&lt;cr&gt;:copen&lt;cr&gt;</code></p>
+<h1 id="grepoperator">实例研究：Grep运算符(Operator)，第二部分</h1>
+<pre><code>" http://learnvimscriptthehardway.onefloweroneworld.com/chapters/33.html
+
+" 然后执行g@来以运算符的方式调用这个函数
+nnoremap &lt;leader&gt;g :set operatorfunc=GrepOperator&lt;cr&gt;g@
+" 还想要在visual模式下用到它。
+" 我们传递过去的visualMode()参数还没有讲过呢。 这个函数是Vim的内置函数，它返回一个单字符的字符串来表示visual模式的类型： "v"代表字符宽度(characterwise)，"V"代表行宽度(linewise)，Ctrl-v代表块宽度(blockwise)。
+vnoremap &lt;leader&gt;g :&lt;c-u&gt;call GrepOperator(visualmode())&lt;cr&gt;
+
+function! GrepOperator(type)
+    if a:type ==# 'v'
+        normal! `&lt;v`&gt;y
+    elseif a:type ==# 'char'
+        normal! `[v`]y
+    else
+        return
+    endif
+
+    silent execute "grep! -R " . shellescape(@@) . " ."
+    copen
+endfunction
+</code></pre>
+<h1 id="grepoperator_1">实例研究：Grep运算符(Operator)，第三部分</h1>
+<pre><code>nnoremap &lt;leader&gt;g :set operatorfunc=GrepOperator&lt;cr&gt;g@
+vnoremap &lt;leader&gt;g :&lt;c-u&gt;call GrepOperator(visualmode())&lt;cr&gt;
+
+function! GrepOperator(type)
+    let saved_unnamed_register = @@
+
+    if a:type ==# 'v'
+        normal! `&lt;v`&gt;y
+    elseif a:type ==# 'char'
+        normal! `[v`]y
+    else
+        return
+    endif
+
+    silent execute "grep! -R " . shellescape(@@) . " ."
+    copen
+
+    let @@ = saved_unnamed_register
+endfunction
+</code></pre>
+<p>我们在函数的开头和结尾加入了两个let语句。 第一个用一个变量保存@@中的内容，第二个则重新加载保存的内容。
+当写Vim插件时，你总是应该尽量在修改之前保存原来的设置和寄存器值，并在之后加载回去。 这样你就避免了让用户陷入恐慌的可能。</p>
+<p>我们的脚本在全局命名空间中创建了函数GrepOperator。 这大概不算什么大问题，但当你写Vimscript的时候，事前以免万一远好过事后万分歉意。</p>
+<pre><code>nnoremap &lt;leader&gt;g :set operatorfunc=&lt;SID&gt;GrepOperator&lt;cr&gt;g@
+vnoremap &lt;leader&gt;g :&lt;c-u&gt;call &lt;SID&gt;GrepOperator(visualmode())&lt;cr&gt;
+
+function! s:GrepOperator(type)
+    let saved_unnamed_register = @@
+
+    if a:type ==# 'v'
+        normal! `&lt;v`&gt;y
+    elseif a:type ==# 'char'
+        normal! `[v`]y
+    else
+        return
+    endif
+
+    silent execute "grep! -R " . shellescape(@@) . " ."
+    copen
+
+    let @@ = saved_unnamed_register
+endfunction
+</code></pre>
+<p>脚本的前三行已经被改变了。首先，我们在函数名前增加前缀s:，这样它就会处于当前脚本的命名空间。
+我们也修改了映射，在GrepOperator前面添上<SID>，所以Vim才能找到这个函数。 如果我们不这样做，Vim会尝试在全局命名空间查找该函数，这是不可能找到的。</p>
+<h1 id="_22">列表</h1>
+<ul>
+<li>嵌套 <code>:echo ['foo', [3, 'bar']]</code></li>
+<li>索引：<code>:echo [0, [1, 2]][1]</code></li>
+<li>切割：<code>:echo ['a', 'b', 'c', 'd', 'e'][0:2]</code></li>
+<li>连接: <code>:echo ['a', 'b'] + ['c']</code></li>
+<li>函数：add, len, get, index, join, reverse</li>
+</ul>
+<h1 id="_23">循环</h1>
+<p>for 和 while</p>
+<pre><code>:let c = 0
+
+:for i in [1, 2, 3, 4]
+:  let c += i
+:endfor
+
+:echom c
+
+:let c = 1
+:let total = 0
+
+:while c &lt;= 4
+:  let total += c
+:  let c += 1
+:endwhile
+
+:echom total
+</code></pre>
+<h1 id="_24">字典</h1>
+<p>我们讲到的最后一种Vimscript类型将是字典。 Vimscript字典类似于Python中的dict，Ruby中的hash，和Javascript中的object。
+字典用花括号创建。值是异质的，但键会被强制转换成字符串。</p>
+<ul>
+<li>定义：<code>:echo {'a': 1, 100: 'foo'}   " {'a':1,'100':'foo'}</code></li>
+<li>索引：<code>:echo {'a': 1, 100: 'foo',}['a']</code> or <code>:echo {'a': 1, 100: 'foo',}.a</code> ，支持括号和点查找</li>
+<li>
+<p>赋值和添加</p>
+<p>:let foo = {'a': 1}
+:let foo.a = 100
+:let foo.b = 200
+:echo foo</p>
+</li>
+<li>
+<p>移除: 你不能移除字典中不存在的项</p>
+<p>:let test = remove(foo, 'a')
+:unlet foo.b
+:echo foo
+:echo test</p>
+</li>
+<li>
+<p>字典函数: get(), has_key(), items(), keys(), values()</p>
+</li>
+</ul>
+<h1 id="_25">切换</h1>
+<p><code>:nnoremap &lt;leader&gt;N :setlocal number!&lt;cr&gt;</code> 在normal模式中按下<leader>N看看。Vim将会在开启和关闭行号显示之间切换。</p>
+<pre><code>nnoremap &lt;leader&gt;q :call QuickfixToggle()&lt;cr&gt;
+
+let g:quickfix_is_open = 0
+
+function! QuickfixToggle()
+    if g:quickfix_is_open
+        cclose
+        let g:quickfix_is_open = 0
+        execute g:quickfix_return_to_window . "wincmd w"
+    else
+        let g:quickfix_return_to_window = winnr()
+        copen
+        let g:quickfix_is_open = 1
+    endif
+endfunction
+</code></pre>
+<h1 id="_26">函数式编程</h1>
+<p>如果你用过Python，Ruby或Javascript，甚或Lisp，Scheme，Clojure或Haskell，
+你应该会觉得把函数作为变量类型，用不可变的状态作为数据结构是平常的事。</p>
+<h3 id="_27">不可变的数据结构</h3>
+<p>不幸的是，Vim没有类似于Clojure内置的vector和map那样的不可变集合， 不过通过一些辅助函数，我们可以在一定程度上模拟出来。</p>
+<pre><code>function! Sorted(l)
+    let new_list = deepcopy(a:l)
+    call sort(new_list)
+    return new_list
+endfunction
+</code></pre>
+<h3 id="_28">作为变量的函数</h3>
+<p>Vimscript支持使用变量储存函数，但是相关的语法有点愚钝。执行下面的命令：</p>
+<pre><code>:let Myfunc = function("Append")
+:echo Myfunc([1, 2], 3)
+</code></pre>
+<h3 id="_29">高阶函数</h3>
+<pre><code>function! Mapped(fn, l)
+    let new_list = deepcopy(a:l)
+    call map(new_list, string(a:fn) . '(v:val)')
+    return new_list
+endfunction
+</code></pre>
+<h1 id="_30">路径</h1>
+<h3 id="_31">绝对路径</h3>
+<pre><code>:echom expand('%')
+:echom expand('%:p')
+:echom fnamemodify('foo.txt', ':p')
+</code></pre>
+<h3 id="_32">列出文件</h3>
+<pre><code>:echo globpath('.', '*') " Vim将输出当前目录下所有的文件和文件夹
+:echo split(globpath('.', '**'), '\n')  " 你可以用**递归地列出文件。执行这个命令：
+</code></pre>
+<h1 id="_33">创建一个完整的插件</h1>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../pro_git/" class="btn btn-neutral float-right" title="《Pro Git》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../practical_vim/practical_vim/" class="btn btn-neutral" title="《Practical Vim》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../practical_vim/practical_vim/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../pro_git/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/require.js"></script>
+      <script src="../../search/search.js"></script>
+
+</body>
+</html>

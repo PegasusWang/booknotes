@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>《python自动化运维》 - 读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300apython\u81ea\u52a8\u5316\u8fd0\u7ef4\u300b";
+    var mkdocs_page_input_path = "\u8fd0\u7ef4/python\u81ea\u52a8\u5316\u8fd0\u7ef4.md";
+    var mkdocs_page_url = "/\u8fd0\u7ef4/python\u81ea\u52a8\u5316\u8fd0\u7ef4/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> 读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/README/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《python自动化运维》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1">1章：系统基础信息模块详解</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#11-psutil">1.1 系统性能模块psutil:获取系统性能信息、内存信息、磁盘信息、网络信息、用户信息等。</a></li>
+        
+            <li><a class="toctree-l4" href="#12-ipipy-ip">1.2 IP地址处理模块IPy: 处理IP地址，网段等。</a></li>
+        
+            <li><a class="toctree-l4" href="#13-dnsdnspython-dnsnslookupdigcnamedns">1.3 DNS处理模块dnspython: 实现dns服务监控以及解析结果的校验，替代nslookup及dig等工具。比如查询CNAME记录等。DNS解析可以做简单的负载均衡。</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#2">2章：业务服务监控详解</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#21-difflibdiffmeld">2.1 文件内容差异比对方法：difflib模块。也可以用diff工具，meld等。</a></li>
+        
+            <li><a class="toctree-l4" href="#22-filecmpmeld">2.2 文件与目录差异对比方法：filecmp。meld也可以进行目录比较。</a></li>
+        
+            <li><a class="toctree-l4" href="#23-smtplibflask_mailpandas">2.3 邮件发送模块：smtplib。笔者经常使用flask_mail插件和pandas给运营人员生成报表，还是相当方便的。</a></li>
+        
+            <li><a class="toctree-l4" href="#24-web-pycurlhttpcurlrequests">2.4 探测web服务质量: pycurl。我觉得可能用http，curl，requests等更方便。</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#3">3章：定制业务质量报表详解</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#31-excelxlsxwriterpandasexcelpandasdataframe">3.1 数据报表之Excel操作模块；XlsxWriter，笔者更常使用pandas，处理报表excel等比较方便，pandas.DataFrame提供了很多功能。</a></li>
+        
+            <li><a class="toctree-l4" href="#32-pythonrrdtoolpython-rrdtoolrrdtoolround-brobin-databaseround-robin">3.2 Python与rrdtool的结合模块：python-rrdtool，rrdtool（round brobin database）工具为环状数据库的存储格式，round robin是一种处理定量数据及当前元素指针的技术。 比如实现网卡流量图绘制，很多监控工具都用到了该工具。</a></li>
+        
+            <li><a class="toctree-l4" href="#33-scapy-traceroute">3.3 生成动态路由轨迹: scapy 强大的交互式数据包处理程序，能对数据包进行伪造或者解包，包括发送数据包、包嗅探、应答和反馈匹配等功能。比如使用traceroute函数实现生成路由轨迹图。</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#4python">4章：Python与系统安全</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#41-pyclamadpythonclamavclamd">4.1 构建集中式的病毒扫描机制：pyClamad，让python直接使用ClamAV病毒扫描守护进程clamd。</a></li>
+        
+            <li><a class="toctree-l4" href="#42-python-nmap">4.2 实现高效的端口扫描器：高危端口暴露在网站有被入侵风险。使用python-nmap实现高效的端口扫描。</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#5pexpect">5章：系统批量运维管理器pexpect</a></li>
+    
+
+    <li class="toctree-l3"><a href="#6paramiko">6章：系统批量运维管理器paramiko</a></li>
+    
+
+    <li class="toctree-l3"><a href="#7fabric">7章：系统批量运维管理器Fabric详解</a></li>
+    
+
+    <li class="toctree-l3"><a href="#9ansible">9章：集中化管理平台Ansible详解</a></li>
+    
+
+    <li class="toctree-l3"><a href="#10saltstack">10章：集中化管理平台Saltstack详解</a></li>
+    
+
+    <li class="toctree-l3"><a href="#11func">11章：统一网络控制器Func详解</a></li>
+    
+
+    <li class="toctree-l3"><a href="#12python">12章：Python大数据应用详解</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>运维 &raquo;</li>
+        
+      
+    
+    <li>《python自动化运维》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>笔者虽然不做运维，大部分时间关注业务代码和工程，但是了解一些运维工具对于排插问题还是有帮助的。稍微记录一下，至少碰到问题了知道有啥工具。</p>
+<h2 id="1">1章：系统基础信息模块详解</h2>
+<p>通过第三方模块获取服务器的基本性能、块设备、网卡接口、网络地址库等信息。</p>
+<h3 id="11-psutil">1.1 系统性能模块psutil:获取系统性能信息、内存信息、磁盘信息、网络信息、用户信息等。</h3>
+<h3 id="12-ipipy-ip">1.2 IP地址处理模块IPy: 处理IP地址，网段等。</h3>
+<h3 id="13-dnsdnspython-dnsnslookupdigcnamedns">1.3 DNS处理模块dnspython: 实现dns服务监控以及解析结果的校验，替代nslookup及dig等工具。比如查询CNAME记录等。DNS解析可以做简单的负载均衡。</h3>
+<h2 id="2">2章：业务服务监控详解</h2>
+<h3 id="21-difflibdiffmeld">2.1 文件内容差异比对方法：difflib模块。也可以用diff工具，meld等。</h3>
+<h3 id="22-filecmpmeld">2.2 文件与目录差异对比方法：filecmp。meld也可以进行目录比较。</h3>
+<h3 id="23-smtplibflask_mailpandas">2.3 邮件发送模块：smtplib。笔者经常使用flask_mail插件和pandas给运营人员生成报表，还是相当方便的。</h3>
+<h3 id="24-web-pycurlhttpcurlrequests">2.4 探测web服务质量: pycurl。我觉得可能用http，curl，requests等更方便。</h3>
+<h2 id="3">3章：定制业务质量报表详解</h2>
+<h3 id="31-excelxlsxwriterpandasexcelpandasdataframe">3.1 数据报表之Excel操作模块；XlsxWriter，笔者更常使用pandas，处理报表excel等比较方便，pandas.DataFrame提供了很多功能。</h3>
+<h3 id="32-pythonrrdtoolpython-rrdtoolrrdtoolround-brobin-databaseround-robin">3.2 Python与rrdtool的结合模块：python-rrdtool，rrdtool（round brobin database）工具为环状数据库的存储格式，round robin是一种处理定量数据及当前元素指针的技术。 比如实现网卡流量图绘制，很多监控工具都用到了该工具。</h3>
+<h3 id="33-scapy-traceroute">3.3 生成动态路由轨迹: scapy 强大的交互式数据包处理程序，能对数据包进行伪造或者解包，包括发送数据包、包嗅探、应答和反馈匹配等功能。比如使用traceroute函数实现生成路由轨迹图。</h3>
+<h2 id="4python">4章：Python与系统安全</h2>
+<h4 id="41-pyclamadpythonclamavclamd">4.1 构建集中式的病毒扫描机制：pyClamad，让python直接使用ClamAV病毒扫描守护进程clamd。</h4>
+<h4 id="42-python-nmap">4.2 实现高效的端口扫描器：高危端口暴露在网站有被入侵风险。使用python-nmap实现高效的端口扫描。</h4>
+<h2 id="5pexpect">5章：系统批量运维管理器pexpect</h2>
+<p>pexpect可以理解成Linux下的expect的python封装，通过pexpect可以实现对ssh、ftp、passwd、telnet等命令的自动交互，而无需人工干涉达到自动化的目的。
+核心组建包括spawn类、run函数以及派生类pxssh等。
+- spawn: 启动和控制子应用程序
+- run：调用外部命令的函数，可以同时获得命令的输出结果及命令的退出状态。
+- pxssh类：操作ssh</p>
+<h2 id="6paramiko">6章：系统批量运维管理器paramiko</h2>
+<p>paramiko是基于python实现的ssh2远程安全连接，支持认证及密钥方式，可以实现远程命令执行，文件传输、中金ssh代理等功能，相对于pexpect封装的层次更高，更贴近ssh协议的功能。paramiko包含俩核心组件，SSHClient类和SFTPClient类。
+- SSHClient类：ssh服务会话的高级表示，封装了传输(transport)、通道(channel)及SFTPClient的校验、建立的方法，通常用于执行远程命令。
+- SFTPClient类：SFTP客户端对象，根据ssh传输协议的sftp会话，实现远程文件操作，比如文件上传、下载、权限、状态等操作。</p>
+<h2 id="7fabric">7章：系统批量运维管理器Fabric详解</h2>
+<p>Fabric基于python实现的ssh命令行工具，简化了ssh的应用程序部署及系统管理任务，提供了系统基础的操作组件，可以实现本地或远程shell命令，包括命令执行、文件上传、下载及完整执行日志输出等功能。详细使用还是看官方文档，典型使用场景有文件上传与校验、环境部署、代码发布。</p>
+<h2 id="9ansible">9章：集中化管理平台Ansible详解</h2>
+<p>Ansible一种集成IT系统的配置管理、应用部署、执行特定任务的开源平台。Ansible提供了一个在线Playbook分享平台，汇聚了各类常用功能的角色。Ansible配置文件以YAML格式存在。</p>
+<h2 id="10saltstack">10章：集中化管理平台Saltstack详解</h2>
+<p>Saltstack是一个服务器基础架构集中化管理平台，具备配置管理、远程执行、监控等功能，可以理解成简化版的puppet。</p>
+<h2 id="11func">11章：统一网络控制器Func详解</h2>
+<p>Fedora Unified Network Controller:Fedora平台统一构建的网络控制器。</p>
+<h2 id="12python">12章：Python大数据应用详解</h2>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../金融_finance/穷查理宝典/" class="btn btn-neutral float-right" title="《穷查理宝典》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../linux集群和自动化运维/" class="btn btn-neutral" title="《linux集群和自动化运维》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../linux集群和自动化运维/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../金融_finance/穷查理宝典/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/require.js"></script>
+      <script src="../../search/search.js"></script>
+
+</body>
+</html>

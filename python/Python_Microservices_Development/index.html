@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>《Python Microservices Development》 - 读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300aPython Microservices Development\u300b";
+    var mkdocs_page_input_path = "python/Python_Microservices_Development.md";
+    var mkdocs_page_url = "/python/Python_Microservices_Development/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> 读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《Python Microservices Development》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1-understading-microservices">1 Understading Microservices</a></li>
+    
+
+    <li class="toctree-l3"><a href="#2-discovering-flask">2 Discovering Flask</a></li>
+    
+
+    <li class="toctree-l3"><a href="#3-coding-testing-and-documenting-the-virtuous-cycle">3 Coding, Testing, and Documenting - the Virtuous Cycle</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#different-kinds-of-tests">Different kinds of tests</a></li>
+        
+            <li><a class="toctree-l4" href="#using-webtest">Using WebTest</a></li>
+        
+            <li><a class="toctree-l4" href="#using-pytest-and-tox">Using pytest and Tox</a></li>
+        
+            <li><a class="toctree-l4" href="#developer-documentation">Developer documentation</a></li>
+        
+            <li><a class="toctree-l4" href="#continuous-integration">Continuous Integration</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#4-designing-runnerly">4 Designing Runnerly</a></li>
+    
+
+    <li class="toctree-l3"><a href="#5-interacting-with-ohter-services">5 Interacting with Ohter Services</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#synchronous-calls">Synchronous calls</a></li>
+        
+            <li><a class="toctree-l4" href="#asynchronous-calls">Asynchronous calls</a></li>
+        
+            <li><a class="toctree-l4" href="#testing">Testing</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#monitoring-your-services">Monitoring Your Services</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#centralizing-logs">Centralizing logs</a></li>
+        
+            <li><a class="toctree-l4" href="#performance-metrics">Performance metrics</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#securing-your-services">Securing Your Services</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#the-oauth2-protocol">The OAuth2 protocol</a></li>
+        
+            <li><a class="toctree-l4" href="#web-application-firewall">Web application firewall</a></li>
+        
+            <li><a class="toctree-l4" href="#securing-your-code">Securing Your code</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#bringing-it-all-together">Bringing It All Together</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#building-a-reactjs-dashboard">Building a ReactJS dashboard</a></li>
+        
+            <li><a class="toctree-l4" href="#flask-and-reactjs">Flask and ReactJS</a></li>
+        
+            <li><a class="toctree-l4" href="#authentication-and-authorication">Authentication and authorication</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#packaging-and-running-runnerly">Packaging and Running Runnerly</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#packaing">Packaing</a></li>
+        
+            <li><a class="toctree-l4" href="#process-management">Process management</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#containerized-services">Containerized Services</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#what-is-docker">What is Docker?</a></li>
+        
+            <li><a class="toctree-l4" href="#docker101">Docker101</a></li>
+        
+            <li><a class="toctree-l4" href="#docker-compose">Docker Compose</a></li>
+        
+            <li><a class="toctree-l4" href="#introduction-to-clustering-and-provisioning">Introduction to Clustering and Provisioning</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../high_performance_python/">《High Performance Python》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/README/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>python &raquo;</li>
+        
+      
+    
+    <li>《Python Microservices Development》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>《Python Microservices Development》</p>
+<h1 id="1-understading-microservices">1 Understading Microservices</h1>
+<p>传统的单体架构（LAMP/LNMP）随着代码的膨胀很快就不可控。</p>
+<p>A microservice is a lightweight application, which provides a narrowed list of features with a well-defined contract. It's a component with a single responsibility , which can be developed and deployed independently.</p>
+<p>微服务架构的好处：
+- Separation of concerns: 可以被单独的小组维护（康威定律）；单一职责，解耦
+- Smaller projects: 拆分项目复杂度；减少风险（比如一个服务可以尝试改用新框架）
+- Scaling and deployment: 容易扩展，但是也会带来新问题</p>
+<p>微服务架构的缺点：没有银弹
+- Illogical splitting: 不成熟的切分是万恶之源，拆分远比合并容易
+- More network interactions
+- Data storing and sharing: 减少不同微服务数据重复是一大挑战
+- Compatibility issues: 良好的 api 设计一定程度上避免此类问题
+- Testing</p>
+<p>使用 Python 实现微服务：
+- wsgi: 最大的不支持异步特性
+- Greenlet and Gevent: 通过event loop 在不同 greenlet 切换，gevent 简化了 greenlet 使用
+- Twisted and Tornado:
+- asyncio</p>
+<h1 id="2-discovering-flask">2 Discovering Flask</h1>
+<p>微框架不意味着只能做小应用，而是把自由交给开发者，可以随意组合，缺点就是容易做出错误决定(选错依赖包)，缺少最佳实践。</p>
+<p>flask url_for function, REPL(Read-Eval-Print Loop)</p>
+<h1 id="3-coding-testing-and-documenting-the-virtuous-cycle">3 Coding, Testing, and Documenting - the Virtuous Cycle</h1>
+<h3 id="different-kinds-of-tests">Different kinds of tests</h3>
+<ul>
+<li>Unit tests: 仅在 IO 操作/CPU密集操作/特定复现行为 才使用 mock。</li>
+<li>Functional tests: sending http requests and asserting the http responses. 测试能按照预期工作/测试非正常行为被修复且不会再出现</li>
+<li>Integration tests: functional test without any mocking. 测试真实部署的应用. curl 脚本等。WebTest</li>
+<li>Load tests: 发现瓶颈，不过早优化。 工具：Boom, locust, Molotov, flask-profiler</li>
+<li>End-to-end tests: need real user client</li>
+</ul>
+<h3 id="using-webtest">Using WebTest</h3>
+<p>使用  webtest 来进行 functional test，http 接口级别的测试</p>
+<h3 id="using-pytest-and-tox">Using pytest and Tox</h3>
+<p>在 TestClass 中写测试可以保证各种测试发现库兼容， pytest，nose
+tox 支持不同版本的 python 测试</p>
+<h3 id="developer-documentation">Developer documentation</h3>
+<ul>
+<li>how it's design</li>
+<li>how to install it</li>
+<li>how to run tests</li>
+<li>what are the exposed APIs and what data comes in and out, and so on</li>
+</ul>
+<p>Sphinx, Autodoc extension</p>
+<h3 id="continuous-integration">Continuous Integration</h3>
+<p>Travis-CI
+ReadTheDocs
+Coveralls</p>
+<h1 id="4-designing-runnerly">4 Designing Runnerly</h1>
+<p>本章讲了拆解一个 flask app 为多个微服务的过程</p>
+<p>https://github.com/Runnerly</p>
+<p>Connexion: swagger support for flask</p>
+<h1 id="5-interacting-with-ohter-services">5 Interacting with Ohter Services</h1>
+<h2 id="synchronous-calls">Synchronous calls</h2>
+<p>http: focus resource
+rpc: focus action
+网络交互需要处理 超市、连接错误等异常</p>
+<h4 id="http-connection-pooling">http connection pooling</h4>
+<p>注意 requests session 在 flask 多线程中无法做到线程安全</p>
+<h4 id="http-cache-headers">Http cache headers</h4>
+<p>Etag:  使用时间计算 Etag 需要处理始同步的问题，使用 hash 是比较耗费 cpu 的</p>
+<h4 id="improving-data-transfer">Improving data transfer</h4>
+<p>json 虽然可读，但是比较冗余，浪费带宽。可以采用数据压缩或者采用二进制传输协议。</p>
+<h6 id="gzip">Gzip 压缩</h6>
+<p>nginx/apache 支持，尽量不要在 python 做。requests 库自动会解压 gzip 压缩的数据。
+如果需要压缩发送的数据，使用 gzip 模块并且指定 {'Content-Encoding': 'gzip'} header，需要server端处理。</p>
+<h5 id="binary-payloads">Binary payloads</h5>
+<p>两种广泛使用的二进制协议是 Protocol Buffers(protobuf) and MessagePack，但是压缩方面不太好。
+除非尽可能序列化提速，否则还是坚持用 json 吧。</p>
+<h2 id="asynchronous-calls">Asynchronous calls</h2>
+<h3 id="task-queues">Task queues</h3>
+<p>celery use push-pull tasks queue。可以使用 RabibitMQ 作为 message brokers 支持消息持久化</p>
+<h3 id="topic-queues">Topic queues</h3>
+<p>采用针对某个 topic 的订阅模式, RabibitMQ 实现了 AMQP(Advanced Message Queuing Protocol)，三个概念：
+- queues: 消息接受者，并且等待消费者从中获取消息
+- exchanges: 是发布者向系统添加新消息的入口
+- bindings: 定义了消息如何从 exchanges 路由到 queues</p>
+<h3 id="publishsubscribe">Publish/subscribe</h3>
+<p>如果希望一个消息可以被多个 worker 消费，就需要使用pub/sub</p>
+<h3 id="rpc-over-amqp">RPC over AMQP</h3>
+<p>AMQP 同样实现了同步的 request/response 模式</p>
+<h2 id="testing">Testing</h2>
+<p>functional tests 需要隔离网络调用，通常使用 mock 的方式</p>
+<h3 id="mocking-synchronous-calls">Mocking synchronous calls</h3>
+<p>requests: requests-mock 项目实现了 mock adapter</p>
+<h3 id="mocking-asynchronous-calls">Mocking asynchronous calls</h3>
+<p>讲了如何mock celery 任务</p>
+<h1 id="monitoring-your-services">Monitoring Your Services</h1>
+<h3 id="centralizing-logs">Centralizing logs</h3>
+<p>中心化日志方便收集和查询。</p>
+<p>Sentry 是python社区内知名的错误日志收集工具(知乎也在用)，主要用于收集错误异常，而不是通用的日志查询工具
+Graylog 是一个开源的通用日志收集工具，可以使用内置的收集器或者 fluentd，配合 ES 搜索</p>
+<h3 id="performance-metrics">Performance metrics</h3>
+<p>如果内存使用过高可能就被 out-of-memory killer(oomkiller)杀掉
+- 应用有内存泄露。经常出现在一些 c 扩展忘记对象解引用
+- 代码使用了太多内存。比如无限增长的内存缓存
+- 服务的内存不够用，服务器接受太多了请求</p>
+<h5 id="system-metrics">System metrics</h5>
+<p>psutil: 跨平台的获取系统信息的库
+system-metrics</p>
+<h5 id="code-metrics">Code metrics</h5>
+<p>最简单的方式写个装饰器记录耗时然后发给 Graylog</p>
+<h4 id="web-server-metrics">Web server metrics</h4>
+<p>nginx syslog</p>
+<h1 id="securing-your-services">Securing Your Services</h1>
+<p>OAuth2 authorization protocol</p>
+<h3 id="the-oauth2-protocol">The OAuth2 protocol</h3>
+<p>CCG: client credentials grant</p>
+<h5 id="token-based-authentication">Token-based authentication</h5>
+<p>token 可以携带 authentication (认证) 和 authorization(授权)信息
+OAuth2 使用 JWT 生成token</p>
+<h5 id="the-jwt-standard">The JWT standard</h5>
+<p>JSON Web Token(JWT) 在 RFC 7519 描述, base64 encoded 所以可以被用在 query string
+- Header
+- Payload
+- Signature</p>
+<p>PyJWT 模块</p>
+<h5 id="x509-certificate-based-authentication">X.509 certificate-based authentication</h5>
+<h3 id="web-application-firewall">Web application firewall</h3>
+<p>common attacks:
+- SQL injection: use sqlalchemy and avoid raw sql
+- Cross Site Scripting(XSS)
+- Cross-Site Request Forgery(XSRF/CSRF)</p>
+<p>Open Web Application Security Project(OWASP)</p>
+<h5 id="openresty-lua-and-nginx">OpenResty - Lua and nginx</h5>
+<p>REPL(Read Eval Print Loop)</p>
+<h5 id="rate-and-concurrency-limting">Rate and concurrency limting</h5>
+<p>lua-resty-limit-traffic, you can use it in a acces_by_lua_block_section
+lua-resty-waf</p>
+<h3 id="securing-your-code">Securing Your code</h3>
+<p>两个原则：
+- 每个来自外部的请求在对你的应用或数据操作之前都应该估算
+- 每个应用在系统上的操作都应该有良好定义和限制的域</p>
+<h4 id="asserting-incoming-data">Asserting incoming data</h4>
+<p>Server-Side TemplateInjection(SSTI): 不要直接使用用户传来的数据渲染模板</p>
+<h4 id="limiting-your-application-scope">Limiting your application scope</h4>
+<ul>
+<li>限定访问的http 方法</li>
+<li>限定能访问的资源</li>
+</ul>
+<p>web 服务不要用 root 用户启动，尽量避免在 web 服务中执行外部进程</p>
+<h4 id="using-bandit-linter">Using Bandit linter</h4>
+<p>Openstack 开源了一个检测代码安全性的工具 Bandit</p>
+<h1 id="bringing-it-all-together">Bringing It All Together</h1>
+<h3 id="building-a-reactjs-dashboard">Building a ReactJS dashboard</h3>
+<h3 id="flask-and-reactjs">Flask and ReactJS</h3>
+<h5 id="cross-origin-resource-sharing">Cross-origin resource sharing</h5>
+<p>浏览器同源策略
+CORS</p>
+<h3 id="authentication-and-authorication">Authentication and authorication</h3>
+<h1 id="packaging-and-running-runnerly">Packaging and Running Runnerly</h1>
+<h3 id="packaing">Packaing</h3>
+<p>打包 Python 项目：
+- setup.py: 一个特殊的模块，用来驱动一切
+- requirements.txt：依赖文件列表
+- MANIFEST.in: 列出需要发布文件</p>
+<h3 id="process-management">Process management</h3>
+<p>preform model: uwsgi, gunicorn</p>
+<p>Circus: 进程管理器</p>
+<h1 id="containerized-services">Containerized Services</h1>
+<h3 id="what-is-docker">What is Docker?</h3>
+<p>Docker project is a container platform, which lets you run your application in isolated environments.</p>
+<h3 id="docker101">Docker101</h3>
+<h3 id="docker-compose">Docker Compose</h3>
+<p>Docker compose simplifies the task by letting you define multiple containers configuration in a single configuration file.</p>
+<h3 id="introduction-to-clustering-and-provisioning">Introduction to Clustering and Provisioning</h3>
+<p>The collection of containers running the same image is called cluster.</p>
+<p>Service discovery and sharing configuration can be done by tools like Consul or Etcd and
+Docker's swarm mode can be configured to interact with those tools.</p>
+<p>Provisioning: this term describes the process of creatin new hosts, and therefore, clusters, given the description of the stack you are deploying in some declarative form.</p>
+<p>Ansible or Salt provide a  Devops-friendly environment to deploy and manage hosts.</p>
+<p>Kubernetes is yet another tool, can be used to deply clusters containers on hosts.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../high_performance_python/" class="btn btn-neutral float-right" title="《High Performance Python》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../fluent_python/" class="btn btn-neutral" title="《Fluent Python》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../fluent_python/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../high_performance_python/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/require.js"></script>
+      <script src="../../search/search.js"></script>
+
+</body>
+</html>

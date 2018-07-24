@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>《clean_architecture》 - 读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300aclean_architecture\u300b";
+    var mkdocs_page_input_path = "\u7f51\u7ad9\u67b6\u6784/clean_architecture.md";
+    var mkdocs_page_url = "/\u7f51\u7ad9\u67b6\u6784/clean_architecture/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> 读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/README/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《clean_architecture》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1-what-is-design-and-architecture">1. What is Design and Architecture ?</a></li>
+    
+
+    <li class="toctree-l3"><a href="#2-a-tale-of-two-values">2. A Tale of Two Values</a></li>
+    
+
+    <li class="toctree-l3"><a href="#3-paradigm-overview">3. Paradigm Overview</a></li>
+    
+
+    <li class="toctree-l3"><a href="#4-structured-programming">4. Structured Programming</a></li>
+    
+
+    <li class="toctree-l3"><a href="#5-object-oriented-programming">5. Object-Oriented Programming</a></li>
+    
+
+    <li class="toctree-l3"><a href="#6-functional-programming">6. Functional Programming</a></li>
+    
+
+    <li class="toctree-l3"><a href="#7-srp-the-single-responsibility-principle">7. SRP: The Single Responsibility Principle</a></li>
+    
+
+    <li class="toctree-l3"><a href="#8-ocp-the-open-closed-principle">8. OCP: The Open-Closed Principle</a></li>
+    
+
+    <li class="toctree-l3"><a href="#9-lsp-the-liskov-substitution-principle">9. LSP: The Liskov Substitution Principle</a></li>
+    
+
+    <li class="toctree-l3"><a href="#10-isp-the-interface-segregation-principle">10. ISP: The Interface Segregation Principle</a></li>
+    
+
+    <li class="toctree-l3"><a href="#11-dip-the-dependency-inversion-principle">11. DIP: The Dependency Inversion Principle</a></li>
+    
+
+    <li class="toctree-l3"><a href="#12-components">12. Components</a></li>
+    
+
+    <li class="toctree-l3"><a href="#13-component-cohesion">13. Component Cohesion</a></li>
+    
+
+    <li class="toctree-l3"><a href="#14-component-coupling">14. Component Coupling</a></li>
+    
+
+    <li class="toctree-l3"><a href="#15-what-is-architecture">15. What is Architecture ?</a></li>
+    
+
+    <li class="toctree-l3"><a href="#16-independence">16. Independence</a></li>
+    
+
+    <li class="toctree-l3"><a href="#17-boundaries-drawing-lines">17. Boundaries: Drawing Lines</a></li>
+    
+
+    <li class="toctree-l3"><a href="#18-boundary-anatomy">18. Boundary Anatomy</a></li>
+    
+
+    <li class="toctree-l3"><a href="#19-policy-and-level">19. Policy And Level</a></li>
+    
+
+    <li class="toctree-l3"><a href="#20-business-rules">20. Business Rules</a></li>
+    
+
+    <li class="toctree-l3"><a href="#21-screaming-architecture">21. Screaming Architecture</a></li>
+    
+
+    <li class="toctree-l3"><a href="#22-the-clean-architecture">22. The Clean Architecture</a></li>
+    
+
+    <li class="toctree-l3"><a href="#23-presenters-and-humble-objects">23 Presenters and Humble Objects</a></li>
+    
+
+    <li class="toctree-l3"><a href="#24-partial-boundaries">24 Partial Boundaries</a></li>
+    
+
+    <li class="toctree-l3"><a href="#25-layers-and-boundaries">25. Layers And Boundaries</a></li>
+    
+
+    <li class="toctree-l3"><a href="#26-the-main-component">26. The Main Component</a></li>
+    
+
+    <li class="toctree-l3"><a href="#27-services-great-and-small">27. Services: Great and Small</a></li>
+    
+
+    <li class="toctree-l3"><a href="#28-the-test-boundary">28. The Test Boundary</a></li>
+    
+
+    <li class="toctree-l3"><a href="#29-clean-embedded-architecture">29. Clean Embedded Architecture</a></li>
+    
+
+    <li class="toctree-l3"><a href="#30-the-database-is-a-detail">30. The Database is a Detail</a></li>
+    
+
+    <li class="toctree-l3"><a href="#31-the-web-is-a-detail">31. The Web is a Detail</a></li>
+    
+
+    <li class="toctree-l3"><a href="#32-frameworks-are-details">32. Frameworks are details</a></li>
+    
+
+    <li class="toctree-l3"><a href="#33-the-missing-chapter">33. The Missing Chapter</a></li>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>网站架构 &raquo;</li>
+        
+      
+    
+    <li>《clean_architecture》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <blockquote>
+<p>Architecture is a hypothesis, that needs to be proven by implementation and measurement. - Tom Bilb</p>
+</blockquote>
+<h1 id="1-what-is-design-and-architecture">1. What is Design and Architecture ?</h1>
+<blockquote>
+<p>The only way to go fast, is to go well.</p>
+</blockquote>
+<p>软件构建的目标是尽可能减小构建和维护软件系统所需的人力资源。
+不要一开始就匆匆写代码（制造混乱）然后妄图以后重新设计，推翻重来会重走老路。</p>
+<h1 id="2-a-tale-of-two-values">2. A Tale of Two Values</h1>
+<p>每个软件系统都提供两种价值：</p>
+<ul>
+<li>behavior: 让机器实现需求(urgent but not always particularly important)</li>
+<li>structure: software must be soft ,easy to change.(important but never particularly urgent)</li>
+</ul>
+<p>大部分商业领导者和开发人员不能把紧急却不重要的特性和紧急且重要的特性区分开，这种错误导致人们更重视不重要的
+特性而不是重要的系统架构。开发人员面临的窘境是商业领导者不具备评估架构重要性的能力，这种责任落到了软件开发 team 的身上。</p>
+<h1 id="3-paradigm-overview">3. Paradigm Overview</h1>
+<p>本章讲了三种编程范式：结构化、面向对象、函数式(你会发现都是几十年前发明的)</p>
+<ul>
+<li>
+<p>Structured Programming: Dijkstra 在 1968 发明，他提出随意使用 goto 语句对程序结构是有害的。</p>
+<blockquote>
+<p>Structured programming imposes discipline on direct transfer of control.</p>
+</blockquote>
+</li>
+<li>
+<p>Object-Oriented Programming: 1966 年由 Johan Dahl 和 Kristen Nvgaard 发明。</p>
+<blockquote>
+<p>Object-oroented programming imposes discipline on indirect transfer of control.</p>
+</blockquote>
+</li>
+<li>
+<p>Functional Programming: 1936 年在 Alonzo Church(阿隆佐·邱奇) 在 Lambda calculus (lambda演算)中提出。</p>
+<blockquote>
+<p>Functional programming imposes discipline upon assignment.</p>
+</blockquote>
+</li>
+</ul>
+<p>三种编程范式很好地对应了架构中的三种概念：函数、组件分离、数据管理</p>
+<h1 id="4-structured-programming">4. Structured Programming</h1>
+<p>本章讲了 Dijkstra 提出结构化编程的过程。
+所有程序都可以用三种基本结构表示：顺序、选择、循环</p>
+<h1 id="5-object-oriented-programming">5. Object-Oriented Programming</h1>
+<p>Encapsulation, Inheritance, Polymorphism(提供了依赖倒置的能力)</p>
+<p>To the software artchitect, the answer is clear: OO is the ability, through the use of polymorphism, to gain absolute
+control over every source code dependency in the system. It allows the artchitect to create a plugin architecture, in
+which modules that contain high-level policies are independent of modules that contain low-level details.</p>
+<h1 id="6-functional-programming">6. Functional Programming</h1>
+<p>函数式编程概念甚至早于编程本身。变量在函数式编程语言中不会变化(variables in functional languages do not vary)</p>
+<p>Immutablility and Architecture: 为什么架构要考虑不可变性。答案很简单：所有的竞争条件、死锁、并发更新问题都源于可变变量。
+架构师应该尽可能把处理放在不可变组件上。</p>
+<p>虽然工具在变、软件在变，但是软件的本质几十年来并没有发生改变。</p>
+<h1 id="7-srp-the-single-responsibility-principle">7. SRP: The Single Responsibility Principle</h1>
+<p>A module should be responsible to one, and only one, actor.</p>
+<p>Actor 可以理解为一个抽象实体，一个类的方法应该仅仅属于相关的实体，不要把本应该属于其他实体的类放到一个类里。</p>
+<h1 id="8-ocp-the-open-closed-principle">8. OCP: The Open-Closed Principle</h1>
+<p>A software artifact should be open for extension but closed for modification.</p>
+<p>通过合理分层，使得模块在需要扩充功能的时候，增加而不是修改它。低层次的组件修改的时候要保护高层次的组件不受影响。
+一般通过把系统进行组件拆分，然后重组这些组件的依赖等级来保护高层次的组件不被低层次组件改变受到影响。</p>
+<h1 id="9-lsp-the-liskov-substitution-principle">9. LSP: The Liskov Substitution Principle</h1>
+<p>所有使用基类的地方都可以使用子类替换。Anywhere you use a base class, you should be able to use a subclass and not know it.
+要遵守Liskov替换原则，相对基类的对应方法，派生类服务（方法）应该不要求更多，不承诺更少。</p>
+<h1 id="10-isp-the-interface-segregation-principle">10. ISP: The Interface Segregation Principle</h1>
+<p>不要强制客户端使用他们不需要的接口。
+It is Harmful to depend on modules that contain more than you need.</p>
+<h1 id="11-dip-the-dependency-inversion-principle">11. DIP: The Dependency Inversion Principle</h1>
+<p>对于灵活的系统，源码应该仅仅依赖于抽象，而不是细节。在静态类型语言如 java 中，意味着 use，import include 语句应该仅引入
+包含接口、抽象类、或者其他抽象定义的模块。</p>
+<ul>
+<li>Don't refer to volatile concrete classes. Refer to abstract interfaces instead.</li>
+<li>Don't derve from volatile concrete classes.</li>
+<li>Don't override concrete functions.</li>
+<li>
+<p>Never mention the name of anything concrete and volatile.</p>
+<p>为了满足以上限制，经常使用抽象工厂创建对象</p>
+</li>
+</ul>
+<h1 id="12-components">12. Components</h1>
+<p>能被独立部署的基本单元。(jar files, DLLS)
+动态链接的文件，可以在运行时组合在一起，就是我们所说的架构中的软件组件(sofeware components)</p>
+<h1 id="13-component-cohesion">13. Component Cohesion</h1>
+<p>Three principles of component cohesion:</p>
+<ul>
+<li>
+<p>REP: The Resuse/Release Equivalence Principle: The granule of resuse is the granule of release. (重用粒度等价与发布粒度)
+    这样可以通过发布版本号来更新重用的组件。从软件设计的角度说，这个原则意味着组成一个组件的类和模块应该是内聚的，
+    并且能被一起发布。</p>
+</li>
+<li>
+<p>CCP: The Common Closure Principle: Gather into components those classes that chagne for the same reasons and at the
+    same times.</p>
+</li>
+<li>
+<p>CRP: The Common Resuse Principle: Don't force users of a component to depend on things they don't need.
+    倾向于在一起被重复使用的类和模块应该放在一个组件里。</p>
+</li>
+</ul>
+<h1 id="14-component-coupling">14. Component Coupling</h1>
+<ul>
+<li>
+<p>The Acyclic Dependencies Principle: Allow no cycles in the component dependency graph.  (避免循环依赖，各个组件的依赖应该是有向无环图)
+    如果有循环依赖，可以通过依赖倒置原则创见新的接口来打破循环依赖。(动态语言和静态语言实现上不同)</p>
+</li>
+<li>
+<p>The Stable Dependencies Principle: Depend in the direction of stability.
+    任何易变的组件都不应该依赖难以修改的组件。如何衡量一个组件的稳定性：一种方式是计算有多少组件依赖和被依赖(Fan-in, Fan-out)该组件</p>
+</li>
+<li>
+<p>The Stable Abstractions Principle: A component shoud be as abstract as it is stable.
+    一个稳定的组件应该是抽象的，而不稳定的组件应该是具体的。</p>
+</li>
+</ul>
+<h1 id="15-what-is-architecture">15. What is Architecture ?</h1>
+<ul>
+<li>development: easy to develop</li>
+<li>deployment: easily deployed with a single action</li>
+<li>operation: A good software architecture communicates the operational needs of the system.</li>
+<li>maintenance: separate the system in to components, and isolate those component through stable interfaces.</li>
+</ul>
+<h1 id="16-independence">16. Independence</h1>
+<ul>
+<li>Use Cases: the artchitecture of the system must support the intent of the system</li>
+<li>Operation:  Architecture plays a more substantial, and less cosmetic, role in supporting the operation of the system.</li>
+<li>development: 康威定律</li>
+<li>deployment: immediate deplyment</li>
+</ul>
+<h1 id="17-boundaries-drawing-lines">17. Boundaries: Drawing Lines</h1>
+<p>要在软件架构中划清楚界限，首先需要把系统分成组件。其中一些是核心业务逻辑、其他是包含必要函数但是不直接和业务逻辑关联的组件。
+然后重组组件中的代码使得他们都指向同一个方向：业务逻辑。</p>
+<h1 id="18-boundary-anatomy">18. Boundary Anatomy</h1>
+<p>软件界限划分的几种形式：单一文件、可单独部署的组件、线程、本地进程、服务</p>
+<h1 id="19-policy-and-level">19. Policy And Level</h1>
+<ul>
+<li>
+<p>Level: the distance from the inputs and outputs.</p>
+<p>Lower-level component should plug in to higher-level components.</p>
+</li>
+</ul>
+<h1 id="20-business-rules">20. Business Rules</h1>
+<ul>
+<li>
+<p>Entities: An Entity is an object within our computer system that embodies a small set of critical business rules
+    operating on Critical Business Data.</p>
+</li>
+<li>
+<p>Use case: A use case is an object. It has one or more functions that implement the application-specific business
+    rules.(比如数据校验层)</p>
+</li>
+<li>
+<p>Request And Response Modules: The use case class accepts simple request data structures for its input, and returns
+    simple response data structures as its output.</p>
+</li>
+</ul>
+<h1 id="21-screaming-architecture">21. Screaming Architecture</h1>
+<ul>
+<li>The purpose of an architecture: 好的软件架构允许我们延迟选择所使用的框架、数据库、web 服务器等。</li>
+</ul>
+<h1 id="22-the-clean-architecture">22. The Clean Architecture</h1>
+<p>The Dependency Rule: source code dependencies must point only inward, toward higher-level policies.</p>
+<p><img alt="clean" src="https://pic1.zhimg.com/v2-07b2e4403c83a8b377ad14ab3589044c.jpg" /></p>
+<ul>
+<li>Entities: 实体封装业务领域规则，可以是包含方法的对象，或者一系列数据结构和函数。</li>
+<li>Use Cases: 包含应用层业务逻辑。</li>
+<li>Interface Adapters: convert data from the format most convenient for the use cases and entities, to the format most
+    convenient for some external agency such as the database or the web.</li>
+<li>Frameworks and Drivers: is generally composed of frameworks and tools such as the database and the web framework.</li>
+</ul>
+<h1 id="23-presenters-and-humble-objects">23 Presenters and Humble Objects</h1>
+<ul>
+<li>Humble Object Pattern: separation of the behaviors into testable and non-testable parts.</li>
+</ul>
+<h1 id="24-partial-boundaries">24 Partial Boundaries</h1>
+<p>three simple ways to partially implement an architectural boundary.</p>
+<ul>
+<li>skip the last step: do all the work necessary to create independently compilable and deployable compoments, and then simple keep them together in the same component.</li>
+<li>One-Dimensional Boundaries: Use Strategy pattern</li>
+<li>Facades</li>
+</ul>
+<h1 id="25-layers-and-boundaries">25. Layers And Boundaries</h1>
+<p>You must weight the costs and determine where the architectural boundaries lie, and which should be fully implemented,
+and which should be partially implemented and which should be ignored.</p>
+<h1 id="26-the-main-component">26. The Main Component</h1>
+<p>Main is a dirty low-level module in the outermost circle of the clean artchitecture. It loads everything up for the high level system, and then hands control over to it.</p>
+<h1 id="27-services-great-and-small">27. Services: Great and Small</h1>
+<p>服务化</p>
+<ul>
+<li>解耦谬论：服务化只实现了变量级的解耦，他们依然被共享处理器、网络甚至数据耦合。</li>
+<li>独立开发和部署的谬论：历史证明基于组件式系统也能被很好部署；解耦谬论决定了开发和部署不能够完全独立。</li>
+</ul>
+<p>服务必须被设计为其内部组件遵循『Dependency Rule』</p>
+<h1 id="28-the-test-boundary">28. The Test Boundary</h1>
+<ul>
+<li>Design for Testability: Don't Depend on volatile things. 比如不要引入 GUI 到测试里。</li>
+<li>The Tesging API: decouple the structure of the tests from the structure of the application.</li>
+</ul>
+<h1 id="29-clean-embedded-architecture">29. Clean Embedded Architecture</h1>
+<p>App-Titude Test:</p>
+<h1 id="30-the-database-is-a-detail">30. The Database is a Detail</h1>
+<h1 id="31-the-web-is-a-detail">31. The Web is a Detail</h1>
+<h1 id="32-frameworks-are-details">32. Frameworks are details</h1>
+<p>Keep the framework behind an architectural boundary if at all possible, for as long as possible.</p>
+<h1 id="33-the-missing-chapter">33. The Missing Chapter</h1>
+<ul>
+<li>Package By Layer: 起初最简单的设计是水平层次的设计。web 代码一层、业务逻辑一层、持久化一层。</li>
+<li>Package By Feature: 垂直切分。放到一个 package 里， 根据被分组的概念来命名</li>
+<li>Ports and Adapters</li>
+<li>Package By Component: 把职责相关的代码放到一个粗粒度的组件里</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../微服务设计/" class="btn btn-neutral float-right" title="《微服务设计》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../design_data_instensive_application/" class="btn btn-neutral" title="《design_data_instensive_application》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../design_data_instensive_application/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../微服务设计/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/require.js"></script>
+      <script src="../../search/search.js"></script>
+
+</body>
+</html>

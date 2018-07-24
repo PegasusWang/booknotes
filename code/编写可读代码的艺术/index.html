@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>《编写可读代码的艺术》 - 读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300a\u7f16\u5199\u53ef\u8bfb\u4ee3\u7801\u7684\u827a\u672f\u300b";
+    var mkdocs_page_input_path = "code/\u7f16\u5199\u53ef\u8bfb\u4ee3\u7801\u7684\u827a\u672f.md";
+    var mkdocs_page_url = "/code/\u7f16\u5199\u53ef\u8bfb\u4ee3\u7801\u7684\u827a\u672f/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> 读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《编写可读代码的艺术》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1">1.代码应当易于理解</a></li>
+    
+
+    <li class="toctree-l3"><a href="#2">2.把信息装进名字里</a></li>
+    
+
+    <li class="toctree-l3"><a href="#3">3.不会误解的名字</a></li>
+    
+
+    <li class="toctree-l3"><a href="#4">4. 审美</a></li>
+    
+
+    <li class="toctree-l3"><a href="#5">5. 该写什么样的注释</a></li>
+    
+
+    <li class="toctree-l3"><a href="#6">6. 写出言简意赅的注释</a></li>
+    
+
+    <li class="toctree-l3"><a href="#7">7. 把控制流变得易读</a></li>
+    
+
+    <li class="toctree-l3"><a href="#8">8. 拆分超长表达式</a></li>
+    
+
+    <li class="toctree-l3"><a href="#9">9. 变量与可读性</a></li>
+    
+
+    <li class="toctree-l3"><a href="#10">10. 抽取不相关子问题</a></li>
+    
+
+    <li class="toctree-l3"><a href="#11">11. 一次只做一件事</a></li>
+    
+
+    <li class="toctree-l3"><a href="#12">12. 把想法变成代码</a></li>
+    
+
+    <li class="toctree-l3"><a href="#13">13. 少写代码</a></li>
+    
+
+    <li class="toctree-l3"><a href="#14">14. 测试与可读性</a></li>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/README/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>代码 &raquo;</li>
+        
+      
+    
+    <li>《编写可读代码的艺术》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="1">1.代码应当易于理解</h1>
+<p>代码的写法应当使别人理解它所需的时间最小化。（相比于仅仅减少行数来说）如果与其他理念冲突，本条优先。</p>
+<h1 id="2">2.把信息装进名字里</h1>
+<ul>
+<li>选择专业的词语(清晰和精确)。比如 fetchPage 优于 getPage</li>
+<li>避免宽泛的名字: 避免 tmp 和 retval 这样宽泛的名字。好的名字应当描述变量的目的或者它承载的值，tmp_file 也比 tmp 好</li>
+<li>用具体的名字代替抽象的名字</li>
+<li>使用前缀或者后缀给名字附带更多信息(英语表示法，非匈牙利命名法)。比如 delay_secs, html_utf8</li>
+<li>决定名字的长度：小的作用域尽可能用短名称，否则应该包含足够的信息。缩略词（团队新成员能否理解它的含义，不能就不要用偏门的缩写）</li>
+<li>利用名字的格式表达含义：比如纯大写表示常量等，骆驼命名法表示类等，遵循一门语言的编程命名约定。在项目中保持一致的命名法</li>
+</ul>
+<h1 id="3">3.不会误解的名字</h1>
+<p>不要使用有歧义的名称</p>
+<ul>
+<li>用 max_ 和 min_ 前缀表示上限和下限；对于包含的范围用 first 和 last；对于包含/排除范围（左闭右开区间）用 begin 和 end</li>
+<li>is、has、can、或 shoould 这样的词能使得 bool 值更明确，并且尽量避免用反义词汇。比如 use_ssl 好于 disable_ssl。（人脑更易于理解正向词汇）</li>
+<li>与使用者的期望匹配：比如使用 get 误让使用者以为这是轻量级操作，可以用 compute 替代</li>
+</ul>
+<h1 id="4">4. 审美</h1>
+<p>好的代码应该看上去『养眼』，三条原则：</p>
+<ul>
+<li>使用一致的布局，让读者很快就能习惯这种风格</li>
+<li>让相似的代码看上去相似</li>
+<li>把相关的代码分组，形成代码块</li>
+</ul>
+<p>编程的大部分时间都花在看代码上，浏览代码的速度越快，越容易使用它：</p>
+<ul>
+<li>重新安排换行来保持一致和紧凑</li>
+<li>提炼出『方法』整理不规则的东西</li>
+<li>在需要的时候使用『列对齐』。（有些编辑器插件能帮助你做这种事，比如 http://vimcasts.org/episodes/aligning-text-with-tabular-vim/）</li>
+<li>选择一个有意义的顺序。比如字典序、重要性等排序</li>
+<li>把声明按照块组织起来，按照逻辑分组</li>
+<li>把代码分成段落，比如按照步骤来分段</li>
+<li>一致的风格比正确的风格重要</li>
+</ul>
+<h1 id="5">5. 该写什么样的注释</h1>
+<p>好代码&gt;差代码+好注释
+什么时候加上：别人看不懂；代码使用的注意事项；</p>
+<ul>
+<li>什么不需要注释。不要拐杖式注释，试图粉饰可读性差的代码的注释。</li>
+<li>用代码记录你的思想。加入『指导性批注』；为瑕疵写注释(TODO,FIXME,HACK)；给常量加注释；</li>
+<li>站在读者的角度，去想象他们需要知道什么。<ul>
+<li>别人读你代码在想为什么要这样的地方需要注释；</li>
+<li>可能的陷阱。比如代码中数据上规模以后有严重性能问题等</li>
+<li>全局观注释。类之间如何交互，数据流动，入口点在哪里等。</li>
+<li>总结性注释。帮助快速理解代码块，不用迷失在细节中</li>
+</ul>
+</li>
+</ul>
+<h1 id="6">6. 写出言简意赅的注释</h1>
+<p>注释应当具有很高的高信息/空间率</p>
+<ul>
+<li>让注释保持紧凑</li>
+<li>避免使用不明确的代词，用代码名称代替 it 等词语</li>
+<li>润色粗糙的句子</li>
+<li>精确描述函数的行为</li>
+<li>用输入输出例子来描述特殊的情况（更直观）</li>
+<li>声明代码的意图。很多时候注释就是告诉读者你写代码的时候怎么想的。</li>
+<li>使用具名函数。python 等语言能这么调用 f(timeout=1)</li>
+<li>采用信息量高的词语。业界常用词汇</li>
+</ul>
+<h1 id="7">7. 把控制流变得易读</h1>
+<ul>
+<li>条件语句中参数的顺序。条件表达式左边的值倾向于是变化的值，右边的值倾向于常量</li>
+<li>if/else 语句块的顺序。建议：先处理正常逻辑；先处理简单的情况；先处理有趣或者可疑的情况</li>
+<li>三目运算符。 相对于减少代码行数，更好的度量方法是理解它的时间。不太建议在三目运算符中使用复杂的表达式，不如 if/else 直观</li>
+<li>避免使用 do/while</li>
+<li>从函数中提前返回</li>
+<li>最小化嵌套。过多的逻辑嵌套会导致难以理解，大脑不断"入栈出栈"，增大圈复杂度</li>
+<li>通过提前返回减少嵌套</li>
+<li>你能理解程序执行的流程吗？线程、信号量（中断）、异常、匿名函数、虚方法等会让流程难以理解，不要滥用。</li>
+</ul>
+<h1 id="8">8. 拆分超长表达式</h1>
+<p>大多数人的大脑最多只能同时考虑 3~4 件事情，代码中的表达式越长，就越难理解。</p>
+<ul>
+<li>引入解释变量。<ul>
+<li><code>if line.split(':')[0].strip() == "root"</code> 改为如下表达式:</li>
+<li><code>username = line.split(':')[0].strip(); if username == "root"</code></li>
+</ul>
+</li>
+<li>总结变量。<code>boolean user_owns_document = (request.user.id == document.owner_id)</code></li>
+<li>使用德摩根律简化逻辑表达式。（口诀：分别取反，转换与/或）<ul>
+<li>not (a or b or c) &lt;=&gt; (not a) and (not b) and (not c)</li>
+<li>not (a and b and c) &lt;=&gt; (not a) or (not b) or (not c)</li>
+</ul>
+</li>
+<li>不要滥用短路逻辑。短路求值有时候会很简洁，但是影响可读性</li>
+<li>从逻辑的反面思考有时候能简化表达式</li>
+<li>提炼重复表达式为变量</li>
+</ul>
+<h1 id="9">9. 变量与可读性</h1>
+<p>变量的草率运用会让程序更难理解：</p>
+<ul>
+<li>变量越多，越难以跟踪他们的动向</li>
+<li>变量的作用域越大，就需要跟踪它的动向越久</li>
+<li>变量改变地越频繁，就越难以跟踪它的当前值</li>
+</ul>
+<p>增强可读性的方式：</p>
+<ul>
+<li>减少不必要临时变量；比如它没有拆分任何复杂的表达式；没有做出更多澄清；只使用过一次等</li>
+<li>减少中间结果</li>
+<li>减少控制流变量：比如 done 标记。可以通过运用结构化编程消除</li>
+<li>缩小变量作用域：防止名称污染。让你的变量对尽量少的代码可见，减少读者同时需要思考的变量个数。</li>
+<li>把变量定义放到使用前</li>
+<li>只写一次的变量更好。常量往往不会引来麻烦。让变量在较少的地方有改动，操作它的地方越多，越难以确定它的值</li>
+</ul>
+<h1 id="10">10. 抽取不相关子问题</h1>
+<p>积极抽出不相关子问题，能让读代码的人关注程序的更高层次目标</p>
+<ul>
+<li>不相关子问题：自包含的，不知道其他程序如何使用它。</li>
+<li>纯工具代码</li>
+<li>简化已有接口</li>
+<li>不要过犹不及，太多小函数会跳转增加理解负担。</li>
+</ul>
+<h1 id="11">11. 一次只做一件事</h1>
+<p>使『代码』一次只做一件事所用到的流程：</p>
+<ul>
+<li>1.列出代码所做的所有『任务』。</li>
+<li>2.尽力把这些任务拆分到不同的函数中，或者至少是代码中的不同段落中。</li>
+</ul>
+<p>对于难度的代码，尝试列出所有任务，其中一些任务可以成为单独的函数或者类，也可以成为函数中的『逻辑段落』</p>
+<h1 id="12">12. 把想法变成代码</h1>
+<p>一个简单的过程使你写出更清晰的代码:</p>
+<ul>
+<li>1.像对着一个同事一样用自然语言描述代码要做什么。</li>
+<li>2.注意描述中所用的关键词和短语</li>
+<li>3.写出与描述匹配的代码</li>
+</ul>
+<h1 id="13">13. 少写代码</h1>
+<ul>
+<li>你不会需要它：不要提前实现不需要的功能</li>
+<li>质疑和拆分你的需求：『减少需求』和『解决更简单的问题』</li>
+<li>保持小代码库：<ul>
+<li>创建越多越好的『工具』代码来减少重复代码</li>
+<li>减少无用代码或没有用到的功能</li>
+<li>让你的项目保持分开的子项目状态</li>
+<li>小心代码『重量』。程序员往往不情愿删除无用代码，因为它代表很多实际的工作量</li>
+</ul>
+</li>
+<li>熟悉你周边的库：每个一段时间时间阅读下标准库中所有函数、模块、类型的名字，防止重复发明轮子</li>
+</ul>
+<h1 id="14">14. 测试与可读性</h1>
+<ul>
+<li>测试应具有可读性，其他程序员可以舒服地改变或者增加测试。</li>
+<li>使用辅助函数隐藏不重要细节。（如构建对象）</li>
+<li>让出错消息易读。</li>
+<li>使用简单但是可以覆盖边界条件的测试值。</li>
+<li>TDD: 仅在写代码的时候想着测试这件事就能帮助把代码写得更好</li>
+<li>所有解耦的方法中，最好的往往就是最容易测试的那个。</li>
+</ul>
+<p>不要走得太远：</p>
+<ul>
+<li>为了测试牺牲真实代码的可读性</li>
+<li>着迷于 100% 的测试覆盖率</li>
+<li>让测试成为产品开发的阻碍</li>
+</ul>
+<p>可读性差的代码及其测试问题和设计问题：</p>
+<ul>
+<li>全局变量：不同测试互相影响：难以理解函数副作用</li>
+<li>大量依赖：难以构建测试脚手架：难以重构</li>
+<li>代码不确定行为：测试古怪：难以跟踪的bug</li>
+</ul>
+<p>可测试较好的代码特征：</p>
+<ul>
+<li>类中很少或没有内部状态：容易测试，很少检查隐藏状态：易于理解</li>
+<li>只做一件事：需要较少测试用例：模块化，少耦合</li>
+<li>依赖少：可以独立测试：可以并行开发</li>
+<li>接口简单明确：明确的行为测试；可重用高</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../编程匠艺/" class="btn btn-neutral float-right" title="《编程匠艺》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../程序员应该知道的97件事/" class="btn btn-neutral" title="《程序员应该知道的97件事》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../程序员应该知道的97件事/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../编程匠艺/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/require.js"></script>
+      <script src="../../search/search.js"></script>
+
+</body>
+</html>
