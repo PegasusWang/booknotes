@@ -731,3 +731,153 @@ Reactor是I/O框架库的核心。它提供的几个主要方法是：
 ![](./time_order.png)
 
 ### 12.2 Libevent 源码分析
+从使用方式入手分析代码：
+
+```c
+#include＜sys/signal.h＞
+#include＜event.h＞
+void signal_cb(int fd,short event,void*argc)  // 回调函数相当于 handle_event，arg 参数是 Reactor 传递给回调函数的参数
+{
+    struct event_base*base=(event_base*)argc;
+    struct timeval delay={2,0};
+    printf("Caught an interrupt signal;exiting cleanly in two seconds...\n");
+    event_base_loopexit(base,＆delay);
+}
+void timeout_cb(int fd,short event,void*argc)
+{
+    printf("timeout\n");
+}
+int main()
+{
+    struct event_base*base=event_init();    // 调用event_init 创建 event_base 对象，一个 event_base 相当于一个 Reactor 实例
+    struct event*signal_event=evsignal_new(base,SIGINT,signal_cb,base);  // 创建信号事件处理器
+    event_add(signal_event,NULL);  // 相当于 register_handler
+    timeval tv={1,0};
+    struct event*timeout_event=evtimer_new(base,timeout_cb,NULL);  // 创建定时器事件处理器
+    event_add(timeout_event,＆tv);
+    event_base_dispatch(base);  // 调用 event_base_dispatch 执行事件循环
+
+    event_free(timeout_event);
+    event_free(signal_event);
+    event_base_free(base);
+}
+```
+
+
+# 13章 多进程编程
+
+进程是Linux操作系统环境的基础，它控制着系统上几乎所有的活动。本章从系统程序员的角度来讨论Linux多进程编程，包括如下内容：
+
+❑复制进程映像的fork系统调用和替换进程映像的exec系列系统调用。
+
+❑僵尸进程以及如何避免僵尸进程。
+
+❑进程间通信（Inter-Process Communication，IPC）最简单的方式：管道。
+
+❑3种System V进程间通信方式：信号量、消息队列和共享内存。它们都是由AT＆T System V2版本的UNIX引入的，所以统称为System V IPC。
+
+❑在进程间传递文件描述符的通用方法：通过UNIX本地域socket传递特殊的辅助数据
+
+### 13.1 fork 系统调用
+
+Linux下创建新进程的系统调用是fork
+
+```c
+#include＜sys/types.h＞
+#include＜unistd.h＞
+pid_t fork(void);<Paste>
+```
+
+该函数的每次调用都返回两次，在父进程中返回的是子进程的PID，在子进程中则返回0。该返回值是后续代码判断当前进程是父进程还是子进程的依据。
+
+### 13.2 exec 系列系统调用
+
+有时我们需要在子进程中执行其他程序，即替换当前进程映像，这就需要使用如下exec系列函数之一：
+
+```c
+#include＜unistd.h＞
+extern char**environ;
+int execl(const char*path,const char*arg,...);
+int execlp(const char*file,const char*arg,...);
+int execle(const char*path,const char*arg,...,char*const envp[]);
+int execv(const char*path,char*const argv[]);
+int execvp(const char*file,char*const argv[]);
+int execve(const char*path,char*const argv[],char*const envp[]);
+```
+
+### 13.3 处理僵尸进程
+
+如果父进程没有正确地处理子进程的返回信息，子进程都将停留在僵尸态，并占据着内核资源。这是绝对不能容许的，毕竟内核资源有限。下面这对函数在父进程中调用，以等待子进程的结束，并获取子进程的返回信息，从而避免了僵尸进程的产生，或者使子进程的僵尸态立即结束：
+
+```c
+#include＜sys/types.h＞
+#include＜sys/wait.h＞
+pid_t wait(int*stat_loc);
+pid_t waitpid(pid_t pid,int*stat_loc,int options); //可以是非阻塞的
+```
+
+wait函数将阻塞进程，直到该进程的某个子进程结束运行为止。它返回结束运行的子进程的PID，并将该子进程的退出状态信息存储于stat_loc参数指向的内存中。
+
+当一个进程结束时，它将给其父进程发送一个SIGCHLD信号。因此，我们可以在父进程中捕获SIGCHLD信号，并在信号处理函数中调用waitpid函数以“彻底结束”一个子进程，
+
+```c
+static void handle_child(int sig)
+{
+pid_t pid;
+int stat;
+while((pid=waitpid(-1,＆stat,WNOHANG))＞0)
+  {
+  /*对结束的子进程进行善后处理*/
+  }
+}
+```
+
+### 13.4 管道
+pipe 也是父子进程之间通信的常用手段
+
+![](./pipe.png)
+
+### 13.5 信号量
+
+当多个进程同时访问系统上的某个资源的时候，比如同时写一个数据库的某条记录，或者同时修改某个文件，就需要考虑进程的同步问题，以确保任一时刻只有一个进程可以拥有对资源的独占式访问。通常，程序对共享资源的访问的代码只是很短的一段，但就是这一段代码引发了进程之间的竞态条件。我们称这段代码为关键代码段，或者**临界区**。对进程同步，也就是确保任一时刻只有一个进程能进入关键代码段。
+
+Dijkstra提出的信号量（Semaphore）概念是并发编程领域迈出的重要一步。信号量是一种特殊的变量，它只能取自然数值并且只支持两种操作：等待（wait）和信号（signal）。不过在Linux/UNIX中，“等待”和“信号”都已经具有特殊的含义，所以对信号量的这两种操作更常用的称呼是P、V操作。这两个字母来自于荷兰语单词passeren（传递，就好像进入临界区）和vrijgeven（释放，就好像退出临界区）。假设有信号量SV，则对它的P、V操作含义如下：
+
+❑P(SV)，如果SV的值大于0，就将它减1；如果SV的值为0，则挂起进程的执行。
+
+❑V(SV)，如果有其他进程因为等待SV而挂起，则唤醒之；如果没有，则将SV加1。
+
+注意　使用一个普通变量来模拟二进制信号量是行不通的，因为所有高级语言都没有一个原子操作可以同时完成如下两步操作：检测变量是否为true/false，如果是则再将它设置为false/true。
+
+semget系统调用创建一个新的信号量集，或者获取一个已经存在的信号量集。其定义如下：
+
+```c
+#include＜sys/sem.h＞
+int semget(key_t key,int num_sems,int sem_flags);
+```
+
+semop系统调用改变信号量的值，即执行P、V操作。
+
+```c
+unsigned short semval;
+/*信号量的值*/
+unsigned short semzcnt;
+
+/*等待信号量值变为0的进程数量*/
+unsigned short semncnt;
+/*等待信号量值增加的进程数量*/
+pid_t sempid;
+/*最后一次执行semop操作的进程ID*/
+
+//semop对信号量的操作实际上就是对这些内核变量的操作。
+int semop(int sem_id,struct sembuf*sem_ops,size_t num_sem_ops);
+```
+
+semctl系统调用允许调用者对信号量进行直接控制。其定义如下：
+
+```c
+#include＜sys/sem.h＞
+int semctl(int sem_id,int sem_num,int command,...);
+```
+
+semget的调用者可以给其key参数传递一个特殊的键值IPC_PRIVATE（其值为0），这样无论该信号量是否已经存在，semget都将创建一个新的信号量。使用该键值创建的信号量并非像它的名字声称的那样是进程私有的。其他进程，尤其是子进程，也有方法来访问这个信号量。所以semget的man手册的BUGS部分上说，使用名字IPC_PRIVATE有些误导（历史原因），应该称为IPC_NEW。
