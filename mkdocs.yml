@@ -49,10 +49,16 @@ pages:
     - 心理学:
       - 《一切都是童年的错吗》: 'psychology/一切都是童年的错吗.md'
       - 《亲密关系》: 'psychology/亲密关系.md'
+      - 《情商》: 'psychology/情商.md'
+      - 《拖延心理学》: 'psychology/拖延心理学.md'
       - 《积极心理学》: 'psychology/积极心理学.md'
+      - 《活出最乐观的自己》: 'psychology/活出最乐观的自己.md'
+      - 《改变心理学的40项研究》: 'psychology/改变心理学的40项研究.md'
+      - 《超越自卑》: 'psychology/超越自卑.md'
     - python:
       - 《Fluent Python》: 'python/fluent_python.md'
       - 《Python Microservices Development》: 'python/Python_Microservices_Development.md'
+      - 《High Performance Python》: 'python/high_performance_python.md'
     - 创业:
       - 《Hello Startup》: 'startup/hello_startup.md'
       - 《斯坦福公开课如何创业》: 'startup/斯坦福公开课-如何创业.md'
@@ -69,6 +75,7 @@ pages:
       - 《Pro Git》: '开发工具/pro_git.md'
     - 思维:
       - 《专注力》: '思维/专注力_化繁为简的惊人力量.md'
+      - 《刻意练习》: '思维/刻意练习.md'
       - 《批判性思维工具》: '思维/批判性思维工具.md'
       - 《程序员的思维修炼》: '思维/程序员的思维修炼(开发认知潜能的九堂课).md'
       - 《超效率手册》: '思维/超效率手册.md'
@@ -91,5 +98,7 @@ pages:
       - 《python自动化运维》: '运维/python自动化运维.md'
     - 金融理财:
       - 《穷查理宝典》: '金融_finance/穷查理宝典.md'
+    - 互联网:
+      - 《我的互联网方法论-周鸿祎》: '互联网/我的互联网方法论-周鸿祎.md'
     - 区块链:
       - 《区块链技术指南》: '区块链/区块链技术指南(blockchain_guide).md'
