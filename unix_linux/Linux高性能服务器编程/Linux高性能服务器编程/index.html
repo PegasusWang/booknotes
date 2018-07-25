@@ -496,6 +496,8 @@
         
             <li><a class="toctree-l4" href="#135">13.5 信号量</a></li>
         
+            <li><a class="toctree-l4" href="#136">13.6 共享内存</a></li>
+        
         </ul>
     
 
@@ -1396,6 +1398,12 @@ int semctl(int sem_id,int sem_num,int command,...);
 </code></pre>
 
 <p>semget的调用者可以给其key参数传递一个特殊的键值IPC_PRIVATE（其值为0），这样无论该信号量是否已经存在，semget都将创建一个新的信号量。使用该键值创建的信号量并非像它的名字声称的那样是进程私有的。其他进程，尤其是子进程，也有方法来访问这个信号量。所以semget的man手册的BUGS部分上说，使用名字IPC_PRIVATE有些误导（历史原因），应该称为IPC_NEW。</p>
+<h3 id="136">13.6 共享内存</h3>
+<p>共享内存是最高效的 IPC 机制，不涉及进程之间任何数据传递，但需要同步进程对共享内存的访问，否则会产生静态条件</p>
+<p>shmget系统调用创建一段新的共享内存，或者获取一段已经存在的共享内存。其定义如下：</p>
+<pre><code class="c">#include＜sys/shm.h＞
+int shmget(key_t key,size_t size,int shmflg);
+</code></pre>
               
             </div>
           </div>
