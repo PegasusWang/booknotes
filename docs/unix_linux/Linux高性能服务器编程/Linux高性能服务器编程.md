@@ -881,3 +881,125 @@ int semctl(int sem_id,int sem_num,int command,...);
 ```
 
 semget的调用者可以给其key参数传递一个特殊的键值IPC_PRIVATE（其值为0），这样无论该信号量是否已经存在，semget都将创建一个新的信号量。使用该键值创建的信号量并非像它的名字声称的那样是进程私有的。其他进程，尤其是子进程，也有方法来访问这个信号量。所以semget的man手册的BUGS部分上说，使用名字IPC_PRIVATE有些误导（历史原因），应该称为IPC_NEW。
+
+### 13.6 共享内存
+共享内存是最高效的 IPC 机制，不涉及进程之间任何数据传递，但需要同步进程对共享内存的访问，否则会产生静态条件
+
+shmget系统调用创建一段新的共享内存，或者获取一段已经存在的共享内存。其定义如下：
+
+```c
+#include＜sys/shm.h＞
+int shmget(key_t key,size_t size,int shmflg);
+```
+如果shmget用于创建共享内存，则这段共享内存的所有字节都被初始化为0，与之关联的内核数据结构shmid_ds将被创建并初始化。shmid_ds结构体
+
+```c
+struct shmid_ds
+{
+struct ipc_perm shm_perm;/*共享内存的操作权限*/
+size_t shm_segsz;/*共享内存大小，单位是字节*/
+__time_t shm_atime;/*对这段内存最后一次调用shmat的时间*/
+__time_t shm_dtime;/*对这段内存最后一次调用shmdt的时间*/
+__time_t shm_ctime;/*对这段内存最后一次调用shmctl的时间*/
+__pid_t shm_cpid;/*创建者的PID*/
+__pid_t shm_lpid;/*最后一次执行shmat或shmdt操作的进程的PID*/
+shmatt_t shm_nattach;/*目前关联到此共享内存的进程数量*/
+/*省略一些填充字段*/
+};
+```
+
+共享内存被创建/获取之后，我们不能立即访问它，而是需要先将它关联到进程的地址空间中。使用完共享内存之后，我们也需要将它从进程地址空间中分离。这两项任务分别由如下两个系统调用实现：
+
+```c
+#include＜sys/shm.h＞
+void*shmat(int shm_id,const void*shm_addr,int shmflg);
+int shmdt(const void*shm_addr);
+```
+
+shmctl系统调用控制共享内存的某些属性。其定义如下：
+
+```c
+#include＜sys/shm.h＞
+int shmctl(int shm_id,int command,struct shmid_ds*buf);
+```
+
+### 13.7 消息队列
+
+消息队列是在两个进程之间传递二进制块数据的一种简单有效的方式。每个数据块都有一个特定的类型，接收方可以根据类型来有选择地接收数据，而不一定像管道和命名管道那样必须以先进先出的方式接收数据。
+msgget系统调用创建一个消息队列，或者获取一个已有的消息队列。其定义如下：
+
+```c
+#include＜sys/msg.h＞
+int msgget(key_t key,int msgflg);
+```
+如果msgget用于创建消息队列，则与之关联的内核数据结构msqid_ds将被创建并初始化。msqid_ds结构体的定义如下：
+
+```c
+struct msqid_ds
+{
+struct ipc_perm msg_perm;/*消息队列的操作权限*/
+time_t msg_stime;/*最后一次调用msgsnd的时间*/
+time_t msg_rtime;/*最后一次调用msgrcv的时间*/
+time_t msg_ctime;/*最后一次被修改的时间*/
+unsigned long__msg_cbytes;/*消息队列中已有的字节数*/
+msgqnum_t msg_qnum;/*消息队列中已有的消息数*/
+msglen_t msg_qbytes;/*消息队列允许的最大字节数*/
+pid_t msg_lspid;/*最后执行msgsnd的进程的PID*/
+pid_t msg_lrpid;/*最后执行msgrcv的进程的PID*/
+};
+```
+
+msgsnd系统调用把一条消息添加到消息队列中。其定义如下：
+
+```c
+#include＜sys/msg.h＞
+int msgsnd(int msqid,const void*msg_ptr,size_t msg_sz,int msgflg);
+struct msgbuf
+{
+long mtype;/*消息类型*/
+char mtext[512];/*消息数据*/
+};
+```
+
+msgrcv系统调用从消息队列中获取消息。其定义如下：
+
+```c
+#include＜sys/msg·h＞
+int msgrcv(int msqid,void*msg_ptr,size_t msg_sz,long int msgtype,int msgflg);
+```
+
+msgctl系统调用控制消息队列的某些属性。其定义如下：
+
+```c
+#include＜sys/msg.h＞
+int msgctl(int msqid,int command,struct msqid_ds*buf);
+```
+
+### 13.8 IPC 命令
+
+上述3种System V IPC进程间通信方式都使用一个全局唯一的键值（key）来描述一个共享资源。当程序调用semget、shmget或者msgget时，就创建了这些共享资源的一个实例。Linux提供了ipcs命令，以观察当前系统上拥有哪些共享资源实例。
+
+```c
+$sudo ipcs
+------Shared Memory Segments--------
+key shmid owner perms bytes nattch status
+------Semaphore Arrays--------
+key semid owner perms nsems
+0x00000000 196608 apache 600 1
+0x00000000 229377 apache 600 1
+0x00000000 262146 apache 600 1
+0x00000000 294915 apache 600 1
+0x00000000 327684 apache 600 1
+0x00000000 360453 apache 600 1
+0x00000000 393222 apache 600 1
+------Message Queues--------
+key msqid owner perms used-bytes messages
+```
+输出结果分段显示了系统拥有的共享内存、信号量和消息队列资源。可见，该系统目前尚未使用任何共享内存和消息队列，却分配了一组键值为0（IPC_PRIVATE）的信号量。这些信号量的所有者是apache，因此它们是由httpd服务器程序创建的。其中标识符为393222的信号量正是我们在13.5.5小节讨论的那个用于在httpd各个子进程之间同步epoll_wait使用权的信号量。
+，我们可以使用ipcrm命令来删除遗留在系统中的共享资源。
+
+### 13.9 在进程间传递文件描述符
+
+由于fork调用之后，父进程中打开的文件描述符在子进程中仍然保持打开，所以文件描述符可以很方便地从父进程传递到子进程。需要注意的是，传递一个文件描述符并不是传递一个文件描述符的值，而是要在接收进程中创建一个新的文件描述符，并且该文件描述符和发送进程中被传递的文件描述符指向内核中相同的文件表项。
+
+那么如何把子进程中打开的文件描述符传递给父进程呢？或者更通俗地说，如何在两个不相干的进程之间传递文件描述符呢？在Linux下，我们可以利用UNIX域socket在进程间传递特殊的辅助数据，以实现文件描述符的传递[2]。

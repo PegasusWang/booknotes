@@ -1,7 +1,6 @@
 .DS_Store
 .tmp
 
-
 # Git
 *.orig
 *.BACKUP.*
@@ -9,7 +8,34 @@
 *.LOCAL.*
 *.REMOTE.*
 
-# Vim
+# media
+*.mp4
+*.mov
+*.avi
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+
+# vim
+.vimrc
+.lvimrc
 .*.sw[a-z]
 *.un~
 Session.vim
+
+# cache
+.cache
+.tmp
+.idea
+
+# mkdocs
+site/
+
+# vscode
+.vscode/
+
+# pytest
+.pytest_cache/
