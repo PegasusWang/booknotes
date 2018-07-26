@@ -54,6 +54,14 @@
             
     <li class="toctree-l2"><a href="#pegasuswang">PegasusWang 的读书杂记</a></li>
     
+        <ul>
+        
+            <li><a class="toctree-l3" href="#_1">本电子书制作和写作方式</a></li>
+        
+            <li><a class="toctree-l3" href="#_2">访问:</a></li>
+        
+        </ul>
+    
 
     </ul>
 	    </li>
@@ -523,6 +531,27 @@
 <blockquote>
 <p>Stay Hungry Stay Foolish.</p>
 </blockquote>
+<h3 id="_1">本电子书制作和写作方式</h3>
+<p>使用 mkdocs 和 markdown 构建，使用  Python-Markdown-Math 完成数学公式。
+markdown 语法参考：http://xianbai.me/learn-md/article/about/readme.html</p>
+<p>安装依赖：</p>
+<pre><code class="sh">pip install mkdocs    # 制作电子书, http://markdown-docs-zh.readthedocs.io/zh_CN/latest/
+# https://stackoverflow.com/questions/27882261/mkdocs-and-mathjax/31874157
+pip install https://github.com/mitya57/python-markdown-math/archive/master.zip
+
+# 或者直接
+pip install -r requirements.txt
+</code></pre>
+
+<p>编写并查看：</p>
+<pre><code class="sh">mkdocs serve     # 修改自动更新，浏览器打开 http://localhost:8000 访问
+# 数学公式参考 https://www.zybuluo.com/codeep/note/163962
+mkdocs gh-deploy    # 部署到自己的 github pages, 如果是 readthedocs 会自动触发构建
+</code></pre>
+
+<h3 id="_2">访问:</h3>
+<p><a href="https://pegasuswang.readthedocs.io/en/latest/">https://pegasuswang.readthedocs.io/en/latest/</a></p>
+<p><a href="https://ningning.today/booknotes/">https://ningning.today/booknotes/</a></p>
               
             </div>
           </div>
@@ -572,6 +601,6 @@
 </html>
 
 <!--
-MkDocs version : 0.17.4
-Build Date UTC : 2018-07-26 00:34:39
+MkDocs version : 0.17.3
+Build Date UTC : 2018-07-26 05:10:42
 -->
