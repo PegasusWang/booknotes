@@ -1,4 +1,4 @@
-site_name: 读书笔记
+site_name: PegasusWang的读书笔记
 theme: readthedocs
 extra_javascript:
     - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML

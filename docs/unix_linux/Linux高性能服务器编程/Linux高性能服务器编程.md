@@ -1003,3 +1003,174 @@ key msqid owner perms used-bytes messages
 由于fork调用之后，父进程中打开的文件描述符在子进程中仍然保持打开，所以文件描述符可以很方便地从父进程传递到子进程。需要注意的是，传递一个文件描述符并不是传递一个文件描述符的值，而是要在接收进程中创建一个新的文件描述符，并且该文件描述符和发送进程中被传递的文件描述符指向内核中相同的文件表项。
 
 那么如何把子进程中打开的文件描述符传递给父进程呢？或者更通俗地说，如何在两个不相干的进程之间传递文件描述符呢？在Linux下，我们可以利用UNIX域socket在进程间传递特殊的辅助数据，以实现文件描述符的传递[2]。
+
+
+# 14章 多线程编程
+
+### 14.1 Linux 线程概述
+
+线程是程序中完成一个独立任务的完整执行序列，即一个可调度的实体。根据运行环境和调度者的身份，线程可分为内核线程和用户线程。内核线程，在有的系统上也称为LWP（Light Weight Process，轻量级进程），运行在内核空间，由内核来调度；用户线程运行在用户空间，由线程库来调度。当进程的一个内核线程获得CPU的使用权时，它就加载并运行一个用户线程。可见，内核线程相当于用户线程运行的“容器”。一个进程可以拥有M个内核线程和N个用户线程，其中M≤N。并且在一个系统的所有进程中，M和N的比值都是固定的。按照M:N的取值，线程的实现方式可分为三种模式：完全在用户空间实现、完全由内核调度和双层调度（two level scheduler）。
+
+现代Linux上默认使用的线程库是NPTL。用户可以使用如下命令来查看当前系统上所使用的线程库：
+
+
+### 14.2 创建和结束线程
+
+创建一个线程的函数是pthread_create。其定义如下：
+
+```c
+#include＜pthread.h＞
+int pthread_create(pthread_t*thread,const pthread_attr_t*attr,void*(*start_routine)(void*),void*arg);<Paste>
+// thread参数是新线程的标识符，后续pthread_*函数通过它来引用新线程。其类型pthread_t的定义如下：
+#include＜bits/pthreadtypes.h＞
+typedef unsigned long int pthread_t;
+```
+
+线程一旦被创建好，内核就可以调度内核线程来执行start_routine函数指针所指向的函数了。线程函数在结束时最好调用如下函数，以确保安全、干净地退出：
+
+```c
+#include＜pthread.h＞
+// pthread_exit函数通过retval参数向线程的回收者传递其退出信息。它执行完之后不会返回到调用者，而且永远不会失败。
+void pthread_exit(void*retval);
+```
+
+一个进程中的所有线程都可以调用pthread_join函数来回收其他线程（前提是目标线程是可回收的，见后文），即等待其他线程结束，这类似于回收进程的wait和waitpid系统调用。pthread_join的定义如下：
+
+```c
+#include＜pthread.h＞
+int pthread_join(pthread_t thread,void**retval);
+```
+
+thread参数是目标线程的标识符，retval参数则是目标线程返回的退出信息。该函数会一直阻塞，直到被回收的线程结束为止。该函数成功时返回0，失败则返回错误码。
+
+![](./pthread_jon_retval.png)
+
+有时候我们希望异常终止一个线程，即取消线程，它是通过如下函数实现的：
+
+```c
+#include＜pthread.h＞
+int pthread_cancel(pthread_t thread);
+```
+
+thread参数是目标线程的标识符。该函数成功时返回0，失败则返回错误码。不过，接收到取消请求的目标线程可以决定是否允许被取消以及如何取消，这分别由如下两个函数完成：
+
+```c
+#include＜pthread.h＞
+int pthread_setcancelstate(int state,int*oldstate);
+int pthread_setcanceltype(int type,int*oldtype);
+```
+
+### 14.3 线程属性
+
+pthread_attr_t结构体定义了一套完整的线程属性，如下所示：
+可见，各种线程属性全部包含在一个字符数组中。线程库定义了一系列函数来操作pthread_attr_t类型的变量，以方便我们获取和设置线程属性。这些函数包括：
+
+
+```c
+#include＜bits/pthreadtypes.h＞
+#define__SIZEOF_PTHREAD_ATTR_T 36
+typedef union
+{
+char__size[__SIZEOF_PTHREAD_ATTR_T];
+long int__align;
+}pthread_attr_t;
+
+#include＜pthread.h＞
+/*初始化线程属性对象*/
+int pthread_attr_init(pthread_attr_t*attr);
+/*销毁线程属性对象。被销毁的线程属性对象只有再次初始化之后才能继续使用*/
+int pthread_attr_destroy(pthread_attr_t*attr);
+/*下面这些函数用于获取和设置线程属性对象的某个属性*/
+int pthread_attr_getdetachstate(const pthread_attr_t*attr,int*detachstate);
+int pthread_attr_setdetachstate(pthread_attr_t*attr,int detachstate);
+int pthread_attr_getstackaddr(const pthread_attr_t*attr,void**stackaddr);
+int pthread_attr_setstackaddr(pthread_attr_t*attr,void*stackaddr);
+int pthread_attr_getstacksize(const pthread_attr_t*attr,size_t*stacksize);
+int pthread_attr_setstacksize(pthread_attr_t*attr,size_t stacksize);
+int pthread_attr_getstack(const pthread_attr_t*attr,void**stackaddr,size_t*stacksize);
+int pthread_attr_setstack(pthread_attr_t*attr,void*stackaddr,size_t stacksize);
+int pthread_attr_getguardsize(const pthread_attr_t*__attr,size_t*guardsize);
+int pthread_attr_setguardsize(pthread_attr_t*attr,size_t guardsize);
+int pthread_attr_getschedparam(const pthread_attr_t*attr,struct sched_param*param);
+int pthread_attr_setschedparam(pthread_attr_t*attr,const struct sched_param*param);
+int pthread_attr_getschedpolicy(const pthread_attr_t*attr,int*policy);
+int pthread_attr_setschedpolicy(pthread_attr_t*attr,int policy);
+int pthread_attr_getinheritsched(const pthread_attr_t*attr,int*inherit);
+int pthread_attr_setinheritsched(pthread_attr_t*attr,int inherit);
+int pthread_attr_getscope(const pthread_attr_t*attr,int*scope);
+int pthread_attr_setscope(pthread_attr_t*attr,int scope);
+```
+
+### 14.4 POSIX 信号量
+3种专门用于线程同步的机制：POSIX信号量、互斥量和条件变量。
+在Linux上，信号量API有两组。一组是第13章讨论过的System V IPC信号量，另外一组是我们现在要讨论的POSIX信号量。这两组接口很相似，但不保证能互换。由于这两种信号量的语义完全相同，因此我们不再赘述信号量的原理。
+
+POSIX信号量函数的名字都以sem_开头，并不像大多数线程函数那样以pthread_开头。常用的POSIX信号量函数是下面5个：
+
+```c
+#include＜semaphore.h＞
+int sem_init(sem_t*sem,int pshared,unsigned int value);
+int sem_destroy(sem_t*sem);
+int sem_wait(sem_t*sem);
+int sem_trywait(sem_t*sem);
+int sem_post(sem_t*sem);
+```
+
+### 14.5 互斥锁
+互斥锁（也称互斥量）可以用于保护关键代码段，以确保其独占式的访问，这有点像一个二进制信号量（见13.5.1小节）。当进入关键代码段时，我们需要获得互斥锁并将其加锁，这等价于二进制信号量的P操作；当离开关键代码段时，我们需要对互斥锁解锁，以唤醒其他等待该互斥锁的线程，这等价于二进制信号量的V操作。
+
+```c
+#include＜pthread.h＞
+int pthread_mutex_init(pthread_mutex_t*mutex,const pthread_mutexattr_t*mutexattr);
+int pthread_mutex_destroy(pthread_mutex_t*mutex);
+int pthread_mutex_lock(pthread_mutex_t*mutex);
+int pthread_mutex_trylock(pthread_mutex_t*mutex);
+int pthread_mutex_unlock(pthread_mutex_t*mutex);
+```
+
+pthread_mutexattr_t结构体定义了一套完整的互斥锁属性。线程库提供了一系列函数来操作pthread_mutexattr_t类型的变量，以方便我们获取和设置互斥锁属性。这里我们列出其中一些主要的函数：
+
+```c
+#include＜pthread.h＞
+/*初始化互斥锁属性对象*/
+int pthread_mutexattr_init(pthread_mutexattr_t*attr);
+/*销毁互斥锁属性对象*/
+int pthread_mutexattr_destroy(pthread_mutexattr_t*attr);
+/*获取和设置互斥锁的pshared属性*/
+int pthread_mutexattr_getpshared(const pthread_mutexattr_t*attr,int*pshared);
+int pthread_mutexattr_setpshared(pthread_mutexattr_t*attr,int pshared);
+/*获取和设置互斥锁的type属性*/
+int pthread_mutexattr_gettype(const pthread_mutexattr_t*attr,int*type);
+int pthread_mutexattr_settype(pthread_mutexattr_t*attr,int type);
+```
+
+### 14.6 条件变量
+
+如果说互斥锁是用于同步线程对共享数据的访问的话，那么条件变量则是用于在线程之间同步共享数据的值。条件变量提供了一种线程间的通知机制：当某个共享数据达到某个值的时候，唤醒等待这个共享数据的线程。
+条件变量的相关函数主要有如下5个：
+
+```c
+#include＜pthread.h＞
+int pthread_cond_init(pthread_cond_t*cond,const pthread_condattr_t*cond_attr);
+int pthread_cond_destroy(pthread_cond_t*cond);
+int pthread_cond_broadcast(pthread_cond_t*cond);
+int pthread_cond_signal(pthread_cond_t*cond);
+int pthread_cond_wait(pthread_cond_t*cond,pthread_mutex_t*mutex);
+```
+
+### 14.8 多线程环境
+
+##### 可重入函数
+如果一个函数能被多个线程同时调用且不发生竞态条件，则我们称它是线程安全的（thread safe），或者说它是可重入函数。Linux库函数只有一小部分是不可重入的，比如5.1.4小节讨论的inet_ntoa函数，以及5.12.2小节讨论的getservbyname和getservbyport函数。关于Linux上不可重入的库函数的完整列表，请读者参考相关书籍，这里不再赘述。这些库函数之所以不可重入，主要是因为其内部使用了静态变量。不过Linux对很多不可重入的库函数提供了对应的可重入版本，这些可重入版本的函数名是在原函数名尾部加上_r。比如，函数localtime对应的可重入函数是localtime_r。在多线程程序中调用库函数，一定要使用其可重入版本，否则可能导致预想不到的结果。
+
+##### 线程和进程
+思考这样一个问题：如果一个多线程程序的某个线程调用了fork函数，那么新创建的子进程是否将自动创建和父进程相同数量的线程呢？答案是“否”，正如我们期望的那样。子进程只拥有一个执行线程，它是调用fork的那个线程的完整复制。并且子进程将自动继承父进程中互斥锁（条件变量与之类似）的状态。也就是说，父进程中已经被加锁的互斥锁在子进程中也是被锁住的。
+
+##### 线程和信号
+每个线程都可以独立地设置信号掩码。我们在10.3.2小节讨论过设置进程信号掩码的函数sigprocmask，但在多线程环境下我们应该使用如下所示的pthread版本的sigprocmask函数来设置线程信号掩码：
+
+```c
+#include＜pthread.h＞
+#include＜signal.h＞
+int pthread_sigmask(int how,const sigset_t*newmask,sigset_t*oldmask);
+```
