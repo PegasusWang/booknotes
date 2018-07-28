@@ -1174,3 +1174,247 @@ int pthread_cond_wait(pthread_cond_t*cond,pthread_mutex_t*mutex);
 #include＜signal.h＞
 int pthread_sigmask(int how,const sigset_t*newmask,sigset_t*oldmask);
 ```
+
+最后，pthread还提供了下面的方法，使得我们可以明确地将一个信号发送给指定的线程：
+
+```c
+#include＜signal.h＞
+int pthread_kill(pthread_t thread,int sig);
+```
+
+
+# 15章 进程池和线程池
+
+### 15.1 进程池和线程池概述
+
+进程池中的所有子进程都运行着相同的代码，并具有相同的属性，比如优先级、PGID等。因为进程池在服务器启动之初就创建好了，所以每个子进程都相对“干净”，即它们没有打开不必要的文件描述符（从父进程继承而来），也不会错误地使用大块的堆内存（从父进程复制得到）。
+
+![](./process_pool.png)
+
+### 15.2 处理多客户
+
+如果客户任务是存在上下文关系的，则最好一直用同一个子进程来为之服务，否则实现起来将比较麻烦，因为我们不得不在各子进程之间传递上下文数据。在9.3.4小节中，我们讨论了epoll的EPOLLONESHOT事件，这一事件能够确保一个客户连接在整个生命周期中仅被一个线程处理。
+
+### 15.3　半同步/半异步进程池实现
+
+为了避免在父、子进程之间传递文件描述符，我们将接受新连接的操作放到子进程中。很显然，对于这种模式而言，一个客户连接上的所有任务始终是由一个子进程来处理的。
+
+后面都是代码实现，具体参考原书
+
+
+# 第16章　服务器调制、调试和测试
+
+### 16.1　最大文件描述符数
+文件描述符是服务器程序的宝贵资源，几乎所有的系统调用都是和文件描述符打交道。系统分配给应用程序的文件描述符数量是有限制的，所以我们必须总是关闭那些已经不再使用的文件描述符，以释放它们占用的资源。比如作为守护进程运行的服务器程序就应该总是关闭标准输入、标准输出和标准错误这3个文件描述符。
+Linux对应用程序能打开的最大文件描述符数量有两个层次的限制：用户级限制和系统级限制。用户级限制是指目标用户运行的所有进程总共能打开的文件描述符数；系统级的限制是指所有用户总共能打开的文件描述符数。
+
+```shell
+# 下面这个命令是最常用的查看用户级文件描述符数限制的方法：
+ulimit -n
+```
+
+为永久修改用户级文件描述符数限制，可以在/etc/security/limits.conf文件中加入如下两项：
+
+```shell
+*hard nofile max-file-number
+*hard nofile max-file-number
+*soft nofile max-file-number
+```
+
+要永久更改系统级文件描述符数限制，则需要在/etc/sysctl.conf文件中添加如下一项：
+
+```shell
+fs.file-max=max-file-number # 然后通过执行sysctl-p命令使更改生效。
+```
+
+### 16.2　调整内核参数
+
+##### 16.2.1　/proc/sys/fs目录下的部分文件
+
+❑/proc/sys/fs/file-max，系统级文件描述符数限制。
+❑/proc/sys/fs/epoll/max_user_watches，一个用户能够往epoll内核事件表中注册的事件的总量。
+
+##### 16.2.2　/proc/sys/net目录下的部分文件
+
+❑/proc/sys/net/core/somaxconn，指定listen监听队列里，能够建立完整连接从而进入ESTABLISHED状态的socket的最大数目。
+
+❑/proc/sys/net/ipv4/tcp_max_syn_backlog，指定listen监听队列里，能够转移至ESTAB-LISHED或者SYN_RCVD状态的socket的最大数目。o
+
+❑/proc/sys/net/ipv4/tcp_wmem，它包含3个值，分别指定一个socket的TCP写缓冲区的最小值、默认值和最大值。
+
+❑/proc/sys/net/ipv4/tcp_rmem，它包含3个值，分别指定一个socket的TCP读缓冲区的最小值、默认值和最大值。在代码清单3-6中，我们正是通过修改这个参数来改变接收通告窗口大小的。
+
+❑/proc/sys/net/ipv4/tcp_syncookies，指定是否打开TCP同步标签（syncookie）。同步标签通过启动cookie来防止一个监听socket因不停地重复接收来自同一个地址的连接请求（同步报文段），而导致listen监听队列溢出（所谓的SYN风暴）。<Paste>
+
+### gdb 调试
+
+##### 16.3.1　用gdb调试多进程程序
+
+如果一个进程通过fork系统调用创建了子进程，gdb会继续调试原来的进程，子进程则正常运行。那么该如何调试子进程呢？常用的方法有如下两种。
+
+1.单独调试子进程
+
+子进程从本质上说也是一个进程，因此我们可以用通用的gdb调试方法来调试它。举例来说，如果要调试代码清单15-2描述的CGI进程池服务器的某一个子进程，则我们可以先运行服务器，然后找到目标子进程的PID，再将其附加（attach）到gdb调试器上，具体操作如代码清单16-1所示。
+
+2.使用调试器选项follow-fork-mode
+
+gdb调试器的选项follow-fork-mode允许我们选择程序在执行fork系统调用后是继续调试父进程还是调试子进程。其用法如下：
+
+`(gdb)set follow-fork-mode mode`
+
+##### 16.3.2　用gdb调试多线程程序
+
+gdb有一组命令可辅助多线程程序的调试。下面我们仅列举其中常用的一些：
+
+❑info threads，显示当前可调试的所有线程。gdb会为每个线程分配一个ID，我们可以使用这个ID来操作对应的线程。ID前面有“*”号的线程是当前被调试的线程。
+
+❑thread ID，调试目标ID指定的线程。
+
+❑set scheduler-locking[off|on|step]。调试多线程程序时，默认除了被调试的线程在执行外，其他线程也在继续执行，但有的时候我们希望只让被调试的线程运行。这可以通过这个命令来实现。该命令设置scheduler-locking的值：off表示不锁定任何线程，即所有线程都可以继续执行，这是默认值；on表示只有当前被调试的线程会继续执行；step表示在单步执行的时候，只有当前线程会执行。
+
+### 16.4 压力测试
+压力测试程序有很多种实现方式，比如I/O复用方式，多线程、多进程并发编程方式，以及这些方式的结合使用。不过，单纯的I/O复用方式的施压程度是最高的，因为线程和进程的调度本身也是要占用一定CPU时间的。我们将使用epoll来实现一个通用的服务器压力测试程序，
+
+```c
+#include＜stdlib.h＞
+#include＜stdio.h＞
+#include＜assert.h＞
+#include＜unistd.h＞
+#include＜sys/types.h＞
+#include＜sys/epoll.h＞
+#include＜fcntl.h＞
+#include＜sys/socket.h＞
+#include＜netinet/in.h＞
+#include＜arpa/inet.h＞
+#include＜string.h＞
+/*每个客户连接不停地向服务器发送这个请求*/
+static const char*request="GET http://localhost/index.html HTTP/1.1\r\nConnection:keep-alive\r\n\r\nxxxxxxxxxxxx";
+int setnonblocking(int fd)
+{
+    int old_option=fcntl(fd,F_GETFL);
+    int new_option=old_option|O_NONBLOCK;
+    fcntl(fd,F_SETFL,new_option);
+    return old_option;
+}
+void addfd(int epoll_fd,int fd)
+{
+    epoll_event event;
+    event.data.fd=fd;
+    event.events=EPOLLOUT|EPOLLET|EPOLLERR;
+    epoll_ctl(epoll_fd,EPOLL_CTL_ADD,fd,＆event);
+    setnonblocking(fd);
+}
+/*向服务器写入len字节的数据*/
+bool write_nbytes(int sockfd,const char*buffer,int len)
+{
+    int bytes_write=0;
+    printf("write out%d bytes to socket%d\n",len,sockfd);
+    while(1)
+    {
+        bytes_write=send(sockfd,buffer,len,0);
+        if(bytes_write==-1)
+        {
+            return false;
+        }
+        else if(bytes_write==0)
+        {
+            return false;
+        }
+        len-=bytes_write;
+        buffer=buffer+bytes_write;
+        if(len＜=0)
+        {
+            return true;
+        }
+    }
+}
+/*从服务器读取数据*/
+bool read_once(int sockfd,char*buffer,int len)
+{
+    int bytes_read=0;
+    memset(buffer,'\0',len);
+    bytes_read=recv(sockfd,buffer,len,0);
+    if(bytes_read==-1)
+    {
+        return false;
+    }
+    else if(bytes_read==0)
+    {
+        return false;
+    }
+    printf("read in%d bytes from socket%d with content:%s\n",bytes_read,sockfd,buffer);
+    return true;
+}
+/*向服务器发起num个TCP连接，我们可以通过改变num来调整测试压力*/
+void start_conn(int epoll_fd,int num,const char*ip,int port)
+{
+    int ret=0;
+    struct sockaddr_in address;
+    bzero(＆address,sizeof(address));
+    address.sin_family=AF_INET;
+    inet_pton(AF_INET,ip,＆address.sin_addr);
+    address.sin_port=htons(port);
+    for(int i=0;i＜num;++i)
+    {
+        sleep(1);
+        int sockfd=socket(PF_INET,SOCK_STREAM,0);
+        printf("create 1 sock\n");
+        if(sockfd＜0)
+        {
+            continue;
+        }
+        if(connect(sockfd,(struct sockaddr*)＆address,sizeof(address))==0)
+        {
+            printf("build connection%d\n",i);
+            addfd(epoll_fd,sockfd);
+        }
+    }
+}
+void close_conn(int epoll_fd,int sockfd)
+{
+    epoll_ctl(epoll_fd,EPOLL_CTL_DEL,sockfd,0);
+    close(sockfd);
+}
+int main(int argc,char*argv[])
+{
+    assert(argc==4);
+    int epoll_fd=epoll_create(100);
+    start_conn(epoll_fd,atoi(argv[3]),argv[1],atoi(argv[2]));
+    epoll_event events[10000];
+    char buffer[2048];
+    while(1)
+    {
+        int fds=epoll_wait(epoll_fd,events,10000,2000);
+        for(int i=0;i＜fds;i++)
+        {
+            int sockfd=events[i].data.fd;
+            if(events[i].events＆EPOLLIN)
+            {
+                if(!read_once(sockfd,buffer,2048))
+                {
+                    close_conn(epoll_fd,sockfd);
+                }
+                struct epoll_event event;
+                event.events=EPOLLOUT|EPOLLET|EPOLLERR;
+                event.data.fd=sockfd;
+                epoll_ctl(epoll_fd,EPOLL_CTL_MOD,sockfd,＆event);
+            }
+            else if(events[i].events＆EPOLLOUT)
+            {
+                if(!write_nbytes(sockfd,request,strlen(request)))
+                {
+                    close_conn(epoll_fd,sockfd);
+                }
+                struct epoll_event event;
+                event.events=EPOLLIN|EPOLLET|EPOLLERR;
+                event.data.fd=sockfd;
+                epoll_ctl(epoll_fd,EPOLL_CTL_MOD,sockfd,＆event);
+            }
+            else if(events[i].events＆EPOLLERR)
+            {
+                close_conn(epoll_fd,sockfd);
+            }
+        }
+    }
+}
+```
