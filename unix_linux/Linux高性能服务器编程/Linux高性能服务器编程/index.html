@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../../img/favicon.ico">
-  <title>《Linux高性能服务器编程》 - 读书笔记</title>
+  <title>《Linux高性能服务器编程》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
@@ -35,7 +35,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="../../.." class="icon icon-home"> 读书笔记</a>
+        <a href="../../.." class="icon icon-home"> PegasusWang的读书笔记</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -507,6 +507,55 @@
         </ul>
     
 
+    <li class="toctree-l3"><a href="#14">14章 多线程编程</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#141-linux">14.1 Linux 线程概述</a></li>
+        
+            <li><a class="toctree-l4" href="#142">14.2 创建和结束线程</a></li>
+        
+            <li><a class="toctree-l4" href="#143">14.3 线程属性</a></li>
+        
+            <li><a class="toctree-l4" href="#144-posix">14.4 POSIX 信号量</a></li>
+        
+            <li><a class="toctree-l4" href="#145">14.5 互斥锁</a></li>
+        
+            <li><a class="toctree-l4" href="#146">14.6 条件变量</a></li>
+        
+            <li><a class="toctree-l4" href="#148">14.8 多线程环境</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#15">15章 进程池和线程池</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#151">15.1 进程池和线程池概述</a></li>
+        
+            <li><a class="toctree-l4" href="#152">15.2 处理多客户</a></li>
+        
+            <li><a class="toctree-l4" href="#153">15.3　半同步/半异步进程池实现</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#16">第16章　服务器调制、调试和测试</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#161">16.1　最大文件描述符数</a></li>
+        
+            <li><a class="toctree-l4" href="#162">16.2　调整内核参数</a></li>
+        
+            <li><a class="toctree-l4" href="#gdb">gdb 调试</a></li>
+        
+            <li><a class="toctree-l4" href="#164">16.4 压力测试</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -700,7 +749,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../..">读书笔记</a>
+        <a href="../../..">PegasusWang的读书笔记</a>
       </nav>
 
       
@@ -1502,6 +1551,338 @@ key msqid owner perms used-bytes messages
 <h3 id="139">13.9 在进程间传递文件描述符</h3>
 <p>由于fork调用之后，父进程中打开的文件描述符在子进程中仍然保持打开，所以文件描述符可以很方便地从父进程传递到子进程。需要注意的是，传递一个文件描述符并不是传递一个文件描述符的值，而是要在接收进程中创建一个新的文件描述符，并且该文件描述符和发送进程中被传递的文件描述符指向内核中相同的文件表项。</p>
 <p>那么如何把子进程中打开的文件描述符传递给父进程呢？或者更通俗地说，如何在两个不相干的进程之间传递文件描述符呢？在Linux下，我们可以利用UNIX域socket在进程间传递特殊的辅助数据，以实现文件描述符的传递[2]。</p>
+<h1 id="14">14章 多线程编程</h1>
+<h3 id="141-linux">14.1 Linux 线程概述</h3>
+<p>线程是程序中完成一个独立任务的完整执行序列，即一个可调度的实体。根据运行环境和调度者的身份，线程可分为内核线程和用户线程。内核线程，在有的系统上也称为LWP（Light Weight Process，轻量级进程），运行在内核空间，由内核来调度；用户线程运行在用户空间，由线程库来调度。当进程的一个内核线程获得CPU的使用权时，它就加载并运行一个用户线程。可见，内核线程相当于用户线程运行的“容器”。一个进程可以拥有M个内核线程和N个用户线程，其中M≤N。并且在一个系统的所有进程中，M和N的比值都是固定的。按照M:N的取值，线程的实现方式可分为三种模式：完全在用户空间实现、完全由内核调度和双层调度（two level scheduler）。</p>
+<p>现代Linux上默认使用的线程库是NPTL。用户可以使用如下命令来查看当前系统上所使用的线程库：</p>
+<h3 id="142">14.2 创建和结束线程</h3>
+<p>创建一个线程的函数是pthread_create。其定义如下：</p>
+<pre><code class="c">#include＜pthread.h＞
+int pthread_create(pthread_t*thread,const pthread_attr_t*attr,void*(*start_routine)(void*),void*arg);&lt;Paste&gt;
+// thread参数是新线程的标识符，后续pthread_*函数通过它来引用新线程。其类型pthread_t的定义如下：
+#include＜bits/pthreadtypes.h＞
+typedef unsigned long int pthread_t;
+</code></pre>
+
+<p>线程一旦被创建好，内核就可以调度内核线程来执行start_routine函数指针所指向的函数了。线程函数在结束时最好调用如下函数，以确保安全、干净地退出：</p>
+<pre><code class="c">#include＜pthread.h＞
+// pthread_exit函数通过retval参数向线程的回收者传递其退出信息。它执行完之后不会返回到调用者，而且永远不会失败。
+void pthread_exit(void*retval);
+</code></pre>
+
+<p>一个进程中的所有线程都可以调用pthread_join函数来回收其他线程（前提是目标线程是可回收的，见后文），即等待其他线程结束，这类似于回收进程的wait和waitpid系统调用。pthread_join的定义如下：</p>
+<pre><code class="c">#include＜pthread.h＞
+int pthread_join(pthread_t thread,void**retval);
+</code></pre>
+
+<p>thread参数是目标线程的标识符，retval参数则是目标线程返回的退出信息。该函数会一直阻塞，直到被回收的线程结束为止。该函数成功时返回0，失败则返回错误码。</p>
+<p><img alt="" src="../pthread_jon_retval.png" /></p>
+<p>有时候我们希望异常终止一个线程，即取消线程，它是通过如下函数实现的：</p>
+<pre><code class="c">#include＜pthread.h＞
+int pthread_cancel(pthread_t thread);
+</code></pre>
+
+<p>thread参数是目标线程的标识符。该函数成功时返回0，失败则返回错误码。不过，接收到取消请求的目标线程可以决定是否允许被取消以及如何取消，这分别由如下两个函数完成：</p>
+<pre><code class="c">#include＜pthread.h＞
+int pthread_setcancelstate(int state,int*oldstate);
+int pthread_setcanceltype(int type,int*oldtype);
+</code></pre>
+
+<h3 id="143">14.3 线程属性</h3>
+<p>pthread_attr_t结构体定义了一套完整的线程属性，如下所示：
+可见，各种线程属性全部包含在一个字符数组中。线程库定义了一系列函数来操作pthread_attr_t类型的变量，以方便我们获取和设置线程属性。这些函数包括：</p>
+<pre><code class="c">#include＜bits/pthreadtypes.h＞
+#define__SIZEOF_PTHREAD_ATTR_T 36
+typedef union
+{
+char__size[__SIZEOF_PTHREAD_ATTR_T];
+long int__align;
+}pthread_attr_t;
+
+#include＜pthread.h＞
+/*初始化线程属性对象*/
+int pthread_attr_init(pthread_attr_t*attr);
+/*销毁线程属性对象。被销毁的线程属性对象只有再次初始化之后才能继续使用*/
+int pthread_attr_destroy(pthread_attr_t*attr);
+/*下面这些函数用于获取和设置线程属性对象的某个属性*/
+int pthread_attr_getdetachstate(const pthread_attr_t*attr,int*detachstate);
+int pthread_attr_setdetachstate(pthread_attr_t*attr,int detachstate);
+int pthread_attr_getstackaddr(const pthread_attr_t*attr,void**stackaddr);
+int pthread_attr_setstackaddr(pthread_attr_t*attr,void*stackaddr);
+int pthread_attr_getstacksize(const pthread_attr_t*attr,size_t*stacksize);
+int pthread_attr_setstacksize(pthread_attr_t*attr,size_t stacksize);
+int pthread_attr_getstack(const pthread_attr_t*attr,void**stackaddr,size_t*stacksize);
+int pthread_attr_setstack(pthread_attr_t*attr,void*stackaddr,size_t stacksize);
+int pthread_attr_getguardsize(const pthread_attr_t*__attr,size_t*guardsize);
+int pthread_attr_setguardsize(pthread_attr_t*attr,size_t guardsize);
+int pthread_attr_getschedparam(const pthread_attr_t*attr,struct sched_param*param);
+int pthread_attr_setschedparam(pthread_attr_t*attr,const struct sched_param*param);
+int pthread_attr_getschedpolicy(const pthread_attr_t*attr,int*policy);
+int pthread_attr_setschedpolicy(pthread_attr_t*attr,int policy);
+int pthread_attr_getinheritsched(const pthread_attr_t*attr,int*inherit);
+int pthread_attr_setinheritsched(pthread_attr_t*attr,int inherit);
+int pthread_attr_getscope(const pthread_attr_t*attr,int*scope);
+int pthread_attr_setscope(pthread_attr_t*attr,int scope);
+</code></pre>
+
+<h3 id="144-posix">14.4 POSIX 信号量</h3>
+<p>3种专门用于线程同步的机制：POSIX信号量、互斥量和条件变量。
+在Linux上，信号量API有两组。一组是第13章讨论过的System V IPC信号量，另外一组是我们现在要讨论的POSIX信号量。这两组接口很相似，但不保证能互换。由于这两种信号量的语义完全相同，因此我们不再赘述信号量的原理。</p>
+<p>POSIX信号量函数的名字都以sem_开头，并不像大多数线程函数那样以pthread_开头。常用的POSIX信号量函数是下面5个：</p>
+<pre><code class="c">#include＜semaphore.h＞
+int sem_init(sem_t*sem,int pshared,unsigned int value);
+int sem_destroy(sem_t*sem);
+int sem_wait(sem_t*sem);
+int sem_trywait(sem_t*sem);
+int sem_post(sem_t*sem);
+</code></pre>
+
+<h3 id="145">14.5 互斥锁</h3>
+<p>互斥锁（也称互斥量）可以用于保护关键代码段，以确保其独占式的访问，这有点像一个二进制信号量（见13.5.1小节）。当进入关键代码段时，我们需要获得互斥锁并将其加锁，这等价于二进制信号量的P操作；当离开关键代码段时，我们需要对互斥锁解锁，以唤醒其他等待该互斥锁的线程，这等价于二进制信号量的V操作。</p>
+<pre><code class="c">#include＜pthread.h＞
+int pthread_mutex_init(pthread_mutex_t*mutex,const pthread_mutexattr_t*mutexattr);
+int pthread_mutex_destroy(pthread_mutex_t*mutex);
+int pthread_mutex_lock(pthread_mutex_t*mutex);
+int pthread_mutex_trylock(pthread_mutex_t*mutex);
+int pthread_mutex_unlock(pthread_mutex_t*mutex);
+</code></pre>
+
+<p>pthread_mutexattr_t结构体定义了一套完整的互斥锁属性。线程库提供了一系列函数来操作pthread_mutexattr_t类型的变量，以方便我们获取和设置互斥锁属性。这里我们列出其中一些主要的函数：</p>
+<pre><code class="c">#include＜pthread.h＞
+/*初始化互斥锁属性对象*/
+int pthread_mutexattr_init(pthread_mutexattr_t*attr);
+/*销毁互斥锁属性对象*/
+int pthread_mutexattr_destroy(pthread_mutexattr_t*attr);
+/*获取和设置互斥锁的pshared属性*/
+int pthread_mutexattr_getpshared(const pthread_mutexattr_t*attr,int*pshared);
+int pthread_mutexattr_setpshared(pthread_mutexattr_t*attr,int pshared);
+/*获取和设置互斥锁的type属性*/
+int pthread_mutexattr_gettype(const pthread_mutexattr_t*attr,int*type);
+int pthread_mutexattr_settype(pthread_mutexattr_t*attr,int type);
+</code></pre>
+
+<h3 id="146">14.6 条件变量</h3>
+<p>如果说互斥锁是用于同步线程对共享数据的访问的话，那么条件变量则是用于在线程之间同步共享数据的值。条件变量提供了一种线程间的通知机制：当某个共享数据达到某个值的时候，唤醒等待这个共享数据的线程。
+条件变量的相关函数主要有如下5个：</p>
+<pre><code class="c">#include＜pthread.h＞
+int pthread_cond_init(pthread_cond_t*cond,const pthread_condattr_t*cond_attr);
+int pthread_cond_destroy(pthread_cond_t*cond);
+int pthread_cond_broadcast(pthread_cond_t*cond);
+int pthread_cond_signal(pthread_cond_t*cond);
+int pthread_cond_wait(pthread_cond_t*cond,pthread_mutex_t*mutex);
+</code></pre>
+
+<h3 id="148">14.8 多线程环境</h3>
+<h5 id="_1">可重入函数</h5>
+<p>如果一个函数能被多个线程同时调用且不发生竞态条件，则我们称它是线程安全的（thread safe），或者说它是可重入函数。Linux库函数只有一小部分是不可重入的，比如5.1.4小节讨论的inet_ntoa函数，以及5.12.2小节讨论的getservbyname和getservbyport函数。关于Linux上不可重入的库函数的完整列表，请读者参考相关书籍，这里不再赘述。这些库函数之所以不可重入，主要是因为其内部使用了静态变量。不过Linux对很多不可重入的库函数提供了对应的可重入版本，这些可重入版本的函数名是在原函数名尾部加上_r。比如，函数localtime对应的可重入函数是localtime_r。在多线程程序中调用库函数，一定要使用其可重入版本，否则可能导致预想不到的结果。</p>
+<h5 id="_2">线程和进程</h5>
+<p>思考这样一个问题：如果一个多线程程序的某个线程调用了fork函数，那么新创建的子进程是否将自动创建和父进程相同数量的线程呢？答案是“否”，正如我们期望的那样。子进程只拥有一个执行线程，它是调用fork的那个线程的完整复制。并且子进程将自动继承父进程中互斥锁（条件变量与之类似）的状态。也就是说，父进程中已经被加锁的互斥锁在子进程中也是被锁住的。</p>
+<h5 id="_3">线程和信号</h5>
+<p>每个线程都可以独立地设置信号掩码。我们在10.3.2小节讨论过设置进程信号掩码的函数sigprocmask，但在多线程环境下我们应该使用如下所示的pthread版本的sigprocmask函数来设置线程信号掩码：</p>
+<pre><code class="c">#include＜pthread.h＞
+#include＜signal.h＞
+int pthread_sigmask(int how,const sigset_t*newmask,sigset_t*oldmask);
+</code></pre>
+
+<p>最后，pthread还提供了下面的方法，使得我们可以明确地将一个信号发送给指定的线程：</p>
+<pre><code class="c">#include＜signal.h＞
+int pthread_kill(pthread_t thread,int sig);
+</code></pre>
+
+<h1 id="15">15章 进程池和线程池</h1>
+<h3 id="151">15.1 进程池和线程池概述</h3>
+<p>进程池中的所有子进程都运行着相同的代码，并具有相同的属性，比如优先级、PGID等。因为进程池在服务器启动之初就创建好了，所以每个子进程都相对“干净”，即它们没有打开不必要的文件描述符（从父进程继承而来），也不会错误地使用大块的堆内存（从父进程复制得到）。</p>
+<p><img alt="" src="../process_pool.png" /></p>
+<h3 id="152">15.2 处理多客户</h3>
+<p>如果客户任务是存在上下文关系的，则最好一直用同一个子进程来为之服务，否则实现起来将比较麻烦，因为我们不得不在各子进程之间传递上下文数据。在9.3.4小节中，我们讨论了epoll的EPOLLONESHOT事件，这一事件能够确保一个客户连接在整个生命周期中仅被一个线程处理。</p>
+<h3 id="153">15.3　半同步/半异步进程池实现</h3>
+<p>为了避免在父、子进程之间传递文件描述符，我们将接受新连接的操作放到子进程中。很显然，对于这种模式而言，一个客户连接上的所有任务始终是由一个子进程来处理的。</p>
+<p>后面都是代码实现，具体参考原书</p>
+<h1 id="16">第16章　服务器调制、调试和测试</h1>
+<h3 id="161">16.1　最大文件描述符数</h3>
+<p>文件描述符是服务器程序的宝贵资源，几乎所有的系统调用都是和文件描述符打交道。系统分配给应用程序的文件描述符数量是有限制的，所以我们必须总是关闭那些已经不再使用的文件描述符，以释放它们占用的资源。比如作为守护进程运行的服务器程序就应该总是关闭标准输入、标准输出和标准错误这3个文件描述符。
+Linux对应用程序能打开的最大文件描述符数量有两个层次的限制：用户级限制和系统级限制。用户级限制是指目标用户运行的所有进程总共能打开的文件描述符数；系统级的限制是指所有用户总共能打开的文件描述符数。</p>
+<pre><code class="shell"># 下面这个命令是最常用的查看用户级文件描述符数限制的方法：
+ulimit -n
+</code></pre>
+
+<p>为永久修改用户级文件描述符数限制，可以在/etc/security/limits.conf文件中加入如下两项：</p>
+<pre><code class="shell">*hard nofile max-file-number
+*hard nofile max-file-number
+*soft nofile max-file-number
+</code></pre>
+
+<p>要永久更改系统级文件描述符数限制，则需要在/etc/sysctl.conf文件中添加如下一项：</p>
+<pre><code class="shell">fs.file-max=max-file-number # 然后通过执行sysctl-p命令使更改生效。
+</code></pre>
+
+<h3 id="162">16.2　调整内核参数</h3>
+<h5 id="1621-procsysfs">16.2.1　/proc/sys/fs目录下的部分文件</h5>
+<p>❑/proc/sys/fs/file-max，系统级文件描述符数限制。
+❑/proc/sys/fs/epoll/max_user_watches，一个用户能够往epoll内核事件表中注册的事件的总量。</p>
+<h5 id="1622-procsysnet">16.2.2　/proc/sys/net目录下的部分文件</h5>
+<p>❑/proc/sys/net/core/somaxconn，指定listen监听队列里，能够建立完整连接从而进入ESTABLISHED状态的socket的最大数目。</p>
+<p>❑/proc/sys/net/ipv4/tcp_max_syn_backlog，指定listen监听队列里，能够转移至ESTAB-LISHED或者SYN_RCVD状态的socket的最大数目。o</p>
+<p>❑/proc/sys/net/ipv4/tcp_wmem，它包含3个值，分别指定一个socket的TCP写缓冲区的最小值、默认值和最大值。</p>
+<p>❑/proc/sys/net/ipv4/tcp_rmem，它包含3个值，分别指定一个socket的TCP读缓冲区的最小值、默认值和最大值。在代码清单3-6中，我们正是通过修改这个参数来改变接收通告窗口大小的。</p>
+<p>❑/proc/sys/net/ipv4/tcp_syncookies，指定是否打开TCP同步标签（syncookie）。同步标签通过启动cookie来防止一个监听socket因不停地重复接收来自同一个地址的连接请求（同步报文段），而导致listen监听队列溢出（所谓的SYN风暴）。<Paste></p>
+<h3 id="gdb">gdb 调试</h3>
+<h5 id="1631-gdb">16.3.1　用gdb调试多进程程序</h5>
+<p>如果一个进程通过fork系统调用创建了子进程，gdb会继续调试原来的进程，子进程则正常运行。那么该如何调试子进程呢？常用的方法有如下两种。</p>
+<p>1.单独调试子进程</p>
+<p>子进程从本质上说也是一个进程，因此我们可以用通用的gdb调试方法来调试它。举例来说，如果要调试代码清单15-2描述的CGI进程池服务器的某一个子进程，则我们可以先运行服务器，然后找到目标子进程的PID，再将其附加（attach）到gdb调试器上，具体操作如代码清单16-1所示。</p>
+<p>2.使用调试器选项follow-fork-mode</p>
+<p>gdb调试器的选项follow-fork-mode允许我们选择程序在执行fork系统调用后是继续调试父进程还是调试子进程。其用法如下：</p>
+<p><code>(gdb)set follow-fork-mode mode</code></p>
+<h5 id="1632-gdb">16.3.2　用gdb调试多线程程序</h5>
+<p>gdb有一组命令可辅助多线程程序的调试。下面我们仅列举其中常用的一些：</p>
+<p>❑info threads，显示当前可调试的所有线程。gdb会为每个线程分配一个ID，我们可以使用这个ID来操作对应的线程。ID前面有“*”号的线程是当前被调试的线程。</p>
+<p>❑thread ID，调试目标ID指定的线程。</p>
+<p>❑set scheduler-locking[off|on|step]。调试多线程程序时，默认除了被调试的线程在执行外，其他线程也在继续执行，但有的时候我们希望只让被调试的线程运行。这可以通过这个命令来实现。该命令设置scheduler-locking的值：off表示不锁定任何线程，即所有线程都可以继续执行，这是默认值；on表示只有当前被调试的线程会继续执行；step表示在单步执行的时候，只有当前线程会执行。</p>
+<h3 id="164">16.4 压力测试</h3>
+<p>压力测试程序有很多种实现方式，比如I/O复用方式，多线程、多进程并发编程方式，以及这些方式的结合使用。不过，单纯的I/O复用方式的施压程度是最高的，因为线程和进程的调度本身也是要占用一定CPU时间的。我们将使用epoll来实现一个通用的服务器压力测试程序，</p>
+<pre><code class="c">#include＜stdlib.h＞
+#include＜stdio.h＞
+#include＜assert.h＞
+#include＜unistd.h＞
+#include＜sys/types.h＞
+#include＜sys/epoll.h＞
+#include＜fcntl.h＞
+#include＜sys/socket.h＞
+#include＜netinet/in.h＞
+#include＜arpa/inet.h＞
+#include＜string.h＞
+/*每个客户连接不停地向服务器发送这个请求*/
+static const char*request=&quot;GET http://localhost/index.html HTTP/1.1\r\nConnection:keep-alive\r\n\r\nxxxxxxxxxxxx&quot;;
+int setnonblocking(int fd)
+{
+    int old_option=fcntl(fd,F_GETFL);
+    int new_option=old_option|O_NONBLOCK;
+    fcntl(fd,F_SETFL,new_option);
+    return old_option;
+}
+void addfd(int epoll_fd,int fd)
+{
+    epoll_event event;
+    event.data.fd=fd;
+    event.events=EPOLLOUT|EPOLLET|EPOLLERR;
+    epoll_ctl(epoll_fd,EPOLL_CTL_ADD,fd,＆event);
+    setnonblocking(fd);
+}
+/*向服务器写入len字节的数据*/
+bool write_nbytes(int sockfd,const char*buffer,int len)
+{
+    int bytes_write=0;
+    printf(&quot;write out%d bytes to socket%d\n&quot;,len,sockfd);
+    while(1)
+    {
+        bytes_write=send(sockfd,buffer,len,0);
+        if(bytes_write==-1)
+        {
+            return false;
+        }
+        else if(bytes_write==0)
+        {
+            return false;
+        }
+        len-=bytes_write;
+        buffer=buffer+bytes_write;
+        if(len＜=0)
+        {
+            return true;
+        }
+    }
+}
+/*从服务器读取数据*/
+bool read_once(int sockfd,char*buffer,int len)
+{
+    int bytes_read=0;
+    memset(buffer,'\0',len);
+    bytes_read=recv(sockfd,buffer,len,0);
+    if(bytes_read==-1)
+    {
+        return false;
+    }
+    else if(bytes_read==0)
+    {
+        return false;
+    }
+    printf(&quot;read in%d bytes from socket%d with content:%s\n&quot;,bytes_read,sockfd,buffer);
+    return true;
+}
+/*向服务器发起num个TCP连接，我们可以通过改变num来调整测试压力*/
+void start_conn(int epoll_fd,int num,const char*ip,int port)
+{
+    int ret=0;
+    struct sockaddr_in address;
+    bzero(＆address,sizeof(address));
+    address.sin_family=AF_INET;
+    inet_pton(AF_INET,ip,＆address.sin_addr);
+    address.sin_port=htons(port);
+    for(int i=0;i＜num;++i)
+    {
+        sleep(1);
+        int sockfd=socket(PF_INET,SOCK_STREAM,0);
+        printf(&quot;create 1 sock\n&quot;);
+        if(sockfd＜0)
+        {
+            continue;
+        }
+        if(connect(sockfd,(struct sockaddr*)＆address,sizeof(address))==0)
+        {
+            printf(&quot;build connection%d\n&quot;,i);
+            addfd(epoll_fd,sockfd);
+        }
+    }
+}
+void close_conn(int epoll_fd,int sockfd)
+{
+    epoll_ctl(epoll_fd,EPOLL_CTL_DEL,sockfd,0);
+    close(sockfd);
+}
+int main(int argc,char*argv[])
+{
+    assert(argc==4);
+    int epoll_fd=epoll_create(100);
+    start_conn(epoll_fd,atoi(argv[3]),argv[1],atoi(argv[2]));
+    epoll_event events[10000];
+    char buffer[2048];
+    while(1)
+    {
+        int fds=epoll_wait(epoll_fd,events,10000,2000);
+        for(int i=0;i＜fds;i++)
+        {
+            int sockfd=events[i].data.fd;
+            if(events[i].events＆EPOLLIN)
+            {
+                if(!read_once(sockfd,buffer,2048))
+                {
+                    close_conn(epoll_fd,sockfd);
+                }
+                struct epoll_event event;
+                event.events=EPOLLOUT|EPOLLET|EPOLLERR;
+                event.data.fd=sockfd;
+                epoll_ctl(epoll_fd,EPOLL_CTL_MOD,sockfd,＆event);
+            }
+            else if(events[i].events＆EPOLLOUT)
+            {
+                if(!write_nbytes(sockfd,request,strlen(request)))
+                {
+                    close_conn(epoll_fd,sockfd);
+                }
+                struct epoll_event event;
+                event.events=EPOLLIN|EPOLLET|EPOLLERR;
+                event.data.fd=sockfd;
+                epoll_ctl(epoll_fd,EPOLL_CTL_MOD,sockfd,＆event);
+            }
+            else if(events[i].events＆EPOLLERR)
+            {
+                close_conn(epoll_fd,sockfd);
+            }
+        }
+    }
+}
+</code></pre>
               
             </div>
           </div>
