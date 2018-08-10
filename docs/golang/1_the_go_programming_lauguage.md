@@ -273,24 +273,26 @@ go 有个 gofmt 工具可以用来格式化代码（类似 autopep8，笔者用�
 
 -   控制流 switch
 
-
-    switch coinflip() {
-    case "heads":    // case 还支持简单的语句 ()
-    	heads++
-    case "tails":
-    	tails++
-    default:
-    	fmt.Println("landed on edge!")
-    }
+```go
+switch coinflip() {
+case "heads":    // case 还支持简单的语句 ()
+    heads++
+case "tails":
+    tails++
+default:
+    fmt.Println("landed on edge!")
+}
+```
 
 -   Named Types:
 
-
-    //定义一个 Point 类型
-    type Point struct {
-    	X, Y int
-    }
-    var p Point
+```go
+//定义一个 Point 类型
+type Point struct {
+    X, Y int
+}
+var p Point
+```
 
 -   Pointers(指针)：和 C 类似，go 中也实现了指针
 -   Methods and interfaces（方法和接口）: 方法是关联到一个命名类型的函数。接口是一种把不同类型同等对待的抽象类型
