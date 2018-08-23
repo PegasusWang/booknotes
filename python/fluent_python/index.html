@@ -251,6 +251,10 @@
                     
     <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
     </ul>
 	    </li>
           
@@ -1044,7 +1048,7 @@ class Base(abc.ABC):    # py3， py2 中使用  __metaclass__ = abc.ABCMeta
         """抽象方法，在抽象基类出现之前抽象方法用 Raise NotImplementedError 语句表明由子类实现"""
 </code></pre>
 <h4 id="register">使用 register 方法注册虚拟子类:</h4>
-<p>在抽象基类上调用 register 方法注册其虚拟子类，issubclass 和 isinstance 都能识别，但是注册的的类不会从抽象基类中继承任何方法和属性。查看虚拟子类的 <code>__mro__</code> 会发现抽象基类不在其中(没继承其属性和方法) </p>
+<p>在抽象基类上调用 register 方法注册其虚拟子类，issubclass 和 isinstance 都能识别，但是注册的的类不会从抽象基类中继承任何方法和属性。查看虚拟子类的 <code>__mro__</code> 会发现抽象基类不在其中(没继承其属性和方法)</p>
 <h4 id="__subclasshook__-__subclasshook__-abcsized"><code>__subclasshook__</code> : 即使不注册，抽象基类也能把一个类识别为虚拟子类。定义 <code>__subclasshook__</code> 方法动态识别子类。参考 abc.Sized 源码</h4>
 <h4 id="_10">强类型和弱类型：</h4>
 <p>如果一门语言很少隐式转换类型，说明它是强类型语言(java/c++/python)。如果经常这么做，是弱类型语言(php,javascript,perl)。强类型能及早发现缺陷</p>
@@ -1223,7 +1227,7 @@ except StopIteration as exc:
     result = exc.value
 </code></pre>
 <h4 id="yield-frompython3">yield from(python3)</h4>
-<p>RESULT = yield from EXPR  等效代码如下，虽然比较复杂， 但是能帮助我们理解 yield from 如何工作</p>
+<p>RESULT = yield from EXPR  等效代码如下，比较烧脑， 但是能帮助我们理解 yield from 如何工作</p>
 <pre><code>_i = iter(EXPR)  # EXPR 是任何可迭代对象
 try:
     _y = next(_i)  # 预激(prime) 子生成器
@@ -1360,7 +1364,7 @@ if __name__ == '__main__':
 <h4 id="_26">避免阻塞型调用</h4>
 <p>两种方式避免阻塞型调用中止整个应用程序的进程：</p>
 <ul>
-<li>在单独的线程中运行各个阻塞型操作</li>
+<li>在单独的线程中运行各个阻塞型操作(线程内存消耗达到兆字节，取决于操作系统)</li>
 <li>把每个阻塞型调用操作转成非阻塞的异步调用</li>
 </ul>
 <h5 id="asyncio-executor">在 asyncio 中使用 Executor 对象，防止阻塞事件循环</h5>
@@ -1690,7 +1694,7 @@ class Entity(metaclass=EntityMeta):
         <a href="../Python_Microservices_Development/" class="btn btn-neutral float-right" title="《Python Microservices Development》">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../psychology/超越自卑/" class="btn btn-neutral" title="《超越自卑》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../psychology/反脆弱/" class="btn btn-neutral" title="《反脆弱》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -1716,7 +1720,7 @@ class Entity(metaclass=EntityMeta):
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../psychology/超越自卑/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../psychology/反脆弱/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../Python_Microservices_Development/" style="color: #fcfcfc">Next &raquo;</a></span>
