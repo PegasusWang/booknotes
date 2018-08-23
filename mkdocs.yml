@@ -55,6 +55,7 @@ pages:
       - 《活出最乐观的自己》: 'psychology/活出最乐观的自己.md'
       - 《改变心理学的40项研究》: 'psychology/改变心理学的40项研究.md'
       - 《超越自卑》: 'psychology/超越自卑.md'
+      - 《反脆弱》: 'psychology/反脆弱.md'
     - python:
       - 《Fluent Python》: 'python/fluent_python.md'
       - 《Python Microservices Development》: 'python/Python_Microservices_Development.md'
