@@ -125,3 +125,98 @@ if __name__ == '__main__':
 **像使用文件一样使用 TCP 流**:
 
 python 为每个套接字提供了一个 makefile() 方法，返回一个 python 文件对象，该对象实际会在底层调用 recv/send
+
+# 4 套接字名与 DNS
+
+通过 getaddrinfo 函数连接
+
+```py
+import argparse, socket, sys
+
+def connect_to(hostname_or_ip):
+    try:
+        infolist = socket.getaddrinfo(
+            hostname_or_ip, 'www', 0, socket.SOCK_STREAM, 0,
+            socket.AI_ADDRCONFIG | socket.AI_V4MAPPED | socket.AI_CANONNAME,
+            )
+    except socket.gaierror as e:
+        print('Name service failure:', e.args[1])
+        sys.exit(1)
+
+    info = infolist[0]  # per standard recommendation, try the first one
+    socket_args = info[0:3]
+    address = info[4]
+    s = socket.socket(*socket_args)
+    try:
+        s.connect(address)
+    except socket.error as e:
+        print('Network failure:', e.args[1])
+    else:
+        print('Success: host', info[3], 'is listening on port 80')
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Try connecting to port 80')
+    parser.add_argument('hostname', help='hostname that you want to contact')
+    connect_to(parser.parse_args().hostname)
+```
+
+python 没有内置DNS 工具到标准库。pip install dhspython3
+
+
+# 5 网络数据与网络错误
+
+struct 把数据和二进制格式转换
+
+```py
+>>> import struct
+>>> struct.pack('<i', 4253) # 小端法
+b'\x9d\x10\x00\x00'
+>>> struct.pack('>i', 4253) # 大端法
+b'\x00\x00\x10\x9d'
+>>> struct.unpack('>i', b'\x00\x00\x10\x9d')
+(4253,)
+```
+
+封帧(framing)问题: 如何分隔消息，使得消息接收方能够识别消息的开始和结束。
+需要考虑的问题：
+
+- 接收方何时停止调用recv()是安全的？
+- 整个消息或数据何时才能完整无缺地传达？
+- 何时才能讲接收到的消息作为一个整体来解析或者处理
+
+解决方式：
+
+- 模式1：对于一些极简单的网络协议，只涉及到数据的发送而不关注响应。
+发送方循环发送数据，直到所有数据被传递给sendall()为止，然后使用close()关闭套接字。
+接收方只需要不断调用 recv()直到最后一个recv() 返回空字符串
+
+- 模式2：两个方向都通过流发送消息，首先流在一个方向发送消息然后关闭该方向，接着在另一方向上通过流发送数据。最后关闭套接字。
+一定要先完成一个方向上的数据传输，然后反过来在另一个方向上通过流发送数据。否则可能导致客户端和服务端发生死锁。
+
+- 模式3：使用定长消息
+
+- 模式4：通过特殊字符划分消息的边界
+
+- 模式5：每个消息前加上长度作为前缀
+
+- 模式6：发送多个数据块，每个数据块前加上长度作为其前缀。抵达信息结尾时，发送方可以发送一个事先约定好的信号(比如0)
+
+HTTP混合使用了模式4和模式5。用 '\r\n' 和 Content-Length
+
+#### 处理网络异常
+
+针对套接字操作常发生的异常：
+- OSError: socket 模块可能抛出的主要错误
+- socket.gaierror: getaddrinfo() 无法找到提供的名称或者服务时抛出
+- socket.timeout: 为套接字设定超时参数
+
+如何处理异常:
+
+- 抛出更具体的异常
+- 捕捉与报告网络异常
+    - granular 异常处理程序：针对每个网络调用 try except 然后在 except 从句中打印出简洁的错误信息
+    - blanket 异常处理程序: 封装代码片段并且从外部捕获
+
+
+# 6 TLS/SSL
+Pycon2014 The Sorry State of SSL
