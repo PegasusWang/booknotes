@@ -60,6 +60,7 @@ pages:
       - 《Fluent Python》: 'python/fluent_python.md'
       - 《Python Microservices Development》: 'python/Python_Microservices_Development.md'
       - 《High Performance Python》: 'python/high_performance_python.md'
+      - 《Python网络编程》: 'python/python_网络编程.md'
     - 创业:
       - 《Hello Startup》: 'startup/hello_startup.md'
       - 《斯坦福公开课如何创业》: 'startup/斯坦福公开课-如何创业.md'
