@@ -206,6 +206,7 @@ HTTP混合使用了模式4和模式5。用 '\r\n' 和 Content-Length
 #### 处理网络异常
 
 针对套接字操作常发生的异常：
+
 - OSError: socket 模块可能抛出的主要错误
 - socket.gaierror: getaddrinfo() 无法找到提供的名称或者服务时抛出
 - socket.timeout: 为套接字设定超时参数
