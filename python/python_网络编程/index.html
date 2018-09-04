@@ -747,10 +747,12 @@ b'\x00\x00\x10\x9d'
 </ul>
 <p>HTTP混合使用了模式4和模式5。用 '\r\n' 和 Content-Length</p>
 <h4 id="_1">处理网络异常</h4>
-<p>针对套接字操作常发生的异常：
-- OSError: socket 模块可能抛出的主要错误
-- socket.gaierror: getaddrinfo() 无法找到提供的名称或者服务时抛出
-- socket.timeout: 为套接字设定超时参数</p>
+<p>针对套接字操作常发生的异常：</p>
+<ul>
+<li>OSError: socket 模块可能抛出的主要错误</li>
+<li>socket.gaierror: getaddrinfo() 无法找到提供的名称或者服务时抛出</li>
+<li>socket.timeout: 为套接字设定超时参数</li>
+</ul>
 <p>如何处理异常:</p>
 <ul>
 <li>抛出更具体的异常</li>
