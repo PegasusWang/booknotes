@@ -379,4 +379,61 @@ if __name__ == '__main__':
 
 # 7 服务器架构
 
+现代操作系统网络栈的两个特点使得异步模式编写服务器成为了现实：
 
+- 提供系统级调用，支持监听多个客户端套接字（epoll/poll/select）
+- 可以将一个套接字设置为非阻塞(nonblocking)，非阻塞套接字在send/recv 系统调用会立刻返回，如果发生延迟，调用方会负责在
+稍后客户端准备好继续进行交互时重试。
+
+```py
+import asyncio, zen_utils
+
+@asyncio.coroutine
+def handle_conversation(reader, writer):
+    address = writer.get_extra_info('peername')
+    print('Accepted connection from {}'.format(address))
+    while True:
+        data = b''
+        while not data.endswith(b'?'):
+            more_data = yield from reader.read(4096)
+            if not more_data:
+                if data:
+                    print('Client {} sent {!r} but then closed'
+                          .format(address, data))
+                else:
+                    print('Client {} closed socket normally'.format(address))
+                return
+            data += more_data
+        answer = zen_utils.get_answer(data)
+        writer.write(answer)
+
+if __name__ == '__main__':
+    address = zen_utils.parse_command_line('asyncio server using coroutine')
+    loop = asyncio.get_event_loop()
+    coro = asyncio.start_server(handle_conversation, *address)
+    server = loop.run_until_complete(coro)
+    print('Listening at {}'.format(address))
+    try:
+        loop.run_forever()
+    finally:
+        server.close()
+        loop.close()
+```
+
+# 8 缓存与消息队列
+
+缓存：redis/memcached, 分片
+消息队列: AMQP是常见的跨语言消息队列协议实现之一，许多支持AMQP的开源服务器 RabbitMQ, Apache Qpid等
+很多时候用一些第三方库将消息队列的功能封装起来，比如Celery 分布式任务队列
+消息队列支持多种拓扑结构：
+
+- 管道，生产者创建消息，然后将消息提交至队列中，消费者从队列中接收消息。
+- 发布订阅。
+- 请求响应模式，消息需要进行往返
+
+
+# 9 HTTP 客户端
+
+HTTP 协议第一行和头信息都通过表示结束的 CR-LF 进行封帧，这两部分作为
+
+TODO: 安装 和启动 httpbin 然后用 curl 打印出来一个消息
