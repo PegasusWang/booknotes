@@ -434,6 +434,36 @@ if __name__ == '__main__':
 
 # 9 HTTP 客户端
 
-HTTP 协议第一行和头信息都通过表示结束的 CR-LF 进行封帧，这两部分作为
+可以使用 `curl -v http://httpbin.org/headers` 来观察 http 协议通信过程
 
-TODO: 安装 和启动 httpbin 然后用 curl 打印出来一个消息
+```sh
+> GET /headers HTTP/1.1
+> Host: httpbin.org
+> User-Agent: curl/7.54.0
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< Server: gunicorn/19.9.0
+< Date: Thu, 06 Sep 2018 16:01:32 GMT
+< Content-Type: application/json
+< Content-Length: 133
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+
+{
+  "headers": {
+    "Accept": "*/*", 
+    "Connection": "close", 
+    "Host": "httpbin.org", 
+    "User-Agent": "curl/7.54.0"
+  }
+}
+```
+
+HTTP 协议第一行和头信息都通过表示结束的 CR-LF 进行封帧，这两部分作为一个整体又是通过空行来封帧的。
+对消息体进行封帧有三种选择：
+
+- Content-Length 头，值是十进制整数，表示消息体包含的字节数。但是动态生成的没法用
+- 头消息中指定 Transfer-Encoding 头，并将其设置为 chunked，分块传输
+- 服务器指定 Connection: close，然后发送任意大小的消息体之后关闭 TCP 套接字
