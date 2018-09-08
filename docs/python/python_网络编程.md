@@ -437,3 +437,37 @@ if __name__ == '__main__':
 HTTP 协议第一行和头信息都通过表示结束的 CR-LF 进行封帧，这两部分作为
 
 TODO: 安装 和启动 httpbin 然后用 curl 打印出来一个消息
+
+requests 库的 Session 对象使用了第三方 urllib3，它会维护一个连接池，保存与最近通信的http服务器的处于打开状态的连接。
+在向同一个网站请求其他资源时，就可以自动重用连接池中保存的连接了。
+
+
+# 10 HTTP 服务器
+
+WSGI: 统一web服务器和应用框架的规范
+
+```py
+from pprint import pformat
+from wsgiref.simple_server import make_server
+
+def app(environ, start_response):
+    headers = {'Content-Type': 'text/plain; charset=utf-8'}
+    start_response('200 OK', list(headers.items()))
+    yield 'Here is the WSGI environment:\r\n\r\n'.encode('utf-8')
+    yield pformat(environ).encode('utf-8')
+
+if __name__ == '__main__':
+    httpd = make_server('', 8000, app)
+    host, port = httpd.socket.getsockname()
+    print('Serving on', host, 'port', port)
+    httpd.serve_forever()
+```
+
+
+web服务器和框架区别：
+web服务器负责建立并管理监听套接字，运行accept()接收新连接，并解析所有收到的HTTP请求。
+web服务器会将符合规范的完整请求传递给web框架或应用程序代码，这一个过程功过调用在web服务器上注册的
+WSGI可调用对象实现。
+
+
+11 万维网
