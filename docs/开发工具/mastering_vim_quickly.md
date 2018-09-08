@@ -2,12 +2,10 @@
 
 常用模式(Modes):
 
-
 - Normal mdoe
 - insert mode
 - command mode
 - visual mode
-
 
 # 11. Registers
 
@@ -48,3 +46,5 @@ Session: 用来保存 vim 会话。 `:mksession ~/mysession.vim`，可以 `vim -
 宏每次执行都会重绘，如果觉得慢可以使用 set lazyredraw
 
 # 15. The power of Visual modes
+
+块选配合命令模式。比如 块选多行之后执行 `:normal A;` 可以给选中行都加上分号，或者执行 dot 重复。
