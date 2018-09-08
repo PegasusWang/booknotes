@@ -501,3 +501,12 @@ WSGI可调用对象实现。
 
 
 # 11 万维网
+
+使用 urllib.parse 模块解析和构造 url
+
+```py
+    from urllib.parse import urlsplit
+    u = urlsplit('https://www.google.com/search?q=qpod&btnI=yes')
+    print(u)
+    #SplitResult(scheme='https', netloc='www.google.com', path='/search', query='q=qpod&btnI=yes', fragment='')
+```
