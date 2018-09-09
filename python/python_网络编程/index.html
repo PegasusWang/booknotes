@@ -309,6 +309,24 @@
     <li class="toctree-l3"><a href="#7">7 服务器架构</a></li>
     
 
+    <li class="toctree-l3"><a href="#8">8 缓存与消息队列</a></li>
+    
+
+    <li class="toctree-l3"><a href="#9-http">9 HTTP 客户端</a></li>
+    
+
+    <li class="toctree-l3"><a href="#10-http">10 HTTP 服务器</a></li>
+    
+
+    <li class="toctree-l3"><a href="#11">11 万维网</a></li>
+    
+
+    <li class="toctree-l3"><a href="#16-telnet-ssh">16 Telnet 和 SSH</a></li>
+    
+
+    <li class="toctree-l3"><a href="#18-rpc">18 RPC</a></li>
+    
+
     </ul>
                 </li>
     </ul>
@@ -378,6 +396,10 @@
                 <li class="">
                     
     <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
                 </li>
     </ul>
 	    </li>
@@ -920,6 +942,173 @@ if __name__ == '__main__':
 </code></pre>
 
 <h1 id="7">7 服务器架构</h1>
+<p>现代操作系统网络栈的两个特点使得异步模式编写服务器成为了现实：</p>
+<ul>
+<li>提供系统级调用，支持监听多个客户端套接字（epoll/poll/select）</li>
+<li>可以将一个套接字设置为非阻塞(nonblocking)，非阻塞套接字在send/recv 系统调用会立刻返回，如果发生延迟，调用方会负责在
+稍后客户端准备好继续进行交互时重试。</li>
+</ul>
+<pre><code class="py">import asyncio, zen_utils
+
+@asyncio.coroutine
+def handle_conversation(reader, writer):
+    address = writer.get_extra_info('peername')
+    print('Accepted connection from {}'.format(address))
+    while True:
+        data = b''
+        while not data.endswith(b'?'):
+            more_data = yield from reader.read(4096)
+            if not more_data:
+                if data:
+                    print('Client {} sent {!r} but then closed'
+                          .format(address, data))
+                else:
+                    print('Client {} closed socket normally'.format(address))
+                return
+            data += more_data
+        answer = zen_utils.get_answer(data)
+        writer.write(answer)
+
+if __name__ == '__main__':
+    address = zen_utils.parse_command_line('asyncio server using coroutine')
+    loop = asyncio.get_event_loop()
+    coro = asyncio.start_server(handle_conversation, *address)
+    server = loop.run_until_complete(coro)
+    print('Listening at {}'.format(address))
+    try:
+        loop.run_forever()
+    finally:
+        server.close()
+        loop.close()
+</code></pre>
+
+<h1 id="8">8 缓存与消息队列</h1>
+<p>缓存：redis/memcached, 分片
+消息队列: AMQP是常见的跨语言消息队列协议实现之一，许多支持AMQP的开源服务器 RabbitMQ, Apache Qpid等
+很多时候用一些第三方库将消息队列的功能封装起来，比如Celery 分布式任务队列
+消息队列支持多种拓扑结构：</p>
+<ul>
+<li>管道，生产者创建消息，然后将消息提交至队列中，消费者从队列中接收消息。</li>
+<li>发布订阅。</li>
+<li>请求响应模式，消息需要进行往返</li>
+</ul>
+<h1 id="9-http">9 HTTP 客户端</h1>
+<p>可以使用 <code>curl -v http://httpbin.org/headers</code> 来观察 http 协议通信过程</p>
+<pre><code class="sh">&gt; GET /headers HTTP/1.1
+&gt; Host: httpbin.org
+&gt; User-Agent: curl/7.54.0
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 200 OK
+&lt; Connection: keep-alive
+&lt; Server: gunicorn/19.9.0
+&lt; Date: Thu, 06 Sep 2018 16:01:32 GMT
+&lt; Content-Type: application/json
+&lt; Content-Length: 133
+&lt; Access-Control-Allow-Origin: *
+&lt; Access-Control-Allow-Credentials: true
+
+{
+  &quot;headers&quot;: {
+    &quot;Accept&quot;: &quot;*/*&quot;,
+    &quot;Connection&quot;: &quot;close&quot;,
+    &quot;Host&quot;: &quot;httpbin.org&quot;,
+    &quot;User-Agent&quot;: &quot;curl/7.54.0&quot;
+  }
+}
+</code></pre>
+
+<p>HTTP 协议第一行和头信息都通过表示结束的 CR-LF 进行封帧，这两部分作为一个整体又是通过空行来封帧的。
+对消息体进行封帧有三种选择：</p>
+<ul>
+<li>Content-Length 头，值是十进制整数，表示消息体包含的字节数。但是动态生成的没法用</li>
+<li>头消息中指定 Transfer-Encoding 头，并将其设置为 chunked，分块传输</li>
+<li>服务器指定 Connection: close，然后发送任意大小的消息体之后关闭 TCP 套接字</li>
+</ul>
+<p>requests 库的 Session 对象使用了第三方 urllib3，它会维护一个连接池，保存与最近通信的http服务器的处于打开状态的连接。
+在向同一个网站请求其他资源时，就可以自动重用连接池中保存的连接了。</p>
+<h1 id="10-http">10 HTTP 服务器</h1>
+<p>WSGI: 统一web服务器和应用框架的规范</p>
+<pre><code class="py">from pprint import pformat
+from wsgiref.simple_server import make_server
+
+def app(environ, start_response):
+    headers = {'Content-Type': 'text/plain; charset=utf-8'}
+    start_response('200 OK', list(headers.items()))
+    yield 'Here is the WSGI environment:\r\n\r\n'.encode('utf-8')
+    yield pformat(environ).encode('utf-8')
+
+if __name__ == '__main__':
+    httpd = make_server('', 8000, app)
+    host, port = httpd.socket.getsockname()
+    print('Serving on', host, 'port', port)
+    httpd.serve_forever()
+</code></pre>
+
+<p>web服务器和框架区别：
+web服务器负责建立并管理监听套接字，运行accept()接收新连接，并解析所有收到的HTTP请求。
+web服务器会将符合规范的完整请求传递给web框架或应用程序代码，这一个过程功过调用在web服务器上注册的
+WSGI可调用对象实现。</p>
+<h1 id="11">11 万维网</h1>
+<p>使用 urllib.parse 模块解析和构造 url</p>
+<pre><code class="py">    from urllib.parse import urlsplit
+    u = urlsplit('https://www.google.com/search?q=qpod&amp;btnI=yes')
+    print(u)
+    #SplitResult(scheme='https', netloc='www.google.com', path='/search', query='q=qpod&amp;btnI=yes', fragment='')
+</code></pre>
+
+<h1 id="16-telnet-ssh">16 Telnet 和 SSH</h1>
+<p>SSH(Secure Sheel)
+python 社区关于远程命令行自动化的工具：</p>
+<ul>
+<li>Fabric 提供了在脚本中通过SSH 连接服务器的功能</li>
+<li>Ansible 对大量远程机器配置方式的管理</li>
+<li>SaltStack 可以在每台客户端机器上安装自己的代理，而不只是借助  ssh 运行</li>
+<li>pexpect: 对远程命令行提示符的交互进行自动化</li>
+</ul>
+<p>Telnet 协议：安全性很差，基本被废弃了。 python telnetlib</p>
+<p>SSH/SFTP: python paramiko</p>
+<pre><code class="py">import argparse, paramiko, sys
+
+class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
+    def missing_host_key(self, client, hostname, key):
+        return
+
+def main(hostname, username):
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(AllowAnythingPolicy())
+    client.connect(hostname, username=username)  # password='')
+
+    channel = client.invoke_shell()
+    stdin = channel.makefile('wb')
+    stdout = channel.makefile('rb')
+
+    stdin.write(b'echo Hello, world\rexit\r')
+    output = stdout.read()
+    client.close()
+
+    sys.stdout.buffer.write(output)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Connect over SSH')
+    parser.add_argument('hostname', help='Remote machine name')
+    parser.add_argument('username', help='Username on the remote machine')
+    args = parser.parse_args()
+    main(args.hostname, args.username)
+</code></pre>
+
+<h1 id="18-rpc">18 RPC</h1>
+<p>远程过程调用(RPC, Remote Procedure Cal)允许使用调用本地API或者本地库的语法来调用另一个进程或远程服务器上的函数
+特性：</p>
+<ul>
+<li>只支持有限的数据传输类型，数字字符串、序列、结构体、关联数组等。</li>
+<li>只要服务器在运行远程函数时发生异常，就能发出异常通知。</li>
+<li>许多RPC机制自省功能，允许客户端列出特定的rpc服务器支持的所有调用，还可能会列出每个调用接受的参数</li>
+<li>任何RPC都提供一种寻址方法，支持用户连接特定的远程API</li>
+<li>有些RPC支持认证和访问控制</li>
+</ul>
+<p>python 有自带的  xml-rpc 和三方的 json-rpc 库。
+原生使用 python开发的 rpc 系统： Pyro 和 RPyC</p>
               
             </div>
           </div>
