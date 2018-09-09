@@ -453,9 +453,9 @@ if __name__ == '__main__':
 
 {
   "headers": {
-    "Accept": "*/*", 
-    "Connection": "close", 
-    "Host": "httpbin.org", 
+    "Accept": "*/*",
+    "Connection": "close",
+    "Host": "httpbin.org",
     "User-Agent": "curl/7.54.0"
   }
 }
@@ -510,3 +510,64 @@ WSGI可调用对象实现。
     print(u)
     #SplitResult(scheme='https', netloc='www.google.com', path='/search', query='q=qpod&btnI=yes', fragment='')
 ```
+
+
+# 16 Telnet 和 SSH
+
+SSH(Secure Sheel)
+python 社区关于远程命令行自动化的工具：
+
+- Fabric 提供了在脚本中通过SSH 连接服务器的功能
+- Ansible 对大量远程机器配置方式的管理
+- SaltStack 可以在每台客户端机器上安装自己的代理，而不只是借助  ssh 运行
+- pexpect: 对远程命令行提示符的交互进行自动化
+
+Telnet 协议：安全性很差，基本被废弃了。 python telnetlib
+
+
+SSH/SFTP: python paramiko
+
+```py
+import argparse, paramiko, sys
+
+class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
+    def missing_host_key(self, client, hostname, key):
+        return
+
+def main(hostname, username):
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(AllowAnythingPolicy())
+    client.connect(hostname, username=username)  # password='')
+
+    channel = client.invoke_shell()
+    stdin = channel.makefile('wb')
+    stdout = channel.makefile('rb')
+
+    stdin.write(b'echo Hello, world\rexit\r')
+    output = stdout.read()
+    client.close()
+
+    sys.stdout.buffer.write(output)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Connect over SSH')
+    parser.add_argument('hostname', help='Remote machine name')
+    parser.add_argument('username', help='Username on the remote machine')
+    args = parser.parse_args()
+    main(args.hostname, args.username)
+```
+
+
+# 18 RPC
+
+远程过程调用(RPC, Remote Procedure Cal)允许使用调用本地API或者本地库的语法来调用另一个进程或远程服务器上的函数
+特性：
+
+- 只支持有限的数据传输类型，数字字符串、序列、结构体、关联数组等。
+- 只要服务器在运行远程函数时发生异常，就能发出异常通知。
+- 许多RPC机制自省功能，允许客户端列出特定的rpc服务器支持的所有调用，还可能会列出每个调用接受的参数
+- 任何RPC都提供一种寻址方法，支持用户连接特定的远程API
+- 有些RPC支持认证和访问控制
+
+python 有自带的  xml-rpc 和三方的 json-rpc 库。
+原生使用 python开发的 rpc 系统： Pyro 和 RPyC
