@@ -157,6 +157,12 @@ autocmd BufWritePre * :%s/\s\+$//e
 - Navigation through cursor history:
     - Jumplist : 存储光标跳转的每个位置。ctrl-o ctrl-i 分别是向之前（backwards） 和之后(forwards) 跳转
     - Changelist: 存储每个修改的可被 revert 的位置(with undo)。使用 g; 和 g, 向之前(backwards) 和之后(forwards) 跳转
+    - `.  command will bring you to your last change.
+    - `` which will bring you back to where the cursor was before you made your last jump.
+    - `^ this is the position where the cursor was the last time when insert mode was stopped
+
+上边几个方便的跳转命令(https://vi.stackexchange.com/questions/2001/how-do-i-jump-to-the-location-of-my-last-edit):
+撇也可以用单引号替代(` -> ')
 
 - Invert selection: 使用 `:v` 命令
 
