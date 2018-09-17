@@ -351,7 +351,7 @@ python 没有访问控制和 java 设计迥然不同，本章最后的杂谈讨�
 
 #### 使用 register 方法注册虚拟子类:
 
-在抽象基类上调用 register 方法注册其虚拟子类，issubclass 和 isinstance 都能识别，但是注册的的类不会从抽象基类中继承任何方法和属性。查看虚拟子类的 `__mro__` 会发现抽象基类不在其中(没继承其属性和方法) 
+在抽象基类上调用 register 方法注册其虚拟子类，issubclass 和 isinstance 都能识别，但是注册的的类不会从抽象基类中继承任何方法和属性。查看虚拟子类的 `__mro__` 会发现抽象基类不在其中(没继承其属性和方法)
 
 #### `__subclasshook__` : 即使不注册，抽象基类也能把一个类识别为虚拟子类。定义 `__subclasshook__` 方法动态识别子类。参考 abc.Sized 源码
 
@@ -570,7 +570,7 @@ python2.5 之后yield 关键在能在表达式中使用，而且生成器 api �
 
 #### yield from(python3)
 
-RESULT = yield from EXPR  等效代码如下，虽然比较复杂， 但是能帮助我们理解 yield from 如何工作
+RESULT = yield from EXPR  等效代码如下，比较烧脑， 但是能帮助我们理解 yield from 如何工作
 
     _i = iter(EXPR)  # EXPR 是任何可迭代对象
     try:
@@ -718,7 +718,7 @@ GIL，运行另一个线程。因此尽管有 GIL，python 线程还是能在 IO
 
 两种方式避免阻塞型调用中止整个应用程序的进程：
 
--   在单独的线程中运行各个阻塞型操作
+-   在单独的线程中运行各个阻塞型操作(线程内存消耗达到兆字节，取决于操作系统)
 -   把每个阻塞型调用操作转成非阻塞的异步调用
 
 ##### 在 asyncio 中使用 Executor 对象，防止阻塞事件循环
