@@ -39,6 +39,7 @@ pages:
       - 《Getting started with impala》: 'database/getting_started_with_impala.md'
       - 《mysql必知必会》: 'database/mysql必知必会.md'
       - 《mysql性能调优与架构实践》: 'database/mysql性能调优与架构实践.md'
+      - 《Redis实战》: 'database/redis实战.md'
       - 《redis设计与实现》: 'database/redis设计与实现.md'
       - 《七周七数据库》: 'database/七周七数据库.md'
       - 《深入浅出mysql》: 'database/深入浅出mysql.md'
