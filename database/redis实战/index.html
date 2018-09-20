@@ -189,6 +189,20 @@
     <li class="toctree-l3"><a href="#1-redis">1. 初识Redis</a></li>
     
 
+    <li class="toctree-l3"><a href="#2-redis-web">2. 使用 Redis 构建 web 应用</a></li>
+    
+
+    <li class="toctree-l3"><a href="#3-redis">3. Redis 命令</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#31">3.1 字符串</a></li>
+        
+            <li><a class="toctree-l4" href="#32">3.2 列表</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -562,6 +576,34 @@
 <h1 id="1-redis">1. 初识Redis</h1>
 <p>5种基本类型：string, list, set, hash, zset
 内存存储、远程、持久、可扩展（主从复制和分片）</p>
+<h1 id="2-redis-web">2. 使用 Redis 构建 web 应用</h1>
+<p>典型使用场景：</p>
+<ul>
+<li>登录和 cookie 缓存。签名(signed)cookie和令牌(token)cookie</li>
+<li>用 redis 实现购物车，存储商品 id 和商品订购数量之间的映射</li>
+<li>网页缓存，缓存不经常变动的网页结果</li>
+<li>缓存部分关系数据库中的行</li>
+<li>缓存部分页面：通过页面压缩、Edge Side includes 技术、移除模板无用字符等优化</li>
+</ul>
+<h1 id="3-redis">3. Redis 命令</h1>
+<h3 id="31">3.1 字符串</h3>
+<p>redis 里字符串可以存储三种类型的值，字节串(byte string),整数,浮点数</p>
+<ul>
+<li>incr</li>
+<li>decr</li>
+<li>incrby</li>
+<li>decrby</li>
+<li>incrbyfloat</li>
+<li>append：追加到值的末尾</li>
+<li>getrange: 获取子串</li>
+<li>setrange</li>
+<li>getbit: 将字节串看作是二进制位串(bit string)，并返回串中偏移量为offset的二进制位的值</li>
+<li>setbit</li>
+<li>bitcount: 统计二进制串位里值为1的二进制位的数量</li>
+<li>bitop: 对一个或者多个二进制位串执行位运算操作</li>
+</ul>
+<h3 id="32">3.2 列表</h3>
+<p>允许从两端推入或者弹出元素</p>
               
             </div>
           </div>
