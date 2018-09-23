@@ -379,3 +379,18 @@ def acquire_semaphore_with_lock(conn, semname, limit, timeout=10):
 ```
 
 信号量可以用来限制同时可运行的 api 调用数量，针对数据库的并发请求等。
+
+### 6.4 任务队列
+
+FIFO 队列：借助 redis list 的 blpop rpush 来实现一个队列
+延迟任务：借助 redis zset 实现
+
+### 6.5 消息拉取
+
+使用 Redis 的 PUBLISH SUBSCRIBE 的问题时，如果客户端因为某些原因无法一直在线，消息推送可能会出问题。
+可以采用拉取模式
+
+
+### 6.6 redis 文件分发
+
+当NFS，Samba、文件复制、mapreduce 不适合的时候。
