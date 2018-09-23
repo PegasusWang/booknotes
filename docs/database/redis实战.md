@@ -208,3 +208,79 @@ linux/unix中两种常见记录日志的方法：
 最好用现成的 Graphite
 
 ### 5.3 查找 IP 所属城市以及国家
+
+预先载入 ip 数据和地址数据到redis，存储的时候把点分十进制格式的 ip 转成一个整数分值。
+把数据转换成整数并搭配有序集合进行操作。
+
+```
+def ip_to_score(ip_address):
+    score = 0
+    for v in ip_address.split('.'):
+        score = score * 256 + int(v, 10)
+    return score
+```
+
+### 5.4 服务的发现与配置
+
+将配置存储在redis里，编写应用程序获取配置
+
+
+# 6. 使用 Redis 构建应用程序组件
+
+### 6.1 自动补全
+
+- 主动补全最近联系人: 通过list 存储元素（元素数量较小），然后在 python 代码里进行 filter
+- 通讯录自动补全：使用zset，所有分值置为0，通过插入带查找元素的前缀和后缀元素的方式确定待查找元素的范围
+
+### 6.2 分布式锁
+
+redis WATCH 实现的是乐观锁（只有通知功能）。由WATCH, MULTI EXEC
+组成的事务并不具有可扩展性，程序在尝试完成一个事务的时候，可能会因为事务执行失败反复重试。
+
+```py
+def acquire_lock(conn, lockname, acquire_timeout=10):
+    identifier = str(uuid.uuid4())
+    end = time.time() + acquire_timeout
+    while time.time() < end:
+        if conn.setnx('lock:' + lockname, identifier):  # setnx 如果没有key就会设置
+            return identifier
+        time.sleep(0.001)
+    return False
+
+def release_lock(conn, lockname, identifier):
+    pipe = conn.pipeline(True)
+    lockname = 'lock:' + lockname
+    while True:
+        try:
+            pipe.watch(lockname)    # 检查进程是否仍然持有锁
+            if pipe.get(locname) == identifier:
+                pipe.multi()   # 开始释放锁
+                pipe.delete(lockname)
+                pipe.execute()
+                return True
+            pipe.unwathc()
+            break
+        except redis.exceptions.WatchError:  # 有其他客户端修改了锁，重试
+            pass
+    return False  # 进程已经失去了锁
+```
+
+细粒度的锁能够提升程序性能，但是过细粒度可能导致死锁问题。
+
+上边的实现在持有者崩溃的时候不会自动释放，会导致锁一直处于被获取的状态，下边加上超时功能。
+
+```py
+def acquire_lock_with_timeout(conn, lockname, acquire_timeout=10, lock_timeout=10):
+    identifier = str(uuid.uuid4())
+    lockname = 'lock:' + lockname
+    lock_timeout = int(math.ceil(lock_timeout))
+    end = time.time() + acquire_timeout
+    while time.time() < end:
+        if conn.setnx(lockname, identifier):
+            conn.expire(lockname, lock_timeout)
+            return identifier
+        elif not conn.ttl(lockname):
+            conn.expire(lockname, lock_timeout)
+        time.sleep(.001)
+    return False
+```
