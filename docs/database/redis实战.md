@@ -373,9 +373,10 @@ def refresh_fair_semaphore(conn, semname, identifier):
 def acquire_semaphore_with_lock(conn, semname, limit, timeout=10):
     identifier = acquire_lock(conn, semname, acquire_timeout=.01)
     if identifier:
-        return acquire_fair_semaphore(conn, semname, limit, timeout)
-    finally:
-        release_lock(conn, semname, identifier)
+        try:
+            return acquire_fair_semaphore(conn, semname, limit, timeout)
+        finally:
+            release_lock(conn, semname, identifier)
 ```
 
 信号量可以用来限制同时可运行的 api 调用数量，针对数据库的并发请求等。
@@ -516,3 +517,65 @@ list-max-zip-value 64
 
 
 # 11. Redis Lua 脚本编程
+
+### 11.1 在不编写C代码的情况下添加功能
+
+```py
+def script_load(script):
+    sha = [None]
+
+    def call(conn, keys=[], args=[], force_eval=False):
+        if not force_eval:
+            if not sha[0]:
+                sha[0] = conn.execute_command("SCRIPT", "LOAD", script, parse="LOAD")
+            try:
+                return conn.execute_command("EVALSHA", sha[0], len(keys), *(keys + args))
+            except redis.exceptions.ResponseError as msg:
+                if not msg.arg[0].startswith("NOSCRIPT"):
+                    raise
+
+        return conn.execute_command("EVAL", script, len(keys), *(keys + args))
+    return call
+```
+
+### 11.2 使用 Lua 重写锁和信号量
+
+```py
+def acquire_lock_with_timeout(conn, lockname, acquire_timeout=10, lock_timeout=10):
+    identifier = str(uuid.uuid4())
+    lockname = 'lock:' + lockname
+    lock_timeout = int(math.ceil(lock_timeout))
+
+    acquired = False
+    end = time.time() + acquire_timeout
+    while time.time() < end and not acquired:
+        acquired = acquire_lock_with_timeout_lua(conn, [lockname], [lock_timeout, identifier]) == 'OK'
+        time.sleep(.001 * (not acquired))
+    return acquired and identifier
+
+# 注意 lua 下标 1 开始
+acquire_lock_with_timeout_lua = script_load('''
+if redis.call('exists', KEYS[1]) == 0 then
+    return redis.call('setex', KEYS[1], unpack(ARGV))
+end
+''')
+
+
+def release_lock(conn, lockname, identifier):
+    lockname = 'lock' + lockname
+    return release_lock_lua(conn, [lockname], [identifier])
+
+release_lock_lua=script_load('''
+if redis.call('get', KEYS[1]) == ARGV[1] then
+    return redis.call('del', KEYS[1]) or true
+end
+''')
+```
+
+### 11.3 移除 WATCH/MULTI/EXEC 事务
+
+注意：运行在redis内部的lua脚本只能访问位于 lua 脚本或者 redis 数据库之内的数据， 锁或WATCH/MULTI/EXEC 事务没有这个限制
+
+### 11.4 使用 Lua 对列表进行分片
+
+
