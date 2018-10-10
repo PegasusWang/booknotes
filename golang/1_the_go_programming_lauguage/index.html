@@ -180,6 +180,10 @@
                 </li>
                 <li class="">
                     
+    <a class="" href="../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="../../database/redis实战/">《Redis实战》</a>
                 </li>
                 <li class="">
@@ -528,6 +532,10 @@
                 <li class="">
                     
     <a class="" href="../../思维/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/学习之道/">《学习之道》</a>
                 </li>
                 <li class="">
                     
@@ -956,28 +964,30 @@ func counter(w http.ResponseWriter, r *http.Request) {
 </code></pre>
 <p>最后再几个 golang 的语法特性：</p>
 <ul>
-<li>
-<p>控制流 switch</p>
-<p>switch coinflip() {
-case "heads":    // case 还支持简单的语句 ()
+<li>控制流 switch</li>
+</ul>
+<pre><code class="go">switch coinflip() {
+case &quot;heads&quot;:    // case 还支持简单的语句 ()
     heads++
-case "tails":
+case &quot;tails&quot;:
     tails++
 default:
-    fmt.Println("landed on edge!")
-}</p>
-</li>
-<li>
-<p>Named Types:</p>
-<p>//定义一个 Point 类型
+    fmt.Println(&quot;landed on edge!&quot;)
+}
+</code></pre>
+
+<ul>
+<li>Named Types:</li>
+</ul>
+<pre><code class="go">//定义一个 Point 类型
 type Point struct {
     X, Y int
 }
-var p Point</p>
-</li>
-<li>
-<p>Pointers(指针)：和 C 类似，go 中也实现了指针</p>
-</li>
+var p Point
+</code></pre>
+
+<ul>
+<li>Pointers(指针)：和 C 类似，go 中也实现了指针</li>
 <li>Methods and interfaces（方法和接口）: 方法是关联到一个命名类型的函数。接口是一种把不同类型同等对待的抽象类型</li>
 <li>Packages(包): 通过包组织程序</li>
 <li>Comments(注释)：和 C 一样的注释,  <code>// or /* XXXX */</code></li>
