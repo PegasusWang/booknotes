@@ -31,6 +31,8 @@
 - Purge Thread: 回收已经使用并分配的 undo 页
 - Page Cleaner Thread: 将之前版本中脏页的刷新操作都放入到单独的线程中来完成，减轻master工作压力
 
+（关于linux 内存管理：https://blog.csdn.net/gatieme/article/details/52384636 ,内存被细分为多个页面帧, 页面是最基本的页面分配的单位　）
+
 内存：
 
 - 缓冲池：缓冲池技术提升性能（协调磁盘与cpu速度鸿沟） innodb_buffer_pool_size，新版可以有多个缓冲池
@@ -63,3 +65,9 @@ InnoDB 关键特性：
 - 自适应哈希索引(Adaptive Hash Index)
 - 异步IO(Async IO)
 - 刷新邻接页(Flush Neighbor Page)
+
+延伸阅读，主要是了解B树：
+B-Tree: 多叉平衡查找树
+
+- https://zh.wikipedia.org/wiki/B%E6%A0%91
+- https://blog.csdn.net/v_JULY_v/article/details/6530142
