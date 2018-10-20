@@ -8,23 +8,24 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>《源码阅读》 - PegasusWang的读书笔记</title>
+  <title>2: 认识你的记忆：什么是记忆 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../../css/highlight.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u300a\u6e90\u7801\u9605\u8bfb\u300b";
-    var mkdocs_page_input_path = "\u6e90\u7801\u9605\u8bfb_sourcecode/README.md";
-    var mkdocs_page_url = "/\u6e90\u7801\u9605\u8bfb_sourcecode/README/";
+    var mkdocs_page_name = "2: \u8ba4\u8bc6\u4f60\u7684\u8bb0\u5fc6\uff1a\u4ec0\u4e48\u662f\u8bb0\u5fc6";
+    var mkdocs_page_input_path = "\u601d\u7ef4/\u5982\u4f55\u9ad8\u6548\u8bb0\u5fc6.md";
+    var mkdocs_page_url = null;
   </script>
   
-  <script src="../../js/jquery-2.1.1.min.js"></script>
-  <script src="../../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -38,7 +39,7 @@
         <a href="../.." class="icon icon-home"> PegasusWang的读书笔记</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -383,35 +384,35 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../思维/专注力_化繁为简的惊人力量/">《专注力》</a>
+    <a class="" href="../专注力_化繁为简的惊人力量/">《专注力》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+    <a class="" href="../为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维/刻意练习/">《刻意练习》</a>
+    <a class="" href="../刻意练习/">《刻意练习》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维/学习之道/">《学习之道》</a>
+    <a class="" href="../学习之道/">《学习之道》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维/批判性思维工具/">《批判性思维工具》</a>
+    <a class="" href="../批判性思维工具/">《批判性思维工具》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+    <a class="" href="../程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维/超效率手册/">《超效率手册》</a>
+    <a class="" href="../超效率手册/">《超效率手册》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+    <a class="" href="../高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
                 </li>
     </ul>
 	    </li>
@@ -420,12 +421,9 @@
 		
     <span class="caption-text">源码</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">《源码阅读》</a>
-    <ul class="subnav">
-            
-    </ul>
+    <a class="" href="../../源码阅读_sourcecode/">《源码阅读》</a>
                 </li>
     </ul>
 	    </li>
@@ -549,12 +547,8 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
-        
-          <li>源码 &raquo;</li>
-        
-      
     
-    <li>《源码阅读》</li>
+    <li>2: 认识你的记忆：什么是记忆</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -564,49 +558,32 @@
           <div role="main">
             <div class="section">
               
-                <p>如果你和我一样感觉整天写增删改查技术没有进步，可以尝试下阅读和仿写优秀的内置库或者框架代码。</p>
-<p>以下是我阅读代码的一些探索， 以阅读 redis-py 一个流行的 redis python 客户端为例：</p>
-<ul>
-<li>通过大致浏览源码仓库，了解代码的构成、结构等。自顶向下，从我们代码里使用到的地方开始切入。StrictRedis 类</li>
-<li>看下这个 StrictRedis 使用到了哪些类，<code>__init__</code> 初始化的时候有哪些成员，每个成员是什么结构？<ul>
-<li>Connection: 管理 tcp socket 连接（需要了解 socket 编程相关知识，如果你不清楚，可以迅速搜集相关资料做个大致了解，但是不要长时间卡在这里）</li>
-<li>ConnectionPool: 连接池管理。（实际上就是建立多个连接，每次用的时候取一个，Pool 的实现原理都类似，还有内存池、线程池等）</li>
-<li>PythonParser: 根据 redis 协议解析 redis server 返回的结果 （这里需要网上搜下 redis 协议，redis 的规定很简单，协议就是一种规定，我给你返回以后你应该按照啥规则解析）</li>
-<li>SocketBuffer: PythonParser 使用了 SocketBuffer，用来管理 socket recv 的数据，实现了 read readline 方法</li>
-<li>StrictRedis: 包装了 redis 各种命令，通过调用上边的类来发送 redis 请求命令，解析返回结果等</li>
-</ul>
-</li>
-<li>了解了工作原理后尝试仿写一个简单版本，照葫芦画瓢，不会就直接抄。最后测试能不能用。看着容易，真正自己写起来还是会有很多问题，逼着自己尝试实现一把</li>
-</ul>
-<p>阅读代码的时候对于相关的类或者函数，需要了解它的：</p>
-<ul>
-<li>功能是什么？意图是啥？</li>
-<li>原理是什么？为了实现相关功能它用了什么原理？这一步是困难又漫长的：<ul>
-<li>使用到了哪些知识？一般框架或者内置库的代码不会涉及到具体业务，所以一般都是计算机科学涉及到的基础知识</li>
-<li>和其他部分是如何交互的？不同类之间如何通信。你可能需要借助纸笔、UML工具、绘图工具、思维导图等帮助你理清楚思路</li>
-<li>每个部分用到了哪些语法糖、面向对象、设计模式、算法数据结构、网络编程、编译原理？用到了特定领域的知识吗？</li>
-<li>这些编程知识我会吗？不会的话可以业余时间查资料有针对性补补</li>
-</ul>
-</li>
-<li>如果你搞明白了可以给源代码加上自己的理解和注释: 功能和实现原理，如果代码已经有了完善的文档更好</li>
-<li>开始尝试仿写一个简单版本的实现，你可以只实现最最基本的功能，这里我们阅读代码的意义是为了学习它的实现和思想，但是如果只看不写的话吸收的东西很有限</li>
-<li>了解了原理并且能仿写以后，你就可以按照需求修改轮子甚至是造轮子了</li>
-<li>写一篇技术博客来分享你的心得</li>
-</ul>
-<p>三步走：learing、trying、teaching，每一步你的认识都在增加</p>
+                <h1 id="2">2: 认识你的记忆：什么是记忆</h1>
+<p>三个阶段:
+读取或编码
+存储
+检索</p>
+<p>长期记忆三种类型：
+1.程序记忆
+2.语义记忆
+3.情景记忆</p>
+<p>测量记忆：
+回忆
+识别
+再学习</p>
+<h1 id="3">3:记忆如何运行</h1>
+<p>遗忘：衰退说、压抑说、扭曲说、干扰说、检索说</p>
+<h1 id="4">4：记忆的原则</h1>
+<p>使内容有意义:
+熟悉
+韵律
+规律:内容结构</p>
+<p>组织：
+序列位置效应：项目顺序影响记忆难易程度。复杂项目排在列表结尾</p>
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../../网站架构/web_scalavility_for_startup_engineers/" class="btn btn-neutral float-right" title="《web scalavility for startup engineers》">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../../思维/高效程序员的45个习惯/" class="btn btn-neutral" title="《高效程序员的45个习惯》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -630,18 +607,13 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../思维/高效程序员的45个习惯/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../../网站架构/web_scalavility_for_startup_engineers/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
     <script>var base_url = '../..';</script>
-    <script src="../../js/theme.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="../../search/require.js"></script>
-      <script src="../../search/search.js"></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../search/main.js" defer></script>
 
 </body>
 </html>

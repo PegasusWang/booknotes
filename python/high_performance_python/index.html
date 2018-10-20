@@ -13,18 +13,19 @@
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../../css/highlight.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
     var mkdocs_page_name = "\u300aHigh Performance Python\u300b";
     var mkdocs_page_input_path = "python/high_performance_python.md";
-    var mkdocs_page_url = "/python/high_performance_python/";
+    var mkdocs_page_url = null;
   </script>
   
-  <script src="../../js/jquery-2.1.1.min.js"></script>
-  <script src="../../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -38,7 +39,7 @@
         <a href="../.." class="icon icon-home"> PegasusWang的读书笔记</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -461,7 +462,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../源码阅读_sourcecode/README/">《源码阅读》</a>
+    <a class="" href="../../源码阅读_sourcecode/">《源码阅读》</a>
                 </li>
     </ul>
 	    </li>
@@ -633,8 +634,8 @@
 <p>元素查找有线性查找(list.index)(On)和有序数组的二分查找(bisect模块)(Ologn)</p>
 <hr />
 <h2 id="4dict-and-sets">4章:Dict and Sets</h2>
-<p>作为dict或者set的键要求是可hash的，可以hash指的是实现了 <strong>hash</strong>和<strong>eq</strong>(或<strong>cmp</strong>)，list这种可变类型的数据结构就无法作为key，dict和set的内部实现都是哈希表。</p>
-<p>对于自定义类型，我们需要实现<strong>has</strong>和<strong>eq</strong>来获得期望的结果:</p>
+<p>作为dict或者set的键要求是可hash的，可以hash指的是实现了 <strong>hash__和__eq</strong>(或__cmp__)，list这种可变类型的数据结构就无法作为key，dict和set的内部实现都是哈希表。</p>
+<p>对于自定义类型，我们需要实现__has__和__eq__来获得期望的结果:</p>
 <pre><code>class Point:
     def __init__(self, x, y):
         self.x, self.y = x, y
@@ -1095,10 +1096,9 @@ print "Pi", math.pi
     </span>
 </div>
     <script>var base_url = '../..';</script>
-    <script src="../../js/theme.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="../../search/require.js"></script>
-      <script src="../../search/search.js"></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../search/main.js" defer></script>
 
 </body>
 </html>

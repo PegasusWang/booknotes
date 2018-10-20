@@ -13,18 +13,19 @@
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../../css/highlight.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
     var mkdocs_page_name = "\u300a1 The Go Programming Language\u300b";
     var mkdocs_page_input_path = "golang/1_the_go_programming_lauguage.md";
-    var mkdocs_page_url = "/golang/1_the_go_programming_lauguage/";
+    var mkdocs_page_url = null;
   </script>
   
-  <script src="../../js/jquery-2.1.1.min.js"></script>
-  <script src="../../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -38,7 +39,7 @@
         <a href="../.." class="icon icon-home"> PegasusWang的读书笔记</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -566,7 +567,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../源码阅读_sourcecode/README/">《源码阅读》</a>
+    <a class="" href="../../源码阅读_sourcecode/">《源码阅读》</a>
                 </li>
     </ul>
 	    </li>
@@ -968,28 +969,30 @@ func counter(w http.ResponseWriter, r *http.Request) {
 </code></pre>
 <p>最后再几个 golang 的语法特性：</p>
 <ul>
-<li>
-<p>控制流 switch</p>
-<p>switch coinflip() {
-case "heads":    // case 还支持简单的语句 ()
+<li>控制流 switch</li>
+</ul>
+<pre><code class="go">switch coinflip() {
+case &quot;heads&quot;:    // case 还支持简单的语句 ()
     heads++
-case "tails":
+case &quot;tails&quot;:
     tails++
 default:
-    fmt.Println("landed on edge!")
-}</p>
-</li>
-<li>
-<p>Named Types:</p>
-<p>//定义一个 Point 类型
+    fmt.Println(&quot;landed on edge!&quot;)
+}
+</code></pre>
+
+<ul>
+<li>Named Types:</li>
+</ul>
+<pre><code class="go">//定义一个 Point 类型
 type Point struct {
     X, Y int
 }
-var p Point</p>
-</li>
-<li>
-<p>Pointers(指针)：和 C 类似，go 中也实现了指针</p>
-</li>
+var p Point
+</code></pre>
+
+<ul>
+<li>Pointers(指针)：和 C 类似，go 中也实现了指针</li>
 <li>Methods and interfaces（方法和接口）: 方法是关联到一个命名类型的函数。接口是一种把不同类型同等对待的抽象类型</li>
 <li>Packages(包): 通过包组织程序</li>
 <li>Comments(注释)：和 C 一样的注释,  <code>// or /* XXXX */</code></li>
@@ -2726,10 +2729,9 @@ func sqlQuote(x interface{}) string {    // interface{} 允许函数接受任何
     </span>
 </div>
     <script>var base_url = '../..';</script>
-    <script src="../../js/theme.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="../../search/require.js"></script>
-      <script src="../../search/search.js"></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../search/main.js" defer></script>
 
 </body>
 </html>
