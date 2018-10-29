@@ -576,7 +576,7 @@ class ConnectionPool(object):
     def reset(self):
         self.pid = os.getpid()
         self._created_connections = 0
-        self._available_connections = []
+        self._available_connections = []  # 为啥不用deque 呢？
         self._in_use_connections = set()
         self._check_lock = threading.Lock()
 
@@ -591,6 +591,7 @@ class ConnectionPool(object):
                 self.reset()
 
     def get_connection(self, command_name, *keys, **options):
+        """有则取一个连接，木有则创建一个"""
         self._checkpid()
         try:
             c = self._available_connections.pop()
@@ -689,6 +690,8 @@ class RedisClient(object):
         if timeout_seconds is not None:
             pieces.append('EX{}'.format(timeout_seconds))
         return self.execute_command('SET', *pieces)
+
+    # 后边就可以开始实现一堆命令了，借助 execute_command
 
 
 def test_redis():
