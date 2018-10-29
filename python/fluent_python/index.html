@@ -339,15 +339,15 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#_6">变量：我们可以把变量理解为对象的标注（便利贴），多个标注就是别名。变量保存的是对象的引用</a></li>
+            <li><a class="toctree-l4" href="#_6">变量：我们可以把变量理解为对象的标注（便利贴），多个标注就是别名。变量保存的是对象的引用。</a></li>
         
-            <li><a class="toctree-l4" href="#idobj1-idobj2-obj1-is-obj2-obj1-obj2-obj1eqobj2-some_obj-is-none-none-none">比较对象： 判断是同一个对象: id(obj1) == id(obj2)  或者 obj1 is obj2。比较两个对象的值用 obj1 == obj2 (obj1.eq(obj2))。你会发现一般我们用 some_obj is None 来判断一个对象是否是 None，说明 None 是个单例对象</a></li>
+            <li><a class="toctree-l4" href="#idobj1-idobj2-obj1-is-obj2-obj1-obj2-obj1eqobj2-some_obj-is-none-none-none">比较对象： 判断是同一个对象: id(obj1) == id(obj2)  或者 obj1 is obj2。比较两个对象的值用 obj1 == obj2 (obj1.eq(obj2))。你会发现一般我们用 some_obj is None 来判断一个对象是否是 None，说明 None 是个单例对象。</a></li>
         
-            <li><a class="toctree-l4" href="#list-list">元祖的相对不可变性：元祖的不可变指的是保存的引用不可变，与引用的对象无关。比如如果元祖的元素是个 list，我们是可以修改这个 list 的。这也会导致有些元祖无法散列</a></li>
+            <li><a class="toctree-l4" href="#tupletuple-list-list">元组(tuple)的相对不可变性：元祖的不可变指的是保存的引用不可变(tuple中不可变的是元素的标识)，与引用的对象无关。比如如果元祖的元素是个 list，我们是可以修改这个 list 的。这也会导致有些元祖无法散列</a></li>
         
-            <li><a class="toctree-l4" href="#_7">默认做浅复制：构造函数或者 [:] 方法默认是浅复制。如果元素都是不可变的，浅复制没有问题。</a></li>
+            <li><a class="toctree-l4" href="#httpwwwpythontutorcom">默认做浅复制：构造函数或者 [:] 方法默认是浅复制。如果元素都是不可变的，浅复制没有问题。 http://www.pythontutor.com</a></li>
         
-            <li><a class="toctree-l4" href="#copydeepcopy-copycopy-__copy__-__deepcopy__">深拷贝: copy.deepcopy 和 copy.copy 能为任意对象做深复制和浅复制。我们可以自定义 __copy__() 和 __deepcopy__() 控制拷贝行为</a></li>
+            <li><a class="toctree-l4" href="#copydeepcopy-copycopy-__copy__-__deepcopy__">深拷贝: copy.deepcopy 和 copy.copy 能为任意对象做深复制(副本不共享内部对象的引用)和浅复制。我们可以自定义 __copy__() 和 __deepcopy__() 控制拷贝行为</a></li>
         
             <li><a class="toctree-l4" href="#python-call-by-sharingpython">函数的参数作为引用时：python 唯一支持的传参模式是共享传参（call by sharing），指函数的各个形式参数获得实参中各个引用的副本。也就是说，函数内部的形参是实参的别名。这个方案的结果就是，函数可能会修改作为参数传入的可变对象，但是无法修改那些对象的标识（即不能把一个对象替换成另一个对象）。（笔者觉得这章解释非常好，之前网上一大堆讨论python究竟是值传递还是引用传递的都是不准确的）</a></li>
         
@@ -392,19 +392,19 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#_8">使用猴子补丁在运行时实现协议：</a></li>
+            <li><a class="toctree-l4" href="#_7">使用猴子补丁在运行时实现协议：</a></li>
         
             <li><a class="toctree-l4" href="#collectionsabc">抽象基类：collections.abc 模块</a></li>
         
-            <li><a class="toctree-l4" href="#_9">定义并使用抽象基类</a></li>
+            <li><a class="toctree-l4" href="#_8">定义并使用抽象基类</a></li>
         
             <li><a class="toctree-l4" href="#register">使用 register 方法注册虚拟子类:</a></li>
         
             <li><a class="toctree-l4" href="#__subclasshook__-__subclasshook__-abcsized">__subclasshook__ : 即使不注册，抽象基类也能把一个类识别为虚拟子类。定义 __subclasshook__ 方法动态识别子类。参考 abc.Sized 源码</a></li>
         
-            <li><a class="toctree-l4" href="#_10">强类型和弱类型：</a></li>
+            <li><a class="toctree-l4" href="#_9">强类型和弱类型：</a></li>
         
-            <li><a class="toctree-l4" href="#_11">静态和动态类型：</a></li>
+            <li><a class="toctree-l4" href="#_10">静态和动态类型：</a></li>
         
         </ul>
     
@@ -413,11 +413,11 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#_12">子类化内置类型：</a></li>
+            <li><a class="toctree-l4" href="#_11">子类化内置类型：</a></li>
         
-            <li><a class="toctree-l4" href="#_13">多重继承和方法解析顺序</a></li>
+            <li><a class="toctree-l4" href="#_12">多重继承和方法解析顺序</a></li>
         
-            <li><a class="toctree-l4" href="#_14">处理多重继承</a></li>
+            <li><a class="toctree-l4" href="#_13">处理多重继承</a></li>
         
         </ul>
     
@@ -429,21 +429,21 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#_15">可迭代对象:</a></li>
+            <li><a class="toctree-l4" href="#_14">可迭代对象:</a></li>
         
-            <li><a class="toctree-l4" href="#_16">标准迭代器接口有两个方法：</a></li>
+            <li><a class="toctree-l4" href="#_15">标准迭代器接口有两个方法：</a></li>
         
-            <li><a class="toctree-l4" href="#_17">迭代器:</a></li>
+            <li><a class="toctree-l4" href="#_16">迭代器:</a></li>
         
-            <li><a class="toctree-l4" href="#_18">二者区别：</a></li>
+            <li><a class="toctree-l4" href="#_17">二者区别：</a></li>
         
-            <li><a class="toctree-l4" href="#_19">生成器函数</a></li>
+            <li><a class="toctree-l4" href="#_18">生成器函数</a></li>
         
-            <li><a class="toctree-l4" href="#_20">标准库的中生成器函数</a></li>
+            <li><a class="toctree-l4" href="#_19">标准库的中生成器函数</a></li>
         
-            <li><a class="toctree-l4" href="#_21">可迭代的规约函数</a></li>
+            <li><a class="toctree-l4" href="#_20">可迭代的规约函数</a></li>
         
-            <li><a class="toctree-l4" href="#_22">把生成器当协程</a></li>
+            <li><a class="toctree-l4" href="#_21">把生成器当协程</a></li>
         
         </ul>
     
@@ -465,13 +465,13 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#_23">生成器如何进化成协程</a></li>
+            <li><a class="toctree-l4" href="#_22">生成器如何进化成协程</a></li>
         
             <li><a class="toctree-l4" href="#prime">预激（prime）协程的装饰器</a></li>
         
-            <li><a class="toctree-l4" href="#_24">终止协程和异常处理</a></li>
+            <li><a class="toctree-l4" href="#_23">终止协程和异常处理</a></li>
         
-            <li><a class="toctree-l4" href="#_25">让协程返回值</a></li>
+            <li><a class="toctree-l4" href="#_24">让协程返回值</a></li>
         
             <li><a class="toctree-l4" href="#yield-frompython3">yield from(python3)</a></li>
         
@@ -497,7 +497,7 @@
         
             <li><a class="toctree-l4" href="#asyncio">asyncio 使用事件循环驱动的协程实现并发</a></li>
         
-            <li><a class="toctree-l4" href="#_26">避免阻塞型调用</a></li>
+            <li><a class="toctree-l4" href="#_25">避免阻塞型调用</a></li>
         
             <li><a class="toctree-l4" href="#futures">从回调到 Futures 和 协程</a></li>
         
@@ -510,17 +510,17 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#_27">使用动态属性转换数据</a></li>
+            <li><a class="toctree-l4" href="#_26">使用动态属性转换数据</a></li>
         
-            <li><a class="toctree-l4" href="#_30">使用特性验证属性</a></li>
+            <li><a class="toctree-l4" href="#_29">使用特性验证属性</a></li>
         
             <li><a class="toctree-l4" href="#property">解析 property</a></li>
         
-            <li><a class="toctree-l4" href="#_31">定义一个特性工厂函数</a></li>
+            <li><a class="toctree-l4" href="#_30">定义一个特性工厂函数</a></li>
         
-            <li><a class="toctree-l4" href="#_32">处理属性删除操作</a></li>
+            <li><a class="toctree-l4" href="#_31">处理属性删除操作</a></li>
         
-            <li><a class="toctree-l4" href="#_33">处理属性的重要属性和函数</a></li>
+            <li><a class="toctree-l4" href="#_32">处理属性的重要属性和函数</a></li>
         
         </ul>
     
@@ -529,15 +529,15 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#_38">导入时和运行时比较</a></li>
+            <li><a class="toctree-l4" href="#_37">导入时和运行时比较</a></li>
         
-            <li><a class="toctree-l4" href="#_39">元类基础</a></li>
+            <li><a class="toctree-l4" href="#_38">元类基础</a></li>
         
             <li><a class="toctree-l4" href="#__prepare__">元类的特殊方法 __prepare__</a></li>
         
-            <li><a class="toctree-l4" href="#_40">元类使用场景</a></li>
+            <li><a class="toctree-l4" href="#_39">元类使用场景</a></li>
         
-            <li><a class="toctree-l4" href="#_41">类作为对象</a></li>
+            <li><a class="toctree-l4" href="#_40">类作为对象</a></li>
         
         </ul>
     
@@ -1033,11 +1033,12 @@ def f2():
         return func
 </code></pre>
 <h1 id="8">8 对象引用、可变性和垃圾回收</h1>
-<h4 id="_6">变量：我们可以把变量理解为对象的标注（便利贴），多个标注就是别名。变量保存的是对象的引用</h4>
-<h4 id="idobj1-idobj2-obj1-is-obj2-obj1-obj2-obj1eqobj2-some_obj-is-none-none-none">比较对象： 判断是同一个对象: id(obj1) == id(obj2)  或者 obj1 is obj2。比较两个对象的值用 obj1 == obj2 (obj1.<strong>eq</strong>(obj2))。你会发现一般我们用 <code>some_obj is None</code> 来判断一个对象是否是 None，说明 None 是个单例对象</h4>
-<h4 id="list-list">元祖的相对不可变性：元祖的不可变指的是保存的引用不可变，与引用的对象无关。比如如果元祖的元素是个 list，我们是可以修改这个 list 的。这也会导致有些元祖无法散列</h4>
-<h4 id="_7">默认做浅复制：构造函数或者 [:] 方法默认是浅复制。如果元素都是不可变的，浅复制没有问题。</h4>
-<h4 id="copydeepcopy-copycopy-__copy__-__deepcopy__">深拷贝: copy.deepcopy 和 copy.copy 能为任意对象做深复制和浅复制。我们可以自定义 <code>__copy__()</code> 和 <code>__deepcopy__()</code> 控制拷贝行为</h4>
+<h4 id="_6">变量：我们可以把变量理解为对象的标注（便利贴），多个标注就是别名。变量保存的是对象的引用。</h4>
+<h4 id="idobj1-idobj2-obj1-is-obj2-obj1-obj2-obj1eqobj2-some_obj-is-none-none-none">比较对象： 判断是同一个对象: id(obj1) == id(obj2)  或者 obj1 is obj2。比较两个对象的值用 obj1 == obj2 (obj1.<strong>eq</strong>(obj2))。你会发现一般我们用 <code>some_obj is None</code> 来判断一个对象是否是 None，说明 None 是个单例对象。</h4>
+<h4 id="tupletuple-list-list">元组(tuple)的相对不可变性：元祖的不可变指的是保存的引用不可变(tuple中不可变的是元素的标识)，与引用的对象无关。比如如果元祖的元素是个 list，我们是可以修改这个 list 的。这也会导致有些元祖无法散列</h4>
+<p>注意 str/bytes/array.array 等单一类型序列是扁平的，它们保存的不是引用，而是在连续内存中保存数据本身(字符、字节和数字)</p>
+<h4 id="httpwwwpythontutorcom">默认做浅复制：构造函数或者 [:] 方法默认是浅复制。如果元素都是不可变的，浅复制没有问题。 http://www.pythontutor.com</h4>
+<h4 id="copydeepcopy-copycopy-__copy__-__deepcopy__">深拷贝: copy.deepcopy 和 copy.copy 能为任意对象做深复制(副本不共享内部对象的引用)和浅复制。我们可以自定义 <code>__copy__()</code> 和 <code>__deepcopy__()</code> 控制拷贝行为</h4>
 <h4 id="python-call-by-sharingpython">函数的参数作为引用时：python 唯一支持的传参模式是共享传参（call by sharing），指函数的各个形式参数获得实参中各个引用的副本。也就是说，函数内部的形参是实参的别名。这个方案的结果就是，函数可能会修改作为参数传入的可变对象，但是无法修改那些对象的标识（即不能把一个对象替换成另一个对象）。（笔者觉得这章解释非常好，之前网上一大堆讨论python究竟是值传递还是引用传递的都是不准确的）</h4>
 <h4 id="py-none">不要使用可变类型作为参数的默认值：这个坑写 py 写多的人应该都碰到过。函数默认值在定义函数时计算（通常是加载模块时），因此默认值变成了函数对象的属性。如果默认值是可变对象，而且修改了它的值，后续的函数调用就会受影响。一般我们用 None 作为占位符。</h4>
 <pre><code>def func(l=None):    # 不要写 def func(l=[]):
@@ -1071,7 +1072,7 @@ def f2():
 <p>鸭子类型： 在面向对象编程中，协议是非正式的接口，只在文档中定义，在代码中不定义。例如 python 序列协议只需要实现 <code>__lens__</code>  和 <code>__getitem__</code> 两个方法。只关心行为而不关心类型。</p>
 <p>我们可以模仿 python 对象的内置方法来编写符合 python 风格的类。（具体的大家还是看下书中的代码示例吧，这一章举得例子不错）</p>
 <h1 id="11">11 接口：从协议到抽象基类</h1>
-<h4 id="_8">使用猴子补丁在运行时实现协议：</h4>
+<h4 id="_7">使用猴子补丁在运行时实现协议：</h4>
 <p>运行时修改类或者模块，而不改动源码。可以在运行时让类实现协议</p>
 <h4 id="collectionsabc">抽象基类：collections.abc 模块</h4>
 <ul>
@@ -1082,7 +1083,7 @@ def f2():
 <li>Iterator</li>
 <li>numbers包：Number, Complex，Real，Rational，Integral</li>
 </ul>
-<h4 id="_9">定义并使用抽象基类</h4>
+<h4 id="_8">定义并使用抽象基类</h4>
 <pre><code>import abc
 class Base(abc.ABC):    # py3， py2 中使用  __metaclass__ = abc.ABCMeta
     @abc.abstractmethod    # 该装饰器应该放在最里层
@@ -1092,19 +1093,19 @@ class Base(abc.ABC):    # py3， py2 中使用  __metaclass__ = abc.ABCMeta
 <h4 id="register">使用 register 方法注册虚拟子类:</h4>
 <p>在抽象基类上调用 register 方法注册其虚拟子类，issubclass 和 isinstance 都能识别，但是注册的的类不会从抽象基类中继承任何方法和属性。查看虚拟子类的 <code>__mro__</code> 会发现抽象基类不在其中(没继承其属性和方法)</p>
 <h4 id="__subclasshook__-__subclasshook__-abcsized"><code>__subclasshook__</code> : 即使不注册，抽象基类也能把一个类识别为虚拟子类。定义 <code>__subclasshook__</code> 方法动态识别子类。参考 abc.Sized 源码</h4>
-<h4 id="_10">强类型和弱类型：</h4>
+<h4 id="_9">强类型和弱类型：</h4>
 <p>如果一门语言很少隐式转换类型，说明它是强类型语言(java/c++/python)。如果经常这么做，是弱类型语言(php,javascript,perl)。强类型能及早发现缺陷</p>
-<h4 id="_11">静态和动态类型：</h4>
+<h4 id="_10">静态和动态类型：</h4>
 <p>在编译时期检查类型的语言是静态语言，运行时检查类型的语言是动态语言。静态类型需要类型声明（有些现代语言使用类型推导避免部分类型声明）。静态类型便于编译器和 IDE
 及早分析代码、找出错误和提供其他服务（优化、重构等）。动态类型便于代码重用，代码行数更少，而且能让接口自然成为协议而不提早实行。</p>
 <h1 id="12">12 继承的优缺点</h1>
-<h4 id="_12">子类化内置类型：</h4>
+<h4 id="_11">子类化内置类型：</h4>
 <p>内置类型的方法不会调用子类覆盖的方法。不要子类化C语言实现的内置类型（list,dict等），用户自定义的类应该继承自 collections
 模块。collections.UserDict, UserList and UserString</p>
-<h4 id="_13">多重继承和方法解析顺序</h4>
+<h4 id="_12">多重继承和方法解析顺序</h4>
 <p>任何支持多重继承的语言都要处理潜在的明明冲突问题，菱形继承问题。python  会按照 方法解析顺序MRO(method resolution order)
 遍历继承图。类都有一个  <code>__mro__</code> 属性，它的值是一个tuple，按照顺序列出各个超类，直到 object 类。MRO 根据 C3 算法计算</p>
-<h4 id="_14">处理多重继承</h4>
+<h4 id="_13">处理多重继承</h4>
 <p>多重继承增加了可选方案和复杂度</p>
 <ul>
 <li>把接口继承和实现继承区分开。明确一开始为什么创建子类。1.继承接口，创建子类型，实现『是什么』关系。2.继承实现，重用代码。通过继承重用代码是实现细节，通常可换成组合和委托。接口继承是框架的支柱</li>
@@ -1156,23 +1157,23 @@ class Base(abc.ABC):    # py3， py2 中使用  __metaclass__ = abc.ABCMeta
 <li>如果没有实现 <code>__iter__</code> 方法，但是实现了 <code>__getitem__</code> 方法，python 会创建一个迭代器，尝试按照顺序（从索引0）获取元素</li>
 <li>如果尝试失败，抛出 TypeError 异常</li>
 </ul>
-<h4 id="_15">可迭代对象:</h4>
+<h4 id="_14">可迭代对象:</h4>
 <p>如果对象实现了能返回迭代器的 <code>__iter__</code> 方法，就是可迭代的。序列都可以迭代；实现了  <code>__getitem__</code> 方法，而且其参数是从 0 开始的索引，这种对象也可以迭代。</p>
-<h4 id="_16">标准迭代器接口有两个方法：</h4>
+<h4 id="_15">标准迭代器接口有两个方法：</h4>
 <ul>
 <li><code>__next__</code>: 返回下一个可用的元素，没有元素抛出 StopIteration</li>
 <li><code>__iter__</code>: 返回 self，以便在应该使用可迭代对象的地方使用迭代器，例如 for 循环中</li>
 </ul>
 <p>检查对象是否是迭代器的最好方法是调用 isinstance(x, abc.Iterator)</p>
-<h4 id="_17">迭代器:</h4>
+<h4 id="_16">迭代器:</h4>
 <p>实现了无参数的 <code>__next__</code> 方法，返回序列中下一个元素；如果没有元素了，抛出 StopIteration 异常。python中的迭代器还实现了
 <code>__iter__</code> 方法，因此迭代器也可以迭代。</p>
-<h4 id="_18">二者区别：</h4>
+<h4 id="_17">二者区别：</h4>
 <p>迭代器可以迭代，但是可迭代的对象不是迭代器。可迭代的对象一定不能是自身的迭代器。也就是说，可迭代对象必须实现  <code>__iter__</code>
 ，但是不能实现 <code>__next__</code></p>
-<h4 id="_19">生成器函数</h4>
+<h4 id="_18">生成器函数</h4>
 <p>只要 python 的函数体中有 yield 关键字，该函数就是生成器函数。调用生成器函数会返回一个生成器对象。生成器函数是生成器工厂</p>
-<h4 id="_20">标准库的中生成器函数</h4>
+<h4 id="_19">标准库的中生成器函数</h4>
 <ul>
 <li>用于过滤的生成器函数: itertools.takewhile/compress/dropwhile/filter/filterfalse/islice/</li>
 <li>用于映射的生成器函数: 内置的 enumerate/map  itertools.accumulate/starmap</li>
@@ -1180,9 +1181,9 @@ class Base(abc.ABC):    # py3， py2 中使用  __metaclass__ = abc.ABCMeta
 <li>从一个元素产生多个值，扩展输入的可迭代对象: itertools.combinations/combinations_with_replacement/count/cycle/permutations/repeat</li>
 <li>产出输入可迭代对象的全部元素，以某种方式排列：itertools.groupby/tee     内置的 reversed</li>
 </ul>
-<h4 id="_21">可迭代的规约函数</h4>
+<h4 id="_20">可迭代的规约函数</h4>
 <p>归约函数：接受一个可迭代的对象，返回单个结果。all/any/max/mini/functools.reduce/sum    all/any 有短路特性</p>
-<h4 id="_22">把生成器当协程</h4>
+<h4 id="_21">把生成器当协程</h4>
 <p><code>.send()</code> 方法致使生成器前进到下一个 yield 语句，还允许使用生成器的客户把数据发给自己，不管传给 send 方法什么参数，
 那个参数都会成为生成器函数定义体中对应的 yield 表达式的值。</p>
 <h1 id="15-else">15 上下文管理器和 else 块</h1>
@@ -1237,7 +1238,7 @@ def looking_glass():
 <p>句法上看，协程和生成器类似，都是定义体中包含 yield 关键字的函数。但在协程中，yield 通常出现在表达式右边(datum =
 yield)，可以产出值，也可以不产出。如果yield 关键字后边没有表达式，那么生成器产出 None。调用方可以用 send
 方法把数据提供给协程。从根本上把 yield 视作控制流程的方式。</p>
-<h4 id="_23">生成器如何进化成协程</h4>
+<h4 id="_22">生成器如何进化成协程</h4>
 <p>python2.5 之后yield 关键在能在表达式中使用，而且生成器 api 中增加了 <code>.send(value)</code> 方法。生成器的调用方可以用 send
 发送数据，发送的数据会成为生成器函数中 yield 表达式的值。因此生成器能当做协程使用。协程是指一个过程，这个过程与调用方协作，产出由调用方提供的值。</p>
 <p>协程使用 next 函数预激(prime)，即让协程向前执行到第一个 yield 表达式。</p>
@@ -1255,13 +1256,13 @@ def coroutine(func):
         return gen
     return primer
 </code></pre>
-<h4 id="_24">终止协程和异常处理</h4>
+<h4 id="_23">终止协程和异常处理</h4>
 <p>协程中未处理的异常会向上冒泡</p>
 <ul>
 <li>generator.throw(exc_type)</li>
 <li>generator.close()</li>
 </ul>
-<h4 id="_25">让协程返回值</h4>
+<h4 id="_24">让协程返回值</h4>
 <p>协程中 return 表达式的值会偷偷传给调用方，赋值给 StopIteration 异常的一个属性 value</p>
 <pre><code>try:
     coro.send(None)
@@ -1403,7 +1404,7 @@ def download_many(cc_list):
 if __name__ == '__main__':
     main(download_many)
 </code></pre>
-<h4 id="_26">避免阻塞型调用</h4>
+<h4 id="_25">避免阻塞型调用</h4>
 <p>两种方式避免阻塞型调用中止整个应用程序的进程：</p>
 <ul>
 <li>在单独的线程中运行各个阻塞型操作(线程内存消耗达到兆字节，取决于操作系统)</li>
@@ -1475,8 +1476,8 @@ asyncio 包中某个参数为协程或者 Futures 的函数，例如 run_until_c
 <h1 id="19-attributeproperty">19 动态属性(attribute)和特性(property)</h1>
 <p>python 中，数据的属性和处理数据的方法统称为属性（attribute），方法是可调用的属性。特性（property）是不改变类接口的前提下，使用存取方法（读值和设值）修改数据属性。</p>
 <p>统一访问原则：不管服务是由存取还是计算实现的，一个模块提供的所有服务都应该统一的方式使用。</p>
-<h2 id="_27">使用动态属性转换数据</h2>
-<h4 id="_28">使用动态属性访问数据</h4>
+<h2 id="_26">使用动态属性转换数据</h2>
+<h4 id="_27">使用动态属性访问数据</h4>
 <pre><code>from collections import abc
 
 class FrozenJSON:
@@ -1502,7 +1503,7 @@ class FrozenJSON:
         else:  # &lt;8&gt;
             return obj
 </code></pre>
-<h4 id="_29">处理无效属性名</h4>
+<h4 id="_28">处理无效属性名</h4>
 <pre><code>def __init__(self, mapping):
     self.__data = {}
     for key, value in mapping.items():
@@ -1521,7 +1522,7 @@ class FrozenJSON:
     else:
         return arg
 </code></pre>
-<h2 id="_30">使用特性验证属性</h2>
+<h2 id="_29">使用特性验证属性</h2>
 <pre><code>class LineItem:
 
     def __init__(self, description, weight, price):
@@ -1551,7 +1552,7 @@ class FrozenJSON:
 <li>特性会覆盖实例属性。特性都是【类属性】，但是特性管理的其实是实例属性的存取。obj.attr 这样的表达式不会从 obj 开始寻找
     attr，而是从 <code>obj.__class__</code> 开始，且仅当类中没有 attr 的属性时， python 才会在 obj 实例中寻找。</li>
 </ul>
-<h2 id="_31">定义一个特性工厂函数</h2>
+<h2 id="_30">定义一个特性工厂函数</h2>
 <pre><code>def quantity(storage_name):  # &lt;1&gt;
 
     def qty_getter(instance):  # &lt;2&gt;
@@ -1578,7 +1579,7 @@ class LineItem:
     def subtotal(self):
         return self.weight * self.price  # &lt;4&gt;
 </code></pre>
-<h2 id="_32">处理属性删除操作</h2>
+<h2 id="_31">处理属性删除操作</h2>
 <pre><code>class BlackKnight:
 
   def __init__(self):
@@ -1599,15 +1600,15 @@ class LineItem:
       text = 'BLACK KNIGHT (loses {})\n-- {}'
       print(text.format(self.members.pop(0), self.phrases.pop(0)))
 </code></pre>
-<h2 id="_33">处理属性的重要属性和函数</h2>
-<h5 id="_34">影响属性处理方式的特殊属性</h5>
+<h2 id="_32">处理属性的重要属性和函数</h2>
+<h5 id="_33">影响属性处理方式的特殊属性</h5>
 <ul>
 <li><code>__class__</code>: 对象所属类的引用。 <code>obj.__class__</code> 与 type(obj) 作用相同。python的某些特殊方法比如
     <code>__getattr__</code>，只在对象的类中寻找，而不在实例中寻找</li>
 <li><code>__dict__</code>: 存储对象或者类的可写属性。</li>
 <li><code>__slots__</code>: 字符串tuple，限制允许有的属性。</li>
 </ul>
-<h4 id="_35">处理属性的内置函数</h4>
+<h4 id="_34">处理属性的内置函数</h4>
 <ul>
 <li>dir: 列出对象的大多数属性</li>
 <li>getattr: 从 obj 对象中获取对应名称的属性。获取的属性可能来自对象所属的类或者超类。</li>
@@ -1615,7 +1616,7 @@ class LineItem:
 <li>setattr: 创建新属性或者覆盖现有属性</li>
 <li>vars： 返回对象的 <code>__dict__</code> 属性</li>
 </ul>
-<h4 id="_36">处理属性的特殊方法</h4>
+<h4 id="_35">处理属性的特殊方法</h4>
 <ul>
 <li><code>__delatttr__(self, name)</code> 使用 del 删除属性就会调用这个方法</li>
 <li><code>__dir__(self)</code>: 把对象传给 dir 函数时候调用</li>
@@ -1654,7 +1655,7 @@ class LineItem:
 <p>覆盖型描述符：实现 <code>__set__</code>  方法的描述符属于覆盖型描述符。
 非覆盖型描述符：没有实现 <code>__set__</code> 方法的描述符。</p>
 <p>方法是描述符</p>
-<h4 id="_37">描述符用法建议：</h4>
+<h4 id="_36">描述符用法建议：</h4>
 <ul>
 <li>使用 property 以保持简单: 内置的 property 实现的其实是覆盖型描述符</li>
 <li>只读描述符必须有 <code>__set__</code> 方法: 如果使用描述符类实现只读属性， <code>__get__ __set__</code> 两个方法必须定义，否则实例的同名属性会遮盖描述符。只读属性的 <code>__set__</code> 只需抛出 AttributeError 异常，并提供合适的错误消息</li>
@@ -1665,10 +1666,10 @@ class LineItem:
 <h1 id="21">21 类元编程</h1>
 <p>元编程是指在运行时创建或者定制类的技术。除非开发框架，否则不要编写元类
 类装饰器能以较为简单的的方式做到需要使用元类去做的事情-创建时定制类。缺点是无法继承</p>
-<h4 id="_38">导入时和运行时比较</h4>
+<h4 id="_37">导入时和运行时比较</h4>
 <p>python 中的 import 不只是声明，进程首次导入模块时，还会运行所导入模块中的全部顶层代码。导入时，解释器会执行执行每个类的定义体.
 （原书有段代码示例非常好地解释了导入的问题）</p>
-<h4 id="_39">元类基础</h4>
+<h4 id="_38">元类基础</h4>
 <p>感觉这一章写得不如笔者之前写的一篇博客《简单的python元类》好理解。</p>
 <pre><code>class EntityMeta(type):
     """Metaclass for business entities with validated fields"""
@@ -1710,7 +1711,7 @@ class Entity(metaclass=EntityMeta):
         for name in cls._field_names:
             yield name
 </code></pre>
-<h4 id="_40">元类使用场景</h4>
+<h4 id="_39">元类使用场景</h4>
 <ul>
 <li>验证属性</li>
 <li>一次把装饰器依附到多个方法上</li>
@@ -1719,7 +1720,7 @@ class Entity(metaclass=EntityMeta):
 <li>基于对象的持久存储</li>
 <li>动态转换使用其他语言编写的类结构</li>
 </ul>
-<h4 id="_41">类作为对象</h4>
+<h4 id="_40">类作为对象</h4>
 <ul>
 <li><code>cls.__bases__</code>: 类的基类组成的元祖</li>
 <li><code>cls.__qualname__</code>: py3 引入，值是类或函数的限定名称，即从模块的全局作用域到类的点分路径</li>
