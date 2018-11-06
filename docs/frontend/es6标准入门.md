@@ -14,6 +14,143 @@ console.log(i)  // ReferenceError: i is not defined
 
 ### const
 const 声明一个只读变量，一旦声明不可变。作用域和 let 相同
- 
+
 
 # 变量的解构赋值
+
+### 数组解构赋值
+按照『模式匹配』从数组和对象中抽取值。
+
+```
+let [a, b, c] = [1,2,3];
+
+let [head, ...tail] = [1,2,3,4]
+head // 1
+tail // [2,3,4]
+
+let [x,y, ...z] = ['a']
+x // "a"
+y // undefined, 解构不成功变量的值就是 undefined
+z // []
+
+// 不完全解构也可以成功。事实上，只要具备 Iterator 接口，都可以用数组形式解构赋值
+let [x,y]=[1,2,3]
+x //1
+y //2
+```
+
+```
+function* fibs() {
+  let a=0;
+  let b=1;
+  while (true) {
+    yield a;
+    [a,b] = [b, a+b];
+  }
+}
+```
+
+```
+// es6 内部使用严格相等运算符 ===
+let [x=1] = [undefined];
+x //1
+let [x=1] = [null]
+x //null，以为 null 不是严格等于 undefined，所以可以被赋值
+```
+
+注意如果默认值是一个表达式，他是惰性求值的。
+
+### 对象解构赋值
+先找到同名属性，然后赋值给对应的变量
+
+```
+let {foo, bar} = {foo:"aa", bar:"bb"};
+foo // "aa"
+bar // "bb"
+```
+
+用途：
+
+- 1.交换变量值
+
+```
+let x=1;
+let y=2;
+[x, y] = [y, x]
+```
+
+- 2.从函数返回多个值
+
+```
+function example() {
+  return [1,2,3]
+}
+let [a,b,c] = example()
+function example() {
+  return {
+    foo: 1,
+    bar: 2
+  }
+}
+let {foo,bar} = example()
+```
+
+- 3.函数参数定义
+
+```
+function f([x,y,z]) {...}
+f([1,2,3])
+function f({x,y,z}) {...}
+f({x:1, y:2, z:3})
+```
+
+- 4.提取 json 数据
+
+```
+let jsonData = {
+  id: 42,
+  status: "OK",
+  data: [867, 5309]
+};
+
+let { id, status, data: number } = jsonData;
+
+console.log(id, status, number);
+// 42, "OK", [867, 5309]
+```
+
+- 5.参数默认值
+
+```
+jQuery.ajax = function (url, {
+  async = true,
+  beforeSend = function () {},
+  cache = true,
+  complete = function () {},
+  crossDomain = false,
+  global = true,
+  // ... more config
+}) {
+  // ... do stuff
+};
+```
+
+- 6.遍历 Map
+
+```
+var map = new Map();
+map.set('first', 'hello');
+map.set('second', 'world');
+
+for (let [key, value] of map) {
+  console.log(key + " is " + value);
+}
+// first is hello
+// second is world”
+```
+
+- 7.输入模块的指定方法
+
+```
+const { SourceMapConsumer, SourceNode } = require("source-map");”
+```
