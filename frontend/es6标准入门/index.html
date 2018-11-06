@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>《超效率手册》 - PegasusWang的读书笔记</title>
+  <title>《ES6标准入门》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u300a\u8d85\u6548\u7387\u624b\u518c\u300b";
-    var mkdocs_page_input_path = "\u601d\u7ef4/\u8d85\u6548\u7387\u624b\u518c.md";
+    var mkdocs_page_name = "\u300aES6\u6807\u51c6\u5165\u95e8\u300b";
+    var mkdocs_page_input_path = "frontend/es6\u6807\u51c6\u5165\u95e8.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -212,15 +212,40 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+    <a class="" href="../CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+    <a class="" href="../reactjs_小书/">《reactjs小书》</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../frontend/es6标准入门/">《ES6标准入门》</a>
+    <a class="current" href="./">《ES6标准入门》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#let-const">let 和 const 命令</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#let">let</a></li>
+        
+            <li><a class="toctree-l4" href="#const">const</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_1">变量的解构赋值</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_2">数组解构赋值</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">对象解构赋值</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -388,47 +413,35 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../专注力_化繁为简的惊人力量/">《专注力》</a>
+    <a class="" href="../../思维/专注力_化繁为简的惊人力量/">《专注力》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+    <a class="" href="../../思维/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../刻意练习/">《刻意练习》</a>
+    <a class="" href="../../思维/刻意练习/">《刻意练习》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../学习之道/">《学习之道》</a>
+    <a class="" href="../../思维/学习之道/">《学习之道》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../批判性思维工具/">《批判性思维工具》</a>
+    <a class="" href="../../思维/批判性思维工具/">《批判性思维工具》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">《超效率手册》</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#1">1 克服拖延症</a></li>
-    
-
-    <li class="toctree-l3"><a href="#2">2 做事更有条理</a></li>
-    
-
-    <li class="toctree-l3"><a href="#3">3 保持活力</a></li>
-    
-
-    </ul>
+    <a class="" href="../../思维/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+    <a class="" href="../../思维/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
                 </li>
     </ul>
 	    </li>
@@ -564,11 +577,11 @@
     
       
         
-          <li>思维 &raquo;</li>
+          <li>前端 &raquo;</li>
         
       
     
-    <li>《超效率手册》</li>
+    <li>《ES6标准入门》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -578,110 +591,148 @@
           <div role="main">
             <div class="section">
               
-                <p><a href="https://book.douban.com/subject/26703731/">超效率手册</a></p>
-<h1 id="1">1 克服拖延症</h1>
-<ol>
-<li>
-<p>周/日目标</p>
-</li>
-<li>
-<p>限定时间</p>
-</li>
-<li>
-<p>分解任务: 大任务是滋生拖延的温床。分解没有明确截止时间的任务</p>
-</li>
-<li>
-<p>短跑理论：意志力有限</p>
-</li>
-<li>
-<p>日程校对：对待办事项有充分信任的时候所做的事</p>
-</li>
-<li>
-<p>加强自律：意志力训练</p>
-</li>
-<li>
-<p>使用咒语：常对自己重复说的话</p>
-</li>
-<li>
-<p>根除潜在绊脚石：检验激发你内心积极性的目标和愿望</p>
-</li>
-<li>
-<p>动力催化剂：目标列表放到桌面；公开承诺；便利贴</p>
-</li>
-<li>
-<p>搅拌：生产垃圾的艺术</p>
-</li>
-<li>
-<p>营造一个不会分心的工作场所：关掉电脑通知；清理书桌无用东西；禁止打扰标签；让人们知道你的专注时间</p>
-</li>
-<li>
-<p>拒绝应该: 把跟目标无关的『应该做』归入不去做</p>
-</li>
-<li>
-<p>预备、射击、瞄准：先行动，然后纠正方法。早收到反馈</p>
-</li>
-<li>
-<p>摒弃拖延恶习：摒弃和压缩恶习</p>
-</li>
-</ol>
-<h1 id="2">2 做事更有条理</h1>
-<ol>
-<li>
-<p>条理性是一种技能：专门的设计和保持</p>
-</li>
-<li>
-<p>少点混乱，少点压力：物理环境让你的事物排列有序；任务和待办</p>
-</li>
-<li>
-<p>捕捉装置：随时记录待办</p>
-</li>
-<li>
-<p>给所有东西规定放置的地方</p>
-</li>
-<li>
-<p>简单的组织系统：项目、任务、活动</p>
-</li>
-<li>
-<p>简单的组织系统：项目，有共同目标的多个任务的集合</p>
-</li>
-<li>
-<p>简单的组织系统：任务，具体要去做的事情</p>
-</li>
-<li>
-<p>简单的组织系统：活动，一些只能在特定时间干的事情</p>
-</li>
-<li>
-<p>写出你的目标</p>
-</li>
-<li>
-<p>分支法：归类</p>
-</li>
-<li>
-<p>通信记录:</p>
-</li>
-<li>
-<p>做你承诺过的事情</p>
-</li>
-<li>
-<p>整齐 VS 有条理：</p>
-</li>
-<li>
-<p>阅读笔记：活页夹笔记</p>
-</li>
-<li>
-<p>数字条理性：文件归档、清理</p>
-</li>
-</ol>
-<h1 id="3">3 保持活力</h1>
-<ol>
-<li>
-<p>晨礼：醒来后30-60 分钟持续不断进行的一系列活动，避免过度脑力活动</p>
-</li>
-<li>
-<p>休假一天：过度劳累和拖延也有关系</p>
-</li>
-</ol>
-<p>21.日常运动：有限的是精力，不是时间</p>
+                <h1 id="let-const">let 和 const 命令</h1>
+<h3 id="let">let</h3>
+<p>let 声明的变量只在所在的代码块中有效。 let 不存在变量提升，，一定要先声明后使用（暂时性死区）。
+let 实际上为 js 新增了块级作用域，外层作用域无法读取内层作用域的变量。块级作用域的出现使得立即执行表达式不再必要了。
+es5 规定函数不能在块级作用域定义，但是 es6 允许在其中声明函数，但应该尽量避免，而是使用函数表达式。</p>
+<pre><code class="js">for (let i = 0; i &lt; 10; i++) {
+    // ...
+}
+console.log(i)  // ReferenceError: i is not defined
+</code></pre>
+
+<h3 id="const">const</h3>
+<p>const 声明一个只读变量，一旦声明不可变。作用域和 let 相同</p>
+<h1 id="_1">变量的解构赋值</h1>
+<h3 id="_2">数组解构赋值</h3>
+<p>按照『模式匹配』从数组和对象中抽取值。</p>
+<pre><code>let [a, b, c] = [1,2,3];
+
+let [head, ...tail] = [1,2,3,4]
+head // 1
+tail // [2,3,4]
+
+let [x,y, ...z] = ['a']
+x // &quot;a&quot;
+y // undefined, 解构不成功变量的值就是 undefined
+z // []
+
+// 不完全解构也可以成功。事实上，只要具备 Iterator 接口，都可以用数组形式解构赋值
+let [x,y]=[1,2,3]
+x //1
+y //2
+</code></pre>
+
+<pre><code>function* fibs() {
+  let a=0;
+  let b=1;
+  while (true) {
+    yield a;
+    [a,b] = [b, a+b];
+  }
+}
+</code></pre>
+
+<pre><code>// es6 内部使用严格相等运算符 ===
+let [x=1] = [undefined];
+x //1
+let [x=1] = [null]
+x //null，以为 null 不是严格等于 undefined，所以可以被赋值
+</code></pre>
+
+<p>注意如果默认值是一个表达式，他是惰性求值的。</p>
+<h3 id="_3">对象解构赋值</h3>
+<p>先找到同名属性，然后赋值给对应的变量</p>
+<pre><code>let {foo, bar} = {foo:&quot;aa&quot;, bar:&quot;bb&quot;};
+foo // &quot;aa&quot;
+bar // &quot;bb&quot;
+</code></pre>
+
+<p>用途：</p>
+<ul>
+<li>1.交换变量值</li>
+</ul>
+<pre><code>let x=1;
+let y=2;
+[x, y] = [y, x]
+</code></pre>
+
+<ul>
+<li>2.从函数返回多个值</li>
+</ul>
+<pre><code>function example() {
+  return [1,2,3]
+}
+let [a,b,c] = example()
+function example() {
+  return {
+    foo: 1,
+    bar: 2
+  }
+}
+let {foo,bar} = example()
+</code></pre>
+
+<ul>
+<li>3.函数参数定义</li>
+</ul>
+<pre><code>function f([x,y,z]) {...}
+f([1,2,3])
+function f({x,y,z}) {...}
+f({x:1, y:2, z:3})
+</code></pre>
+
+<ul>
+<li>4.提取 json 数据</li>
+</ul>
+<pre><code>let jsonData = {
+  id: 42,
+  status: &quot;OK&quot;,
+  data: [867, 5309]
+};
+
+let { id, status, data: number } = jsonData;
+
+console.log(id, status, number);
+// 42, &quot;OK&quot;, [867, 5309]
+</code></pre>
+
+<ul>
+<li>5.参数默认值</li>
+</ul>
+<pre><code>jQuery.ajax = function (url, {
+  async = true,
+  beforeSend = function () {},
+  cache = true,
+  complete = function () {},
+  crossDomain = false,
+  global = true,
+  // ... more config
+}) {
+  // ... do stuff
+};
+</code></pre>
+
+<ul>
+<li>6.遍历 Map</li>
+</ul>
+<pre><code>var map = new Map();
+map.set('first', 'hello');
+map.set('second', 'world');
+
+for (let [key, value] of map) {
+  console.log(key + &quot; is &quot; + value);
+}
+// first is hello
+// second is world”
+</code></pre>
+
+<ul>
+<li>7.输入模块的指定方法</li>
+</ul>
+<pre><code>const { SourceMapConsumer, SourceNode } = require(&quot;source-map&quot;);”
+</code></pre>
               
             </div>
           </div>
@@ -689,10 +740,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../高效程序员的45个习惯/" class="btn btn-neutral float-right" title="《高效程序员的45个习惯》">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../golang/1_the_go_programming_lauguage/" class="btn btn-neutral float-right" title="《1 The Go Programming Language》">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../程序员的思维修炼(开发认知潜能的九堂课)/" class="btn btn-neutral" title="《程序员的思维修炼》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../reactjs_小书/" class="btn btn-neutral" title="《reactjs小书》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -718,10 +769,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../程序员的思维修炼(开发认知潜能的九堂课)/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../reactjs_小书/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../高效程序员的45个习惯/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../golang/1_the_go_programming_lauguage/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
