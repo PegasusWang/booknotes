@@ -48,6 +48,7 @@ pages:
     - 前端:
       - 《CSS_The_Missing_Manual》: 'frontend/CSS_The_Missing_Manual.md'
       - 《reactjs小书》: 'frontend/reactjs_小书.md'
+      - 《ES6标准入门》: 'frontend/es6标准入门.md'
     - golang:
       - 《1 The Go Programming Language》: 'golang/1_the_go_programming_lauguage.md'
       - 《2 The Go Programming Language》: 'golang/2_the_go_programming_lauguage.md'
