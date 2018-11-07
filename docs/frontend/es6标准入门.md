@@ -243,3 +243,64 @@ WeakMap: 只接受对象作为键名（null除外），WeakMap 键名指向的�
 # Proxy
 
 用于修改某些操作的默认行为，等同于在语言层面修改。属于一种元编程。
+
+# Promise 对象
+
+一个容器，保存着某个未来才会结束的事件（通常是一个异步操作的结果）
+
+# Iterator 和 forof 循环
+
+Symbol.iterator 属性。具备原生 iterator 接口的数据结构如下：
+
+Array, Map, Set, String, TypedArray, 函数的arguments 对象，NodeList 对象
+
+```
+let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
+
+iter.next() // { value: 'a', done: false }
+iter.next() // { value: 'b', done: false }
+iter.next() // { value: 'c', done: false }
+iter.next() // { value: undefined, done: true }”
+```
+
+### for...of 循环
+一个数据结构只要部署了 Symbol.iterator 属性，就被视为有 iterator接口，就能用
+for...of 遍历它的成员。
+
+```
+var arr = ['a', 'b', 'c', 'd'];
+
+for (let a in arr) {
+  console.log(a); // 0 1 2 3
+}
+
+for (let a of arr) {
+  console.log(a); // a b c d
+}
+```
+for...in 循环读取键名，for...of 循环读取键值。
+
+Set, Map 原生具有 iterator 接口，可以直接用 for...of
+
+```
+var engines = new Set(["Gecko", "Trident", "Webkit", "Webkit"]);
+for (var e of engines) {
+  console.log(e);
+}
+// Gecko
+// Trident
+// Webkit
+
+var es6 = new Map();
+es6.set("edition", 6);
+es6.set("committee", "TC39");
+es6.set("standard", "ECMA-262");
+for (var [name, value] of es6) {
+  console.log(name + ": " + value);
+}
+// edition: 6
+// committee: TC39
+// standard: ECMA-262”
+
+```
