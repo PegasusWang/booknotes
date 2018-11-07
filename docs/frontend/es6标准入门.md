@@ -212,3 +212,34 @@ var result = values.sort(function(a,b) {
 
 va result = values.sort((a,b) => a-b)
 ```
+
+
+# Symbol
+
+es6 引入了一种新的原始数据类型 Symbol，表示独一无二的值。
+
+# Set 和 Map 结构
+
+set : add, delete, has, clear; keys() values() entries() forEach()
+
+```
+const s=  new Set();
+[1,2,3,4].forEach(x => s.add(x));
+for (let i of s) {
+  console.log(i);
+}
+```
+
+WeakSet: 成员只能是对象；其中的对象都是弱引用。适合临时存放一组对象，以及存放跟对象绑定的信息。
+
+Map: js 对象本质上是键值对的集合(Hash 结构)，但是传统上只能用字符串当做键，使用受限。
+
+- size, set, get, has, delete, clear
+- keys(), values(), entries(), forEach()
+
+WeakMap: 只接受对象作为键名（null除外），WeakMap 键名指向的对象不计入垃圾回收机制。
+
+
+# Proxy
+
+用于修改某些操作的默认行为，等同于在语言层面修改。属于一种元编程。
