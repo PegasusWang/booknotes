@@ -154,3 +154,61 @@ for (let [key, value] of map) {
 ```
 const { SourceMapConsumer, SourceNode } = require("source-map");”
 ```
+
+# 默认参数
+
+### rest 参数(...变量名)
+
+用于获取函数的多余参数
+
+```
+function add(...values) {
+  let sum = 0;
+  for (var val of values) {
+    sum += val
+  }
+  return sum
+}
+add(2, 5, 3)  // 10
+
+const sortNumbers = (...numbers) => numbers.sort();
+```
+
+### 箭头函数
+
+es6 允许使用 (=>) 定义函数
+
+```
+var f = v => v;
+// equal to
+var f = function(v) {
+  return v
+}
+var sum = (num1, num2) => num1 + num2;
+var sum = (num1, num2) {
+  return num1 + num2;
+}
+
+
+// 如果箭头函数代码块多于一条语句，需要用大括号括起来，并使用 return 返回
+var sum = (num1, num2) => {return num1 + num2;}
+
+//由于大括号被解释为代码块，所以如果返回一个对象，必须加上括号
+let getTemplItem = id => ({id:id, name: "Temp"})
+
+const isEven = n => n%2 == 0;
+const square = n => n*n;
+
+//一个用途是简化回调
+[1,2,3].map(function(x) {
+  return x * x;
+})
+[1,2,3].map(x => x * x);
+
+//
+var result = values.sort(function(a,b) {
+  return a-b;
+})
+
+va result = values.sort((a,b) => a-b)
+```
