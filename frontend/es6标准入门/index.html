@@ -245,6 +245,17 @@
         </ul>
     
 
+    <li class="toctree-l3"><a href="#_4">默认参数</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#rest">rest 参数(...变量名)</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">箭头函数</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
     </ul>
@@ -732,6 +743,57 @@ for (let [key, value] of map) {
 <li>7.输入模块的指定方法</li>
 </ul>
 <pre><code>const { SourceMapConsumer, SourceNode } = require(&quot;source-map&quot;);”
+</code></pre>
+
+<h1 id="_4">默认参数</h1>
+<h3 id="rest">rest 参数(...变量名)</h3>
+<p>用于获取函数的多余参数</p>
+<pre><code>function add(...values) {
+  let sum = 0;
+  for (var val of values) {
+    sum += val
+  }
+  return sum
+}
+add(2, 5, 3)  // 10
+
+const sortNumbers = (...numbers) =&gt; numbers.sort();
+</code></pre>
+
+<h3 id="_5">箭头函数</h3>
+<p>es6 允许使用 (=&gt;) 定义函数</p>
+<pre><code>var f = v =&gt; v;
+// equal to
+var f = function(v) {
+  return v
+}
+var sum = (num1, num2) =&gt; num1 + num2;
+var sum = (num1, num2) {
+  return num1 + num2;
+}
+
+
+// 如果箭头函数代码块多于一条语句，需要用大括号括起来，并使用 return 返回
+var sum = (num1, num2) =&gt; {return num1 + num2;}
+
+//由于大括号被解释为代码块，所以如果返回一个对象，必须加上括号
+let getTemplItem = id =&gt; ({id:id, name: &quot;Temp&quot;})
+
+const isEven = n =&gt; n%2 == 0;
+const square = n =&gt; n*n;
+
+//一个用途是简化回调
+[1,2,3].map(function(x) {
+  return x * x;
+})
+[1,2,3].map(x =&gt; x * x);
+
+//
+var result = values.sort(function(a,b) {
+  return a-b;
+})
+
+va result = values.sort((a,b) =&gt; a-b)
 </code></pre>
               
             </div>
