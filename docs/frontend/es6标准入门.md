@@ -304,3 +304,18 @@ for (var [name, value] of es6) {
 // standard: ECMA-262”
 
 ```
+
+# Generator 函数语法
+
+```
+function* helloWorldGenerator() {
+  yield 'hello';
+  yield 'world';
+  return 'ending';
+}
+
+var hw = helloWorldGenerator(); //返回遍历器对象
+```
+不得不说和 python generator 很像。
+
+async 函数返回一个 promise 对象。
