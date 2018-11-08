@@ -256,6 +256,27 @@
         </ul>
     
 
+    <li class="toctree-l3"><a href="#symbol">Symbol</a></li>
+    
+
+    <li class="toctree-l3"><a href="#set-map">Set 和 Map 结构</a></li>
+    
+
+    <li class="toctree-l3"><a href="#proxy">Proxy</a></li>
+    
+
+    <li class="toctree-l3"><a href="#promise">Promise 对象</a></li>
+    
+
+    <li class="toctree-l3"><a href="#iterator-forof">Iterator 和 forof 循环</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#forof">for...of 循环</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
     </ul>
@@ -794,6 +815,77 @@ var result = values.sort(function(a,b) {
 })
 
 va result = values.sort((a,b) =&gt; a-b)
+</code></pre>
+
+<h1 id="symbol">Symbol</h1>
+<p>es6 引入了一种新的原始数据类型 Symbol，表示独一无二的值。</p>
+<h1 id="set-map">Set 和 Map 结构</h1>
+<p>set : add, delete, has, clear; keys() values() entries() forEach()</p>
+<pre><code>const s=  new Set();
+[1,2,3,4].forEach(x =&gt; s.add(x));
+for (let i of s) {
+  console.log(i);
+}
+</code></pre>
+
+<p>WeakSet: 成员只能是对象；其中的对象都是弱引用。适合临时存放一组对象，以及存放跟对象绑定的信息。</p>
+<p>Map: js 对象本质上是键值对的集合(Hash 结构)，但是传统上只能用字符串当做键，使用受限。</p>
+<ul>
+<li>size, set, get, has, delete, clear</li>
+<li>keys(), values(), entries(), forEach()</li>
+</ul>
+<p>WeakMap: 只接受对象作为键名（null除外），WeakMap 键名指向的对象不计入垃圾回收机制。</p>
+<h1 id="proxy">Proxy</h1>
+<p>用于修改某些操作的默认行为，等同于在语言层面修改。属于一种元编程。</p>
+<h1 id="promise">Promise 对象</h1>
+<p>一个容器，保存着某个未来才会结束的事件（通常是一个异步操作的结果）</p>
+<h1 id="iterator-forof">Iterator 和 forof 循环</h1>
+<p>Symbol.iterator 属性。具备原生 iterator 接口的数据结构如下：</p>
+<p>Array, Map, Set, String, TypedArray, 函数的arguments 对象，NodeList 对象</p>
+<pre><code>let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
+
+iter.next() // { value: 'a', done: false }
+iter.next() // { value: 'b', done: false }
+iter.next() // { value: 'c', done: false }
+iter.next() // { value: undefined, done: true }”
+</code></pre>
+
+<h3 id="forof">for...of 循环</h3>
+<p>一个数据结构只要部署了 Symbol.iterator 属性，就被视为有 iterator接口，就能用
+for...of 遍历它的成员。</p>
+<pre><code>var arr = ['a', 'b', 'c', 'd'];
+
+for (let a in arr) {
+  console.log(a); // 0 1 2 3
+}
+
+for (let a of arr) {
+  console.log(a); // a b c d
+}
+</code></pre>
+
+<p>for...in 循环读取键名，for...of 循环读取键值。</p>
+<p>Set, Map 原生具有 iterator 接口，可以直接用 for...of</p>
+<pre><code>var engines = new Set([&quot;Gecko&quot;, &quot;Trident&quot;, &quot;Webkit&quot;, &quot;Webkit&quot;]);
+for (var e of engines) {
+  console.log(e);
+}
+// Gecko
+// Trident
+// Webkit
+
+var es6 = new Map();
+es6.set(&quot;edition&quot;, 6);
+es6.set(&quot;committee&quot;, &quot;TC39&quot;);
+es6.set(&quot;standard&quot;, &quot;ECMA-262&quot;);
+for (var [name, value] of es6) {
+  console.log(name + &quot;: &quot; + value);
+}
+// edition: 6
+// committee: TC39
+// standard: ECMA-262”
+
 </code></pre>
               
             </div>
