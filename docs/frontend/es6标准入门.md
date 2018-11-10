@@ -319,3 +319,42 @@ var hw = helloWorldGenerator(); //返回遍历器对象
 不得不说和 python generator 很像。
 
 async 函数返回一个 promise 对象。
+
+# Class
+
+之前 js 通过构造函数编写类，es6 提供了 class 语法糖。
+
+```
+function Point(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
+Point.prototype.toString = function () {
+  return '(' + this.x + ', ' + this.y + ')';
+};
+
+var p = new Point(1, 2);
+```
+
+```
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  toString() {   // 调用实例方法
+    return '(' + this.x + ', ' + this.y + ')';
+  }
+}
+
+class Point {
+  // ...
+}
+
+typeof Point // "function" ，类的数据类型就是函数，类本身就指向构造函数，可以用 new 创建
+Point === Point.prototype.constructor // true”
+```
+
+类和模块的内部默认是严格模式，无需手动指定。es6 实际上把整个语言升级到了严格模式。
