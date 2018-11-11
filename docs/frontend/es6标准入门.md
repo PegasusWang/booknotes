@@ -358,3 +358,49 @@ Point === Point.prototype.constructor // true”
 ```
 
 类和模块的内部默认是严格模式，无需手动指定。es6 实际上把整个语言升级到了严格模式。
+
+
+### class 的继承
+
+class 可以通过 extends 实现继承。子类必须在 constructor 中调用 super 方法。任何子类都有 constructor 方法（默认添加）。
+调用 super 之后才能使用 this 关键字，否则会报错。
+
+```
+class Point {
+}
+
+class ColorPoint extends Point {
+}
+```
+
+### Mixin 模式的实现
+mixin 模式指的是，将多个类的接口『混入』『mix in』另一个类。
+
+```
+function mix(...mixins) {
+  class Mix {}
+
+  for (let mixin of mixins) {
+    copyProperties(Mix, mixin);
+    copyProperties(Mix.prototype, mixin.prototype);
+  }
+
+  return Mix;
+}
+
+function copyProperties(target, source) {
+  for (let key of Reflect.ownKeys(source)) {
+    if ( key !== "constructor"
+      && key !== "prototype"
+      && key !== "name"
+    ) {
+      let desc = Object.getOwnPropertyDescriptor(source, key);
+      Object.defineProperty(target, key, desc);
+    }
+  }
+}
+```
+
+# 修饰器 Decorator
+
+
