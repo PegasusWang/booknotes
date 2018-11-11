@@ -403,4 +403,97 @@ function copyProperties(target, source) {
 
 # 修饰器 Decorator
 
+```
+@testable
+class MyTestClass {
+  //...
+}
 
+function testable(target) {
+  taget.isTestable = true;
+}
+MyTestClass.isTestable // true
+
+
+@decorator
+class A {}
+
+// 等同于
+class A {}
+A  = decorator(A) || A
+```
+
+修饰器只能用于类和类的方法， 无法用于函数，因为存在函数提升。类是不会提升的。
+可以用高阶函数的形式修饰。
+
+```
+function doSomething(name) {
+  console.log("Hello" + name);
+}
+
+function loggingDecorator(wrapped) {
+  return function() {
+    console.log("starting");
+    const result = wrapped.apply(this, arguments);
+    console.log("Finished");
+    return result;
+  };
+}
+const wrapped = loggingDecorator(doSomething);
+```
+
+core-decorator.js 一个第三方模块，提供了几个常见的修饰器。 @autobind， @readonly @override @deprecate, @suppressWarnings
+
+### 修饰器实现 Mixin 模式
+
+```
+// mixins.js
+export function mixins(...list) {
+  return function(target) {
+    Object.assign(target.prototype, ...list);
+  };
+}
+
+import { mixins } from "./mixins";
+const Foo = {
+  foo() {
+    console.log("foo");
+  }
+};
+@mixins(Foo)
+class MyClass {}
+
+let obj = new MyClass();
+obj.foo();
+```
+
+### Trait
+也是一种修饰器，与Mixin类似，提供更多功能，比如防止同名方法冲突，排除混入某些方法，为混入方法起别名等。
+traits-decorator 第三方模块
+
+```
+import { traits } from "traits-decorator";
+
+class TFoo {
+  foo() {
+    console.log("foo");
+  }
+}
+
+const TBar = {
+  bar() {
+    console.log("bar");
+  }
+};
+
+@traits(TFoo, TBar)
+class MyClass {}
+
+let obj = new MyClass();
+obj.foo();
+obj.bar();
+```
+
+### Babel 转码器的支持
+
+Babel 已经支持 Decorator。babel-core, babel-plugin-transform-decorators
