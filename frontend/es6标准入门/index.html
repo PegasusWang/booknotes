@@ -280,6 +280,30 @@
     <li class="toctree-l3"><a href="#generator">Generator 函数语法</a></li>
     
 
+    <li class="toctree-l3"><a href="#class">Class</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#class_1">class 的继承</a></li>
+        
+            <li><a class="toctree-l4" href="#mixin">Mixin 模式的实现</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#decorator">修饰器 Decorator</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#mixin_1">修饰器实现 Mixin 模式</a></li>
+        
+            <li><a class="toctree-l4" href="#trait">Trait</a></li>
+        
+            <li><a class="toctree-l4" href="#babel">Babel 转码器的支持</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
     </ul>
@@ -903,6 +927,162 @@ var hw = helloWorldGenerator(); //返回遍历器对象
 
 <p>不得不说和 python generator 很像。</p>
 <p>async 函数返回一个 promise 对象。</p>
+<h1 id="class">Class</h1>
+<p>之前 js 通过构造函数编写类，es6 提供了 class 语法糖。</p>
+<pre><code>function Point(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
+Point.prototype.toString = function () {
+  return '(' + this.x + ', ' + this.y + ')';
+};
+
+var p = new Point(1, 2);
+</code></pre>
+
+<pre><code>class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  toString() {   // 调用实例方法
+    return '(' + this.x + ', ' + this.y + ')';
+  }
+}
+
+class Point {
+  // ...
+}
+
+typeof Point // &quot;function&quot; ，类的数据类型就是函数，类本身就指向构造函数，可以用 new 创建
+Point === Point.prototype.constructor // true”
+</code></pre>
+
+<p>类和模块的内部默认是严格模式，无需手动指定。es6 实际上把整个语言升级到了严格模式。</p>
+<h3 id="class_1">class 的继承</h3>
+<p>class 可以通过 extends 实现继承。子类必须在 constructor 中调用 super 方法。任何子类都有 constructor 方法（默认添加）。
+调用 super 之后才能使用 this 关键字，否则会报错。</p>
+<pre><code>class Point {
+}
+
+class ColorPoint extends Point {
+}
+</code></pre>
+
+<h3 id="mixin">Mixin 模式的实现</h3>
+<p>mixin 模式指的是，将多个类的接口『混入』『mix in』另一个类。</p>
+<pre><code>function mix(...mixins) {
+  class Mix {}
+
+  for (let mixin of mixins) {
+    copyProperties(Mix, mixin);
+    copyProperties(Mix.prototype, mixin.prototype);
+  }
+
+  return Mix;
+}
+
+function copyProperties(target, source) {
+  for (let key of Reflect.ownKeys(source)) {
+    if ( key !== &quot;constructor&quot;
+      &amp;&amp; key !== &quot;prototype&quot;
+      &amp;&amp; key !== &quot;name&quot;
+    ) {
+      let desc = Object.getOwnPropertyDescriptor(source, key);
+      Object.defineProperty(target, key, desc);
+    }
+  }
+}
+</code></pre>
+
+<h1 id="decorator">修饰器 Decorator</h1>
+<pre><code>@testable
+class MyTestClass {
+  //...
+}
+
+function testable(target) {
+  taget.isTestable = true;
+}
+MyTestClass.isTestable // true
+
+
+@decorator
+class A {}
+
+// 等同于
+class A {}
+A  = decorator(A) || A
+</code></pre>
+
+<p>修饰器只能用于类和类的方法， 无法用于函数，因为存在函数提升。类是不会提升的。
+可以用高阶函数的形式修饰。</p>
+<pre><code>function doSomething(name) {
+  console.log(&quot;Hello&quot; + name);
+}
+
+function loggingDecorator(wrapped) {
+  return function() {
+    console.log(&quot;starting&quot;);
+    const result = wrapped.apply(this, arguments);
+    console.log(&quot;Finished&quot;);
+    return result;
+  };
+}
+const wrapped = loggingDecorator(doSomething);
+</code></pre>
+
+<p>core-decorator.js 一个第三方模块，提供了几个常见的修饰器。 @autobind， @readonly @override @deprecate, @suppressWarnings</p>
+<h3 id="mixin_1">修饰器实现 Mixin 模式</h3>
+<pre><code>// mixins.js
+export function mixins(...list) {
+  return function(target) {
+    Object.assign(target.prototype, ...list);
+  };
+}
+
+import { mixins } from &quot;./mixins&quot;;
+const Foo = {
+  foo() {
+    console.log(&quot;foo&quot;);
+  }
+};
+@mixins(Foo)
+class MyClass {}
+
+let obj = new MyClass();
+obj.foo();
+</code></pre>
+
+<h3 id="trait">Trait</h3>
+<p>也是一种修饰器，与Mixin类似，提供更多功能，比如防止同名方法冲突，排除混入某些方法，为混入方法起别名等。
+traits-decorator 第三方模块</p>
+<pre><code>import { traits } from &quot;traits-decorator&quot;;
+
+class TFoo {
+  foo() {
+    console.log(&quot;foo&quot;);
+  }
+}
+
+const TBar = {
+  bar() {
+    console.log(&quot;bar&quot;);
+  }
+};
+
+@traits(TFoo, TBar)
+class MyClass {}
+
+let obj = new MyClass();
+obj.foo();
+obj.bar();
+</code></pre>
+
+<h3 id="babel">Babel 转码器的支持</h3>
+<p>Babel 已经支持 Decorator。babel-core, babel-plugin-transform-decorators</p>
               
             </div>
           </div>
