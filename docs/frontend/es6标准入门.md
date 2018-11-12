@@ -497,3 +497,82 @@ obj.bar();
 ### Babel 转码器的支持
 
 Babel 已经支持 Decorator。babel-core, babel-plugin-transform-decorators
+
+
+# Module 的语法
+es6 实现了模块，取代CommonJS 和 AMD 规范(这些是运行时确定)，成为浏览器和服务器通用方案。
+es6 模块不是对象，而是通过export 命令显示指定输出的代码，再通过 import 导入。（编译时加载，静态加载）
+es6 模块自动采用严格模式。
+
+- 变量必须声明后再使用
+- 函数的参数不能有同名属性，否则报错
+- 不能使用 with 语句
+- 不能对只读属性赋值，否则报错
+- 不能使用前缀0表示八进制数，否则报错
+- 不能删除不可删除的属性，否则报错
+- 不能删除变量 delete prop ，会报错，只能删除属性 delete global[prop] 
+-  eval 不会在它的外层作用域引入变量
+-  eval 和 arguments 不能被重新赋值
+-  arguments 不会自动反映函数参数的变化
+- 不能使用 arguments.callee 
+- 不能使用 arguments.caller 
+- 禁止 this 指向全局对象
+- 不能使用 fn.caller 和 fn.arguments 获取函数调用的堆栈
+- 增加了保留字（比如 protected 、 static 和 interface ）
+
+### export
+export 规定模块的对外接口，import用于输入其他模块提供的功能。
+一个模块是一个独立的文件，内部所有变量外部无法获取。可以使用 as 作为别名。
+export 语句需要放在模块顶层。
+
+```
+// export 规定的对外接口，必须和模块内部变量建立一一对应关系
+// 三种写法都可以
+
+// 1
+export var m = 1;
+// 2
+var m = 1;
+export {m}
+// 3
+var n = 1;
+export {n as m}
+```
+
+### import 
+
+import  .. from '' 后边指定需要导入的位置，可以是相对或者绝对路径，js 后缀可以省略掉。
+import 编译器期间执行的，静态执行所以无法使用表达式和变量。这些是只有运行时才能获得的语法结构。并且是单例的。
+
+```
+//整体加载。
+import * as circle from './circle';
+
+import { area, circumference } from './circle';
+
+console.log('圆面积：' + area(4));
+console.log('圆周长：' + circumference(14));
+
+// wrong , 不允许运行时改变
+circle.foo = 'hello'
+```
+
+### export default
+
+给模块指定默认输出。export default 本质上就是输出一个叫做 default 的变量或者方法，然后系统运行你给它取任意名字。
+
+### 模块可以继承
+
+### 跨常量
+
+```
+export const A = 1;
+export const B = 1;
+```
+
+### import() 函数
+
+实现动态加载
+
+
+# Module 的加载实现
