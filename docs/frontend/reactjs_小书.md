@@ -26,7 +26,22 @@
 没有经过特殊处理的话，这些 on* 的事件监听只能用在普通的 HTML 的标签上，而不能用在组件标签上。也就是说，<Header onClick={…} /> 这样的写法不会有什么效果的。这一点要注意，但是有办法可以做到这样的绑定，以后我们会提及
 
 ### 高阶组件
+高阶组件是一个函数（不是组件），传给他一个组件返回一个新的组件，新的组件使用传入的组件作为子组件。
 是一个函数，接受一个组件，修改后返回。
+
+```
+import React, { Component } from "react";
+
+export default WrappedComponent => {
+  class NewComponent extends Component {
+    render() {
+      return <WrappedComponent />;
+    }
+  }
+  return NewComponent;
+};
+```
+为了组件之间代码复用，高阶组件内部的包装组件和被包装组件之间通过 props 传递数据。
 
 ### context
 
