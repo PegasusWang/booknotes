@@ -658,7 +658,8 @@ function createStore (reducer) {
 
 <p>createStore 接受一个叫 reducer 的函数作为参数，这个函数规定是一个纯函数，它接受两个参数，一个是 state，一个是 action。</p>
 <p>如果没有传入 state 或者 state 是 null，那么它就会返回一个初始化的数据。
-reducer 是不允许有副作用的。你不能在里面操作 DOM，也不能发 Ajax 请求，更不能直接修改 state，它要做的仅仅是 —— 初始化和计算新的 state。</p>
+reducer 是不允许有副作用的。你不能在里面操作 DOM，也不能发 Ajax 请求，更不能直接修改 state，它要做的仅仅是 ——
+初始化和计算新的 state。根据 state 和 action 计算具有共享结构的新的 state.</p>
 <p>createStore 现在可以直接拿来用了，套路就是：</p>
 <pre><code>// 定一个 reducer
 function reducer (state, action) {
@@ -689,6 +690,7 @@ store.dispatch(...)
 Smart 组件可以使用 Smart、Dumb 组件；而 Dumb 组件最好只使用 Dumb 组件，否则它的复用性就会丧失。
 要根据应用场景不同划分组件，如果一个组件并不需要太强的复用性，直接让它成为 Smart 即可；否则就让它成为 Dumb 组件。
 还有一点要注意，Smart 组件并不意味着完全不能复用，Smart 组件的复用性是依赖场景的，在特定的应用场景下是当然是可以复用 Smart 的。而 Dumb 则是可以跨应用场景复用，Smart 和 Dumb 都可以复用，只是程度、场景不一样。</p>
+<p>connect 是一个高阶组件(函数)，把 Dump 组件和 context 连接(connect) 起来</p>
               
             </div>
           </div>
