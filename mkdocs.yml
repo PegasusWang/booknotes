@@ -96,6 +96,7 @@ pages:
     - 源码:
       - 《源码阅读》: '源码阅读_sourcecode/README.md'
     - 网站架构:
+      - 《从0开始学架构》: '网站架构/从0开始学架构/从0开始学架构.md'
       - 《web scalavility for startup engineers》: '网站架构/web_scalavility_for_startup_engineers.md'
       - 《design_data_instensive_application》: '网站架构/design_data_instensive_application.md'
       - 《clean_architecture》: '网站架构/clean_architecture.md'
