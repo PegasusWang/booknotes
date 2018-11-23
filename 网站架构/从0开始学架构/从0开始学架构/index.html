@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../../img/favicon.ico">
-  <title>libev - PegasusWang的读书笔记</title>
+  <title>《从0开始学架构》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "libev";
-    var mkdocs_page_input_path = "\u6e90\u7801\u9605\u8bfb_sourcecode/c/libev.md";
+    var mkdocs_page_name = "\u300a\u4ece0\u5f00\u59cb\u5b66\u67b6\u6784\u300b";
+    var mkdocs_page_input_path = "\u7f51\u7ad9\u67b6\u6784/\u4ece0\u5f00\u59cb\u5b66\u67b6\u6784/\u4ece0\u5f00\u59cb\u5b66\u67b6\u6784.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -431,7 +431,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../">《源码阅读》</a>
+    <a class="" href="../../../源码阅读_sourcecode/">《源码阅读》</a>
                 </li>
     </ul>
 	    </li>
@@ -440,25 +440,28 @@
 		
     <span class="caption-text">网站架构</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../../网站架构/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+    <a class="current" href="./">《从0开始学架构》</a>
+    <ul class="subnav">
+            
+    </ul>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../../网站架构/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+    <a class="" href="../../web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../../网站架构/design_data_instensive_application/">《design_data_instensive_application》</a>
+    <a class="" href="../../design_data_instensive_application/">《design_data_instensive_application》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../../网站架构/clean_architecture/">《clean_architecture》</a>
+    <a class="" href="../../clean_architecture/">《clean_architecture》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../../网站架构/微服务设计/">《微服务设计》</a>
+    <a class="" href="../../微服务设计/">《微服务设计》</a>
                 </li>
     </ul>
 	    </li>
@@ -559,8 +562,12 @@
     <li><a href="../../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>网站架构 &raquo;</li>
+        
+      
     
-    <li>libev</li>
+    <li>《从0开始学架构》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -570,12 +577,52 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="libev">libev</h1>
-<p>http://oserror.com/backend/libev-analysis/</p>
+                <p>《从0开始学架构》- 李运华 读书笔记</p>
+<p>负载均衡：</p>
+<ul>
+<li>DNS(地理级别)</li>
+<li>硬件(集群级别)</li>
+<li>软件(机器级别)</li>
+</ul>
+<p>CAP 理论：</p>
+<p>在一个分布式系统（指相互连接并共享数据的节点的集合）中，当涉及读写操作时，
+只能保证一致性(Consistence)，可用性(Availability)，分区容错性(Partition Tolerance)三者中两个，另外一个必须牺牲。</p>
+<ul>
+<li>一致性(C): 对某个指定的客户端来说，读操作保证能够返回最新的写操作结果</li>
+<li>可用性(A)：非故障的节点在合理的时间内返回合理的响应（不是错误和超时的响应）</li>
+<li>分区容忍性(P)：当出现网络分区后，系统能够继续『履行职责』（丢包、连接中断、拥塞等导致网络分区）</li>
+</ul>
+<p>必须选择 P 因为网络无法100%可靠。如果我们选择了 CA 放弃了 P，发生分区现象时，为了保证 C
+就得禁止写入，有写入请求时候系统返回 Error，这又和 A 冲突了。
+所以分布式系统理论上只能用(保证 CA 发生 P 的时候矛盾)，只能选择AP/AP。</p>
+<p><img alt="CAP" src="../CAP.png" /></p>
+<ul>
+<li>CP: 当发生分区后， N1节点已经更新数据到 y，但是 N1和 N2 复制通道中断了，N2还是 x。
+  这时client 访问 N2时，N2需要返回 Error，提示客户端系统发生了错误。违背了可用性要求</li>
+<li>AP: 还是上一种场景但是 N2 直接返回了老的数据 x，虽然不正确确是一个合理的结果，违背了 C。</li>
+</ul>
+<p>CAP 细节：</p>
+<ul>
+<li>关注的粒度是数据，不是整个系统。需要根据不同应用场景和要求来设计，每类数据用不同策略。</li>
+<li>CAP是忽略网络延迟的。布鲁尔定义一致性没考虑复制延迟，而现实中复制总是需要花费时间的。
+  C不可能完美实现，总会有延迟，数据复制过程中不一致，</li>
+<li>正常运行情况下，不存在CP和 AP 的选择，可以同时 CA。分区没发生的时候可以考虑 CA。</li>
+<li>放弃不等于什么都不做，需要未分区恢复后做准备，牺牲只是说分区过程中无法保证 C or
+  A。可以在分区之间进行一些操作，从而让分区故障解决后，系统重新达到 CA 的状态。</li>
+</ul>
               
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../web_scalavility_for_startup_engineers/" class="btn btn-neutral float-right" title="《web scalavility for startup engineers》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../../源码阅读_sourcecode/" class="btn btn-neutral" title="《源码阅读》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -599,6 +646,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="../../../源码阅读_sourcecode/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../web_scalavility_for_startup_engineers/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
