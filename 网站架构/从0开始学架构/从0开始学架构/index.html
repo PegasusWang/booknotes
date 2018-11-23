@@ -445,6 +445,18 @@
     <a class="current" href="./">《从0开始学架构》</a>
     <ul class="subnav">
             
+    <li class="toctree-l3"><a href="#_1">负载均衡：</a></li>
+    
+
+    <li class="toctree-l3"><a href="#cap">CAP 理论：</a></li>
+    
+
+    <li class="toctree-l3"><a href="#cap_1">CAP 细节：</a></li>
+    
+
+    <li class="toctree-l3"><a href="#acid">ACID</a></li>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -578,13 +590,13 @@
             <div class="section">
               
                 <p>《从0开始学架构》- 李运华 读书笔记</p>
-<p>负载均衡：</p>
+<h3 id="_1">负载均衡：</h3>
 <ul>
 <li>DNS(地理级别)</li>
 <li>硬件(集群级别)</li>
 <li>软件(机器级别)</li>
 </ul>
-<p>CAP 理论：</p>
+<h3 id="cap">CAP 理论：</h3>
 <p>在一个分布式系统（指相互连接并共享数据的节点的集合）中，当涉及读写操作时，
 只能保证一致性(Consistence)，可用性(Availability)，分区容错性(Partition Tolerance)三者中两个，另外一个必须牺牲。</p>
 <ul>
@@ -601,7 +613,7 @@
   这时client 访问 N2时，N2需要返回 Error，提示客户端系统发生了错误。违背了可用性要求</li>
 <li>AP: 还是上一种场景但是 N2 直接返回了老的数据 x，虽然不正确确是一个合理的结果，违背了 C。</li>
 </ul>
-<p>CAP 细节：</p>
+<h3 id="cap_1">CAP 细节：</h3>
 <ul>
 <li>关注的粒度是数据，不是整个系统。需要根据不同应用场景和要求来设计，每类数据用不同策略。</li>
 <li>CAP是忽略网络延迟的。布鲁尔定义一致性没考虑复制延迟，而现实中复制总是需要花费时间的。
@@ -610,6 +622,8 @@
 <li>放弃不等于什么都不做，需要未分区恢复后做准备，牺牲只是说分区过程中无法保证 C or
   A。可以在分区之间进行一些操作，从而让分区故障解决后，系统重新达到 CA 的状态。</li>
 </ul>
+<h3 id="acid">ACID</h3>
+<p>ACID 是为了保证数据库事务的正确性提出来的一个理论。</p>
               
             </div>
           </div>
