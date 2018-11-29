@@ -400,6 +400,10 @@
                 </li>
                 <li class="">
                     
+    <a class="" href="../../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="../../../思维认知/学习之道/">《学习之道》</a>
                 </li>
                 <li class="">
@@ -455,6 +459,41 @@
     
 
     <li class="toctree-l3"><a href="#acid">ACID</a></li>
+    
+
+    <li class="toctree-l3"><a href="#base">BASE</a></li>
+    
+
+    <li class="toctree-l3"><a href="#fmea">FMEA，排除架构可用性隐患</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">双机架构</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_3">主备复制</a></li>
+        
+            <li><a class="toctree-l4" href="#_4">主从复制</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">双机切换</a></li>
+        
+            <li><a class="toctree-l4" href="#_6">主主复制</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_7">集群和分区</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_8">数据集群</a></li>
+        
+            <li><a class="toctree-l4" href="#_9">数据分区</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_10">如何设计计算高可用架构</a></li>
     
 
     </ul>
@@ -624,6 +663,86 @@
 </ul>
 <h3 id="acid">ACID</h3>
 <p>ACID 是为了保证数据库事务的正确性提出来的一个理论。</p>
+<ul>
+<li>Atomicity（原子性）</li>
+</ul>
+<p>一个事务中的所有操作，要么全部完成，要么全部不完成，不会在中间某个环节结束。事务在执行过程中发生错误，会被回滚到事务开始前的状态，就像这个事务从来没有执行过一样。</p>
+<ul>
+<li>Consistency（一致性）</li>
+</ul>
+<p>在事务开始之前和事务结束以后，数据库的完整性没有被破坏。</p>
+<ul>
+<li>Isolation（隔离性）</li>
+</ul>
+<p>数据库允许多个并发事务同时对数据进行读写和修改的能力。隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括读未提交（Read uncommitted）、读提交（read committed）、可重复读（repeatable read）和串行化（Serializable）。</p>
+<ul>
+<li>Durability（持久性）</li>
+</ul>
+<p>事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。</p>
+<h3 id="base">BASE</h3>
+<ul>
+<li>BA(Baciscally Available): 基本可用。分布式系统发生故障，允许损失部分可用性，保证核心可用</li>
+<li>S(Soft State): 软状态。允许中间状态，该中间状态不会影响系统整体可用性。（这里的中间状态就是 CAP 中数据不一致）</li>
+<li>E(Eventual Consistency): 最终一致性。系统中的所有数据副本一定时间后，最终能够达到一致的状态。</li>
+</ul>
+<p>核心思想是如果无法做到强一致性(CAP中的一致性就是强一致性)，应用适当的方式达到最终一致性，对 AP 的一种补充。</p>
+<ul>
+<li>CAP 是忽略延时的，实际场景无法避免(完美的 CP 不存在)</li>
+<li>AP 牺牲一致性只是指分区期间，而不是永远放弃一致性</li>
+</ul>
+<p>ACID 是数据库事务完整性的理论，CAP 是分布式设计理论，BASE 是 CAP 中 AP 方案的延伸。</p>
+<h3 id="fmea">FMEA，排除架构可用性隐患</h3>
+<p>FMEA(Failure mode and effects analysis, 故障模式与影响分析)</p>
+<ul>
+<li>给出初始的架构设计图</li>
+<li>假设架构中某个部件故障</li>
+<li>分析故障对系统功能的影响</li>
+<li>分居分析结构判断是否需要优化</li>
+</ul>
+<p>FMEA 分析表：</p>
+<ul>
+<li>功能点。从用户角度看</li>
+<li>故障模式。故障点和故障形式，尽量精确描述</li>
+<li>故障影响。功能点受到的具体影响</li>
+<li>严重程度。业务角度，致命/高/中/低/无</li>
+<li>故障原因。</li>
+<li>故障概率。高中低。硬件、开源系统、自研系统</li>
+<li>风险程度，综合严重程度和故障概率判断最终等级。风险程度=严重程度x故障概率</li>
+<li>已有措施。报警、 容错、自恢复</li>
+<li>规避措施。技术手段和管理手段</li>
+<li>解决措施：技术手段</li>
+<li>后续计划：哪些还缺少应对措施，根据优先级排序提出后续解决计划</li>
+</ul>
+<h1 id="_2">双机架构</h1>
+<h3 id="_3">主备复制</h3>
+<p>备机只起到备份作用，不承担实际读写操作。需要人工干预把备机改为主机。后台管理系统用得多</p>
+<h3 id="_4">主从复制</h3>
+<p>主写从读。可能出现数据不一致问题，故障要人工干预。适合写少读多，论坛、BBS、新闻网站等</p>
+<h3 id="_5">双机切换</h3>
+<p>主备切换和主从切换</p>
+<p>常见架构：</p>
+<ul>
+<li>互连式：主备机直接建立状态传递的渠道</li>
+<li>中介式：主备机都去连接中介，通过中介传递状态信息。mongodb 的 Replica set。成熟的中介式方案：ZooKeeper/Keepalived</li>
+<li>模拟式：备机模拟成客户端，向主机发起模拟的读写操作，根据读写操作的响应情况判断主机状态。</li>
+</ul>
+<h3 id="_6">主主复制</h3>
+<p>需要保证数据能双向复制，但是很多无法做到，用户 id，库存，余额等。一般是临时、可丢失可覆盖的数据场景</p>
+<h1 id="_7">集群和分区</h1>
+<h3 id="_8">数据集群</h3>
+<ul>
+<li>数据集中集群。ZooKeeper ZAB算法</li>
+<li>数据分散集群。均衡性、容错性、可伸缩性。Hadoop Namenode。Elasticsearch
+  集群通过选举一台服务器来做数据分区的分配，masternode</li>
+</ul>
+<h3 id="_9">数据分区</h3>
+<p>按照一定规则分区，不同分区放在不同地理位置。考虑因素</p>
+<ul>
+<li>数据量</li>
+<li>分区规则</li>
+<li>复制规则，集中式、互备式、独立式</li>
+</ul>
+<h1 id="_10">如何设计计算高可用架构</h1>
               
             </div>
           </div>
