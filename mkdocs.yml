@@ -78,6 +78,7 @@ pages:
     - 分布式:
       - 《分布式框架原理与应用》:  '分布式/分布式框架原理与应用.md'
       - 《大规模分布式存储系统》: '分布式/大规模分布式存储系统.md'
+      - 《深入分布式缓存从原理到实践》: '分布式/深入分布式缓存从原理到实践.md'
     - 开发工具:
       - 《Practical Vim》: '开发工具/practical_vim/practical_vim.md'
       - 《Learn vim scrpt the hard way》: '开发工具/learn_vim_the_hard_way.md'
