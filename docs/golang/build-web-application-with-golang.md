@@ -399,3 +399,44 @@ func main() {
 
 
 
+Select: 多个 channel。select 可以监听 channel 上的数据流动。select 默认阻塞，只有当监听的 channel 中有发送或接收可以
+进行时才会运行，当多个 channel 都准备好的时候随机选择一个执行。
+
+```
+package main
+
+import "fmt"
+
+func fibonacci(c, quit chan int) {
+	x, y := 1, 1
+	for {
+		select {
+		case c <- x:
+			x, y = y, x+y
+		case <-quit:
+			fmt.Println("quit")
+			return
+    default:
+        // 当监听的 channel 没有准备好的时候默认执行(select不再阻塞等待channel)
+
+		}
+	}
+}
+
+func main() {
+	c := make(chan int)
+	quit := make(chan int)
+	go func() {
+		for i := 0; i < 10; i++ {
+			fmt.Println(<-c)
+		}
+		quit <- 0
+	}()
+	fibonacci(c, quit)
+}
+```
+
+有时候会出现 goroutine 阻塞的情况。还可以设置 select 设置超时。
+
+
+# 3 Web基础
