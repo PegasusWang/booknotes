@@ -53,6 +53,7 @@ pages:
       - 《1 The Go Programming Language》: 'golang/1_the_go_programming_lauguage.md'
       - 《2 The Go Programming Language》: 'golang/2_the_go_programming_lauguage.md'
       - 《3 The Go Programming Language》: 'golang/3_the_go_programming_lauguage.md'
+      - 《Build Web Application With Golang》: 'golang/build-web-application-with-golang.md'
     - 心理学:
       - 《一切都是童年的错吗》: 'psychology/一切都是童年的错吗.md'
       - 《亲密关系》: 'psychology/亲密关系.md'
