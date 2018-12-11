@@ -397,5 +397,306 @@ func main() {
 ```
 
 
+### 2.5 面向对象
+
+method: 带有接受者的函数。method 附属在一个给定的类型上，语法和函数的声明语法几乎一样，只是在函数后加上一个 receiver
+
+> A method is a funciton with am inplicit first argument, called a reciver - Rob Pike
 
 
+```
+/*
+定义： func (r ReceiverType) funcName(parameters) (results)
+虽然 method 名字一样，但是接受者不一样，method 就不一样
+method 里可以访问接受者的字段
+调用 method  通过 . 访问就像 stuct 里访问字段一样
+*/
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type Rectangle struct {
+	width, height float64
+}
+
+type Circle struct {
+	radius float64
+}
+
+func (r Rectangle) area() float64 {
+	return r.width * r.height
+}
+func (c Circle) area() float64 {
+	return c.radius * c.radius * math.Pi
+}
+
+func main() {
+	r1 := Rectangle{12, 1}
+	c1 := Circle{10}
+	fmt.Println("r1 area", r1.area())
+	fmt.Println("r1 area", c2.area())
+}
+```
+
+指针作为 receiver:
+
+```
+func (r *Rectangle) setHeight(height float64) {
+	r.height = height //NOTE：注意这里不必非要用 *r.hight = hight，Go 发现参数指针以后帮你自动处理
+}
+```
+
+method 继承：如果匿名字段实现了一个 method，那么包含这个匿名字段的 struct 也能调用该 method
+
+method 重写：和匿名字段冲突一样的道理，重写就实现了隐藏匿名字段的 method
+
+
+### 2.6 接口 interface
+interface 是一组 method 签名的组合，通过 interface 来定义对象的一组行为，通过 interface 定义对象的一组行为。
+interface 类型定义了一组方法，如果某个对象实现了某个接口的**所有**方法，则此对象实现了这个接口。
+
+```
+package main
+
+import (
+	"fmt"
+)
+
+type Human struct {
+	name  string
+	age   int
+	phone string
+}
+
+type Student struct {
+	Human
+	school string
+	loan   float32
+}
+
+type Employee struct {
+	Human
+	company string
+	money   float32
+}
+
+func (h *Human) SayHi() {
+	fmt.Printf("Hi %s %s", h.name, h.phone)
+}
+
+func (h *Human) Sing(lyrics string) {
+	fmt.Println("la la", lyrics)
+}
+
+func (h *Human) Guzzle(beerStein string) {
+	fmt.Println("Guzzle", beerStein)
+}
+
+func (e *Employee) SayHi() {
+	fmt.Printf("hi I am %s work at %s call me %s\n", e.name, e.company, e.phone)
+}
+
+func (s *Student) BorrowMoney(amount float32) {
+	s.loan += amount
+}
+
+func (e *Employee) SpendSalary(amount float32) {
+	e.money -= amount
+}
+
+type Men interface {
+	SayHi()
+	Sing(lyrics string)
+	Guzzle(beerStein string)
+}
+type YoungChap interface {
+	SayHi()
+	Sing(song string)
+	BorrowMoney(amount float32)
+}
+
+type ElderyGent interface {
+	SayHi()
+	Sing(song string)
+	SpendSalary(amount float32)
+}
+```
+
+interface 可以被任意对象实现，一个对象也可以实现任意多个 interface。
+任意类型都是现了空 interface (interface{})，也就是包含了0个 method 的interface。
+
+interface 值：如果定义一个interface的变量，这个变量里可以存实现这个 interface 的任意类型的对象。
+比如定义了一个 Men interface 类型的变量 m，m 可以存 Human, Student, Employee。
+因为 m 可以持有三种对象，可以定一个包含 Men 类型的 slice，它可以倍赋予实现了 Men 接口的任意结构的对象。
+通过这种方式实现了鸭子类型。
+
+空 interface: 可以存储任意类型数值，类似于 c void*。一个函数把 interface{}
+作为参数，可以接受任意类型。同理也可以返回任意类型。
+
+```
+	var a interface{}
+	var i int = 5
+	s := "hello"
+	a = i
+	a = s
+```
+
+interface 的函数参数：interface的变量可以持有任意实现该interface 类型的对象。只要实现接口，我们就可以传入
+
+
+interface变量存储的类型：如何知道变量里实际存储的类型呢？
+
+- comma-ok
+- switch 测试
+
+```
+package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+type Element interface{}
+
+type List []Element
+
+type Person struct {
+	name string
+	age  int
+}
+
+func (p Person) String() string {
+	return "(name:" + p.name + "-age:" + strconv.Itoa(p.age) + "years)"
+}
+
+func main() {
+	list := make(List, 3)
+	list[0] = 1
+	list[1] = "hello"
+	list[3] = Person{"Deniss", 30}
+	for index, element := range list {
+		switch value := element.(type) {  // element.(type) 只能在 switch 里边使用，外边还是要用 comma-ok
+		case int:
+			fmt.Printf("int %d %d", index, value)
+		case string:
+			fmt.Printf("str %d %d", index, value)
+		case Person:
+			fmt.Printf("person %d %d", index, value)
+		default:
+			fmt.Printf("list different type %d", index)
+		}
+	}
+}
+```
+
+
+嵌入 interface：如果一个 interface1 作为另一个interface2 的嵌入字段，那么interface2 隐式包含了interface1 里的 method
+
+
+### 反射: 检查程序运行时状态。reflect
+
+```
+t := reflect.TypeOf(i)
+v := reflect.ValueOf(i)
+```
+
+
+### 并发
+
+goroutine: 通过 go 的 runtime 管理的一个线程管理器，通过 go 关键字实现。其实就是一个普通的函数
+
+`go hello(a,b,c)` 通过 go 关键字启动了一个 goroutine
+
+```
+package main
+
+import (
+	"fmt"
+	"runtime"
+)
+
+func say(s string) {
+	for i := 0; i < 5; i++ {
+
+		runtime.Gosched() //让 cpu 让出时间片，下次某个时间继续恢复执行该 goroutine
+		fmt.Println(s)
+	}
+}
+
+func main() {
+	go say("world")
+	say("hello")
+}
+```
+
+多个 goroutine 运行在同一个进程里边，共享内存数据。
+不过设计上需要遵循：不要通过共享来通信，通过通信来共享。
+
+
+channels：goroutine 共享相同的地址空间，访问共享内存需要做好同步。必须用 make 创建
+
+```
+	ci := make(chan int)
+	cs := make(chan string)
+	cf := make(chan interface{})
+	ch <- v  //发送数据 v 到 channel ch
+	v:= <-ch  //从 ch 中接受数据，并赋值给v
+```
+默认channel接收和发送数据都是阻塞的，除非另一端准备好，这样使得 goroutine 同步变得简单，无需显示 lock。
+
+buffered channels: 允许指定 channel 缓冲区大小。`ch := make(chan type, value)`
+当 value =0，channel 是无缓冲区阻塞读写的，当 value>0，channel 是有缓冲、非阻塞的，知道写满 value 个才阻塞写入。
+
+```
+package main
+
+import "fmt"
+
+func sum(a []int, c chan int) {
+	total := 0
+	for _, v := range a {
+		total += v
+	}
+	c <- total
+}
+
+func main() {
+	a := []int{3, 1, 3, 5, 6, 7}
+	c := make(chan int)
+	go sum(a[:len(a)/2], c)
+	go sum(a[len(a)/2:], c)
+	x, y := <-c, <-c // 从 c 接收
+	fmt.Println(x, y, x+y)
+}
+```
+
+Range 和 Close: 通过 range，像操作slice 或者 map 一样操作缓存类型的 channel
+
+```
+package main
+
+import "fmt"
+
+func fibonacci(n int, c chan int) {
+	x, y := 1, 1
+	for i := 0; i < n; i++ {
+		c <- x
+		x, y = y, x+y
+	}
+	close(c) // 应该在生产者里关闭，防止 panic。当你没有任何数据要发送，或者想显示结束 range 调用 close
+}
+func main() {
+	c := make(chan int, 10)
+	go fibonacci(cap(c), c)
+	for i := range c { //不断读取知道 channel 被显示关闭
+		fmt.Println(i)
+	}
+}
+```
+
+
+Select: 多个 channel 操作。Go提供了select监听 channel 数据流动
