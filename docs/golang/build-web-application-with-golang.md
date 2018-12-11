@@ -779,4 +779,145 @@ func main() {
 # 4 表单
 
 
+# 5 访问数据库
+
+### 5.1 database/sql 接口
+
+```
+sql.Register
+driver.Driver   // 返回的数据库conn 只能用在一个 goroutine
+driver.Conn
+driver.Stmt  // Stmt 是一种准备好的状态，只能用在一个goroutine中
+driver.Tx  // 事务提交和回滚
+driver.Execer  /// Conn 选择实现的接口
+driver.Result  // 执行 update/insert 等操作返回的结果接口定义
+driver.Rows // 执行查询返回的结果集接口定义
+driver.RowsAffected  // int64别名
+driver.Value //空接口，容纳任何数据
+driver.ValueConverter // 把一个普通值转换成 driver.Value
+driver.Valuer // 定义了返回一个 driver.Value 的方式
+database/sql
+```
+
+### 5.2 使用 Mysql
+使用 "github.com/go-sql-driver/mysql" 演示数据库增删改查
+
+```
+package main
+
+import (
+	"database/sql"
+	"fmt"
+
+	_ "github.com/go-sql-driver/mysql"
+)
+
+func main() {
+	// Open 打开一个注册过的数据库驱动
+	db, err := sql.Open("mysql", "root:@/test?charset=utf8")
+	checkErr(err)
+	// prepare 返回准备要执行的 sql，然后返回准备完毕的执行状态
+	stmt, err := db.Prepare("INSERT userinfo SET username=?,departname=?,created=?")
+	checkErr(err)
+
+	//exec  执行 stmt 准备好的 sql 语句
+	res, err := stmt.Exec("wnn", "研发", "2012-12-10")
+	checkErr(err)
+
+	id, err := res.LastInsertId()
+	checkErr(err)
+
+	fmt.Println(id)
+	stmt, err = db.Prepare("update userinfo set username=? where uid=?")
+	checkErr(err)
+
+	res, err = stmt.Exec("wnnupdate", id)
+	checkErr(err)
+
+	affect, err := res.RowsAffected()
+	checkErr(err)
+	fmt.Println(affect)
+
+	//query 直接执行 sql 返回 rows 结果
+	rows, err := db.Query("SELECT * from userinfo")
+	checkErr(err)
+
+	for rows.Next() {
+		var uid int
+		var username, departname, created string
+		err = rows.Scan(&uid, &username, &departname, &created)
+		checkErr(err)
+		fmt.Println(uid)
+		fmt.Println(username)
+		fmt.Println(departname)
+		fmt.Println(created)
+	}
+	stmt, err = db.Prepare("delete from userinfo where uid=?")
+	checkErr(err)
+
+	res, err = stmt.Exec(id)
+	checkErr(err)
+
+	affect, err = res.RowsAffected()
+	checkErr(err)
+	fmt.Println(affect)
+	db.Close()
+}
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+# 5.5 使用 Beego orm
+
+```
+package main
+
+import (
+	"fmt"
+
+	"github.com/astaxie/beego/orm"
+	_ "github.com/go-sql-driver/mysql"
+)
+
+// Model Struct
+type User struct {
+	Id   int
+	Name string `orm:"size(100)"`
+}
+
+func init() {
+	orm.RegisterDataBase("default", "mysql", "root:@/test?charset=utf8", 30)
+	orm.RegisterModel(new(User))
+	orm.RunSyncdb("default", false, true)
+	orm.RegisterDriver("mysql", orm.DRMySQL)
+}
+
+func main() {
+	o := orm.NewOrm()
+	user := User{Name: "wnn"}
+	id, err := o.Insert(&user)
+	user2 := User{Name: "wnn2"}
+	id, err = o.Insert(&user2)
+	fmt.Printf("id:%d, err:%v\n", id, err)
+
+	user.Name = "wnnupdate"
+	num, err := o.Update(&user)
+	fmt.Printf("Num:%d, err:%v\n", num, err)
+
+	u := User{Id: user.Id}
+	err = o.Read(&u)
+	fmt.Printf("err: %v\n", err)
+
+	num, err = o.Delete(&u)
+	fmt.Printf("num %d, err:%v\n", num, err)
+
+}
+```
+
+# 5.6 Nosql 数据库使用
+
 
