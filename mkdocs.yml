@@ -53,6 +53,7 @@ pages:
       - 《1 The Go Programming Language》: 'golang/1_the_go_programming_lauguage.md'
       - 《2 The Go Programming Language》: 'golang/2_the_go_programming_lauguage.md'
       - 《3 The Go Programming Language》: 'golang/3_the_go_programming_lauguage.md'
+      - 《Build Web Application With Golang》: 'golang/build-web-application-with-golang.md'
     - 心理学:
       - 《一切都是童年的错吗》: 'psychology/一切都是童年的错吗.md'
       - 《亲密关系》: 'psychology/亲密关系.md'
@@ -116,5 +117,6 @@ pages:
       - 《穷查理宝典》: '金融_finance/穷查理宝典.md'
     - 互联网:
       - 《我的互联网方法论-周鸿祎》: '互联网/我的互联网方法论-周鸿祎.md'
+      - 《用户思维》: '互联网/用户思维.md'
     - 区块链:
       - 《区块链技术指南》: '区块链/区块链技术指南(blockchain_guide).md'
