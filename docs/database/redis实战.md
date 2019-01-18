@@ -234,6 +234,7 @@ def ip_to_score(ip_address):
 
 ### 6.2 分布式锁
 
+(乐观锁)
 redis WATCH 实现的是乐观锁（只有通知功能）。由WATCH, MULTI EXEC
 组成的事务并不具有可扩展性，程序在尝试完成一个事务的时候，可能会因为事务执行失败反复重试。
 
@@ -258,7 +259,7 @@ def release_lock(conn, lockname, identifier):
                 pipe.delete(lockname)
                 pipe.execute()
                 return True
-            pipe.unwathc()
+            pipe.unwatch()
             break
         except redis.exceptions.WatchError:  # 有其他客户端修改了锁，重试
             pass
