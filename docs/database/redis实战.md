@@ -132,7 +132,7 @@ redis sort 能对多种数据类型排序
 
 ##### 3.7.2 基本的 redis 事务
 
-redis基本事务(basic transaction):让一个客户端在不被其他客户端打断的情况下执行多个命令，和关系数据库可以执行过程中回滚的事务不同，redis 里被 multi 命令和exec 命令包围的所有命令会一个接一个执行，直到所有命令执行完毕，erdis 才会处理其他客户端命令。
+redis基本事务(basic transaction):让一个客户端在不被其他客户端打断的情况下执行多个命令，和关系数据库可以执行过程中回滚的事务不同，redis 里被 multi 命令和exec 命令包围的所有命令会一个接一个执行，直到所有命令执行完毕，redis 才会处理其他客户端命令。
 
 redis 事务在 python client 上使用 pipeline 实现，客户端自动使用multi和exec，客户端会存储事务包含的多个命令，一次性把所有命令发送给redis。移除竞争条件；减少通信次数提升性能。redis 原子操作指的是在读取或者修改数据的时候，其他客户端不能读取或修改相同数据。
 
@@ -234,6 +234,7 @@ def ip_to_score(ip_address):
 
 ### 6.2 分布式锁
 
+(乐观锁)
 redis WATCH 实现的是乐观锁（只有通知功能）。由WATCH, MULTI EXEC
 组成的事务并不具有可扩展性，程序在尝试完成一个事务的时候，可能会因为事务执行失败反复重试。
 
@@ -258,7 +259,7 @@ def release_lock(conn, lockname, identifier):
                 pipe.delete(lockname)
                 pipe.execute()
                 return True
-            pipe.unwathc()
+            pipe.unwatch()
             break
         except redis.exceptions.WatchError:  # 有其他客户端修改了锁，重试
             pass
