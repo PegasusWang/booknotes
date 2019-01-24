@@ -54,6 +54,8 @@ pages:
       - 《2 The Go Programming Language》: 'golang/2_the_go_programming_lauguage.md'
       - 《3 The Go Programming Language》: 'golang/3_the_go_programming_lauguage.md'
       - 《Build Web Application With Golang》: 'golang/build-web-application-with-golang.md'
+    - 网络:
+      - 《TCP IP详解卷一》: 'network/tcp_ip详解卷一/tcp_ip详解卷一.md'
     - 心理学:
       - 《一切都是童年的错吗》: 'psychology/一切都是童年的错吗.md'
       - 《亲密关系》: 'psychology/亲密关系.md'
