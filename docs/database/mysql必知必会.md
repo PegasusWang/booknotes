@@ -113,56 +113,90 @@ select cust_id,order_num from orders where Year(order_date) =2005 and Month(orde
 
 ## 12 汇总数据
 
-聚集函数:
-avg, count, max, min, sum
+汇总而不是检索数据，确定行数、获取和、找出最大最小平均值。
+
+
+五个聚集函数（运行在行组上，计算和返回单个值的函数）: avg, count, max, min, sum
 
 ```
-select avg(price) as avg_price from products;
+# avg
+select avg(price) as avg_price from products;  # avg会忽略列值为 NULL 的行
+
+# count
+select count(*) as num_cust from customers;   # count(*)对表中的行数计算，不管包含的是 NULL 还是非空
+select count(cust_email) as num_cust from customers;   # count(column) 忽略 NULL 的值
+
+# max、min, 忽略 NULL 值
+select max(prod_price) as max_price FROM products;
+
+# sum
+select sum(quantity) as items_ordered from orderitems where order_num = 20005; # ignore NULL
+
+# distince
+select avg(quantity) as items_ordered from orderitems where order_num = 20005; # ignore NULL
 ```
 
-COUNT()函数有两种使用方式。
-□　使用COUNT(*)对表中行的数目进行计数，不管表列中包含的是空值（NULL）还是非空值。
-□　使用COUNT(column)对特定列中具有值的行进行计数，忽略NULL值。
+## 13 分组数据
+group by and having，分组允许把数据分为多个逻辑组，以便能够对每个组进行聚集计算。
 
-max 函数会忽略 NULL 行
+```
+# 分组
+select vend_id,count(*) as num_prods from products group by vend_id;
+# 使用 having 过滤分组，where 过滤行，having 支持所有的where子句条件
+select cust_id, count(*) as orders from orders group by cust_id having count(*)>=2;
+# having and where 一起用
+select cust_id, count(*) as orders from orders where prod_price>=10 group by cust_id having count(*)>=2;
 
-分组数据:
+# order by and group by
+select order_num, sum(quantity*item_price) as ordertotal from orderitems group by order_num
+having sum(quantity*item_price)>=50
+order by ordertotal;
+```
 
-select vend_id, count(*) as num_prods from products group by vend_id;    # 对每个组而不是结果聚集
-GROUP BY子句必须出现在WHERE子句之后，ORDER BY子句之前。
-过滤分组 having
-必须基于完整的分组而不是个别的行进行过滤，where 指定的是 行 而不是分组
-唯一的差别是WHERE过滤行，而HAVING过滤分组，并且having 支持所有的where操作符
+## 14 使用子查询
 
-select cust_id, count(*) as orders from orders group by cust_id having count(2) >= 2;
 
-这里有另一种理解方法，WHERE在数据分组前进行过滤，HAVING在数据分组后进行过滤
-不要忘记ORDER BY　一般在使用GROUP BY子句时，应该也给出ORDER BY子句。这是保证数据正确排序的唯一方法。千万不要仅依赖GROUP BY排序数据。
+子查询： 在SELECT语句中，子查询总是从内向外处理。
 
-子查询：
-在SELECT语句中，子查询总是从内向外处理。
+```
+# 利用子查询进行过滤。可以把一条 select 语句返回的结果用于另一条 select 语句的 where 子句
+select cust_name, cust_contact
+from customers
+where cust_id in (select cust_id
+                  from orders
+                  where order_num in (select
+                      order_num from orderitems where prod_id='TNT2')); # 参考15章使用join 处理
 
-Join:
-创建连接:(内连接或者等值连接)
-select vend_name, prod_name, prod_price
-from vendors, products
-where vendors.vend_id = products.vend_id
-order vend_name, prod_name;
 
-目前为止所用的联结称为等值联结（equijoin），它基于两个表之间的相等测试。这种联结也称为内部联结。其实，对于这种联结可以使用稍微不同的语法来明确指定联结的类型
-select vend_name, prod_name, prod_price
-from vendors inner join products
-on vendors.vend_id = products.vend_id;
+# 作为计算字段使用子查询，相关子查询需要限定列名
+select cust_name, cust_state, (select count(*) from orders where orders.cust_id=customers.cust_id) as orders
+from customers order by cust_name;
+```
 
-join 多个表：
-select prod_name, vend_name, prod_price, quantity
-from orderitems, products, vendor
-where products.vend_id = vend_id
-and orderitems.prod_id = products.prod_id
-and order_num = 20005;
 
-创建高级 join：
+## 15 联结表
+
+```
+# 引用的列可能出现二义性时，必须使用完全限定列名
+select vend_name, prod_name, prod_price from vendors, products where vendors.vend_id=products.vend_id order by vend_name,prod_name;
+# 内部联结（等值联结）
+select vend_name, prod_name, prod_price from vendors INNER JOIN products on vendors.vend_id = products.vend_id;
+# 连接多个表，sql 对一条 select 中的连接的表数目没有限制。先列出所有表，然后定义表之间的关系
+select prod_name,vend_name,prod_price,quantity
+
+# 14章的例子使用 join 处理
+select cust_name,cust_contact, from customers,orders,orderitems
+where customers.cust_id=orders.cust_id and orderitems.order_num=orders.order_num and prod_id='TNT2';
+```
+
+
+## 16 创建高级联结
+
+何时使用表别名？允许单条 select 中多次引用相同的表
+
 自连接：用 as 语句别名
+
+`select p1.prod_id,p1.prod_name from products as p1, products as p2 where p1.vend_id=p2.vend_id and p2.prod_id='DTNTR';`
 
 外部联结：联结包含了那些在相关表中没有关联行的行。这种类型的联结称为外部联结。
 与内部联结关联两个表中的行不同的是，外部联结还包括没有关联行的行。在使用OUTER JOIN语法时，必须使用RIGHT或LEFT关键字指定包括其所有行的表（RIGHT指出的是OUTER JOIN右边的表，而LEFT指出的是OUTER JOIN左边的表）。上面的例子使用LEFT OUTER JOIN从FROM子句的左边表（customers表）中选择所有行。为
@@ -170,3 +204,13 @@ and order_num = 20005;
 复合查询：
 多数SQL查询都只包含从一个或多个表中返回数据的单条SELECT语句。MySQL也允许执行多个查询（多条SELECT语句），并将结果作为单个查询结果集返回。这些组合查询通常称为并（union）或复合查询（compound query）。
 也可以用 or 条件实现相同功能。简化复杂 where
+
+
+## 17 组合查询
+可以用 union 操作符来组合多个 SQL 查询，把结果合并成单个结果集。使用 union 可以使用多个 where 条件替换。
+
+```
+# union 必须是相同的列，并且返回的是不重复的行。可以使用 union all 返回所有的行(这个 where 无法完成)
+select vend_id,prod_id,prod_price from products where prod_price<=5 union
+select vend_id,prod_id,prod_price from products wehre vend_id in (1002,1002);
+```
