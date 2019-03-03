@@ -275,7 +275,7 @@ go 有个 gofmt 工具可以用来格式化代码（类似 autopep8，笔者用�
 
 ```go
 switch coinflip() {
-case "heads":    // case 还支持简单的语句 ()
+case "heads":    // case 还支持简单的语句 ()。case可以支持 string
     heads++
 case "tails":
     tails++
@@ -306,7 +306,7 @@ var p Point
 ## 2.1 Names
 
 go 定义了几十个关键字，不能用来给变量命名，go 使用一般使用骆驼命名法(HTTP等缩略词除外)。需要注意的是只有大骆驼命名
-"fmt.Fprintf" 这种是可以被其他包引入使用的。
+"fmt.Fprintf" 这种是可以被其他包引入使用的。go 通过大小写表示是否能够引入。
 
 ## 2.2 Declarations
 
@@ -391,7 +391,6 @@ package-level变量在整个程序执行过程中都存在。局部变量生存�
 相较于 python，go 支持自增操作符。和 py相同的是同样支持 tuple 的解包赋值，演示一些例子：
 
     	a, b, c = 1, 2, 3
-    	x,y = y,x   // swap x and y like python
     	x, y = y, x    // swap x and y like python
 
     	v, ok = m[key] // map lookup
@@ -505,14 +504,15 @@ go的数据类型分成4类：
 -   引用类型: pointers, slices, maps, functions, channels
 -   接口类型: interface types
 
-    ## 3.1 Integers
+## 3.1 Integers
 
-    int8, int16, int32, int64, uint8, uint16, uint32, uint64
-    rune &lt;=> int32 , byte &lt;=> uint8
-    有符号数： -2**(n-1) to 2**(n-1)-1
-    有符号数: 0 to 2\*\*n-1
+int8, int16, int32, int64, uint8, uint16, uint32, uint64
+rune &lt;=> int32 , byte &lt;=> uint8
 
-    注意不同类型之间数字强转可能会有精度损失
+有符号数： -2**(n-1) to 2**(n-1)-1
+有符号数: 0 to 2\*\*n-1
+
+注意不同类型之间数字强转可能会有精度损失
 
 ## 3.2 Floating-Point Numbers
 
@@ -571,7 +571,9 @@ go的数据类型分成4类：
 ## 3.6 Constants
 
 const 表达式的值在编译器确定，无法改变。const 值可以是boolean, string or number
-The const generator iota: 定义从0 开始的递增枚举
+The const generator 
+
+iota: 定义从0 开始的递增枚举
 
     const (
     	Sunday Weekday = iota
@@ -585,14 +587,14 @@ The const generator iota: 定义从0 开始的递增枚举
 
 # 4. Composite Types
 
-本章讨论聚合类型: arrays, slices, maps, structsa
+本章讨论聚合类型: arrays, slices, maps, structs
 
 ## 4.1 Arrays
 
 定长的包含0个或多个相同类型元素的序列，因为不可变长所以一般 slices 更常用。
 注意数组的长度也是类型的一部分， [3]int 和 [4]int 是不同类型，相同长度的可以比较。
 
-    	var a [3]int // array of 3 integers，第一次看这种写法略奇怪
+    	var a [3]int // array of 3 integers，第一次看这种写法略奇怪，理解为 [3]个int 就好多啦
     	fmt.Println(a[0])
     	for i, v := range a {
     		fmt.Printf("%d %d\n", i, v)
@@ -612,9 +614,9 @@ The const generator iota: 定义从0 开始的递增枚举
     	symbol:= [...]string{USD: "$", EUR: "€", GBP: "₤", RMB: "￥"}
     	fmt.Println(RMB, symbol[RMB]) // "3 ￥"
 
-数组传值传过去拷贝，可以通过传递指针
+数组传值，拷贝值，如果需要传递引用可以通过传递指针
 
-    func zero(ptr *[32]byte) {
+    func zero(ptr *[32]byte) {  // 注意这里的数字长度也是类型的一部分
     	for i := range ptr {
     		ptr[i] = 0
     	}
@@ -633,7 +635,7 @@ The const generator iota: 定义从0 开始的递增枚举
 
 slice operator s[i:j], where 0 ≤ i ≤ j ≤ cap(s), 创建一个新的 slice
 
-注意，slice 包含了一个数组的指针，作为函数参数传递的时候允许函数修改数组。
+注意，slice 包含了一个数组的指针，作为函数参数传递的时候允许函数修改数组。(引用类型)
 
     package main
 
@@ -657,7 +659,7 @@ slice operator s[i:j], where 0 ≤ i ≤ j ≤ cap(s), 创建一个新的 slice
     	fmt.Println(s)
     }
 
-并且 slice 不像数组一样能直接比较，基于两个原因：
+**并且 slice 不像数组一样能直接比较**，基于两个原因：
 
 -   slice 可以包含自己，深度比较无论是复杂度还是实现效率都不好
 -   不适合作为 map 的 key。对于引用类型（pointers and channels）， == 一般比较引用实体是否是同一个。但是这回导致 slice
@@ -748,7 +750,7 @@ slice 的初始化值（zero value）是 nil，nil slice没有隐含指向的数
     	delete(ages, "alice")         //删除 key
     	fmt.Println(ages)
 
-    	// 遍历无序的 kv
+    	// 遍历无序的 kv，注意每次返回顺序是不保证一致的
     	for name, age := range ages {
     		fmt.Printf("%s\t%d\n", name, age)
     	}
@@ -1010,7 +1012,7 @@ Go data structure like movies to JSON is called marshaling. Marshaling is done b
     type Movie struct {
     	Title  string
     	Year   int  `json:"released"`
-    	Color  bool `json:"color,omitempty"`
+    	Color  bool `json:"color,omitempty"`     // json tag 可以用来重名 ing
     	Actors []string
     }
 
@@ -1035,7 +1037,7 @@ Go data structure like movies to JSON is called marshaling. Marshaling is done b
     }
 
 注意到 field 后边的 `json:"released"` 叫做 field tags，是在编译器旧绑定到 field 上的元信息，可以控制序列化/反序列化的行为。
-field tag 第一部分指定了 field 的 json 名称（比如从骆驼命名改成下划线命名），第二个可选的选项（imitempty），指定了当如果该 field 是零值的时候不会输出该字段.
+field tag 第一部分指定了 field 的 json 名称（比如从骆驼命名改成下划线命名），第二个可选的选项（omitempty），指定了当如果该 field 是零值的时候不会输出该字段.
 
 ## 4.6 Text and HTML Templates
 
@@ -1170,7 +1172,7 @@ go 没有想其他很多语言一样用异常处理错误，因为异常经常�
 缺少明智的上下文信息告诉用户到底什么出错了。而 go 用通常的控制流  if, return 等来响应
 errors，这种方式需要付出更多精力来应对错误处理逻辑。
 
-go 的5种常见错误处理策略：
+**go 的5种常见错误处理策略**：
 
 -   1.propagate the error：传播错误使得被调用者的错误成为调用者错误。通常直接返回或者构造新的错误信息后返回
 
@@ -1556,7 +1558,7 @@ panic 后我们可以选择不 crash，比如 http 服务器应该关闭连接�
     	return math.Hypot(q.X-p.X, q.Y-p.Y)
     }
 
-    // 作为 Point 类型的方法
+    // 作为 Point 类型的方法，func 之后加了一个 (p Point) 作为 receiver
     func (p Point) Distance(q Point) float64 { // p 叫做方法的接受者 receiver
     	return math.Hypot(q.X-p.X, q.Y-p.Y)
     }
@@ -1803,9 +1805,9 @@ receiver。
 
 ## 7.3 InterFace Satisfaction
 
-一个类型只有在实现了所有接口声明的方法时才『满足』一个接口类型。go 程序员里如果说 "a concrete type is a praticular
+一个类型只有在实现了**所有**接口声明的方法时才『满足』一个接口类型。go 程序员里如果说 "a concrete type is a praticular
 interface type", 意味着满足接口类型。接口赋值的规则很简单：一个表达式可以被赋值给接口仅当它的类型满足接口类型（实现所有方法）
-空接口类型 interface{} 可以被任何值赋值。
+。空接口类型 interface{} 可以被任何值赋值。
 
 ## 7.4 Parsing Flags with flag.Value
 
@@ -2031,7 +2033,7 @@ sort package 提供了任何序列的原地排序。
     w = new(ByteCounter)
     rw = w.(io.ReadWriter) // panic: *ByteCounter has no Read method
 
-如果我们期望两个返回结果，检查不成功也不会 panic，而是返回是否 o
+如果我们期望两个返回结果，检查不成功也不会 panic，而是返回是否 ok
 
     var w io.Writer = os.Stdout
     f, ok := w.(*os.File)      // success:  ok, f == os.Stdout
@@ -2131,7 +2133,8 @@ type switch:
 
 ## 7.15 A Few Words of Advice
 
-什么时候需要接口：当两种以上的具体类型必须以一种统一
-的方式处理的时候。有一种例外：当接口被一个具体类型满足但是这个类型却无法和接口保持在一个 package
-里（因为依赖关系），这个时候接口是解耦两个 package 的好方式。
+什么时候需要接口：**当两种以上的具体类型必须以一种统一 的方式处理的时候。**
+
+有一种例外：当接口被一个具体类型满足但是这个类型却无法和接口保持在一个 package 里（因为依赖关系），这个时候接口是解耦两个 package 的好方式。
+
 设计接口的原则：ask only for what you need

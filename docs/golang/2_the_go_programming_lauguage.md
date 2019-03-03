@@ -9,13 +9,13 @@
 在 go 里每个并发执行的活动叫做 goroutine。考虑一个场景，两个函数一个计算一个写输出，但是互不调用，串行方式是第一个调用
 完成了再去调用另一个。但是在两个及多个 goroutine 的并发场景下，两个函数可以同时执行。
 程序执行的开始，只有一个调用 main 的goroutine，我们叫它 main goroutine，新的 goroutine 可以通过 go
-语句创建，语法上就是普通的函数或方法加上 go 关键字，go 声明使得函数在被创建的新的 goroutine 里执行，go
-语句则会立刻返回。
+语句创建，语法上就是普通的函数或方法加上 go 关键字，go 声明使得函数在被创建的新的 goroutine 里执行，**go
+语句则会立刻返回**。
 
     f()    // call f(); wait for it to return
     go f() // create a new goroutine that calls f(); don't wait
 
-我们看一个好玩的例子，这里输出斐波那契数，在计算的同事，屏幕上会显示一个转动的指针：
+我们看一个好玩的例子，这里输出斐波那契数，在计算的同时，屏幕上会显示一个转动的指针：
 
     package main
 
