@@ -428,6 +428,7 @@ parallel，这种方式是最容易实现并发的。你能会立马写出如下
 注意这里有个隐含的bug，当遇到第一个 non-nil error 时， 返回error给调用者，导致没有 goroutine 消费 errors
 channel。每个还在工作的 worker goroutine 想要往 errors channel send 值的时候会被永久阻塞，无法终止，出现了 goroutine
 泄露，程序被阻塞或者出现内存被用光。
+
 两种解决方式：简单的方式是用一个有足够空间的 bufferd channel，当它发送消息的时候没有工作的 goruotine 被
 block。另一种是在main goroutine 返回第一个 error 的时候创建一个新的 goroutine 消费 channel。
 
@@ -1251,7 +1252,7 @@ struct 里的 field。
 
     func Balance() int {
     	mu.RLock()
-    	defer mu.RUnlock()
+    	defer mu.RUnlock()  // 防止忘记应该使用了 Lock之后立马就用 defer Unlock
     	return balance
     }
 
