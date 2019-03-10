@@ -571,7 +571,7 @@ rune &lt;=> int32 , byte &lt;=> uint8
 ## 3.6 Constants
 
 const 表达式的值在编译器确定，无法改变。const 值可以是boolean, string or number
-The const generator 
+The const generator
 
 iota: 定义从0 开始的递增枚举
 
@@ -669,7 +669,8 @@ slice operator s[i:j], where 0 ≤ i ≤ j ≤ cap(s), 创建一个新的 slice
 slice 的初始化值（zero value）是 nil，nil slice没有隐含指向的数组，其 length==capacity==0。但是也有包含 nil
 的slice，我们看几个比较(我感觉这里 python 的 None 用 is 判断比较优雅)：
 
-    var s []int    // len(s) == 0, s == nil
+    var s []int    // len(s) == 0, s == nil，空切片
+    s = make ([]int, 0)  // or slice := []int{}   // 都是空切片
     s = nil        // len(s) == 0, s == nil
     s = []int(nil) // len(s) == 0, s == nil
     s = []int{}    // len(s) == 0, s != nil
@@ -679,7 +680,9 @@ slice 的初始化值（zero value）是 nil，nil slice没有隐含指向的数
     	make([]T, len)
     	make([]T, len, cap)
 
-向 slice 追加元素用内置的 append 函数
+向 slice 追加元素用内置的 append 函数。append 会返回一个包含结果的新切片（容量有可能改变）
+如果切片的底层数组没有足够的可用容量，append 函数会创建一个新的底层数组，将被引用的现有数组复制到新的数组里，
+再追加新的值。
 
     var runes []rune
     for _, r := range "hello,世界" {
@@ -713,6 +716,24 @@ slice 的初始化值（zero value）是 nil，nil slice没有隐含指向的数
     	len, cap int
     }
 
+append 是个可变参数的函数，可以接收多个参数， ... 运算符可以追加一个切片的所有元素到另一个切片里。
+
+	s1 := []int{1, 2}
+	s2 := []int{3, 4}
+	fmt.Printf("%v\n", append(s1, s2...))
+    for index, value := range s1 {
+		// value 是元素的副本，而不是直接返回该元素的引用
+		fmt.Print(index, value, "\n")
+	}
+    for index := 2; index < len(s); index++ {
+		fmt.Print(s[index])
+	}
+
+    // 多维切片
+	slice := [][]int{{10}, {100, 200}}
+	slice[0] = append(slice[0], 20)
+
+
 可以使用省略号来让函数接受任意多个 final arguments：
 
     func appendInt(x []int, y ...int) []int{
@@ -723,10 +744,18 @@ slice 的初始化值（zero value）是 nil，nil slice没有隐含指向的数
     	return z
     }
 
+切片作为函数传递的代价很小，不涉及到底层数组复制，只会复制切片自己的结构(24个字节)
+
+
+
 ## 4.3 Maps
 
 无序键值对，go 里 map 是 哈希表的引用。要求所有 key 类型相同，所有的 value 类型相同，key
-必须是可比较的。不过用法上和 python 的 map 还是比较类似的。
+必须是可比较==的。不过用法上和 python 的 map 还是比较类似的。
+切片、函数和包含切片的结构类型由于具有引用语句，不能作为映射的键(key)。
+作为参数的传递的 map 如果修改了 map 会对所有的引用可见，不会复制底层的数据结构。
+
+    var colors map[string][string] // 声明一个未初始化的映射来创建一个值为 nil 的映射， nil 映射不能存储键值对
 
     package main
 
