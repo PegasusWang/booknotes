@@ -44,3 +44,236 @@ CSP 是一种消息传递模型，通过在goroutine之间传递数据来传递�
 用于在 goroutine 之间同步和传递数据的关键数据类型叫做通道(channel)。
 
 进程和线程：进程维护了应用程序运行时的内存地址空间、文件和设备的句柄以及线程。
+
+
+```
+package main
+
+import (
+	"fmt"
+	"runtime"
+	"sync"
+)
+
+func main() {
+	runtime.GOMAXPROCS(1) // 只能使用一个逻辑处理器
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	fmt.Println("Start Goroutines")
+
+	go func() {
+		defer wg.Done()
+		for count := 0; count < 3; count++ {
+			for char := 'a'; char < 'a'+26; char++ {
+				fmt.Printf("%c", char)
+			}
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		for count := 0; count < 3; count++ {
+			for char := 'A'; char < 'A'+26; char++ {
+				fmt.Printf("%c", char)
+			}
+		}
+	}()
+
+	wg.Wait()
+	fmt.Println("Waiting To Finish")
+
+}
+```
+
+竞争状态：两个或者多个 goroutine 在没有同步的情况的下，访问某个共享的资源，并试图同时读写这个资源，就会处于
+相互竞争状态。
+
+```
+// 竞争状态演示
+package main
+
+import (
+	"fmt"
+	"runtime"
+	"sync"
+)
+
+var (
+	counter int
+	wg      sync.WaitGroup
+)
+
+func main() {
+	wg.Add(2)
+	go incCounter(1)
+	go incCounter(2)
+	wg.Wait()
+	fmt.Println("final counter:", counter)
+}
+
+func incCounter(id int) {
+	defer wg.Done()
+	for count := 0; count < 2; count++ {
+		value := counter
+		// 用于当前 goroutine 从线程退出，并放回到队列，给其他 gorouine 运行机会
+		//这里是为了强制调度器切换两个 goroutine，让竞争状态的效果更明显
+		// go build -race 可以用竞争检测器标志来 编译程序
+		runtime.Gosched()
+		value++
+		counter = value
+	}
+}
+```
+
+使用锁来锁住共享资源： 
+
+- 原子函数(atomic)
+- 互斥锁(mutex)
+- 通道(channel)
+
+
+```
+// 愿子函数
+package main
+
+import (
+	"fmt"
+	"runtime"
+	"sync"
+	"sync/atomic"
+)
+
+var (
+	counter int64
+	wg      sync.WaitGroup
+)
+
+func main() {
+	wg.Add(2)
+	go incCounter(1)
+	go incCounter(2)
+	wg.Wait()
+	fmt.Println("final counter:", counter)
+}
+
+func incCounter(id int) {
+	defer wg.Done()
+	for count := 0; count < 2; count++ {
+		// StoreInt64, LoadInt64
+		atomic.AddInt64(&counter, 1)
+		runtime.Gosched()
+	}
+}
+```
+
+使用互斥锁:
+
+
+```
+// 使用 互斥锁 mutex
+package main
+
+import (
+	"fmt"
+	"runtime"
+	"sync"
+)
+
+var (
+	counter int
+	wg      sync.WaitGroup
+	mutex   sync.Mutex
+)
+
+func main() {
+	wg.Add(2)
+	go incCounter(1)
+	go incCounter(2)
+	wg.Wait()
+	fmt.Println("final counter:", counter)
+}
+
+func incCounter(id int) {
+	defer wg.Done()
+	for count := 0; count < 2; count++ {
+		// 同一时刻只允许一个 goroutine 进入临界区
+		mutex.Lock()
+		{
+			value := counter
+			runtime.Gosched()
+			value++
+			counter = value
+		}
+		mutex.Unlock()
+	}
+}
+```
+
+
+使用通道，通过发送和接收需要共享的资源，在 goroutine 之间做同步。
+可以通过 Channel 共享内置类型、命名类型、结构类型、和引用类型的值或者指针。
+
+unbuffered channel: 接收前没有能力保存任何值的通道。要求发送和接收的goroutine 同时准备好，才能完成发送和接收。
+如果两个 goroutine 没有同时准备好，通道会导致先执行发送或者接收的 goroutine 阻塞等待。行为本身就是同步的。
+
+
+```
+//使用unbufferd channel 模拟网球比赛
+
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+var wg sync.WaitGroup
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+func main() {
+	court := make(chan int)
+	wg.Add(2)
+
+	// 启动俩选手
+	go player("Nadal", court)
+	go player("Djokovic", court)
+
+	// 发球
+	court <- 1
+
+	// 等待游戏结束
+	wg.Wait()
+}
+
+func player(name string, court chan int) {
+	defer wg.Done()
+
+	for {
+		// 等待球被打回来
+		ball, ok := <-court
+		if !ok {
+			// 如果通道被关闭，我们就 赢了
+			fmt.Printf("Player %s Won\n", name)
+			return
+		}
+		n := rand.Intn(100) //随机数判断是否丢球
+		if n%13 == 0 {
+			fmt.Printf("Player %s Missed\n", name)
+			close(court)
+			return
+		}
+
+		fmt.Printf("Player %s Hit %d\n", name, ball)
+		ball++
+
+		court <- ball //把球打到对手
+
+	}
+}
+```
