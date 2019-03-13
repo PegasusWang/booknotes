@@ -278,6 +278,91 @@ func player(name string, court chan int) {
 }
 ```
 
+buffered channel: 在接收前能够存储一个或者多个值的通道。只在通道中没有要接收的值时，接收动作才会阻塞。
+只有通道没有可用缓冲区容纳被发送的值，发送动作才会阻塞。
+无缓冲通道保证进行发送和接收的 goroutine 会在同一时间进行数据交换；有缓冲通道没有这个保证。
+
+
+```
+// This sample program demonstrates how to use a buffered
+// channel to work on multiple tasks with a predefined number
+// of goroutines.
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+const (
+	numberGoroutines = 4  // Number of goroutines to use.
+	taskLoad         = 10 // Amount of work to process.
+)
+
+// wg is used to wait for the program to finish.
+var wg sync.WaitGroup
+
+// init is called to initialize the package by the
+// Go runtime prior to any other code being executed.
+func init() {
+	// Seed the random number generator.
+	rand.Seed(time.Now().Unix())
+}
+
+// main is the entry point for all Go programs.
+func main() {
+	// Create a buffered channel to manage the task load.
+	tasks := make(chan string, taskLoad)
+
+	// Launch goroutines to handle the work.
+	wg.Add(numberGoroutines)
+	for gr := 1; gr <= numberGoroutines; gr++ {
+		go worker(tasks, gr)
+	}
+
+	// Add a bunch of work to get done.
+	for post := 1; post <= taskLoad; post++ {
+		tasks <- fmt.Sprintf("Task : %d", post)
+	}
+
+	// Close the channel so the goroutines will quit
+	// when all the work is done.
+	close(tasks) // 关闭后 goroutine 依旧可以接收数据，但是不能再发送（要能够获取剩下的所有值）
+
+	// Wait for all the work to get done.
+	wg.Wait()
+}
+
+// worker is launched as a goroutine to process work from
+// the buffered channel.
+func worker(tasks chan string, worker int) {
+	// Report that we just returned.
+	defer wg.Done()
+
+	for {
+		// Wait for work to be assigned. 会阻塞在这里等待接收值
+		task, ok := <-tasks
+		if !ok {
+			// This means the channel is empty and closed.
+			fmt.Printf("Worker: %d : Shutting Down\n", worker)
+			return
+		}
+
+		// Display we are starting the work.
+		fmt.Printf("Worker: %d : Started %s\n", worker, task)
+
+		// Randomly wait to simulate work time.
+		sleep := rand.Int63n(100)
+		time.Sleep(time.Duration(sleep) * time.Millisecond)
+
+		// Display we finished the work.
+		fmt.Printf("Worker: %d : Completed %s\n", worker, task)
+	}
+}
+```
+
 
 # 7 并发模式
 
