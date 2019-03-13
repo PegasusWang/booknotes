@@ -277,3 +277,12 @@ func player(name string, court chan int) {
 	}
 }
 ```
+
+
+# 7 并发模式
+
+runnber: 监视程序运行时间，终止程序等。
+
+pool: 使用有缓冲的通道实现资源池，来管理可以在任意数量的 goroutine 之间共享以及独立使用的资源。
+
+work: 使用无缓冲的通道创建一个goroutine池，这些goroutine执行并控制一组工作，让其并发执行。
