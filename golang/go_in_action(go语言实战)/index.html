@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>《代码的未来》 - PegasusWang的读书笔记</title>
+  <title>5 Go 语言的类型系统 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u300a\u4ee3\u7801\u7684\u672a\u6765\u300b";
-    var mkdocs_page_input_path = "code/\u4ee3\u7801\u7684\u672a\u6765.md";
+    var mkdocs_page_name = "5 Go \u8bed\u8a00\u7684\u7c7b\u578b\u7cfb\u7edf";
+    var mkdocs_page_input_path = "golang/go_in_action(go\u8bed\u8a00\u5b9e\u6218).md";
     var mkdocs_page_url = null;
   </script>
   
@@ -126,48 +126,39 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../work_with_legacy_code/">《Work with legacy code》</a>
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../代码大全/">《代码大全》</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">《代码的未来》</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#1">1 编程的本质</a></li>
-    
-
-    <li class="toctree-l3"><a href="#2">2. 编程语言的过去、现在和未来</a></li>
-    
-
-    </ul>
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../基本功/">《基本功》</a>
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../敏捷技能修炼/">《敏捷技能修炼》</a>
+    <a class="" href="../../code/基本功/">《基本功》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../编写可读代码的艺术/">《编写可读代码的艺术》</a>
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../编程匠艺/">《编程匠艺》</a>
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../领域驱动设计/">《领域驱动设计》</a>
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
                 </li>
     </ul>
 	    </li>
@@ -240,19 +231,19 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+    <a class="" href="../1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+    <a class="" href="../2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+    <a class="" href="../3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+    <a class="" href="../build-web-application-with-golang/">《Build Web Application With Golang》</a>
                 </li>
     </ul>
 	    </li>
@@ -595,12 +586,8 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
-        
-          <li>代码 &raquo;</li>
-        
-      
     
-    <li>《代码的未来》</li>
+    <li>5 Go 语言的类型系统</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -610,138 +597,356 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="1">1 编程的本质</h1>
-<p>编程的本质是思考</p>
-<p>极限思考法：假如 cpu ssd 等发挥极致</p>
-<h1 id="2">2. 编程语言的过去、现在和未来</h1>
-<p>图灵完备：指一种计算模型拥有和通用图灵机相同的计算能力，即一种计算模型可以对目前已知所有算法的描述。
-抽象化</p>
-<p>2.2 DSL：领域特定语言。外部DSL 和 内部DSL（更有优势，借宿 宿主语言）
-一个优秀内部DSL五个要素：上下文、语句、单位、词汇、层次结构</p>
-<p>BDD（行为驱动开发）：软件开发之前就设计好规格</p>
-<p>给一种模式起个名字能提高认知</p>
-<p>2.3 元编程</p>
-<p>元数据：描述数据所具有的结构的数据，也就是关于数据本身的数据
-元编程：用程序来写程序。环境允许程序本身作为数据结构操作
-反射。
-ruby中类也是对象</p>
-<p>2.4 内存管理</p>
-<p>抖动（thrushing）:使用硬盘作为虚拟内存后和硬盘数据交互过于频繁，处理速度就会下降
-GC(Garabage Collection)
-垃圾(Garabage): 需要回收的对象。GC的本质就是找出已经引用不到的对象（死亡），然后作为垃圾回收。
-根（Root）：判断对象是否可被引用的起始点。基本是将变量和运行占空间作为跟
-- 标记清除（mark and sweep）：首先从跟开始姜可能被引用的对象用递归方式标记，然后将没有标记到的对象作为垃圾进行回收。处理时间和存活对象数与对象总数的总和相关。
-- 标记压缩（mark and compact）:不是清楚被标记的对象，而是不断压缩
-- 复制收集(copy and collection): 从根开始被引用的对象复制到另外的空间中
-- 引用计数（reference count）:在每个对象中爆保存该对象的引用计数，当引用发生增减时候对计数更新。缺点:
-    - 无法处理循环引用
-    - 必须要在引用发生时对引用计数正确增减
-    - 不适合并行处理</p>
-<p>改良方式：
-- 分代回收(Generational GC): 大部分对象都会在短时间内成为垃圾,经过一定时间依然存活的对象用有较长的寿命。
-老生代对新生代的引用放到记录集（remembered set）。小回收和大回收。写屏障</p>
+                <h1 id="5-go">5 Go 语言的类型系统</h1>
+<p>值得类型给编译器提供两个信息:</p>
 <ul>
-<li>
-<p>增量回收(Incremental GC):为了维持程序的实时性，不等到GC全部回收完成，而是将GC操作细分成多个部分逐一执行。
-写屏障:当已经被标记的对象的引用关系发生变化时，通过写屏障会将新被引用的对象作为扫描的起点记录下来</p>
-</li>
-<li>
-<p>并行回收:在原有程序运行的同时进行GC操作。</p>
-</li>
+<li>需要分配多少内存（规模）</li>
+<li>这段内存表示什么</li>
 </ul>
-<p>2.5 异常处理
-正常化偏见</p>
-<p>2.6 闭包
-函数对象
-高阶函数：利用函数作为参数的函数
-作用域（Scope）：变量的有效范围，某个变量可以被访问的范围。从函数对象中能够对外部变量进行访问（引用、更新），是闭包构成条件之一。
-生存期（Extent）：变量的寿命。一个变量可以在多长周期范围内存在并能够被访问。
-闭包：属于外部作用域中的局部变量，被函数对象给『封闭』在里面了。被封闭起来的变量的寿命，与封闭它的函数对象寿命相等。当封闭这个变量的函数对象不再被访问，
-被垃圾回收器回收时，这个变量的寿命也就同事终结了。
-在函数对象中，将局部变量这一环境封闭起来的结构被称为闭包。</p>
-<p>3章：编程语言新潮流
-3.1:
-类型：指的是对某个数据所具有的性质的描述
-结构子类型（structural subtyping）：以类型的结构来确定可代换性的类型关系。golang采取的方式，同时具有鸭子类型和静态类型的优点</p>
-<p>3.2 Go</p>
-<p>4章：云计算时代的编程
-4.1 可扩展性
-boolm过滤器
-DHT（分布式散列表）:</p>
-<p>4.2 C10K 问题
-epoll: 监视的 fd 没有限制，内核会记忆要监视的 fd，无需每次都初始化；只返回产生事件的 fd 的信息，无需遍历所有的 fd
-epoll_create: 创建监视描述符
-epoll_ctl: 将监视描述符进行注册
-epoll_wait: 监视</p>
-<p>libev: 提供高性能事件循环的库，跨平台</p>
-<p>4.3 HashFold</p>
-<p>OOM Killler(Out of Memory Killer)</p>
-<p>4.4 进程间通信</p>
-<p>同一台计算机中间的进程通信：管道pipe, 消息,信号量(semaphore)，共享内存，tcp套接字，udp套接字，unix域套接字
-unix域套接字使用和文件一样的路径指定连接目标。以路径作为连接目标，就意味着unix域套接字只能用于同一台计算机上的进程间通信。不过它不仅可以传输一般的字节流，
-还可以传输文件描述符。</p>
-<p>4.5 Rack 与 Unicorn</p>
-<p>5章：支持大数据的数据存储技术
-5.1  键值存储
-RDBMS:
-Atomicity: 对数据的操作只允许全部完成或者完全未做改变这两种状态
-Consistency: 数据库的状态必须永远满足给定的条件。比如如果存款大于0，一定是可以取出来钱的。
-Isolation: 保持原子性的一系列操作的中间状态，不能由其他事务进行干涉。
-Durability:当保持原子行的一系列操作完成时，其结果会被保存并不会丢失。</p>
-<p>CAP 原理：ACID是不可扩展的，RDBMS在大规模环境中无法达到期望值
-Consistency(一致性)
-Availabiliy(可用性) ： 一般不能舍弃
-Partition Tolerance(分区容忍性)
-最多满足两个。</p>
-<p>单一故障点：分布式系统中，局部故障导致整体故障</p>
-<p>BASE(
-Basically Avaiable
-Soft-state
-Eventually consistent
-)</p>
-<p>5.2 NoSQL
-RDB的极限：
-键值数据库
-面向文档: couchDb, mongoDB
-面向对象</p>
-<p>6章：多核时代的编程
-超线程：通过处理多个取出并执行指令的控制流程，从而将没有相互依赖关系的运算同时送入运算器中，通过这一手段
-可以提高超标量的利用效率
-摩尔定律已经接近极限。</p>
-<p>6.2 UNIX管道
-管道：将文件定义为基本的字节流
-阿姆达尔定律：(通过并行计算所获得的)系统性能提升效果，会随着无法并行的部分产生饱和。因此只靠多核无法解决所有的问题。</p>
-<p>6.3 非阻塞I/O
-事件驱动模型。
-缓冲机制中两种情况会发生阻塞：
-1. 当缓冲区为空的时候，需要等待数据到达缓冲区（读取时）
-2. 另一种是当缓冲区满的时候，需要等待缓冲区腾出空间（写入时）
-非阻塞IO：</p>
-<p>6.4 node.js</p>
-<p>如何提升效率：
-减负: 采用更好的算法、减少无用的开销、用空间来换时间
-拖延: 利用人心理上的弱点。
-委派: 多核的困难（任务分割、通信开销、可靠性）将工作分成异步子任务是提高效率的关键</p>
-<p>事件驱动编程：对来自外部的事件进行响应，并调用与改时间相对应的『回调函数』，主循环一般使用一个循环程序来等待实事件的发生。
-当回调函数运行完毕后，再次返回到循环中，等待下一个实践。</p>
-<p>6.5 ZeroMQ
-通信模型：
-REQ/RES  (http,rpc)
-PUB/SUB
-PUSH/PULL</p>
+<pre><code>type Duration int64
+
+
+func main() {
+    var dur Duration
+    dur = int64(100)  // cannot not use64(1000) (type int64) as type Duration
+  // 编译器不会做隐式类型转换
+}
+</code></pre>
+
+<p>go 语言有两种类型的接受者：值接受者和指针接受者。
+值接受者获取的是副本（如果是指针也是指针指向的值的副本）</p>
+<h3 id="53">5.3 类型的本质</h3>
+<ul>
+<li>内置类型：数值类型、字符串、布尔类型。传递的副本</li>
+<li>引用类型: 切片、映射、通道、接口和函数类型。通过复制传递应用类型值的副本，本质上就是共享底层数据结构</li>
+<li>结构类型：非原始值应该总是用共享传递，而不是复制。</li>
+</ul>
+<p>使用值接收还是指针接收不应该由该方法是否修改了接受到的值来决定，而应该基于该类型的本质。
+一个例外是需要让类型值符合某个接口的时候。</p>
+<p>接口是用来定义行为的类型，被定义的行为不由接口直接实现，而是通过方法由用户定义的类型实现。
+如果用户定义的类型实现了某个接口声明的一组方法，那么这个用户定义的类型的值就可以赋值给这个接口类型的值。
+这个赋值会把用户定义的类型的值存入接口类型的值。接口值的方法调用是一种多态。</p>
+<p>嵌入类型：已有类型嵌入到新的类型里。内部类型和外部类型。如果没有重名的话，外部类型可以直接调用内部类型的方法。</p>
+<h1 id="6">6. 并发</h1>
+<p>GO并发同步模型来自通信顺序进程(Communicating Sequential Processes, CSP)的泛型(paradigm)。
+CSP 是一种消息传递模型，通过在goroutine之间传递数据来传递消息，而不是通过对数据加锁来实现同步访问。
+用于在 goroutine 之间同步和传递数据的关键数据类型叫做通道(channel)。</p>
+<p>进程和线程：进程维护了应用程序运行时的内存地址空间、文件和设备的句柄以及线程。</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+    &quot;sync&quot;
+)
+
+func main() {
+    runtime.GOMAXPROCS(1) // 只能使用一个逻辑处理器
+
+    var wg sync.WaitGroup
+    wg.Add(2)
+    fmt.Println(&quot;Start Goroutines&quot;)
+
+    go func() {
+        defer wg.Done()
+        for count := 0; count &lt; 3; count++ {
+            for char := 'a'; char &lt; 'a'+26; char++ {
+                fmt.Printf(&quot;%c&quot;, char)
+            }
+        }
+    }()
+
+    go func() {
+        defer wg.Done()
+        for count := 0; count &lt; 3; count++ {
+            for char := 'A'; char &lt; 'A'+26; char++ {
+                fmt.Printf(&quot;%c&quot;, char)
+            }
+        }
+    }()
+
+    wg.Wait()
+    fmt.Println(&quot;Waiting To Finish&quot;)
+
+}
+</code></pre>
+
+<p>竞争状态：两个或者多个 goroutine 在没有同步的情况的下，访问某个共享的资源，并试图同时读写这个资源，就会处于
+相互竞争状态。</p>
+<pre><code>// 竞争状态演示
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+    &quot;sync&quot;
+)
+
+var (
+    counter int
+    wg      sync.WaitGroup
+)
+
+func main() {
+    wg.Add(2)
+    go incCounter(1)
+    go incCounter(2)
+    wg.Wait()
+    fmt.Println(&quot;final counter:&quot;, counter)
+}
+
+func incCounter(id int) {
+    defer wg.Done()
+    for count := 0; count &lt; 2; count++ {
+        value := counter
+        // 用于当前 goroutine 从线程退出，并放回到队列，给其他 gorouine 运行机会
+        //这里是为了强制调度器切换两个 goroutine，让竞争状态的效果更明显
+        // go build -race 可以用竞争检测器标志来 编译程序
+        runtime.Gosched()
+        value++
+        counter = value
+    }
+}
+</code></pre>
+
+<p>使用锁来锁住共享资源： </p>
+<ul>
+<li>原子函数(atomic)</li>
+<li>互斥锁(mutex)</li>
+<li>通道(channel)</li>
+</ul>
+<pre><code>// 愿子函数
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+    &quot;sync&quot;
+    &quot;sync/atomic&quot;
+)
+
+var (
+    counter int64
+    wg      sync.WaitGroup
+)
+
+func main() {
+    wg.Add(2)
+    go incCounter(1)
+    go incCounter(2)
+    wg.Wait()
+    fmt.Println(&quot;final counter:&quot;, counter)
+}
+
+func incCounter(id int) {
+    defer wg.Done()
+    for count := 0; count &lt; 2; count++ {
+        // StoreInt64, LoadInt64
+        atomic.AddInt64(&amp;counter, 1)
+        runtime.Gosched()
+    }
+}
+</code></pre>
+
+<p>使用互斥锁:</p>
+<pre><code>// 使用 互斥锁 mutex
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+    &quot;sync&quot;
+)
+
+var (
+    counter int
+    wg      sync.WaitGroup
+    mutex   sync.Mutex
+)
+
+func main() {
+    wg.Add(2)
+    go incCounter(1)
+    go incCounter(2)
+    wg.Wait()
+    fmt.Println(&quot;final counter:&quot;, counter)
+}
+
+func incCounter(id int) {
+    defer wg.Done()
+    for count := 0; count &lt; 2; count++ {
+        // 同一时刻只允许一个 goroutine 进入临界区
+        mutex.Lock()
+        {
+            value := counter
+            runtime.Gosched()
+            value++
+            counter = value
+        }
+        mutex.Unlock()
+    }
+}
+</code></pre>
+
+<p>使用通道，通过发送和接收需要共享的资源，在 goroutine 之间做同步。
+可以通过 Channel 共享内置类型、命名类型、结构类型、和引用类型的值或者指针。</p>
+<p>unbuffered channel: 接收前没有能力保存任何值的通道。要求发送和接收的goroutine 同时准备好，才能完成发送和接收。
+如果两个 goroutine 没有同时准备好，通道会导致先执行发送或者接收的 goroutine 阻塞等待。行为本身就是同步的。</p>
+<pre><code>//使用unbufferd channel 模拟网球比赛
+
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+var wg sync.WaitGroup
+
+func init() {
+    rand.Seed(time.Now().UnixNano())
+}
+
+func main() {
+    court := make(chan int)
+    wg.Add(2)
+
+    // 启动俩选手
+    go player(&quot;Nadal&quot;, court)
+    go player(&quot;Djokovic&quot;, court)
+
+    // 发球
+    court &lt;- 1
+
+    // 等待游戏结束
+    wg.Wait()
+}
+
+func player(name string, court chan int) {
+    defer wg.Done()
+
+    for {
+        // 等待球被打回来
+        ball, ok := &lt;-court
+        if !ok {
+            // 如果通道被关闭，我们就 赢了
+            fmt.Printf(&quot;Player %s Won\n&quot;, name)
+            return
+        }
+        n := rand.Intn(100) //随机数判断是否丢球
+        if n%13 == 0 {
+            fmt.Printf(&quot;Player %s Missed\n&quot;, name)
+            close(court)
+            return
+        }
+
+        fmt.Printf(&quot;Player %s Hit %d\n&quot;, name, ball)
+        ball++
+
+        court &lt;- ball //把球打到对手
+
+    }
+}
+</code></pre>
+
+<p>buffered channel: 在接收前能够存储一个或者多个值的通道。只在通道中没有要接收的值时，接收动作才会阻塞。
+只有通道没有可用缓冲区容纳被发送的值，发送动作才会阻塞。
+无缓冲通道保证进行发送和接收的 goroutine 会在同一时间进行数据交换；有缓冲通道没有这个保证。</p>
+<pre><code>// This sample program demonstrates how to use a buffered
+// channel to work on multiple tasks with a predefined number
+// of goroutines.
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+const (
+    numberGoroutines = 4  // Number of goroutines to use.
+    taskLoad         = 10 // Amount of work to process.
+)
+
+// wg is used to wait for the program to finish.
+var wg sync.WaitGroup
+
+// init is called to initialize the package by the
+// Go runtime prior to any other code being executed.
+func init() {
+    // Seed the random number generator.
+    rand.Seed(time.Now().Unix())
+}
+
+// main is the entry point for all Go programs.
+func main() {
+    // Create a buffered channel to manage the task load.
+    tasks := make(chan string, taskLoad)
+
+    // Launch goroutines to handle the work.
+    wg.Add(numberGoroutines)
+    for gr := 1; gr &lt;= numberGoroutines; gr++ {
+        go worker(tasks, gr)
+    }
+
+    // Add a bunch of work to get done.
+    for post := 1; post &lt;= taskLoad; post++ {
+        tasks &lt;- fmt.Sprintf(&quot;Task : %d&quot;, post)
+    }
+
+    // Close the channel so the goroutines will quit
+    // when all the work is done.
+    close(tasks) // 关闭后 goroutine 依旧可以接收数据，但是不能再发送（要能够获取剩下的所有值）
+
+    // Wait for all the work to get done.
+    wg.Wait()
+}
+
+// worker is launched as a goroutine to process work from
+// the buffered channel.
+func worker(tasks chan string, worker int) {
+    // Report that we just returned.
+    defer wg.Done()
+
+    for {
+        // Wait for work to be assigned. 会阻塞在这里等待接收值
+        task, ok := &lt;-tasks
+        if !ok {
+            // This means the channel is empty and closed.
+            fmt.Printf(&quot;Worker: %d : Shutting Down\n&quot;, worker)
+            return
+        }
+
+        // Display we are starting the work.
+        fmt.Printf(&quot;Worker: %d : Started %s\n&quot;, worker, task)
+
+        // Randomly wait to simulate work time.
+        sleep := rand.Int63n(100)
+        time.Sleep(time.Duration(sleep) * time.Millisecond)
+
+        // Display we finished the work.
+        fmt.Printf(&quot;Worker: %d : Completed %s\n&quot;, worker, task)
+    }
+}
+</code></pre>
+
+<h1 id="7">7 并发模式</h1>
+<p>runnber: 监视程序运行时间，终止程序等。</p>
+<p>pool: 使用有缓冲的通道实现资源池，来管理可以在任意数量的 goroutine 之间共享以及独立使用的资源。</p>
+<p>work: 使用无缓冲的通道创建一个goroutine池，这些goroutine执行并控制一组工作，让其并发执行。</p>
+<p>书中有一些例子可以参考</p>
+<h1 id="8">8 标准库</h1>
+<p>标准库的代码经过预编译的，这些预编译后的文件，称作归档文件(archive file, .a)，放在 pkg 下。</p>
+<p>unix 架构创建了  stderr 设备作为日志的默认输出地，把程序输出和日志分离开。
+如果用户程序只有记录日志，更常用的方式是将一般的日志写到 stdout， 错误或者警告写到 stderr。</p>
+<p>标准 log 记录是 goroutine 安全的。</p>
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../基本功/" class="btn btn-neutral float-right" title="《基本功》">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../代码大全/" class="btn btn-neutral" title="《代码大全》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -765,10 +970,6 @@ PUSH/PULL</p>
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../代码大全/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../基本功/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

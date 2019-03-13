@@ -409,6 +409,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">心理学</span>
     <ul class="subnav">
                 <li class="">
@@ -868,8 +879,10 @@
 <h5 id="371">3.7.1 排序</h5>
 <p>redis sort 能对多种数据类型排序</p>
 <h5 id="372-redis">3.7.2 基本的 redis 事务</h5>
-<p>redis基本事务(basic transaction):让一个客户端在不被其他客户端打断的情况下执行多个命令，和关系数据库可以执行过程中回滚的事务不同，redis 里被 multi 命令和exec 命令包围的所有命令会一个接一个执行，直到所有命令执行完毕，redis 才会处理其他客户端命令。</p>
-<p>redis 事务在 python client 上使用 pipeline 实现，客户端自动使用multi和exec，客户端会存储事务包含的多个命令，一次性把所有命令发送给redis。移除竞争条件；减少通信次数提升性能。redis 原子操作指的是在读取或者修改数据的时候，其他客户端不能读取或修改相同数据。</p>
+<p>redis基本事务(basic transaction):让一个客户端在不被其他客户端打断的情况下执行多个命令，和关系数据库可以执行过程中回滚的事务不同，
+redis 里被 multi 命令和exec 命令包围的所有命令会一个接一个执行，直到所有命令执行完毕，redis 才会处理其他客户端命令。</p>
+<p>redis 事务在 python client 上使用 pipeline 实现，客户端自动使用multi和exec，客户端会存储事务包含的多个命令，一次性把所有命令发送给redis。
+移除竞争条件；减少通信次数提升性能。redis 原子操作指的是在读取或者修改数据的时候，其他客户端不能读取或修改相同数据。</p>
 <h5 id="373">3.7.3 键过期时间</h5>
 <p>自动删除过期键减少内存使用，</p>
 <ul>

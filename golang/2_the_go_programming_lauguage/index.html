@@ -303,6 +303,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">心理学</span>
     <ul class="subnav">
                 <li class="">
@@ -651,12 +662,12 @@
 <p>在 go 里每个并发执行的活动叫做 goroutine。考虑一个场景，两个函数一个计算一个写输出，但是互不调用，串行方式是第一个调用
 完成了再去调用另一个。但是在两个及多个 goroutine 的并发场景下，两个函数可以同时执行。
 程序执行的开始，只有一个调用 main 的goroutine，我们叫它 main goroutine，新的 goroutine 可以通过 go
-语句创建，语法上就是普通的函数或方法加上 go 关键字，go 声明使得函数在被创建的新的 goroutine 里执行，go
-语句则会立刻返回。</p>
+语句创建，语法上就是普通的函数或方法加上 go 关键字，go 声明使得函数在被创建的新的 goroutine 里执行，<strong>go
+语句则会立刻返回</strong>。</p>
 <pre><code>f()    // call f(); wait for it to return
 go f() // create a new goroutine that calls f(); don't wait
 </code></pre>
-<p>我们看一个好玩的例子，这里输出斐波那契数，在计算的同事，屏幕上会显示一个转动的指针：</p>
+<p>我们看一个好玩的例子，这里输出斐波那契数，在计算的同时，屏幕上会显示一个转动的指针：</p>
 <pre><code>package main
 
 import (
@@ -1040,8 +1051,8 @@ func makeThumbnails4(filenames []string) error {
 </code></pre>
 <p>注意这里有个隐含的bug，当遇到第一个 non-nil error 时， 返回error给调用者，导致没有 goroutine 消费 errors
 channel。每个还在工作的 worker goroutine 想要往 errors channel send 值的时候会被永久阻塞，无法终止，出现了 goroutine
-泄露，程序被阻塞或者出现内存被用光。
-两种解决方式：简单的方式是用一个有足够空间的 bufferd channel，当它发送消息的时候没有工作的 goruotine 被
+泄露，程序被阻塞或者出现内存被用光。</p>
+<p>两种解决方式：简单的方式是用一个有足够空间的 bufferd channel，当它发送消息的时候没有工作的 goruotine 被
 block。另一种是在main goroutine 返回第一个 error 的时候创建一个新的 goroutine 消费 channel。</p>
 <pre><code>// makeThumbnails5 makes thumbnails for the specified files in parallel.
 // It returns the generated file names in an arbitrary order,
@@ -1851,7 +1862,7 @@ var balance int
 
 func Balance() int {
     mu.RLock()
-    defer mu.RUnlock()
+    defer mu.RUnlock()  // 防止忘记应该使用了 Lock之后立马就用 defer Unlock
     return balance
 }
 </code></pre>

@@ -394,6 +394,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">心理学</span>
     <ul class="subnav">
                 <li class="">
@@ -1000,7 +1011,7 @@ func counter(w http.ResponseWriter, r *http.Request) {
 <li>控制流 switch</li>
 </ul>
 <pre><code class="go">switch coinflip() {
-case &quot;heads&quot;:    // case 还支持简单的语句 ()
+case &quot;heads&quot;:    // case 还支持简单的语句 ()。case可以支持 string
     heads++
 case &quot;tails&quot;:
     tails++
@@ -1029,7 +1040,7 @@ var p Point
 <p>表达式+控制流 -&gt; 语句 -&gt; 函数 -&gt; 源文件 -&gt; 包</p>
 <h2 id="21-names">2.1 Names</h2>
 <p>go 定义了几十个关键字，不能用来给变量命名，go 使用一般使用骆驼命名法(HTTP等缩略词除外)。需要注意的是只有大骆驼命名
-"fmt.Fprintf" 这种是可以被其他包引入使用的。</p>
+"fmt.Fprintf" 这种是可以被其他包引入使用的。go 通过大小写表示是否能够引入。</p>
 <h2 id="22-declarations">2.2 Declarations</h2>
 <p>var, const ,type, func</p>
 <pre><code>func fToC(f float64) float64 {
@@ -1104,7 +1115,6 @@ package-level变量在整个程序执行过程中都存在。局部变量生存�
 <h2 id="24">2.4 赋值</h2>
 <p>相较于 python，go 支持自增操作符。和 py相同的是同样支持 tuple 的解包赋值，演示一些例子：</p>
 <pre><code>    a, b, c = 1, 2, 3
-    x,y = y,x   // swap x and y like python
     x, y = y, x    // swap x and y like python
 
     v, ok = m[key] // map lookup
@@ -1205,16 +1215,14 @@ golang 中通过块（block）来圈定作用域。名字查找遵循『就近�
 <li>基础类型: numbers, strings, booleans</li>
 <li>聚合类型: arrays, structs,</li>
 <li>引用类型: pointers, slices, maps, functions, channels</li>
-<li>
-<p>接口类型: interface types</p>
+<li>接口类型: interface types</li>
+</ul>
 <h2 id="31-integers">3.1 Integers</h2>
 <p>int8, int16, int32, int64, uint8, uint16, uint32, uint64
-rune &lt;=&gt; int32 , byte &lt;=&gt; uint8
-有符号数： -2<strong>(n-1) to 2</strong>(n-1)-1
+rune &lt;=&gt; int32 , byte &lt;=&gt; uint8</p>
+<p>有符号数： -2<strong>(n-1) to 2</strong>(n-1)-1
 有符号数: 0 to 2**n-1</p>
 <p>注意不同类型之间数字强转可能会有精度损失</p>
-</li>
-</ul>
 <h2 id="32-floating-point-numbers">3.2 Floating-Point Numbers</h2>
 <ul>
 <li>float32: 1.4e-45 to 3.4e38</li>
@@ -1269,7 +1277,8 @@ rune &lt;=&gt; int32 , byte &lt;=&gt; uint8
 </ul>
 <h2 id="36-constants">3.6 Constants</h2>
 <p>const 表达式的值在编译器确定，无法改变。const 值可以是boolean, string or number
-The const generator iota: 定义从0 开始的递增枚举</p>
+The const generator</p>
+<p>iota: 定义从0 开始的递增枚举</p>
 <pre><code>const (
     Sunday Weekday = iota
     Monday
@@ -1281,11 +1290,11 @@ The const generator iota: 定义从0 开始的递增枚举</p>
 )
 </code></pre>
 <h1 id="4-composite-types">4. Composite Types</h1>
-<p>本章讨论聚合类型: arrays, slices, maps, structsa</p>
+<p>本章讨论聚合类型: arrays, slices, maps, structs</p>
 <h2 id="41-arrays">4.1 Arrays</h2>
 <p>定长的包含0个或多个相同类型元素的序列，因为不可变长所以一般 slices 更常用。
 注意数组的长度也是类型的一部分， [3]int 和 [4]int 是不同类型，相同长度的可以比较。</p>
-<pre><code>    var a [3]int // array of 3 integers，第一次看这种写法略奇怪
+<pre><code>    var a [3]int // array of 3 integers，第一次看这种写法略奇怪，理解为 [3]个int 就好多啦
     fmt.Println(a[0])
     for i, v := range a {
         fmt.Printf("%d %d\n", i, v)
@@ -1305,8 +1314,8 @@ The const generator iota: 定义从0 开始的递增枚举</p>
     symbol:= [...]string{USD: "$", EUR: "€", GBP: "₤", RMB: "￥"}
     fmt.Println(RMB, symbol[RMB]) // "3 ￥"
 </code></pre>
-<p>数组传值传过去拷贝，可以通过传递指针</p>
-<pre><code>func zero(ptr *[32]byte) {
+<p>数组传值，拷贝值，如果需要传递引用可以通过传递指针</p>
+<pre><code>func zero(ptr *[32]byte) {  // 注意这里的数字长度也是类型的一部分
     for i := range ptr {
         ptr[i] = 0
     }
@@ -1323,7 +1332,7 @@ func zero(ptr *[32]byte) {
 <li>a capacity: the number of elements between the start of the slice and the end of the underlying array (cap函数)</li>
 </ul>
 <p>slice operator s[i:j], where 0 ≤ i ≤ j ≤ cap(s), 创建一个新的 slice</p>
-<p>注意，slice 包含了一个数组的指针，作为函数参数传递的时候允许函数修改数组。</p>
+<p>注意，slice 包含了一个数组的指针，作为函数参数传递的时候允许函数修改数组。(引用类型)</p>
 <pre><code>package main
 
 import "fmt"
@@ -1346,7 +1355,7 @@ func main() {
     fmt.Println(s)
 }
 </code></pre>
-<p>并且 slice 不像数组一样能直接比较，基于两个原因：</p>
+<p><strong>并且 slice 不像数组一样能直接比较</strong>，基于两个原因：</p>
 <ul>
 <li>slice 可以包含自己，深度比较无论是复杂度还是实现效率都不好</li>
 <li>不适合作为 map 的 key。对于引用类型（pointers and channels）， == 一般比较引用实体是否是同一个。但是这回导致 slice
@@ -1355,7 +1364,8 @@ func main() {
 </ul>
 <p>slice 的初始化值（zero value）是 nil，nil slice没有隐含指向的数组，其 length==capacity==0。但是也有包含 nil
 的slice，我们看几个比较(我感觉这里 python 的 None 用 is 判断比较优雅)：</p>
-<pre><code>var s []int    // len(s) == 0, s == nil
+<pre><code>var s []int    // len(s) == 0, s == nil，空切片
+s = make ([]int, 0)  // or slice := []int{}   // 都是空切片
 s = nil        // len(s) == 0, s == nil
 s = []int(nil) // len(s) == 0, s == nil
 s = []int{}    // len(s) == 0, s != nil
@@ -1364,7 +1374,9 @@ s = []int{}    // len(s) == 0, s != nil
 <pre><code>    make([]T, len)
     make([]T, len, cap)
 </code></pre>
-<p>向 slice 追加元素用内置的 append 函数</p>
+<p>向 slice 追加元素用内置的 append 函数。append 会返回一个包含结果的新切片（容量有可能改变）
+如果切片的底层数组没有足够的可用容量，append 函数会创建一个新的底层数组，将被引用的现有数组复制到新的数组里，
+再追加新的值。</p>
 <pre><code>var runes []rune
 for _, r := range "hello,世界" {
     runes = append(runes, r)
@@ -1396,6 +1408,22 @@ func appendInt(x []int, y int) []int {
     len, cap int
 }
 </code></pre>
+<p>append 是个可变参数的函数，可以接收多个参数， ... 运算符可以追加一个切片的所有元素到另一个切片里。</p>
+<pre><code>s1 := []int{1, 2}
+s2 := []int{3, 4}
+fmt.Printf("%v\n", append(s1, s2...))
+for index, value := range s1 {
+    // value 是元素的副本，而不是直接返回该元素的引用
+    fmt.Print(index, value, "\n")
+}
+for index := 2; index &lt; len(s); index++ {
+    fmt.Print(s[index])
+}
+
+// 多维切片
+slice := [][]int{{10}, {100, 200}}
+slice[0] = append(slice[0], 20)
+</code></pre>
 <p>可以使用省略号来让函数接受任意多个 final arguments：</p>
 <pre><code>func appendInt(x []int, y ...int) []int{
     var z[]int
@@ -1405,10 +1433,15 @@ func appendInt(x []int, y int) []int {
     return z
 }
 </code></pre>
+<p>切片作为函数传递的代价很小，不涉及到底层数组复制，只会复制切片自己的结构(24个字节)</p>
 <h2 id="43-maps">4.3 Maps</h2>
 <p>无序键值对，go 里 map 是 哈希表的引用。要求所有 key 类型相同，所有的 value 类型相同，key
-必须是可比较的。不过用法上和 python 的 map 还是比较类似的。</p>
-<pre><code>package main
+必须是可比较==的。不过用法上和 python 的 map 还是比较类似的。
+切片、函数和包含切片的结构类型由于具有引用语句，不能作为映射的键(key)。
+作为参数的传递的 map 如果修改了 map 会对所有的引用可见，不会复制底层的数据结构。</p>
+<pre><code>var colors map[string][string] // 声明一个未初始化的映射来创建一个值为 nil 的映射， nil 映射不能存储键值对
+
+package main
 
 import (
     "fmt"
@@ -1430,7 +1463,7 @@ func main() {
     delete(ages, "alice")         //删除 key
     fmt.Println(ages)
 
-    // 遍历无序的 kv
+    // 遍历无序的 kv，注意每次返回顺序是不保证一致的
     for name, age := range ages {
         fmt.Printf("%s\t%d\n", name, age)
     }
@@ -1682,7 +1715,7 @@ import (
 type Movie struct {
     Title  string
     Year   int  `json:"released"`
-    Color  bool `json:"color,omitempty"`
+    Color  bool `json:"color,omitempty"`     // json tag 可以用来重名 ing
     Actors []string
 }
 
@@ -1707,7 +1740,7 @@ func main() {
 }
 </code></pre>
 <p>注意到 field 后边的 <code>json:"released"</code> 叫做 field tags，是在编译器旧绑定到 field 上的元信息，可以控制序列化/反序列化的行为。
-field tag 第一部分指定了 field 的 json 名称（比如从骆驼命名改成下划线命名），第二个可选的选项（imitempty），指定了当如果该 field 是零值的时候不会输出该字段.</p>
+field tag 第一部分指定了 field 的 json 名称（比如从骆驼命名改成下划线命名），第二个可选的选项（omitempty），指定了当如果该 field 是零值的时候不会输出该字段.</p>
 <h2 id="46-text-and-html-templates">4.6 Text and HTML Templates</h2>
 <p>text/template and html/template packages</p>
 <h1 id="5-functions">5. Functions</h1>
@@ -1825,7 +1858,7 @@ fmt.Printf("%v",err)打印出来。在处理错误之前，如果需要调用者
 go 没有想其他很多语言一样用异常处理错误，因为异常经常样以一种用户无法理解的调用栈形式暴露给一脸懵逼的用户，
 缺少明智的上下文信息告诉用户到底什么出错了。而 go 用通常的控制流  if, return 等来响应
 errors，这种方式需要付出更多精力来应对错误处理逻辑。</p>
-<p>go 的5种常见错误处理策略：</p>
+<p><strong>go 的5种常见错误处理策略</strong>：</p>
 <ul>
 <li>
 <p>1.propagate the error：传播错误使得被调用者的错误成为调用者错误。通常直接返回或者构造新的错误信息后返回</p>
@@ -2180,7 +2213,7 @@ func Distance(p, q Point) float64 {
     return math.Hypot(q.X-p.X, q.Y-p.Y)
 }
 
-// 作为 Point 类型的方法
+// 作为 Point 类型的方法，func 之后加了一个 (p Point) 作为 receiver
 func (p Point) Distance(q Point) float64 { // p 叫做方法的接受者 receiver
     return math.Hypot(q.X-p.X, q.Y-p.Y)
 }
@@ -2405,9 +2438,9 @@ type ReadWriter interface {
 }
 </code></pre>
 <h2 id="73-interface-satisfaction">7.3 InterFace Satisfaction</h2>
-<p>一个类型只有在实现了所有接口声明的方法时才『满足』一个接口类型。go 程序员里如果说 "a concrete type is a praticular
+<p>一个类型只有在实现了<strong>所有</strong>接口声明的方法时才『满足』一个接口类型。go 程序员里如果说 "a concrete type is a praticular
 interface type", 意味着满足接口类型。接口赋值的规则很简单：一个表达式可以被赋值给接口仅当它的类型满足接口类型（实现所有方法）
-空接口类型 interface{} 可以被任何值赋值。</p>
+。空接口类型 interface{} 可以被任何值赋值。</p>
 <h2 id="74-parsing-flags-with-flagvalue">7.4 Parsing Flags with flag.Value</h2>
 <p>flag.Value 标准接口，提供命令行标志注解</p>
 <pre><code>package main
@@ -2617,7 +2650,7 @@ w = new(ByteCounter)
 rw = w.(io.ReadWriter) // panic: </em>ByteCounter has no Read method</p>
 </li>
 </ul>
-<p>如果我们期望两个返回结果，检查不成功也不会 panic，而是返回是否 o</p>
+<p>如果我们期望两个返回结果，检查不成功也不会 panic，而是返回是否 ok</p>
 <pre><code>var w io.Writer = os.Stdout
 f, ok := w.(*os.File)      // success:  ok, f == os.Stdout
 b, ok := w.(*bytes.Buffer) // failure: !ok, b == nil
@@ -2709,10 +2742,9 @@ func sqlQuote(x interface{}) string {    // interface{} 允许函数接受任何
 }
 </code></pre>
 <h2 id="715-a-few-words-of-advice">7.15 A Few Words of Advice</h2>
-<p>什么时候需要接口：当两种以上的具体类型必须以一种统一
-的方式处理的时候。有一种例外：当接口被一个具体类型满足但是这个类型却无法和接口保持在一个 package
-里（因为依赖关系），这个时候接口是解耦两个 package 的好方式。
-设计接口的原则：ask only for what you need</p>
+<p>什么时候需要接口：<strong>当两种以上的具体类型必须以一种统一 的方式处理的时候。</strong></p>
+<p>有一种例外：当接口被一个具体类型满足但是这个类型却无法和接口保持在一个 package 里（因为依赖关系），这个时候接口是解耦两个 package 的好方式。</p>
+<p>设计接口的原则：ask only for what you need</p>
               
             </div>
           </div>
