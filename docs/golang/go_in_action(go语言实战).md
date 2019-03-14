@@ -17,8 +17,12 @@ func main() {
 }
 ```
 
-go 语言有两种类型的接受者：值接受者和指针接受者。
-值接受者获取的是副本（如果是指针也是指针指向的值的副本）
+go 语言有两种类型的接收者：值接收者和指针接收者。
+值接收者获取的是副本（如果是指针也是指针指向的值的副本）
+
+如果想要修改值就需要用 pointer receivers，但是 pointer receivers 不是并发安全的。
+Value receivers are concurrency safe, while pointer receivers are not concurrency safe.
+
 
 ### 5.3 类型的本质
 
