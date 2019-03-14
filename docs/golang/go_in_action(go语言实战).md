@@ -23,6 +23,10 @@ go 语言有两种类型的接收者：值接收者和指针接收者。
 如果想要修改值就需要用 pointer receivers，但是 pointer receivers 不是并发安全的。
 Value receivers are concurrency safe, while pointer receivers are not concurrency safe.
 
+value-receiver-vs-pointer-receiver-in-golang: https://stackoverflow.com/questions/27775376/value-receiver-vs-pointer-receiver-in-golang
+
+The rule about pointers vs. values for receivers is that value methods can be invoked on pointers and values, but pointer methods can only be invoked on pointers
+
 
 ### 5.3 类型的本质
 
