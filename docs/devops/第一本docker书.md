@@ -28,3 +28,5 @@ docker run --name daemon_dave -d ubuntu /bin/sh -c "while true; do echo hello wo
     # cd static_web
     docker build -t="wnn/static_web" .
     docker build --no-cache -t="wnn/static_web" .
+    docker run -d -p 80 --name static_web wnn/static_web nginx -g "daemon off;"
+    docker run -d -p 8000:80 --name static_web wnn/static_web nginx -g "daemon off;"
