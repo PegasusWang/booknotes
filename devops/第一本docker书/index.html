@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>《Mysql技术内幕InnoDB存储引擎》 - PegasusWang的读书笔记</title>
+  <title>3. 启动 docker - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u300aMysql\u6280\u672f\u5185\u5e55InnoDB\u5b58\u50a8\u5f15\u64ce\u300b";
-    var mkdocs_page_input_path = "database/Mysql\u6280\u672f\u5185\u5e55InnoDB\u5b58\u50a8\u5f15\u64ce.md";
+    var mkdocs_page_name = "3. \u542f\u52a8 docker";
+    var mkdocs_page_input_path = "devops/\u7b2c\u4e00\u672cdocker\u4e66.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -169,54 +169,39 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../getting_started_with_impala/">《Getting started with impala》</a>
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../mysql必知必会/">《mysql必知必会》</a>
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">《Mysql技术内幕InnoDB存储引擎》</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#1-mysql">1. Mysql 体系结构和存储引擎</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#13-mysql">1.3 MySQL存储引擎：</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#2-innodb">2. InnoDB 存储引擎</a></li>
-    
-
-    </ul>
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../redis实战/">《Redis实战》</a>
+    <a class="" href="../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../redis设计与实现/">《redis设计与实现》</a>
+    <a class="" href="../../database/redis实战/">《Redis实战》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../七周七数据库/">《七周七数据库》</a>
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../深入浅出mysql/">《深入浅出mysql》</a>
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../高性能mysql第三版/">《高性能mysql第三版》</a>
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
                 </li>
     </ul>
 	    </li>
@@ -605,12 +590,8 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
-        
-          <li>数据库 &raquo;</li>
-        
-      
     
-    <li>《Mysql技术内幕InnoDB存储引擎》</li>
+    <li>3. 启动 docker</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -620,80 +601,33 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="1-mysql">1. Mysql 体系结构和存储引擎</h1>
-<p>mysql 是单进程多线程架构，支持插件式的表存储引擎，存储引擎基于表而不是数据库。</p>
-<h3 id="13-mysql">1.3 MySQL存储引擎：</h3>
-<h5 id="innodb">InnoDB</h5>
-<p>支持事务，面向在线事务处理(OLTP)应用，特点是行锁设计，支持外键，非锁定读。
-使用多版本并发控制(MVCC)获得高并发性。
-表中数据的存储，采用聚集(clustered)方式，因此每张表的存储都是按照主键的顺序存放。</p>
-<h5 id="myisam">MyISAM</h5>
-<p>不支持事务、表锁设计，支持全文索引，主要面向OLAP数据库应用。</p>
-<h5 id="ndb">NDB</h5>
-<p>集群存储引擎，join操作在数据库层完成，不是在存储引擎层，复杂连接需要巨大网络开销</p>
-<h5 id="memory">Memory</h5>
-<p>存放内存中，适用于临时表，默认是哈希索引</p>
-<h5 id="archive">Archive</h5>
-<p>只支持 insert select 操作，告诉插入和压缩功能</p>
-<h1 id="2-innodb">2. InnoDB 存储引擎</h1>
-<p>多线程模型：</p>
-<ul>
-<li>Master Thread: 主要负责将缓冲池中的数据异步刷新到磁盘，保证数据的一致性</li>
-<li>IO Thread: InnoDB中大量使用了AIO(Async IO)处理IO请求</li>
-<li>Purge Thread: 回收已经使用并分配的 undo 页</li>
-<li>Page Cleaner Thread: 将之前版本中脏页的刷新操作都放入到单独的线程中来完成，减轻master工作压力</li>
-</ul>
-<p>（关于linux 内存管理：https://blog.csdn.net/gatieme/article/details/52384636 ,内存被细分为多个页面帧, 页面是最基本的页面分配的单位　）</p>
-<p>内存：</p>
-<ul>
-<li>缓冲池：缓冲池技术提升性能（协调磁盘与cpu速度鸿沟） innodb_buffer_pool_size，新版可以有多个缓冲池</li>
-<li>LRU List, Free List, Flush List: 管理内存区</li>
-</ul>
-<p>Checkpoint 技术：
-为了避免数据丢失问题，当前事务数据库系统普遍使用了Write Ahead Log 策略，当事务提交时，先写重做日志，再修改页。
-当由于发生宕机导致数据丢失时，通过重做日志完成数据恢复。 (Durability持久性)
-Checkpoint 技术解决了几个问题：</p>
-<ul>
-<li>缩短数据库恢复时间</li>
-<li>缓冲池不够用时，将脏页刷新到磁盘</li>
-<li>重做日志不可用时，刷新脏页</li>
-</ul>
-<p>当数据库宕机，数据库不需要重做所有日志，因为checkpoint 之前的页都已经刷新回磁盘，只需要对 checkpoint
-后的重做日志进行恢复，这样就大大缩减了恢复时间。</p>
-<p>InnoDB 通过LSN(Log Sequence Number) 来标记版本。
-InnoDB 中两种Checkpoint:</p>
-<ul>
-<li>Sharp Checkpoint: 发生在数据库关闭时将所有的脏页都刷新回磁盘，默认</li>
-<li>Fuzzy Checkpoint: 只刷新一部分</li>
-</ul>
-<p>Maste Thread 实现可以参考书中的示例伪代码</p>
-<p>InnoDB 关键特性：</p>
-<ul>
-<li>插入缓冲(Insert Buffer)</li>
-<li>两次写(Double Write)</li>
-<li>自适应哈希索引(Adaptive Hash Index)</li>
-<li>异步IO(Async IO)</li>
-<li>刷新邻接页(Flush Neighbor Page)</li>
-</ul>
-<p>延伸阅读，主要是了解B树：
-B-Tree: 多叉平衡查找树</p>
-<ul>
-<li>https://zh.wikipedia.org/wiki/B%E6%A0%91</li>
-<li>https://blog.csdn.net/v_JULY_v/article/details/6530142</li>
-</ul>
+                <h1 id="3-docker">3. 启动 docker</h1>
+<p>docker run --name daemon_dave -d ubuntu /bin/sh -c "while true; do echo hello world; sleep 1; done"</p>
+<h1 id="4-docker">4. 使用 docker 镜像和仓库</h1>
+<p>构建 docker image。docker build 方式。</p>
+<pre><code># 当前的文件夹叫做 build context，docker 在构建镜像时将构建上下文和上下文中的文件和目录上传到 Docker 守护进程
+mkdir static_web
+cd static_web
+touch Dockerfile
+
+
+# Veersion: 0.0.1 
+FROM ubuntu:14.04
+MAINTAINER WNN 'pegasuswang@qq.com'
+RUN apt-get update &amp;&amp; apt-get install -y nginx 
+RUN echo 'Hi, I am your container' \
+&gt; /usr/share/nginx/html/index.html
+EXPOSE 80
+</code></pre>
+<p>每条指令都会创建一个新的镜像层并对镜像进行提交，中间如果某条指令失败了，也能得到一个镜像，可以用来调试。</p>
+<pre><code># cd static_web
+docker build -t="wnn/static_web" .
+docker build --no-cache -t="wnn/static_web" .
+</code></pre>
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../redis实战/" class="btn btn-neutral float-right" title="《Redis实战》">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../mysql性能调优与架构实践/" class="btn btn-neutral" title="《mysql性能调优与架构实践》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -717,10 +651,6 @@ B-Tree: 多叉平衡查找树</p>
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../mysql性能调优与架构实践/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../redis实战/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

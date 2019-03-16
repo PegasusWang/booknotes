@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>5 Go 语言的类型系统 - PegasusWang的读书笔记</title>
+  <title>《Go In Action》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "5 Go \u8bed\u8a00\u7684\u7c7b\u578b\u7cfb\u7edf";
+    var mkdocs_page_name = "\u300aGo In Action\u300b";
     var mkdocs_page_input_path = "golang/go_in_action(go\u8bed\u8a00\u5b9e\u6218).md";
     var mkdocs_page_url = null;
   </script>
@@ -244,6 +244,31 @@
                 <li class="">
                     
     <a class="" href="../build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《Go In Action》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#5-go">5 Go 语言的类型系统</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#53">5.3 类型的本质</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#6">6. 并发</a></li>
+    
+
+    <li class="toctree-l3"><a href="#7">7 并发模式</a></li>
+    
+
+    <li class="toctree-l3"><a href="#8">8 标准库</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -586,8 +611,12 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>golang &raquo;</li>
+        
+      
     
-    <li>5 Go 语言的类型系统</li>
+    <li>《Go In Action》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -613,8 +642,12 @@ func main() {
 }
 </code></pre>
 
-<p>go 语言有两种类型的接受者：值接受者和指针接受者。
-值接受者获取的是副本（如果是指针也是指针指向的值的副本）</p>
+<p>go 语言有两种类型的接收者：值接收者和指针接收者。
+值接收者获取的是副本（如果是指针也是指针指向的值的副本）</p>
+<p>如果想要修改值就需要用 pointer receivers，但是 pointer receivers 不是并发安全的。
+Value receivers are concurrency safe, while pointer receivers are not concurrency safe.</p>
+<p>value-receiver-vs-pointer-receiver-in-golang: https://stackoverflow.com/questions/27775376/value-receiver-vs-pointer-receiver-in-golang</p>
+<p>The rule about pointers vs. values for receivers is that value methods can be invoked on pointers and values, but pointer methods can only be invoked on pointers</p>
 <h3 id="53">5.3 类型的本质</h3>
 <ul>
 <li>内置类型：数值类型、字符串、布尔类型。传递的副本</li>
@@ -948,6 +981,15 @@ func worker(tasks chan string, worker int) {
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/" class="btn btn-neutral float-right" title="《TCP IP详解卷一》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../build-web-application-with-golang/" class="btn btn-neutral" title="《Build Web Application With Golang》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
@@ -970,6 +1012,10 @@ func worker(tasks chan string, worker int) {
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="../build-web-application-with-golang/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
