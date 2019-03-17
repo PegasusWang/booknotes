@@ -134,7 +134,7 @@ func incCounter(id int) {
 }
 ```
 
-使用锁来锁住共享资源： 
+使用锁来锁住共享资源：
 
 - 原子函数(atomic)
 - 互斥锁(mutex)
@@ -392,3 +392,71 @@ unix 架构创建了  stderr 设备作为日志的默认输出地，把程序输
 如果用户程序只有记录日志，更常用的方式是将一般的日志写到 stdout， 错误或者警告写到 stderr。
 
 标准 log 记录是 goroutine 安全的。
+
+序列化和反序列化：marshal
+
+
+输入和输出：Writer/Reader
+
+
+```
+// package main
+//
+// import (
+// 	"bytes"
+// 	"fmt"
+// 	"os"
+// )
+//
+// func main() {
+// 	var b bytes.Buffer
+// 	b.Write([]byte("hello "))
+// 	fmt.Fprintf(b, "world")
+// 	b.WriteTo(os.Stdout)
+// }
+
+package main
+
+import (
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	r, err := http.Get(os.Args[1])
+	if err != nil {
+		log.Fatalln(err)
+	}
+	file, err := os.Create(os.Args[2])
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer file.Close()
+
+	dest := io.MultiWriter(os.Stdout, file)
+	io.Copy(dest, r.Body)
+	if err := r.Body.Close(); err != nil {
+		log.Println(err)
+	}
+}
+```
+
+
+# 9 测试和性能
+
+
+单测：用来测试包或者程序的一部分代码或者一组代码的函数。目的是确认目标代码在给定场景下，是否按照预期工作。
+
+基础测试和表组测试（多个测试用例）
+
+mocking: 标准库包含一个 httptest 可以 mock 网络调用
+
+# TODO listing12_test.go 代码
+
+
+测试服务端点(endpoint): 是指与服务宿主信息无关，用来分表某个服务的地址，一般是不包含宿主的一个路径。
+
+
+基准测试(benchmark test)
