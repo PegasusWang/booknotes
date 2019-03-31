@@ -70,3 +70,13 @@ java 开发工具包。 jkd 包含 jre, jre 包含 jvm
 
 包装类：Byte,Short,Int,Long,Float,Double;  大数类：BigInteger, BigDecimal; 字符类：Character
 
+
+# 3。 面向对象
+
+封装：属性和行为封装，对外隐藏细节
+
+继承：扩展类功能，复用性和开发效率
+
+多态：重写父类方法表现不同行为
+
+java 中方法永远传值，但是如果是引用类型，传递的就是对象的引用。
