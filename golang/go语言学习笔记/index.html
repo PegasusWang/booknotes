@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>《java basic introduction》 - PegasusWang的读书笔记</title>
+  <title>4 函数 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u300ajava basic introduction\u300b";
-    var mkdocs_page_input_path = "java/java-basic-introduction.md";
+    var mkdocs_page_name = "4 \u51fd\u6570";
+    var mkdocs_page_input_path = "golang/go\u8bed\u8a00\u5b66\u4e60\u7b14\u8bb0.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -231,23 +231,23 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+    <a class="" href="../1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+    <a class="" href="../2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+    <a class="" href="../3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+    <a class="" href="../build-web-application-with-golang/">《Build Web Application With Golang》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/go_in_action(go语言实战)/">《Go In Action》</a>
+    <a class="" href="../go_in_action(go语言实战)/">《Go In Action》</a>
                 </li>
     </ul>
 	    </li>
@@ -256,33 +256,9 @@
 		
     <span class="caption-text">java</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">《java basic introduction》</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#1">1. 入门</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#package">package</a></li>
-        
-            <li><a class="toctree-l4" href="#jvm-java-virtual-machine">JVM java virtual Machine</a></li>
-        
-            <li><a class="toctree-l4" href="#jre-java-runtime-environment">JRE java runtime environment</a></li>
-        
-            <li><a class="toctree-l4" href="#jkd-java-development-kit">JKD java development kit</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#2-java">2. java 基础</a></li>
-    
-
-    <li class="toctree-l3"><a href="#3">3。 面向对象</a></li>
-    
-
-    </ul>
+    <a class="" href="../../java/java-basic-introduction/">《java basic introduction》</a>
                 </li>
     </ul>
 	    </li>
@@ -625,12 +601,8 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
-        
-          <li>java &raquo;</li>
-        
-      
     
-    <li>《java basic introduction》</li>
+    <li>4 函数</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -640,88 +612,282 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="1">1. 入门</h1>
-<pre><code class="java">class HelloWorld {
-    public static void main(String [] args) {
-        System.out.println(&quot;hello&quot;);
+                <h1 id="4">4 函数</h1>
+<p>函数参数过多可以重构为一个符合类型结构，也算是变相实现可选参数和命名实参功能。</p>
+<pre><code class="go">// Package main  provides ...
+package main
+
+import (
+    &quot;log&quot;
+    &quot;time&quot;
+)
+
+type serverOption struct {
+    address string
+    port    int
+    path    string
+    timeout time.Duration
+    log     *log.Logger
+}
+
+func newOption() *serverOption {
+    return &amp;serverOption{
+        address: &quot;0.0.0.0&quot;,
+        port:    8080,
+        path:    &quot;/var/test&quot;,
+        timeout: time.Second * 5,
+        log:     nil,
+    }
+}
+
+func server(option *serverOption) {}
+func main() {
+    opt := newOption()
+    opt.port = 8085
+    server(opt)
+}
+</code></pre>
+
+<p>闭包(closure)：是在其此法上下文中引用了自由变量的函数。或者说是函数和其引用的环境的组合体。
+本质上返回的是一个funcval 结构，可在 runtime/runtime2.go 找到定义。</p>
+<pre><code class="go">package main
+
+func test(x int) func() {
+    return func() {
+        println(x) //匿名函数引用了x
+    }
+}
+
+func main() {
+    f := test(123)
+    f()
+}
+</code></pre>
+
+<p>闭包通过指针引用环境变量，可能导致其生命周期延长，甚至被分配到堆内存。
+延迟求值特性。</p>
+<pre><code class="go">package main
+
+func test() []func() {
+    var s []func()
+    for i := 0; i &lt; 2; i++ {
+        s = append(s, func() {
+            println(&amp;i, i)
+        })
+    }
+    return s
+}
+
+func main() {
+    for _, f := range test() {
+        f()
     }
 }
 </code></pre>
 
-<p>classpath 环境变量:java虚拟机需要运行一个类，会在定义的路径中寻找所需要的class文件
-自动设置为当前目录。</p>
-<p>java sourcecode -&gt; class字节码文件(javac compile) -&gt; jvm 将字节码文件加载到内存(类加载器) -&gt; 执行</p>
-<h3 id="package">package</h3>
-<p>java 通过包组织类，声明用 package</p>
-<pre><code>import package.class
-import package.*   // import all classs
-java.util java.net java.io java.awt java.sql
+<p>输出格式:for循环复用局部变量i，每次添加的匿名函数引用的自然是同一变量。添加操作仅仅是把匿名函数放入列表，并未执行。
+当 main 执行这些函数时，读取的是环境变量 i 最后一次循环的值。</p>
+<pre><code>0xc00001a088 2
+0xc00001a088 2
 </code></pre>
-<h3 id="jvm-java-virtual-machine">JVM java virtual Machine</h3>
-<p>解释自己的指令集（字节码）到 cpu 的指令集或者 os 的系统调用，jvm 只关心 class file。
-类文件的组成包括 JVM 指令集，符号表以及一些补助信息。</p>
-<h3 id="jre-java-runtime-environment">JRE java runtime environment</h3>
-<p>jre 目录有 bin and lib, 可以认为 bin 里就是 jvm, lib 市 jvm 需要的一些类库</p>
-<h3 id="jkd-java-development-kit">JKD java development kit</h3>
-<p>java 开发工具包。 jkd 包含 jre, jre 包含 jvm</p>
-<h1 id="2-java">2. java 基础</h1>
-<p>类或者接口用大骆驼命名法(Student, StudentName)，方法和变量小骆驼(dogName).</p>
-<p>常量全部大写。(STU_NAME)</p>
-<pre><code>单行注释 //   多行 /* */   文档注释(javadoc)
+<p>解决方式是每次用不同的环境变量或者传参复制，让各自的闭包环境各部相同。</p>
+<pre><code class="go">func test() []func() {
+    var s []func()
+    for i := 0; i &lt; 2; i++ {
+        x := i
+        s = append(s, func() {
+            println(&amp;x, x)
+        })
+    }
+    return s
+}
 </code></pre>
-<p>原码：二进制定点表示法</p>
-<p>反码：正数反码和源码相同，负数的反码是对齐源码逐位取反，但符号位除外</p>
-<p>补码：正数补码与原码相同，负数补码是其反码末尾加1.</p>
-<p>计算机操作的时候， 都是用数据对应的补码来计算的。</p>
-<p>类型：</p>
-<p>基本数据类型：数值(byte,short,int,long,float,double)；字符(char)；布尔(boolean)</p>
-<p>引用数据类型：类(class); 接口(interface); 数组；枚举类型(enum);注解(Annotation)</p>
-<p>方法重载：同一个类中允许多个同名方法，只要他们的参数个数或者参数类型不同即可。与返回值类型无关</p>
-<p>数组： int[] arr = new int[3]; int[] arr = new int[]{1,2,3} or int[] arr = {1,2,3}</p>
-<p>包装类：Byte,Short,Int,Long,Float,Double;  大数类：BigInteger, BigDecimal; 字符类：Character</p>
-<h1 id="3">3。 面向对象</h1>
-<p>封装：属性和行为封装，对外隐藏细节。隔离变化、便于使用、复用性和安全性。</p>
-<p>继承：扩展类功能，复用性和开发效率。使用 extends继承。java 只允许单继承(继承单个类)
-  - 子类可以直接访问父类中的非私有属性和行为
-  - 子类无法继承父类中私有的内容</p>
-<p>多态：重写父类方法表现不同行为。子类中重写的方法需要和父类被重写的方法具有相同的方法名、参数列表和返回值类型.</p>
-<p>java 中方法永远传递值，但是如果是引用类型，传递的就是对象的引用。</p>
-<p>super关键字：用于访问父类的成员变量、方法、和构造方法。</p>
+
+<p>go 复古地使用了返回错误值（通常是最后一个值），大量函数和方法返回 error，会使得调用方比较难看，
+处理方式有：</p>
 <ul>
-<li>区分重载（同一个类中同名不同参）</li>
-<li>重写or 覆盖(override)，子类覆盖父类方法<ul>
-<li>无法覆盖父类中的私有方法</li>
-<li>无法覆盖父类中 static 方法</li>
-<li>覆盖时，子类方法权限一定要大于等于父类方法权限(更开放权限)</li>
+<li>使用专门的检查函数处理错误逻辑（比如记录日志），简化检查代码</li>
+<li>在不影响逻辑的情况下，使用 defer 延后处理错误状态(err退化赋值)</li>
+<li>在不中断逻辑的情况下，将错误作为内部状态保存，等最终提交时再处理。</li>
 </ul>
-</li>
-</ul>
-<p>子类构造函数默认会执行父类的构造函数，第一行有一个默认的隐士语句：super().
-super() 语句必须要定义在子类构造函数的第一行，父类的初始化动作要先完成。</p>
-<p>final: 可以修饰类(不可被继承）、变量(常量，只能被赋值一次）、 方法（不可以被覆盖）。</p>
-<p>静态绑定：方法被static/private/final 三个关键字其中之一修饰，执行的静态绑定。</p>
-<p>多态：允许一个父类类型的变量引用一个子类类型的对象。父类或接口的引用指向或者接收自己的子类对象。
-提高了扩展性，前期定义的代码可以使用后期的内容，但是不能使用后期子类<em>特有</em>的内容</p>
-<p>instanceof: 用于判断对象的具体类型，只能用于引用数据类型判断。通常在向下转型前用于健壮性判断。.
-if (a instanceof Cat)</p>
-<ul>
-<li>成员变量：编译和运行时都参考等号左边。</li>
-<li>成员函数：编译看左边， 运行看右边。 动态绑定</li>
-<li>静态函数: 编译和运行都看左边</li>
-</ul>
+<p>panic, recover: 内置函数而非语句。panic 会立即中断当前函数流程，执行延迟调用。
+而在延迟调用函数中，recover 可捕获并返回 panic 提交的错误对象。
+连续调用 panic，仅最后一个会被 recover 捕获。
+在defer 函数中 panic，不会影响后续延迟调用的执行。而recover之后 panic，可被再次捕获。
+recover必须在延迟调用函数中执行才能正常工作。</p>
+<p>建议：除非是不可恢复性、导致系统无法正常工作的错误，否则不建议使用
+panic。比如文件系统无权限、端口被占用、数据库未启动等。</p>
+<pre><code class="go">// func panic(v interface{})
+// func recover() interface{}
+package main
+
+import &quot;log&quot;
+
+func main() {
+    defer func() {
+        if err := recover(); err != nil { //捕获错误
+            log.Fatalln(err)
+        }
+    }()
+    panic(&quot;I am dead&quot;)
+    println(&quot;exit.&quot;) // 永不会执行
+}
+
+
+
+// Package main  provides ...
+package main
+
+func test(x, y int) {
+    z := 0
+    func() { //如果要保护代码片段，只能将其重构为函数调用。利用匿名函数保护&quot;z=x/y&quot;
+        defer func() {
+            if recover() != nil {
+                z = 0
+            }
+        }()
+        z = x / y
+    }()
+    println(&quot;x/y=&quot;, z)
+}
+func main() {
+    test(5, 0)
+}
+
+
+
+//调试阶段可以用 runtime.debug.PrintStack 输出堆栈信息
+package main
+
+import &quot;runtime/debug&quot;
+
+func test() {
+    panic(&quot;i am dead&quot;)
+}
+
+func main() {
+    defer func() {
+        if err := recover(); err != nil {
+            debug.PrintStack()
+        }
+    }()
+    test()
+}
+</code></pre>
+
+<h1 id="5">5 数据</h1>
+<h3 id="_1">字符串</h3>
+<p>字符串操作通常在堆上分配内存，会对 web 等高并发场景造成交大影响，会有大量字符串对象要做垃圾回收。
+建议使用[]byte 缓存池活在栈上自行拼装实现 zero-garbage.</p>
+<p>rune 用来存储unicode 码点(code point)，int32别名。单引号字面量默认类型就是rune.</p>
+<h3 id="_2">数组</h3>
+<p>数组类型包含长度，元素类型相同但是长度不同也不是同一类型，无法比较。
+如果元素类型支持比较，数组也支持。
+数组是值类型，赋值或者传参都会复制整个数组数据。可以用指针或者切片。</p>
+<h3 id="slice">切片 slice</h3>
+<pre><code>type slice struct {
+    array unsafe.Pointer
+    len   int
+    cap   int
+}
+</code></pre>
+<p>slice 无法比较，只能判断是否为nil。可以用 slice 很容易实现栈</p>
+<pre><code>package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+func main() {
+    // cap is 5
+    stack := make([]int, 0, 5)
+
+    // 入栈
+    push := func(x int) error {
+        n := len(stack)
+        if n == cap(stack) {
+            return errors.New("stack full")
+        }
+        stack = stack[:n+1]
+        stack[n] = x
+        return nil
+    }
+
+    // 出栈
+    pop := func() (int, error) {
+        n := len(stack)
+        if n == 0 {
+            return 0, errors.New("stack is empty")
+        }
+        x := stack[n-1]
+        stack = stack[:n-1]
+        return x, nil
+    }
+
+    for i := 0; i &lt; 7; i++ {
+        fmt.Printf("push %d: %v, %v\n", i, push(i), stack)
+    }
+    for i := 0; i &lt; 7; i++ {
+        x, err := pop()
+        fmt.Printf("pop :%d, %v, %v\n", x, err, stack)
+    }
+
+}
+</code></pre>
+<p>append: append操作向切片尾部追加元素，返回新的切片对象。如果超出 cap限制， 为新切片对象重新分配数组。
+向 nil 切片追加数据时，会为其分配底层数组。某些场合建议预留空间，防止重新分配。</p>
+<pre><code>package main
+
+import "fmt"
+
+func main() {
+    s := make([]int, 0, 5)
+    s1 := append(s, 10)
+    s2 := append(s1, 20, 30)
+    fmt.Println(s, len(s), cap(s)) //不会修改原slice属性
+    fmt.Println(s1, len(s1), cap(s1))
+    fmt.Println(s2, len(s2), cap(s2))
+
+}
+</code></pre>
+<p>copy: 在两个切片对象之间复制数据，允许指向同一个底层数组，允许目标区间重叠。最终复制长度一较短的 slice 长度为准。</p>
+<h3 id="_3">字典</h3>
+<p>key必须是支持相等运算符(==/!=) 的数据类型，比如数字、字符串、指针、数组、结构体以及对应的接口类型。
+字典是引用类型，使用 make函数或者初始化表达语句创建。
+对字典进行迭代，每次返回的键值对次序都不同。
+字典被设计成 "not addressable"，不能直接修改 value 成员（结构或数组）。
+正确的方式是返回 整个 value，待修改后再设置字典键值或直接用指针类型。</p>
+<pre><code>package main
+
+func main() {
+    type user struct {
+        name string
+        age  byte
+    }
+    m := map[int]user{
+        1: {"Tom", 19},
+    }
+    //m[1].age++ // wrong!!!
+
+    u := m[1]
+    u.age++
+    m[1] = u
+
+    m2 := map[int]*user{
+        1: &amp;user{"jack", 20},
+    }
+
+    m2[1].age++
+}
+</code></pre>
+<p>在迭代期间删除或者新增键值是安全的。
+运行时会对字典并发操作做出检测，如果某个任务在对字典进行写操作，其他任务不能对其执行并发操作(读/写/删除)，
+否则会导致进程崩溃。可以用 sync.RWMutex 实现同步，避免读写同时进行。</p>
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/" class="btn btn-neutral float-right" title="《TCP IP详解卷一》">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../../golang/go_in_action(go语言实战)/" class="btn btn-neutral" title="《Go In Action》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -745,10 +911,6 @@ if (a instanceof Cat)</p>
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../golang/go_in_action(go语言实战)/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
