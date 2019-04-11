@@ -305,3 +305,95 @@ key必须是支持相等运算符(==/!=) 的数据类型，比如数字、字符
 在迭代期间删除或者新增键值是安全的。
 运行时会对字典并发操作做出检测，如果某个任务在对字典进行写操作，其他任务不能对其执行并发操作(读/写/删除)，
 否则会导致进程崩溃。可以用 sync.RWMutex 实现同步，避免读写同时进行。
+
+
+## 结构 struct
+
+struct 将多个不同类型的命名字段(field)序列打包成一个符合类型。
+字段名必须唯一，可以用 _ 补齐，支持使用自身指针类型的成员。
+
+空结构可作为通道元素类型，用于事件通知。
+
+
+    package main
+
+    func main() {
+
+	    exit := make(chan struct{})
+
+	    go func() {
+		    println("hello")
+		    exit <- struct{}{}
+	    }()
+
+	    <-exit
+	    println("end.")
+    }
+
+
+字段标签：对字段进行描述的元数据。不属于数据成员，但却是类型的组成部分。运行期间可以用反射获取类型信息。
+
+
+    package main
+
+    import (
+	    "fmt"
+	    "reflect"
+    )
+
+    type user struct {
+	    name string `昵称`
+	    sex  byte   `性别`
+    }
+
+    func main() {
+	    u := user{"Tom", 1}
+	    v := reflect.ValueOf(u)
+	    t := v.Type()
+
+	    for i, n := 0, t.NumField(); i < n; i++ {
+		    fmt.Printf("%s:%v\n", t.Field(i).Tag, v.Field(i))
+	    }
+    }
+
+
+结构体分配内存时字段须做对齐处理。通常以所有字段中最长的基础类型宽度为准。
+
+
+# 方法
+
+方法是与对象实例绑定的特殊函数。可以为当前包，以及除了接口以外的任何类型定义方法。
+方法不支持重载。receiver 参数名没有限制，按惯例会选用简短有意义的名称，但不推荐用this/self。
+如果方法内部并不引用实例，可省略只保留类型。
+
+    package main
+
+    import "fmt"
+
+    type N int
+
+    func (n N) toString() string {
+	    return fmt.Sprintf("%#x", n)
+    }
+
+    func main() {
+	    var a N = 25
+	    println(a.toString())
+    }
+
+
+
+类型有一个与之相关的方法集(method set)，决定了它是否实现某个接口。
+
+
+方法和函数一样出了直接调用还可以赋值给变量、或者作为参数传递。按照具体引用方式不同，
+分为 expression/value 两种状态。
+
+- method expression: 通过类型引用的 method expression会被还原为普通函数样式，receiver是第一参数，调用时需要显示传参。
+
+- method value:基于实例或者指针引用的method value，参数签名不会改变，按照正常方式调用。
+但当method value被赋值给变量或者作为参数传递，会立即计算并复制该方法执行所需的receiver对象，与其绑定，
+以便稍后执行时，能隐式传入 receiver 参数。
+
+
+# 7 接口
