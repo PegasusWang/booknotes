@@ -476,3 +476,91 @@ Go接口实现机制很简洁，只要目标类型方法集内包含接口声明
 	    e := x.(error) // 错误:main.data is not error
 	    fmt.Println(e)
     }
+
+
+# 8 并发
+
+- 并发：逻辑上具备同时处理多个任务的能力
+- 并行：物理上在同一时刻执行多个 并发任务
+
+使用 go 关键字就可以创建并发任务。go 并发执行并发操作，而是创建一个并发任务单元。
+新建任务被放置在系统队列中，等待调度器安排合适系统线程去获取执行权。
+goroutine自定义栈仅需要2KB，自定义栈采用按需分配策略，需要时进行扩容。
+
+和 defer 一样，goroutine也会因『延迟执行』而立即计算并复制执行参数。
+
+    package main
+
+    import "time"
+
+    var c int
+
+    func counter() int {
+	    c++
+	    return c
+    }
+
+    func main() {
+	    a := 100
+
+	    go func(x, y int) {
+		    time.Sleep(time.Second) //让gortouine在 main 逻辑之后执行
+		    println("go:", x, y)
+	    }(a, counter()) //立即计算并且复制参数
+	    a += 100
+	    println("main:", a, counter())
+
+	    time.Sleep(time.Second * 3) //等待goroutine 结束
+    }
+    // 注意输出：func()参数里的couter()会先计算
+    // main: 200 2
+    // go: 100 1
+
+
+Wait:进程退出时不会等待并发任务结束，可用通道(channel)阻塞，然后发出退出信号。
+
+    package main
+
+    import "time"
+
+    func main() {
+	    exit := make(chan struct{})
+
+	    go func() {
+		    time.Sleep(time.Second)
+		    println("goroutine done.")
+		    close(exit) //关闭通道，发出信号
+	    }()
+
+	    println("main...")
+	    <-exit //如果通道关闭，立即解除阻塞
+	    println("main exit")
+    }
+
+如果等待多个任务结束，推荐使用 sync.WaitGroup。通过设定计数器让每个goroutine 在退出之前递减，直到归零解除阻塞。
+
+    package main
+
+    import (
+	    "sync"
+	    "time"
+    )
+
+    func main() {
+	    var wg sync.WaitGroup
+
+	    for i := 0; i < 10; i++ {
+		    wg.Add(1)
+
+		    go func(id int) {
+			    //wg.Add(1)这里设置可能会来不及执行
+			    defer wg.Done()
+			    time.Sleep(time.Second)
+			    println("goroutine", id, "done.")
+		    }(i)
+	    }
+
+	    println("main...")
+	    wg.Wait()
+	    println("main exit.")
+    }
