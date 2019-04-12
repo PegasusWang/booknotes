@@ -415,4 +415,64 @@ Go接口实现机制很简洁，只要目标类型方法集内包含接口声明
 空接口类似于面向对象里的根类型Object，可被赋值为任何类型的对象。接口变量默认值是 nil。如果实现接口的类型支持，可做相等运算。
 超集接口变量可以隐式转换为子集，反过来不行。
 将对象赋值给接口变量时，会复制该对象
+注意只有当接口变量内部两个指针（itab，data） 都为 nil时，接口才等于 nil。这个地方容易出 bug。
 
+    package main
+
+    import "log"
+
+    type TestError struct{}
+
+    func (*TestError) Error() string {
+	    return "error"
+    }
+
+    func test(x int) (int, error) {
+	    var err *TestError
+	    if x < 0 {
+		    err = new(TestError)
+		    x = 0
+	    } else {
+		    x += 100
+	    }
+	    return x, err // NOTE：这个 err 有类型的  ，应该明确返回 nil
+    }
+
+    func main() {
+	    x, err := test(100)
+	    if err != nil {
+		    log.Fatalln("err!=nil")
+	    }
+	    println(x)
+    }
+
+
+类型转换：类型推断（type assertiong） 可以把接口变量转换为 原始类型，或者用来判断是否实现了某个更具体的接口类型。
+
+    package main
+
+    import (
+	    "fmt"
+    )
+
+    type data int
+
+    func (d data) String() string {
+	    return fmt.Sprintf("data:%d", d)
+    }
+
+    func main() {
+	    var d data = 15
+	    var x interface{} = d
+
+	    if n, ok := x.(fmt.Stringer); ok { // 转换为更具体的接口类型
+		    fmt.Println(n)
+	    }
+
+	    if d2, ok := x.(data); ok { // 转换回原始类型
+		    fmt.Println(d2)
+	    }
+
+	    e := x.(error) // 错误:main.data is not error
+	    fmt.Println(e)
+    }
