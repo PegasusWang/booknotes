@@ -564,3 +564,600 @@ Wait:进程退出时不会等待并发任务结束，可用通道(channel)阻塞
 	    wg.Wait()
 	    println("main exit.")
     }
+
+
+GOMAXPROCS: 运行时可能会创建很多线程，但是任何时候仅有限的几个线程参与并发任务执行。
+该数量默认和处理器核数相等，可用 runtime.GOMAXPROCS 函数或者环境变量修改。
+参数小于1仅返回当前设置值，不做任何调整。
+
+
+LocalStorage: 与线程不同，goroutine任务无法设置优先级，无法获取编号，没有局部存储（TLS），
+甚至连返回值都会被抛弃。但除优先级外，其他功能都很容易实现。
+
+
+    package main
+
+    import (
+	    "fmt"
+	    "sync"
+    )
+
+    func main() {
+	    var wg sync.WaitGroup
+	    var gs [5]struct {
+		    id     int
+		    result int
+	    }
+	    for i := 0; i < len(gs); i++ {
+		    wg.Add(1)
+		    go func(id int) { //使用参数避免闭包延迟求值
+			    defer wg.Done()
+			    gs[id].id = id
+			    gs[id].result = (id + 1) * 100
+		    }(i)
+	    }
+	    wg.Wait()
+	    fmt.Printf("%+v\n", gs)
+    }
+
+
+
+Goshed: 暂停，释放线程去执行其他任务，当前任务被放回队列，等待下次调度时恢复执行。
+该函数很少被使用，因为运行时会主动向长时间运行（10 ms）的任务发出抢占调度。只是当前版本实现的算法稍显粗糙，不能保证调度总能成功，所以主动切换还有适用场合。
+
+
+    package main
+
+    import "runtime"
+
+    func main() {
+	    runtime.GOMAXPROCS(1)
+	    exit := make(chan struct{})
+
+	    go func() { //任务 a
+		    defer close(exit)
+
+		    go func() { //任务 b，放在此处为了确保 a 优先制行
+			    println("b")
+		    }()
+
+		    for i := 0; i < 4; i++ {
+			    println("a:", i)
+			    if i == 1 { //让出当前线程，调度执行b
+				    runtime.Gosched()
+			    }
+		    }
+	    }()
+
+	    <-exit
+    }
+
+
+Goexit: Goexit立即终止当前任务，运行时确保所有已注册延迟调用被执行。该函数不会影响其他并发任务，不会引发panic，自然也就无法捕获。
+如果在main.main里调用Goexit，它会等待其他任务结束，然后让进程直接崩溃
+标准库函数os.Exit可终止进程，但不会执行延迟调用。
+
+    package main
+
+    import "runtime"
+
+    func main() {
+	    exit := make(chan struct{})
+
+	    go func() {
+		    defer close(exit)
+		    defer println("a")
+		    func() {
+			    defer func() {
+				    println("b", recover() == nil)
+			    }()
+
+			    func() {
+				    println("c")
+				    runtime.Goexit() //立即终止整个调用堆栈
+				    println("c done")
+			    }()
+			    println("b done")
+
+		    }()
+		    println("a done")
+	    }()
+	    <-exit
+	    println("main exit")
+    }
+    /*
+    c
+    b true
+    a
+    main exit
+    */
+
+
+通道：Go鼓励使用CSP通道，以通信来代替内存共享，实现并发安全。
+
+Don't communicate by sharing memory，share memory by communicating.
+CSP：Communicating Sequential Process.
+
+通过消息来避免竞态的模型除了CSP，还有Actor。但两者有较大区别。
+
+作为CSP核心，通道（channel）是显式的，要求操作双方必须知道数据类型和具体通道，并不关心另一端操作者身份和数量。可如果另一端未准备妥当，或消息未能及时处理时，会阻塞当前端。
+
+除传递消息（数据）外，通道还常被用作事件通知。
+
+相比起来，Actor是透明的，它不在乎数据类型及通道，只要知道接收者信箱即可。默认就是异步方式，发送方对消息是否被接收和处理并不关心。
+
+
+    package main
+
+    func main() {
+	    done := make(chan struct{}) //结束事件
+	    c := make(chan string)      // 数据传输通道
+
+	    go func() {
+		    s := <-c
+		    println(s)
+		    close(done) //关闭通道作为结束通知
+	    }()
+
+	    c <- "hi" //发送消息
+	    <-done    //阻塞直到有数据或者管道关闭
+    }
+
+
+同步模式必须有配对操作的goroutine出现，否则会一直阻塞。而异步模式在缓冲区未满或数据未读完前，不会阻塞。
+
+    package main
+
+    import "fmt"
+
+    func main() {
+	    c := make(chan int, 3) //带有3个缓冲槽的异步通道
+	    c <- 1
+	    c <- 2
+
+	    fmt.Println(<-c)
+	    fmt.Println(<-c)
+    }
+
+内置函数cap和len返回缓冲区大小和当前已缓冲数量；而对于同步通道则都返回0，据此可判断通道是同步还是异步。
+
+    package main
+
+    func main() {
+	    a, b := make(chan int), make(chan int, 3)
+	    b <- 1
+	    b <- 2
+	    println("a:", len(a), cap(a))
+	    println("b:", len(b), cap(b))
+    }
+
+    // a: 0 0
+    // b: 2 3
+
+
+首发消息：除使用简单的发送和接收操作符外，还可用ok-idom或range模式处理数据。
+
+    package main
+
+    func main() {
+	    done := make(chan struct{})
+	    c := make(chan int)
+
+	    go func() {
+		    defer close(done)
+		    for {
+			    x, ok := <-c //判断通道是否关闭
+			    if !ok {
+				    return
+			    }
+			    println(x)
+		    }
+		    /*
+		    for x:= range c {  //  使用range 更方便点
+			    println(x)
+		    }
+		    */
+	    }()
+
+	    c <- 1
+	    c <- 2
+	    c <- 3
+	    close(c)
+	    <-done
+    }
+
+    // a: 0 0
+    // b: 2 3
+
+
+对于closed或nil通道，发送和接收操作都有相应规则：
+
+- 向已关闭通道发送数据，引发panic。
+- 从已关闭接收数据，返回已缓冲数据或零值。
+- 无论收发，nil通道都会阻塞。
+
+
+    package main
+
+    func main() {
+	    c := make(chan int, 3)
+	    c <- 10
+	    c <- 20
+	    close(c)
+
+	    for i := 0; i < cap(c)+1; i++ {
+		    x, ok := <-c
+		    println(i, ":", ok, x)
+	    }
+    }
+    // 0 : true 10
+    // 1 : true 20
+    // 2 : false 0
+    // 3 : false 0
+
+
+单向通道：通道默认是双向的，并不区分发送和接收端。但某些时候，我们可限制收发操作的方向来获得更严谨的操作逻辑。
+尽管可用make创建单向通道，但那没有任何意义。通常使用类型转换来获取单向通道，并分别赋予操作双方。
+
+
+    package main
+
+    import "sync"
+
+    func main() {
+	    var wg sync.WaitGroup
+	    wg.Add(2)
+
+	    c := make(chan int)
+	    var send chan<- int = c // 注意这里，send 通道
+	    var recv <-chan int = c
+
+	    go func() {
+		    defer wg.Done()
+		    for x := range recv {
+			    println(x)
+		    }
+	    }()
+
+	    go func() {
+		    defer wg.Done()
+		    defer close(c)
+
+		    for i := 0; i < 3; i++ {
+			    send <- i
+		    }
+	    }()
+	    wg.Wait()
+    }
+
+
+选择：如要同时处理多个通道，可选用select语句。它会随机选择一个可用通道做收发操作。
+
+    package main
+
+    import "sync"
+
+    func main() {
+	    var wg sync.WaitGroup
+	    wg.Add(2)
+
+	    a, b := make(chan int), make(chan int)
+
+	    go func() {
+		    defer wg.Done()
+		    for {
+			    var (
+				    name string
+				    x    int
+				    ok   bool
+			    )
+			    select { //随机选择可用 channel 接收数据
+			    case x, ok = <-a:
+				    name = "a"
+			    case x, ok = <-b:
+				    name = "b"
+			    }
+			    if !ok { //如果任意一个通道关闭，终止接收
+				    return
+			    }
+			    println(name, x)
+		    }
+	    }()
+
+	    go func() { //发送端
+		    defer wg.Done()
+		    defer close(a)
+		    defer close(b)
+		    for i := 0; i < 10; i++ {
+			    select { //随机选择发送channel
+			    case a <- i:
+			    case b <- i * 10:
+			    }
+		    }
+	    }()
+	    wg.Wait()
+    }
+
+
+如要等全部通道消息处理结束（closed），可将已完成通道设置为nil。这样它就会被阻塞，不再被select选中。
+
+    package main
+
+    import "sync"
+
+    func main() {
+	    var wg sync.WaitGroup
+	    wg.Add(2)
+
+	    a, b := make(chan int), make(chan int)
+
+	    go func() {
+		    defer wg.Done()
+		    for {
+			    select {
+			    case x, ok := <-a:
+				    if !ok {
+					    a = nil //如果通道关闭设置为 nil，阻塞
+					    break
+				    }
+				    println("a", x)
+			    case x, ok := <-b:
+				    if !ok {
+					    b = nil
+					    break
+				    }
+				    println("b", x)
+			    }
+			    if a == nil && b == nil { //全部结束退出循环
+				    return
+			    }
+		    }
+	    }()
+
+	    go func() { //发送端
+		    defer wg.Done()
+		    defer close(a)
+		    for i := 0; i < 3; i++ {
+			    a <- i
+		    }
+	    }()
+
+	    go func() { //发送端
+		    defer wg.Done()
+		    defer close(b)
+		    for i := 0; i < 5; i++ {
+			    b <- i * 10
+		    }
+	    }()
+
+	    wg.Wait()
+    }
+
+
+当所有通道都不可用时，select会执行default语句。如此可避开select阻塞，但须注意处理外层循环，以免陷入空耗。
+
+    package main
+
+    import (
+	    "fmt"
+	    "time"
+    )
+
+    func main() {
+	    done := make(chan struct{})
+	    c := make(chan int)
+
+	    go func() {
+		    defer close(done)
+
+		    for {
+			    select {
+			    case x, ok := <-c:
+				    if !ok {
+					    return
+				    }
+				    fmt.Println("data:", x)
+			    default: // 避免 select 阻塞
+			    }
+			    fmt.Println(time.Now())
+			    time.Sleep(time.Second) //避免空耗
+		    }
+	    }()
+	    time.Sleep(time.Second * 5)
+	    c <- 100
+	    close(c)
+	    <-done
+    }
+
+
+也可用default处理一些默认逻辑。
+
+
+    package main
+
+    func main() {
+	    done := make(chan struct{})
+
+	    data := []chan int{ //缓冲数据区
+		    make(chan int, 3),
+	    }
+	    go func() {
+		    defer close(done)
+		    for i := 0; i < 10; i++ {
+			    select {
+			    case data[len(data)-1] <- i: //生产数据
+			    default: //当前通道已经满，生成新的缓存通道
+				    data = append(data, make(chan int, 3))
+			    }
+		    }
+	    }()
+	    <-done
+
+	    for i := 0; i < len(data); i++ {
+		    c := data[i]
+		    close(c)
+		    for x := range c {
+			    println(x)
+		    }
+	    }
+    }
+
+
+模式: 通常使用工厂方法将goroutine和通道绑定。
+
+    package main
+
+    import "sync"
+
+    type receiver struct {
+	    sync.WaitGroup
+	    data chan int
+    }
+
+    func newReceiver() *receiver {
+	    r := &receiver{
+		    data: make(chan int),
+	    }
+
+	    r.Add(1)
+	    go func() {
+		    defer r.Done()
+		    for x := range r.data { // 接收消息，直到通道被关闭
+			    println("recv:", x)
+		    }
+	    }()
+
+	    return r
+    }
+
+    func main() {
+	    r := newReceiver()
+	    r.data <- 1
+	    r.data <- 2
+
+	    close(r.data) // 关闭通道，发出结束通知
+	    r.Wait()      // 等待接收者处理结束
+    }
+
+
+
+用通道实现信号量（semaphore）。
+
+
+    package main
+
+    import (
+	    "fmt"
+	    "runtime"
+	    "sync"
+	    "time"
+    )
+
+    func main() {
+	    runtime.GOMAXPROCS(4)
+	    var wg sync.WaitGroup
+
+	    sem := make(chan struct{}, 2) // 最多允许2个并发同时执行
+
+	    for i := 0; i < 5; i++ {
+		    wg.Add(1)
+
+		    go func(id int) {
+			    defer wg.Done()
+
+			    sem <- struct{}{}        //acquire: 获取信号
+			    defer func() { <-sem }() //release: 释放信号
+
+			    time.Sleep(time.Second * 2)
+			    fmt.Println(id, time.Now())
+		    }(i)
+	    }
+
+	    wg.Wait()
+    }
+
+
+性能:将发往通道的数据打包，减少传输次数，可有效提升性能。从实现上来说，通道队列依旧使用锁同步机制，单次获取更多数据（批处理），可改善因频繁加锁造成的性能问题。
+
+资源泄漏:通道可能会引发goroutine leak，确切地说，是指goroutine处于发送或接收阻塞状态，但一直未被唤醒。垃圾回收器并不收集此类资源，导致它们会在等待队列里长久休眠，形成资源泄漏。
+
+
+    package main
+
+    import (
+	    "runtime"
+	    "time"
+    )
+
+    func test() {
+	    c := make(chan int)
+
+	    for i := 0; i < 10; i++ {
+		    go func() {
+			    <-c
+		    }()
+	    }
+    }
+
+    func main() {
+	    test()
+
+	    for {
+		    time.Sleep(time.Second)
+		    runtime.GC() // 强制垃圾回收
+	    }
+    }
+
+    // $go build-o test
+    // $GODEBUG="gctrace=1,schedtrace=1000,scheddetail=1" ./test
+
+
+### 同步
+
+通道并非用来取代锁的，它们有各自不同的使用场景。通道倾向于解决逻辑层次的并发处理架构，而锁则用来保护局部范围内的数据安全。
+标准库sync提供了互斥和读写锁，另有原子操作等，可基本满足日常开发需要。Mutex、RWMutex的使用并不复杂，只有几个地方需要注意。
+将Mutex作为匿名字段时，相关方法必须实现为pointer-receiver，否则会因复制导致锁机制失效。
+
+应将Mutex锁粒度控制在最小范围内，及早释放。
+
+
+    // 错误用法
+    func doSomething() {
+	    m.Lock()
+	    url := cache["key"]
+	    http.Get(url) // 该操作并不需要锁保护
+	    m.Unlock()
+    }
+
+    // 正确用法
+    func doSomething() {
+	    m.Lock()
+	    url := cache["key"]
+	    m.Unlock() // 如使用defer，则依旧将Get保护在内
+	    http.Get(url)
+    }
+
+
+Mutex不支持递归锁，即便在同一goroutine下也会导致死锁。
+
+
+    package main
+
+    import "sync"
+
+    func main() {
+	    var m sync.Mutex
+
+	    m.Lock()
+	    {
+		    m.Lock()
+		    m.Unlock()
+	    }
+	    m.Unlock()
+    }
+
+
+- 对性能要求较高时，应避免使用defer Unlock。
+- 读写并发时，用RWMutex性能会更好一些。
+- 对单个数据读写保护，可尝试用原子操作。
+- 执行严格测试，尽可能打开数据竞争检查。
