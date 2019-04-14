@@ -1265,3 +1265,321 @@ Mutex不支持递归锁，即便在同一goroutine下也会导致死锁。
 要使用vendor机制，须开启“GO15VENDOREXPERIMENT=1”环境变量开关（Go 1.6默认开启），且必须是设置了GOPATH的工作空间。
 使用go get下载第三方包时，依旧使用GOPATH第一个工作空间，而非vendor目录。
 当前工具链中并没有真正意义上的包依赖管理，好在有不少第三方工具可选。
+
+
+# 10 反射
+反射（reflect）让我们能在运行期探知对象的类型信息和内存结构，这从一定程度上弥补了静态语言在动态行为上的不足。同时，反射还是实现元编程的重要手段。
+
+和C数据结构一样，Go对象头部并没有类型指针，通过其自身是无法在运行期获知任何类型相关信息的。反射操作所需的全部信息都源自接口变量。接口变量除存储自身类型外，还会保存实际对象的类型数据。
+
+    func TypeOf(i interface{})Type
+    func ValueOf(i interface{})Value
+
+这两个反射入口函数，会将任何传入的对象转换为接口类型。
+在面对类型时，需要区分Type和Kind。前者表示真实类型（静态类型），后者表示其基础结构（底层类型）类别。
+有一点和想象的不同，反射能探知当前包或外包的非导出结构成员。
+
+可用反射提取struct tag，还能自动分解。其常用于ORM映射，或数据格式验证。
+
+
+    package main
+
+    import (
+	    "fmt"
+	    "reflect"
+    )
+
+    type user struct {
+	    name string `field:"name"type:"varchar(50)"`
+	    age  int    `filed:"age"type:"int"`
+    }
+
+    func main() {
+	    var u user
+	    t := reflect.TypeOf(u)
+
+	    for i := 0; i < t.NumField(); i++ {
+		    f := t.Field(i)
+		    fmt.Printf("%s: %s%s\n", f.Name, f.Tag.Get("field"), f.Tag.Get("type"))
+	    }
+    }
+    // name: namevarchar(50)
+    // age: int
+
+
+### 值
+
+和Type获取类型信息不同，Value专注于对象实例数据读写。
+
+反射在带来“方便”的同时，也造成了很大的困扰。很多人对反射避之不及，因为它会造成很大的性能损失。
+
+
+# 11 测试
+
+单元测试（unit test）除用来测试逻辑算法是否符合预期外，还承担着监控代码质量的责任。任何时候都可用简单的命令来验证全部功能，找出未完成任务（验收）和任何因修改而造成的错误。它与性能测试、代码覆盖率等一起保障了代码总是在可控范围内，这远比形式化的人工检查要有用得多。
+
+### testing
+
+工具链和标准库自带单元测试框架，这让测试工作变得相对容易。
+
+- 测试代码须放在当前包以“_test.go”结尾的文件中。
+- 测试函数以Test为名称前缀。
+- 测试命令（go test）忽略以“_”或“.”开头的测试文件。
+- 正常编译操作（go build/install）会忽略测试文件。
+
+
+    // main_test.go
+    // go test -v
+    package main
+
+    import "testing"
+
+    func add(x, y int) int {
+	    return x + y
+    }
+
+    func TestAdd(t *testing.T) {
+	    if add(1, 2) != 3 {
+		    t.FailNow()
+	    }
+    }
+
+
+对于测试是否应该和目标放在同一目录，一直有不同看法。某些人认为应该另建一个专门的包用来存放单元测试，且只测试目标公开接口。好处是，当目标内部发生变化时，无须同步维护测试代码。每个人对于测试都有不同理解，就像覆盖率是否要做到90%以上，也是见仁见智。
+
+table driven: 我们可用一种类似数据表的模式来批量输入条件并依次比对结果。
+
+
+    // main_test.go
+    // go test -v
+    package main
+
+    import "testing"
+
+    func add(x, y int) int {
+	    return x + y
+    }
+
+    func TestAdd(t *testing.T) {
+	    var tests = []struct {
+		    x      int
+		    y      int
+		    expect int
+	    }{
+		    {1, 1, 2},
+		    {2, 2, 4},
+		    {2, 3, 5},
+	    }
+
+	    for _, tt := range tests {
+		    actual := add(tt.x, tt.y)
+		    if actual != tt.expect {
+			    t.Errorf("add(%d, %d):expect%d,actual%d", tt.x, tt.y, tt.expect, actual)
+		    }
+	    }
+    }
+
+
+test main:某些时候，须为测试用例提供初始化和清理操作，但testing并没有setup/teardown机制。解决方法是自定义一个名为TestMain的函数，go test会改为执行该函数，而不再是具体的测试用例。
+
+    func TestMain(m *testing.M) {
+	    //setup
+	    code := m.Run() // 调用测试用例函数
+	    //teardown
+	    os.Exit(code) // 注意：os.Exit不会执行defer
+    }
+
+M.Run会调用具体的测试用例，但麻烦的是不能为每个测试文件写一个TestMain。
+要实现用例组合套件（suite），须借助MainStart自行构建M对象。通过与命令行参数相配合，即可实现不同测试组合。
+
+    func TestMain(m *testing.M) {
+	    match := func(pat, str string) (bool, error) { //pat: 命令行参数 -run提供的过滤条件 }}
+		    return true, nil //str:InternalTest.Name
+	    }
+
+	    tests := []testing.InternalTest{ // 用例列表，可排序
+		    {"b", TestB},
+		    {"a", TestA},
+	    }
+
+	    benchmarks := []testing.InternalBenchmark{}
+	    examples := []testing.InternalExample{}
+
+	    m = testing.MainStart(match, tests, benchmarks, examples)
+	    os.Exit(m.Run())
+    }
+
+
+example: 例代码最大的用途不是测试，而是导入到GoDoc等工具生成的帮助文档中。它通过比对输出（stdout）结果和内部output注释是否一致来判断是否成功。
+
+    func ExampleAdd() {
+	    fmt.Println(add(1, 2))
+	    fmt.Println(add(2, 2))
+
+	    //Output:
+	    //3
+	    //4
+    }
+
+如果没有output注释，该示例函数就不会被执行。另外，不能使用内置函数，print/println，因为它们输出到stderr。
+
+
+### 性能测试
+性能测试函数以Benchmark为名称前缀，同样保存在“*_test.go”文件里。
+
+
+    // main_test.go
+    // go test -bench .
+    package main
+
+    import "testing"
+
+    func add(x, y int) int {
+	    return x + y
+    }
+
+    func BenchmarkAdd(b *testing.B) {
+	    for i := 0; i < b.N; i++ {
+		    _ = add(1, 2)
+	    }
+    }
+
+测试工具默认不会执行性能测试，须使用bench参数。它通过逐步调整B.N值，反复执行测试函数，直到能获得准确的测量结果。
+如果希望仅执行性能测试，那么可以用run=NONE忽略所有单元测试用例。
+默认就以并发方式执行测试，但可用cpu参数设定多个并发限制来观察结果。
+
+
+timer: 如果在测试函数中要执行一些额外操作，那么应该临时阻止计时器工作。
+
+    func BenchmarkAdd(b *testing.B) {
+	    time.Sleep(time.Second)
+	    b.ResetTimer() // 重置
+
+	    for i := 0; i < b.N; i++ {
+		    _ = add(1, 2)
+
+		    if i == 1 {
+			    b.StopTimer() // 暂停
+			    time.Sleep(time.Second)
+			    b.StartTimer() // 恢复
+		    }
+	    }
+    }
+
+
+memory:性能测试关心的不仅仅是执行时间，还包括在堆上的内存分配，因为内存分配和垃圾回收的相关操作也应计入消耗成本。
+
+    // go test -bench . -benchmem -gcflags "-N -l"  # 禁用内联和优化
+
+    package main
+
+    import "testing"
+
+    func heap() []byte {
+	    return make([]byte, 1024*10)
+    }
+
+    func BenchmarkHeap(b *testing.B) {
+	    for i := 0; i < b.N; i++ {
+		    _ = heap()
+	    }
+    }
+
+输出结果包括单次执行堆内存分配总量和次数。 也可将测试函数设置为总是输出内存分配信息，无论使用benchmem参数与否。
+
+    func BenchmarkHeap(b *testing.B) {
+	    b.ReportAllocs()
+	    b.ResetTimer()
+
+	    for i := 0; i < b.N; i++ {
+		    _ = heap()
+	    }
+    }
+
+### 代码覆盖率
+如果说单元测试和性能测试关注代码质量，那么代码覆盖率（code coverage）就是度量测试自身完整和有效性的一种手段。
+关键还是为改进测试提供一个可发现缺陷的机会，毕竟只有测试本身的质量得到保障，才能让它免于成为形式主义摆设。
+
+
+# 12 工具链
+
+
+自Go 1.5实现自举（bootstrapping）以后，我们就不得不保留两个版本的Go环境。对于初学者而言，建议先下载C版本的1.4，用GCC完成编译。
+自举是指用编译的目标语言编写其编译器，简单点说就是用Go语言编写Go编译器。请提前安装gcc、gdb、binutils等工具。
+
+### 工具
+
+go build: 此命令默认每次都会重新编译除标准库以外的所有依赖包。
+
+    参数          说明                 示例
+    ------------------+-------------------------------------------+--------------
+    -o          可执行文件名（默认与目录同名）
+    -a          强制重新编译所有包（含标准库）
+    -p          并行编译所使用的CPU核数量
+    -v          显示待编译包名字
+    -n          仅显示编译命令，但不执行
+    -x          显示正在执行的编译命令
+    -work       显示临时工作目录，完成后不删除
+    -race       启动数据竞争检查（仅支持amd64）
+    -gcflags    编译器参数
+    -ldflags    链接器参数
+
+gcflags：
+
+ 参数          说明                 示例
+------------------+-------------------------------------------+----------
+ -B          禁用越界检查
+ -N          禁用优化
+ -l          禁用内联
+ -u          禁用unsafe
+ -S          输出汇编代码
+ -m          输出优化信息
+
+
+ldflags：
+
+
+ 参数          说明                 示例
+------------------+-------------------------------------------+----------
+ -s          禁用符号表
+ -w          禁用DRAWF调试信息
+ -X          设置字符串全局变量值              -X ver="0.99"
+ -H          设置可执行文件格式           -H windowsgui
+
+
+go install:
+和build参数相同，但会将编译结果安装到bin、pkg目录。最关键的是，go install支持增量编译，在没有修改的情况下，会直接链接pkg目录中的静态包。
+编译器用buildid检查文件清单和导入依赖，对比现有静态库和所有源文件修改时间来判断源码是否变化，以此来决定是否需要对包进行重新编译。至于buildid算法，实现起来很简单：将包的全部文件名，运行时版本号，所有导入的第三方包信息（路径、buildid）数据合并后哈希。
+算法源码请阅读src/cmd/go/pkg.go。
+
+
+go get: 将第三方包下载（check out）到GOPATH列表的第一个工作空间。默认不会检查更新，须使用“-u”参数。
+
+go env: 显示全部或指定环境参数。
+
+go clean: 清理工作目录，删除编译和安装遗留的目标文件。
+
+
+### 编译
+编译并不仅仅是执行“go build”命令，还有一些须额外注意的内容。
+如习惯使用GDB这类调试器，建议编译时添加-gcflags"-N-l"参数阻止优化和内联，否则调试时会有各种“找不到”的情况。
+
+交叉编译: 所谓交叉编译（cross compile），是指在一个平台下编译出其他平台所需的可执行文件。
+自Go实现自举后，交叉编译变得更方便。只须使用GOOS、GOARCH环境变量指定目标平台和架构就行。
+
+条件编译: 除在代码中用runtime.GOOS进行判断外，编译器本身就支持文件级别的条件编译。虽说没有C预编译指令那么方便，但是基于文件的组织方式更便于维护。
+
+- 方法一：将平台和架构信息添加到主文件名尾部。
+- 方法二：使用build编译指令。
+- 方法三：使用自定义tag指令。
+
+
+预处理：简单点说，就是用go generate命令扫描源码文件，找出所有“go：generate”注释，提取其中的命令并执行。
+
+- 命令必须放在.go源文件中。
+- 命令必须以“//go：generate”开头（双斜线后不能有空格）。
+- 每个文件可有多条generate命令。
+- 命令支持环境变量。
+- 必须显式执行go generate命令。
+- 按文件名顺序提取命令并执行。
+- 串行执行，出错后终止后续命令的执行。
