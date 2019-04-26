@@ -7,6 +7,33 @@
   <p>
     {{.Content}}
   </p>
-  <div>{{.Date}}</div>
+
+  <div>
+    {{.Date}}
+  </div>
+
+  <div id="comments">
+    <form action="/api/comments" method="POST">
+      <!-- <input type="hidden" name="guid" value="{{.GUID}}"> -->
+      <input type="hidden" name="page_id" value="{{.ID}}">
+
+      <div>
+        <input type="text" name="name" placeholder="Your Name">
+      </div>
+
+      <div>
+        <input type="email" name="email" placeholder="Your Email">
+      </div>
+
+      <div>
+        <textarea name="comments" placeholder="Your Com- ments"> </textarea>
+      </div>
+
+      <div>
+        <input type="submit" value="Add Comments">
+      </div>
+    </form>
+  </div>
+
 </body>
 </html>
