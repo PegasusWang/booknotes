@@ -12,7 +12,7 @@ CREATE TABLE `pages` (
 	UNIQUE KEY `page_guid` (`page_guid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
-INSERT INTO `pages` (`id`, `page_guid`, `page_title`, `page_content`, `page_date`) VALUES (NULL, 'hello-world', 'Hello, World', 'I\'m so glad you found this page!  It\'s been sitting patiently on the Internet for some time, just waiting for a visitor.', CURRENT_TIMESTAMP);
+INSERT INTO `pages` (`id`, `page_guid`, `page_title`, `page_content`, `page_date`) VALUES (2, 'hello-world', 'Hello, World', 'I\'m so glad you found this page!  It\'s been sitting patiently on the Internet for some time, just waiting for a visitor.', CURRENT_TIMESTAMP);
 INSERT INTO `pages` (`id`, `page_guid`, `page_title`, `page_content`, `page_date`) VALUES (3, 'a-new-blog', 'A New Blog', 'I hope you enjoyed the last blog!  Well brace yourself, because my latest blog is even <i>better</i> than the last!', '2015-04-29 02:16:19');
 INSERT INTO `pages` (`id`, `page_guid`, `page_title`, `page_content`, `page_date`) VALUES (4, 'lorem-ipsum', 'Lorem Ipsum', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sem tortor, lobortis in posuere sit amet, ornare non eros. Pellentesque vel lorem sed nisl dapibus fringilla. In pretium...', '2015-05-06 04:09:45');
 
@@ -157,6 +157,7 @@ func ServePageByGUID(w http.ResponseWriter, r *http.Request) {
 		thisPage.Comments = append(thisPage.Comments, comment)
 	}
 
+	fmt.Printf("%v", thisPage)
 	t, _ := template.ParseFiles("templates/blog.html")
 	t.Execute(w, thisPage)
 }
@@ -227,6 +228,7 @@ func APICommentPost(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Println(err.Error)
+		fmt.Printf("%v", err)
 	}
 
 	id, err := res.LastInsertId()
@@ -242,6 +244,33 @@ func APICommentPost(w http.ResponseWriter, r *http.Request) {
 	resp.Fields["id"] = strconv.FormatInt(id, 10)
 	resp.Fields["added"] = commentAddedBool
 	jsonResp, _ := json.Marshal(resp.Fields)
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintln(w, jsonResp)
+}
+
+// APICommentPut def
+func APICommentPut(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err.Error)
+	}
+	vars := mux.Vars(r)
+	id := vars["id"]
+	name := r.FormValue("name")
+	email := r.FormValue("email")
+	comments := r.FormValue("comments")
+	res, err := database.Exec(
+		"update comments set comment_name=?,comment_email=?,comment_text=? where id=?",
+		name, email, comments, id,
+	)
+	fmt.Println(res)
+	if err != nil {
+		log.Println(err.Error)
+	}
+
+	var resp JSONResponse
+	jsonResp, _ := json.Marshal(resp)
+
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintln(w, jsonResp)
 }
@@ -262,6 +291,7 @@ func main() {
 	routes.HandleFunc("/api/pages/{guid:[0-9a-zA\\-]+}", APIPage).Methods("GET").Schemes("https")
 	// comment rest api
 	routes.HandleFunc("/api/comments", APICommentPost).Methods("POST")
+	routes.HandleFunc("/api/comments/{id:[\\w\\d-]+}", APICommentPut).Methods("PUT")
 
 	// routes.HandleFunc("/pages/{id:[0-9]+}", ServePage)
 	routes.HandleFunc("/pages/{guid:[a-z0-9A\\-]+}", ServePageByGUID)

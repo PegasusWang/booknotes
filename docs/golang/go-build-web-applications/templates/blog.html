@@ -1,39 +1,51 @@
+<!DOCTYPE html>
 <html>
 <head>
-<title>{{.Title}}</title>
+  <script src="https://cdn.bootcss.com/jquery/2.2.0/jquery.js"></script>
+  <meta name="generator" content=
+  "HTML Tidy for HTML5 for Mac OS X version 5.4.0">
+  <title>{{.Title}}</title>
 </head>
 <body>
   <h1>{{.Title}}</h1>
-  <p>
-    {{.Content}}
-  </p>
-
+  <p>{{.Content}}</p>
   <div>
     {{.Date}}
   </div>
-
-  <div id="comments">
-    <form action="/api/comments" method="POST">
-      <!-- <input type="hidden" name="guid" value="{{.GUID}}"> -->
-      <input type="hidden" name="page_id" value="{{.ID}}">
-
-      <div>
-        <input type="text" name="name" placeholder="Your Name">
-      </div>
-
-      <div>
-        <input type="email" name="email" placeholder="Your Email">
-      </div>
-
-      <div>
-        <textarea name="comments" placeholder="Your Com- ments"> </textarea>
-      </div>
-
-      <div>
-        <input type="submit" value="Add Comments">
-      </div>
-    </form>
+  {{range .Comments}}
+  <div class="comment">
+    <div>
+      Comment by {{.Name}} ({{.Email}})
+    </div>{{.CommentText}}
+    <div class="comment_edit">
+      <h2>Edit</h2>
+      <form onsubmit="return putComment(this);">
+        <input type="hidden" class="edit_id" value="{{.ID}}">
+        <input type="text" name="name" class="edit_name" placehold= "" er="Your Name" value="{{.Name}}">
+        <input type="text" name="email" class="edit_email" placehold="" er= "Your Email" value="{{.Email}}">
+        <textarea class="edit_comments" name="comments">{{.CommentText}}</textarea>
+        <input type="submit" value="Edit">
+      </form>
+    </div>
   </div>
-
+  {{end}}
 </body>
+
+<script>
+       function putComment(el) {
+           var id = $(el).find('.edit_id').val();
+           var name = $(el).find('.edit_name').val();
+           var email = $(el).find('.edit_email').val();
+           var text = $(el).find('.edit_comments').val();
+           $.ajax({
+               url: '/api/comments/' + id,
+               type: 'PUT',
+               data: {name:name, email:email, comments:text},
+               succes: function(res) {
+                   alert('Comment Updated!');
+               }
+          });
+        return false;
+    }
+</script>
 </html>
