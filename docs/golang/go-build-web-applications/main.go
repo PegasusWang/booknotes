@@ -33,12 +33,37 @@ PRIMARY KEY (`id`),
 KEY `page_id` (`page_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `users` (
+     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+     `user_name` varchar(32) NOT NULL DEFAULT '',
+     `user_guid` varchar(256) NOT NULL DEFAULT '',
+     `user_email` varchar(128) NOT NULL DEFAULT '',
+     `user_password` varchar(128) NOT NULL DEFAULT '',
+     `user_salt` varchar(128) NOT NULL DEFAULT '',
+     `user_joined_timestamp` timestamp NULL DEFAULT NULL,
+     PRIMARY KEY (`id`)
+   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+SET SQL_MODE='ALLOW_INVALID_DATES';
+CREATE TABLE `sessions` (
+	`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+	`session_id` varchar(256) NOT NULL DEFAULT '',
+	`user_id` int(11) DEFAULT NULL,
+	`session_start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`session_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`session_active` tinyint(1) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `session_id` (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 */
 
 import (
+	"crypto/sha1"
 	"database/sql"
 	"encoding/json"
 	"html/template"
+	"io"
+	"regexp"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -72,7 +97,21 @@ type Page struct {
 	Date       string
 	Comments   []Comment
 	GUID       string
-	// Session    Session
+	Session    Session
+}
+
+// User def
+type User struct {
+	ID   int
+	Name string
+}
+
+// Session def
+type Session struct {
+	ID               string
+	Authenticated    bool
+	Unauthenticalted bool
+	User             User
 }
 
 // JSONResponse return type  struct
@@ -273,6 +312,35 @@ func APICommentPut(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintln(w, jsonResp)
+}
+
+// RegisterPOST def
+func RegisterPOST(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Fatal(err.Error)
+	}
+	name := r.FormValue("user_name")
+	email := r.FormValue("user_email")
+	paas := r.FormValue("user_password")
+	pageGUID := r.FormValue("referrer")
+	guire := regexp.MustCompile("^A-Za-z0-9]+")
+	guid := guire.ReplaceAllString(name, "")
+	password := weakPasswordHash(pass)
+
+	res, err := database.Exec("INSERT INTO users SET user_name=?, user_guid=?, user_email=?, user_password=?", name, guid, email, password)
+	fmt.Println(res)
+	if err != nil {
+		fmt.Fprintln(w, err.Error)
+	} else {
+		http.Redirect(w, r, "/page/"+pageGUID, 301)
+	}
+}
+
+func weakPasswordHash(password string) []byte {
+	hash := sha1.New()
+	io.WriteString(hash, password)
+	return hash.Sum(nil)
 }
 
 func main() {

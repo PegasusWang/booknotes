@@ -29,6 +29,16 @@
     </div>
   </div>
   {{end}}
+
+  {{if .Session.Unauthenticated}}<form action="/register"
+   method="POST">
+     <div><input type="text" name="user_name" placeholder="User name" /></div>
+     <div><input type="email" name="user_email" placeholder="Your email" /></div>
+     <div><input type="password" name="user_password" placeholder="Password" /></div>
+     <div><input type="password" name="user_password2" placeholder="Password (repeat)" /></div>
+     <div><input type="submit" value="Register" /></div>
+   </form>
+   {{end}}
 </body>
 
 <script>
