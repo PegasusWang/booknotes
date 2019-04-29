@@ -352,7 +352,6 @@ func main() {
 		log.Println(err.Error)
 	}
 	database = db
-
 	routes := mux.NewRouter()
 	// rest api
 	routes.HandleFunc("/api/pages", APIPage).Methods("GET").Schemes("https")
