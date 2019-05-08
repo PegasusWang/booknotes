@@ -95,3 +95,23 @@
 		http.Handle("/", rtr)
 		http.ListenAndServe(PORT, nil)
 	}
+
+
+# 并发：
+注意引用传递在 defer 中的坑。下边的例子输出0而不是100
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	a := new(int)
+
+	defer fmt.Println(*a)
+
+	for i := 0; i < 100; i++ {
+		*a++
+	}
+}
+```
