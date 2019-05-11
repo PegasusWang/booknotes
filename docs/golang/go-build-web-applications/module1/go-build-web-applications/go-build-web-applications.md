@@ -97,7 +97,8 @@
 	}
 
 
-# 并发：
+# 1 An Introduction to Concurrency in Go
+
 注意引用传递在 defer 中的坑。下边的例子输出0而不是100
 
 ```go
@@ -112,6 +113,143 @@ func main() {
 
 	for i := 0; i < 100; i++ {
 		*a++
+	}
+}
+```
+
+### channel 的使用。 CSP(Communicating Sequential Processes)
+
+```go
+package main
+
+import (
+	"fmt"
+	"strings"
+	"sync"
+)
+
+var finalString string
+var initString string
+var stringLen int
+
+func addToFinalString(letterChan chan string, wg *sync.WaitGroup) {
+	defer wg.Done()
+	letter := <-letterChan
+	finalString += letter
+}
+
+func upper(letterChan chan string, letter string, wg *sync.WaitGroup) {
+	defer wg.Done()
+	upperLetter := strings.ToUpper(letter)
+	letterChan <- upperLetter
+}
+
+func main() {
+	var wg sync.WaitGroup
+	initString = "gebilaowang"
+	initBytes := []byte(initString)
+	stringLen = len(initBytes)
+	var letterChan chan string = make(chan string)
+	for i := 0; i < stringLen; i++ {
+		wg.Add(2)
+
+		go upper(letterChan, string(initBytes[i]), &wg)
+		go addToFinalString(letterChan, &wg)
+
+		wg.Wait()
+	}
+	fmt.Println(finalString)
+}
+```
+
+### select 的使用
+
+语法类似 switch 。
+select reacts to actions and communication across a channel.
+
+```go
+switch {
+	case 'x':
+	case 'y':
+}
+select {
+	case <- channelA:
+	case <- channelB:
+}
+```
+
+select 会 block直到有数据发送给channel。否则会 deadlocks
+如果同时 receive，go 会无法预期地执行其中一个
+
+```go
+package main
+
+import (
+	"fmt"
+	"strings"
+	"sync"
+)
+
+var initialString string
+var initialBytes []byte
+var stringLength int
+var finalString string
+var lettersProcessed int
+var wg sync.WaitGroup
+var applicationStatus bool
+
+func getLetters(gQ chan string) {
+
+	for i := range initialBytes {
+		gQ <- string(initialBytes[i])
+	}
+
+}
+
+func capitalizeLetters(gQ chan string, sQ chan string) {
+
+	for {
+		if lettersProcessed >= stringLength {
+			applicationStatus = false
+			break
+		}
+		select {
+		case letter := <-gQ:
+			capitalLetter := strings.ToUpper(letter)
+			finalString += capitalLetter
+			lettersProcessed++
+		}
+	}
+}
+
+func main() {
+
+	applicationStatus = true
+
+	getQueue := make(chan string)
+	stackQueue := make(chan string)
+
+	initialString = "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal."
+	initialBytes = []byte(initialString)
+	stringLength = len(initialString)
+	lettersProcessed = 0
+
+	fmt.Println("Let's start capitalizing")
+
+	go getLetters(getQueue)
+	capitalizeLetters(getQueue, stackQueue)
+
+	close(getQueue)
+	close(stackQueue)
+
+	for {
+
+		if applicationStatus == false {
+			fmt.Println("Done")
+			fmt.Println(finalString)
+			break
+		}
+
 	}
 }
 ```
