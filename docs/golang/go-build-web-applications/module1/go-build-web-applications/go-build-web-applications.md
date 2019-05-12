@@ -253,3 +253,328 @@ func main() {
 	}
 }
 ```
+
+
+# 2 Understanding the Concurrency Model
+
+go get github.com/ajstarks/svgo
+
+
+Go/Csp vs Actor model:
+
+```
+// actor model
+a = new Actor
+b = new Actor
+a -> b("message")
+
+// csp
+a = new Actor
+b = new Actor
+c = new Channel
+a -> c("sending something")
+b <- c("receiving something")
+```
+
+go里简单的多态实现(polymorphism):
+
+```
+package main
+
+import "fmt"
+
+type intInterface struct{}
+type stringInterface struct{}
+
+func (num intInterface) Add(a, b int) int {
+	return a + b
+}
+func (s stringInterface) Add(a, b string) string {
+	return a + b
+}
+
+func main() {
+	number := new(intInterface)
+	fmt.Println(number.Add(1, 2))
+
+	text := new(stringInterface)
+	fmt.Println(text.Add("hello", " world"))
+
+}
+```
+
+use sync and mutexes to lock data:
+
+```
+package main
+
+import (
+	"fmt"
+	"runtime"
+	"sync"
+)
+
+func main() {
+	runtime.GOMAXPROCS(4)
+	current := 0
+	iters := 100
+	wg := new(sync.WaitGroup)
+	wg.Add(iters)
+	mutex := new(sync.Mutex)
+
+	for i := 0; i < iters; i++ {
+		go func() {
+			mutex.Lock()
+			fmt.Println(current)
+			current++
+			mutex.Unlock()
+			fmt.Println(current)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+}
+```
+
+
+# 3 Developing a Concurrent Strategy
+
+### Use -race flag when testing, building or running.
+
+`go run -race race-test.go`
+
+### using mutual exclusions:
+
+```go
+package main
+
+import (
+	"fmt"
+	"runtime"
+	"sync"
+)
+
+func main() {
+	runtime.gomaxprocs(4)
+	current := 0
+	iters := 100
+	wg := new(sync.waitgroup)
+	wg.add(iters)
+	mutex := new(sync.mutex)
+
+	for i := 0; i < iters; i++ {
+		go func() {
+			mutex.lock()
+			fmt.println(current)
+			current++
+			mutex.unlock()
+			fmt.println(current)
+			wg.done()
+		}()
+	}
+	wg.wait()
+}
+```
+
+### Exploring timeouts:
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	ourCh := make(chan string, 1)
+	go func() {
+	}()
+
+	select {
+	case <-time.After(10 * time.Second):
+		fmt.Println("Enough's enough")
+		close(ourCh)
+	}
+}
+```
+
+### Synchronizing our concurrent operations
+
+
+# 4 Data Integrity in an Application
+
+### Getting depper with mutexes and sync
+
+- RWMutex: miltireader, single-writer lock(feaquent read , infrequent write, cannot dirty read)
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+var currentTime time.Time
+var rwLock sync.RWMutex
+
+func updateTime() {
+	rwLock.RLock()
+	currentTime = time.Now()
+	time.Sleep(5 * time.Second)
+	rwLock.RUnlock()
+}
+
+func main() {
+
+	var wg sync.WaitGroup
+
+	currentTime = time.Now()
+	timer := time.NewTicker(2 * time.Second)
+	writeTimer := time.NewTicker(10 * time.Second)
+	endTimer := make(chan bool)
+
+	wg.Add(1)
+	go func() {
+
+		for {
+			select {
+			case <-timer.C:
+				fmt.Println(currentTime.String())
+			case <-writeTimer.C:
+				updateTime()
+			case <-endTimer:
+				timer.Stop()
+				return
+			}
+
+		}
+
+	}()
+
+	wg.Wait()
+	fmt.Println(currentTime.String())
+}
+```
+
+### Working with files
+
+```go
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"strconv"
+	"sync"
+)
+
+//
+
+func writeFile() {
+	fmt.Println("um")
+	for i := 0; i < 10; i++ {
+		rwLock.RLock()
+		ioutil.WriteFile("test.txt", []byte(strconv.FormatInt(int64(i), 10)), 0x777)
+		rwLock.RUnlock()
+	}
+
+	writer <- true
+
+}
+
+var writer chan bool
+var rwLock sync.RWMutex
+
+func main() {
+
+	writer = make(chan bool)
+
+	go writeFile()
+
+	<-writer
+	fmt.Println("Done!")
+}
+```
+
+### Getting low-implementing C
+
+```go
+package main
+
+/*
+	#include <stdio.h>
+	#include <stdlib.h>
+
+	void Coutput (char* str) {
+		printf("%s",str);
+	}
+*/
+import "C"
+import "unsafe"
+
+func main() {
+	v := C.CString("Don't Forget My Memory Is Not Visible To Go!")
+	C.Coutput(v)
+	C.free(unsafe.Pointer(v))
+}
+```
+
+### Distributed Go
+
+- distributed lock
+- consistent hash
+
+Common consistency models:
+
+- Distribued shared memory (DSM)
+- First-in-first-out - PRAM
+- master-slave model
+
+producer-consumer problem
+
+```go
+package main
+
+import "fmt"
+
+var comm = make(chan bool)
+var done = make(chan bool)
+
+func producer() {
+	for i := 0; i < 10; i++ {
+		comm <- true
+	}
+	done <- true
+}
+
+func consumer() {
+	for {
+		communication := <-comm
+		fmt.Println("Communiction from producer received!", communication)
+	}
+}
+func main() {
+	go producer()
+	go consumer()
+	<-done
+	fmt.Println("All Done!")
+}
+```
+
+### Go Circuit
+
+https://github.com/gocircuit/circuit
+need Zookpeer
+
+跨进程 channel
+
+
+# 5. Locks, Blocks, and Better Channels
+
+### Understanding Blocking Methods in GO
+
+- a listening, waiting channel
+- sending more data types via channels
