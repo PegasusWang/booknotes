@@ -1,3 +1,5 @@
+github.com/ajstarks/svgo v0.0.0-20181006003313-6ce6a3bcf6cd h1:JdtityihAc6A+gVfYh6vGXfZQg+XOLyBvla/7NbXFCg=
+github.com/ajstarks/svgo v0.0.0-20181006003313-6ce6a3bcf6cd/go.mod h1:K08gAheRH3/J6wwsYMMT4xOr94bZjxIelGM0+d/wbFw=
 github.com/cosiner/argv v0.0.0-20170225145430-13bacc38a0a5/go.mod h1:p/NrK5tF6ICIly4qwEDsf6VDirFiWWz0FenfYBwJaKQ=
 github.com/cosiner/argv v0.0.1 h1:2iAFN+sWPktbZ4tvxm33Ei8VY66FPCxdOxpncUGpAXE=
 github.com/cosiner/argv v0.0.1/go.mod h1:p/NrK5tF6ICIly4qwEDsf6VDirFiWWz0FenfYBwJaKQ=

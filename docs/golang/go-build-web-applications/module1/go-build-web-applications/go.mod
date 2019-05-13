@@ -3,6 +3,7 @@ module test-go-web
 go 1.12
 
 require (
+	github.com/ajstarks/svgo v0.0.0-20181006003313-6ce6a3bcf6cd // indirect
 	github.com/cosiner/argv v0.0.1 // indirect
 	github.com/cpuguy83/go-md2man v1.0.10 // indirect
 	github.com/go-delve/delve v1.2.0 // indirect
