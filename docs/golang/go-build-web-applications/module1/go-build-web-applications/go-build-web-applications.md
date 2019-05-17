@@ -679,3 +679,36 @@ func main() {
 # 6. C10K - A non-blocking web server in GO
 
 
+
+# 10 Advanced Concurrency and Best Practices 
+
+使用 tomb(need go get) 可以对 goroutine 更细粒度控制，比如超时 kill
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+
+	myChan := make(chan int)
+
+	go func() {
+		time.Sleep(6 * time.Second)
+		myChan <- 1
+	}()
+
+	for {
+		select {
+			case <-time.After(5 * time.Second):
+				fmt.Println("This took too long!")
+				return
+			case <-myChan:
+				fmt.Println("Too little, too late")
+		}
+	}
+}
+```
