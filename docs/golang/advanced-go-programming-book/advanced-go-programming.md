@@ -307,3 +307,98 @@ func main() {
 ### 1.6.8 context 包
 
 go1.7 增加了 context, 简化对于处理单个请求的多个goroutine之间与请求域的数据、超时和退出等操作。
+
+
+# 1.7 错误和异常
+
+错误被认为可预期的，异常则是非预期的。
+
+### 1.7.1 错误处理策略
+
+go 中的导出函数一般不抛出异常，一个未受控的异常可以看成程序 bug。
+web框架一般会防御性地捕获所有异常。
+
+```go
+// go库实现习惯是即使包内部使用了 panic，但是在函数 export 时候会被转换成明确的错误值
+func ParseJSON(input string) (s *Syntax, err error) {
+	defer func() {
+		if p:=recover(); p!=nil {
+			err = fmt.Errorf("JSON: internal error: %v", p)
+		}
+	}()
+	// ... parser ...
+}
+```
+
+### 1.7.2 获取错误上下文
+
+
+一般为了防止丢失错误信息，一般使用包装函数。
+go 大部分代码逻辑类似，先一系列初始检查，用于防止错误发生，然后是实际逻辑。
+
+```go
+f, err := op.Open("filename")
+if err !=nil {
+	// 失败场景
+}
+// 正常流程
+```
+
+
+`1.7.3 错误的错误返回
+
+go 中 error 是一种接口类型。接口信息包含了原始类型和原始的值。
+只有当接口的类型和原始值都为空，接口值才对应 nil。`
+
+```go
+// 错误示例
+func returnsError() error {
+	var p *MyError = nil
+	if bad() {
+		 p = ErrBad
+	}
+	return p // weill always return a non-nil error
+	// 返回的是一个Myerror类型的空指针，而不是 nil
+}
+
+// rightway
+func returnsError() error {
+	if bad() {
+		return (*MyError)(err)
+	}
+	return nil
+}
+
+```
+
+### 1.7.4 剖析异常
+
+必须在 defer 函数中直接调用 recover，并且不能包装 recover 函数，直接调用。
+必须和有异常的栈帧只隔一个栈帧才能正确捕获异常。
+
+
+--- 2章 CGO 编程
+
+
+
+--- 4章 RPC和Protobuf
+
+RPC (Remote Procedure Call)
+
+# 4.1 RPC 入门
+
+示例使用了内置的rpc 模块演示
+
+# 4.2 Protobuf
+
+Prtocol Buffers简称
+
+# 4.3 玩转 RPC
+
+# 4.4 gRPC 入门
+
+基于 HTTP/2 协议设计，可以基于一个HTTP/2链接提供多个服务。
+
+![](./grpc.png)
+
+
