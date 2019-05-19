@@ -1,4 +1,4 @@
-## 1.5.3 顺序一致性内存模型
+### 1.5.3 顺序一致性内存模型
 
 go 中同一个 goroutine 保证顺序一致性内存模型，但是不同 goroutine 之间不保证，需要定义明确的同步事件。
 
@@ -38,11 +38,11 @@ func main() {
 }
 ```
 
-## 1.5.4 初始化顺序
+### 1.5.4 初始化顺序
 
 ![](./init_order.png)
 
-## 1.5.6 基于Channel通信
+### 1.5.6 基于Channel通信
 
 ```go
 // 利用channel缓存大小控制并发执行的goroutine最大数
@@ -60,14 +60,14 @@ func main() {
 }
 ```
 
-# 1.6 常见并发模式
+## 1.6 常见并发模式
 
 CSP: 同步通信
 
 > Do not communicate by sharing memory; instead, share memory by communicating.
 > 不要通过共享内存来通信，而应通过通信共享内存。
 
-## 1.6.1 并发Hello World
+### 1.6.1 并发Hello World
 
 并发编程核心概念是同步通信。
 
@@ -385,20 +385,226 @@ func returnsError() error {
 
 RPC (Remote Procedure Call)
 
-# 4.1 RPC 入门
+## 4.1 RPC 入门
 
 示例使用了内置的rpc 模块演示
 
-# 4.2 Protobuf
+## 4.2 Protobuf
 
 Prtocol Buffers简称
 
-# 4.3 玩转 RPC
+## 4.3 玩转 RPC
 
-# 4.4 gRPC 入门
+## 4.4 gRPC 入门
 
 基于 HTTP/2 协议设计，可以基于一个HTTP/2链接提供多个服务。
 
 ![](./grpc.png)
 
 
+# 5 Go和 web
+
+
+go web框架使用radix tree 实现 route
+
+
+## 5.3 中间件middleware
+
+解耦业务和非业务代码逻辑
+
+```go
+package main
+
+import (
+	"net/http"
+	"time"
+)
+
+func hello(wr http.ResponseWriter, r *http.Request) {
+	wr.Write([]byte("hello"))
+}
+
+func timeMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(wr http.ResponseWriter, r *http.Request) {
+		timeStart := time.Now()
+		// next handler
+		next.ServeHTTP(wr, r)
+
+		timeElasped := time.Since(timeStart)
+		logger.Println(timeElasped)
+	})
+}
+
+func main() {
+	http.Handle("/", timeMiddleware(http.HandlerFunc(hello)))
+	err := http.ListenAndServe(":8000", nil)
+	//....
+}
+
+
+// 标准库的关系
+type Handler interface {
+	ServeHTTP(ResponseWriter, *Request)
+}
+
+type HandlerFunc func(ResponseWriter, *Request) 
+
+func (f handlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+	f(w, r)
+}
+```
+
+请求调用链：
+
+h = getHandler() => h.ServeHTTP(w, r) => h(w, r)
+
+
+### 5.3.3 更优雅的中间件写法
+
+```go
+r = NewRouter()
+r.Use(logger)
+r.Use(timeout)
+r.Use(ratelimit)
+r.Add("/", helloHandler)
+
+type middleware func(http.Handler) http.Handler 
+type Router struct {
+	middlewareChain [] middleware
+	mux map[string] http.Handler
+}
+
+func NewRouter() *Router{ 
+	return &Router{}
+}
+
+func (r *Router) Use(m middleware) {
+	r.middlewareChain = append(r.middlewareChain, m)
+}
+
+func (r *Router) Add(route string, h http.Handler) {
+	var mergedHandler = h
+	// 反向遍历
+	for i:= len(r.middlewareChain)-1; i>=0; i-- {
+		mergedHandler = r.middlewareChain[i](mergedHandler)
+	}
+	r.mux[route] = mergedHandler
+}
+```
+
+哪些可以写成中间件呢？参考 gin-gonic/contrib
+
+
+## 5.4 Validator
+
+https://github.com/go-playground/validator
+
+通过反射对结构体进行树形遍历
+
+## 5.5 Database 和数据库打交道
+
+```go
+package main
+import "database/sql"
+import _ "github.com/go-sql-driver/mysql" 
+
+db, err := sql.Open("mysql", "user:password@/dbname")
+
+// import _ "github.com/go-sql-driver/mysql"  实际上调用了 mysql init
+func init() {
+	sql.Register("mysql", &MySQLDriver{})
+}
+```
+
+Sql Build 相比orm 在可维护性上取得了更好平衡，不会屏蔽太多细节。
+
+
+### 5.6 Ratelimit 服务流量限制
+
+磁盘 IO/CPU/带宽瓶颈
+
+常见的限流手段：
+
+- 漏桶: 有一个一直装满水的桶，每过固定一段时间向外漏一滴水。如果你接收到了这滴水，就可以继续请求服务，否则等待下一滴水
+
+- 令牌桶: 匀速向桶中添加令牌，服务请求需要从桶中获取令牌
+
+令牌桶使用比较广泛，业界流行限流器大多数基于令牌桶。
+
+github.com/juju/ratelimit
+
+原理：令牌桶模型实际上是对全局计数的加减法操作过程，
+但使用计数器需要自己加上读写锁。
+
+可以使用 bufferd channel 完成简单的加令牌和取令牌操作。
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	var fillInterval = time.Millisecond * 10
+	var capacity = 100
+	var tokenBucket = make(chan struct{}, capacity)
+
+	fillToken := func() {
+		ticker := time.NewTicker(fillInterval)
+		for {
+			select {
+			case <-ticker.C:
+				select {
+				case tokenBucket <- struct{}{}:
+				default:
+
+				}
+				fmt.Println("current token cnt:", len(tokenBucket), time.Now())
+			}
+		}
+	}
+
+	go fillToken()
+	time.Sleep(time.Hour)
+}
+
+func TakeAvailable(block bool) bool {
+	var takenResult bool
+	if block {
+		select {
+		case <-tokenBucket:
+			takenResult = true
+		}
+	} else {
+		select {
+		case <-tokenBucket:
+			takenResult = true
+		default:
+			takenResult = false
+		}
+	}
+	return takenResult
+}
+```
+
+### 5.6.3服务瓶颈和 Qos
+
+Qos: Quality of Service。包含可用性、吞吐量、时延、时延变化和丢失等
+
+
+## 5.7 大型项目分层
+
+- controller: 服务入口，负责处理路由，参数校验，请求转发
+- logic/service: 逻辑(服务)层，一般是业务逻辑入口。可以认为从这里开始参数一定是合法的。业务逻辑和流程也在这一层。(Business Rules)
+- DAO/Repository: 负责和数据、存储打交道。更简单的函数、接口暴露给Logic层使用。负责数据持久化。
+
+
+## 5.8 接口和表驱动开发
+
+### 5.8.2 使用函数封装业务流程
+
+把相似的行为放在一起，然后打包成一个个函数。
+
+### 5.8.3 使用接口来做抽象
