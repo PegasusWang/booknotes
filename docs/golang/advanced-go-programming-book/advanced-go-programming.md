@@ -640,3 +640,182 @@ func entry() {
 	bi := BusinessInstance[businessType]
 }
 ```
+
+## 5.9 灰度发布和A/B test
+
+恢复一般两种方式实现：
+
+- 分批次部署实现灰度发布。1-2-4-8-32... 个机器。通过观察日志和监控系统发现错误
+- 通过业务规则进行灰度发布。比如针对用户 id 取模，落在一定范围内的执行相关逻辑
+
+如果使用哈希算法，需要注意性能和均匀度。
+
+
+
+# 6 分布式系统
+
+## 6.1 分布式 id 生成器
+
+twitter snowflake 算法
+
+![](./snowflake.png)
+
+github.com/bwmarrin/snowflake 轻量级的snowflake实现。
+
+sonyflake sony一个开源项目，思路和snowflake类似，分配上有所不同
+
+github.com/sony/sonyflake
+
+
+## 6.2 分布式锁
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/bwmarrin/snowflake"
+)
+
+func main() {
+	n, err := snowflake.NewNode(1)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	for i := 0; i < 3; i++ {
+		id := n.Generate()
+		fmt.Println("id", id)
+		fmt.Println(
+			"node: ", id.Node(),
+			"step: ", id.Step(),
+			"time: ", id.Time(),
+			"\n",
+		)
+	}
+}
+```
+
+
+### 6.2.1 进程内加锁
+
+
+trylock: 尝试加锁，加锁成功执行后续流程，如果加锁失败也不会阻塞，
+而会直接返回加锁结果。go 中可以用大小为1的 channel 模拟 trylock。
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+type Lock struct {
+	c chan struct{}
+}
+
+func NewLock() Lock {
+	var l Lock
+	l.c = make(chan struct{}, 1)
+	l.c <- struct{}{}
+	return l
+}
+
+func (l Lock) Lock() bool {
+	lockResult := false
+	select {
+	case <-l.c:
+		lockResult = true
+	default:
+	}
+	return lockResult
+}
+
+func (l Lock) UnLock() {
+	l.c <- struct{}{}
+}
+
+var counter int
+
+func main() {
+	var l = NewLock()
+	var wg sync.WaitGroup
+	for i := 0; i < 10; i++ {
+		wg.Add(1) // add 1
+		go func() {
+			defer wg.Done()
+			if !l.Lock() {
+				fmt.Println("lock failed")
+				return
+			}
+			counter++
+			fmt.Println("current counter", counter)
+			l.UnLock()
+		}()
+	}
+	wg.Wait()
+}
+```
+
+单机系统 trylock 不好，大量 goroutine 抢锁可能导致 cpu 无意义浪费。(活锁)
+
+### 6.2.3 基于 redis setnx
+
+redis setnx 模拟分布式锁
+
+适合高并发场景下，用来争抢一些唯一的资源。
+不过依赖请求达到 redis 的顺序，网络慢的用户就自求多福了
+
+
+### 6.2.4 基于 ZooKeeper
+
+github.com/samuel/go-zookeeper/zk
+
+基于 ZooKeeper 的锁与基于redis的锁不同之处在于 Lock 成功之前会一直阻塞，
+与单机中的 mutex.Lock 很相似。
+
+分布式阻塞锁 适合分布式任务调度场景，但是不适合高频次持有锁时间短的抢锁场景。
+
+Google(chubby论文)，基于强一致性的锁适用于粗粒度加锁操作，粗粒度指的是占用时间较长。
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/samuel/go-zookeeper/zk"
+)
+
+func main() {
+	c, _, err := zk.Connect([]string{"127.0.0.1"}, time.Second)
+	if err != nil {
+		panic(err)
+	}
+	l := zk.NewLock(c, "/lock", zk.WorldACL(zk.PermAll))
+	err = l.Lock()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("lock success, do your logic")
+	time.Sleep(time.Second * 10)
+
+	l.UnLock()
+	fmt.Println("unlock success, finish your logic")
+}
+```
+
+### 6.2.5 基于 etcd
+
+类似 ZooKeeper 的组件
+
+github.com/zieckey/etcdsync
+
+
+
+根据性能和可靠性、运维成本等仔细权衡使用哪一种分布式锁方案。
