@@ -608,3 +608,35 @@ Qos: Quality of Service。包含可用性、吞吐量、时延、时延变化和
 把相似的行为放在一起，然后打包成一个个函数。
 
 ### 5.8.3 使用接口来做抽象
+
+业务早期不建议引入接口。主流程稳定可以引入接口做抽象
+
+### 5.8.4 接口优缺点
+
+优点:正交性。依赖反转
+缺点：难以查找实现了接口的类型
+
+### 5.8.5 表驱动开发
+
+```go
+func entry() {
+	var bi BusinessInstance
+	switch businessType {
+	case TravelBusiness:
+		bi = travelorder.New()
+	case MarketBusiness:
+		bi = marketorder.New()
+	default:
+		return errors.New("not supported business")
+	}
+}
+
+var BusinessInstanceMap = map[int]BusinessInstance{
+	TravelBusiness: travelorder.New(),
+	MarketBusiness: marketorder.New(),
+}
+
+func entry() {
+	bi := BusinessInstance[businessType]
+}
+```
