@@ -844,4 +844,31 @@ github.com/zieckey/etcdsync
 很多队列不支持 exactly once 语义，这种情况下需要用户自己负责消息去重或者消费的幂等处理。
 
 
+## 6.4 分布式搜索引擎
 
+关系型数据库通常用于OLTP(online transaction processing)
+
+ElasticSearch 是开源分布式搜索引擎霸主
+
+倒排索引
+
+查询 DSL：es 定义了一套查询 DSL。bool query
+
+基于 client sdk 开发：
+
+"gopkg.in/olivere/elastic.v3"
+
+不要把 es 当成强一致性数据库用
+
+- 异构数据同步
+
+更常见的场景是同步数据到搜所引擎
+
+- 基于时间戳
+- 通过 binlog。阿里开源的 Canal
+
+## 6.5 负载均衡
+
+- 按顺序处理
+- 随机挑选
+- 根据某种权重
