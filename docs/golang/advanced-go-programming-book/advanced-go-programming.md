@@ -872,3 +872,32 @@ ElasticSearch 是开源分布式搜索引擎霸主
 - 按顺序处理
 - 随机挑选
 - 根据某种权重
+
+洗牌算法，shuffle。注意 rand.Seec(time.Now().UnixNano()) 设置种子
+
+### 6.5.3 ZooKeeper 集群的随机节点挑选问题
+
+
+## 6.6 分布式配置管理
+
+### 6.6.2 使用 etcd 实现配置更新
+简单的配置可以讲内容完全存储在 etcd 中。
+
+```sh
+etcdctl get /configs/remote_config.json
+```
+
+### 6.6.3 配置膨胀
+
+支持版本管理进行回滚
+
+客户端缓存容错
+
+## 6.7 分布式爬虫
+
+## 6.7.1 基于 colly 单机爬虫
+
+## 6.7.2 分布式爬虫
+
+nats go 高性能分布式消息队列
+
