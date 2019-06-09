@@ -75,7 +75,7 @@ func (p *Vector) Set(i int, Element e) {
 }
 ```
 
-tree struct: 
+tree struct:
 
 ```go
 package main
@@ -141,4 +141,50 @@ func (cs Cars) Map(f func(car *Car) Any) []Any {
 allNewBMWs := allCars.FindAll(func(car *Car) bool {
 	return (car.Manufacturer == "BMW") && (car.BuildYear > 2010)
 })
+```
+
+# 12 Reading and writing
+
+```go
+// read input from console:
+package main
+
+import "fmt"
+
+var (
+	firstName, lastName string
+)
+
+func main() {
+	fmt.Scanln(*firstName, *lastName)
+	fmt.Println("Hi %s %s\n", &firstName, &lastName)
+}
+
+// or use bufio.Reader
+```
+
+
+# 13 Error-handling and Testing
+
+no try/catch, defer-panic-and-recover mechanism.
+
+```go
+type error interface {
+	Error() string
+}
+// to stop an error-state program, use os.Exit(1)
+
+
+// define new errors
+err := errros.New("math-square root of negative number")
+
+// custome error field
+type PathError struct {
+	Op   string
+	Path string
+	Err  error
+}
+func ( e *PathError) String() string {
+	return e.Op + " " + e.Path = ": " + e.Err.Error()
+}
 ```
