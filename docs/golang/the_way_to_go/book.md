@@ -113,3 +113,32 @@ func main() {
 ## 11.10 The reflect package
 
 
+## 11.14 Structs coolections and higher order functions
+
+```go
+package main
+
+type Any interface{}
+
+type Car struct {
+	Model        string
+	Manufacturer string
+	BuildYear int
+}
+
+type Cars []*Car
+
+func (cs Cars) Map(f func(car *Car) Any) []Any {
+	result := make([]Any, 0)
+	ix := 0
+	cs.Process(func(c *Car) {
+		result[ix] = f(c)
+		ix++
+	})
+	return result
+}
+
+allNewBMWs := allCars.FindAll(func(car *Car) bool {
+	return (car.Manufacturer == "BMW") && (car.BuildYear > 2010)
+})
+```
