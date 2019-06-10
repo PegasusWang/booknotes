@@ -187,4 +187,100 @@ type PathError struct {
 func ( e *PathError) String() string {
 	return e.Op + " " + e.Path = ": " + e.Err.Error()
 }
+// making errror-object with fmt
+if f < 0 {
+	return 0, fmt.Errorf("math: square root of negative number %g", f)
+}
 ```
+
+
+## 13.2 Run-time exceptions and panic
+
+if panic is called from a nested function, immediately stops the execution of the current function,
+all defer statement are guaranteed to execute and the control is given to the function caller, which receives this call
+to panic.
+
+
+## 13.3 Recover
+
+recover is only useful when called inside a deferred function: it then retrieves the error value passed through the call
+of panic; when used in normal execution a call to recover will return nil and have no other effects.
+
+like catch in java.
+
+```go
+func protect(g func()) {
+	defer func() {
+		log.Println("done")
+		if err := recover(); err != nil {
+			log.Printf("run time panic : %v", err)
+		}
+	}()
+	log.Println("start")
+	g()
+}
+
+
+package main
+
+import "fmt"
+
+func badCall() {
+	panic("bad end")
+}
+
+func test() {
+	defer func() {
+		if e := recover(); e != nil {
+			fmt.Printf("Panicking %s\r\n", e)
+		}
+	}()
+	badCall()
+	fmt.Printf("After bad call\r\n")
+}
+
+func main() {
+	fmt.Printf("calling test\r\n")
+	test()
+	fmt.Printf("calling test end\r\n")
+}
+```
+
+## 13.4 Error-handling and panicking in a custom package 
+
+
+best practice:
+
+- always recover from panic in your package: no explicit panic() should be allowed to cross a package boundary
+- return errors as error values to the callers of your package.
+
+
+## 13.5 An Error-handling scheme with closures
+
+```go
+func f(a type1, b type2)
+
+fType1 = func f(a type1, b type2)
+
+
+func errorHandler(fn fType1) fType1 {
+	return func(a type1, b type2) {
+		defer func() {
+			if e, ok := recover().(error); ok {
+				log.Printf("run time panic:%v", err)
+			}
+		}()
+		fn(a,b)
+	}
+}
+
+```
+
+## 13.6 Starting an external command or program
+
+os.StartProcess
+exec.Command(name string, arg ...string)
+
+## 13.7 Testing and benckmarking in GO
+
+
