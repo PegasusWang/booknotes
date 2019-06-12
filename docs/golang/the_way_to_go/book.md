@@ -284,3 +284,26 @@ exec.Command(name string, arg ...string)
 ## 13.7 Testing and benckmarking in GO
 
 
+
+# 14 Goroutines and channels
+
+## 14.1 Concurrency, parallelism and goroutines
+
+
+CSP(Communicating Sequentiadl Processes)
+
+parallelism is the ability to make things run quickly by using multiple processors.
+
+An experiential rule of thumb seems to be that for n cores setting GOMAXPROCS to n-`1 yields the best the performance,
+and the following should also be followed: number of goroutines > 1 + GOMAXPROCS > 1
+
+If we do not wai int main(), the program stop the goroutines die with it.
+When the func main() returns, the program exits, it does not wait for other (non-main) goroutines to complete.
+The logic of your code must be independent of the order in which goroutines are invoked.
+
+### 14.1.5
+
+difference bewteen goroutines and coroutines(c# and python):
+
+- goroutines imply parallelism, coroutines in general do not
+- goroutines communicate via channels; coroutines communicate via yield and resume operations
