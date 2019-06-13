@@ -246,7 +246,7 @@ func main() {
 }
 ```
 
-## 13.4 Error-handling and panicking in a custom package 
+## 13.4 Error-handling and panicking in a custom package
 
 
 best practice:
@@ -294,7 +294,7 @@ CSP(Communicating Sequentiadl Processes)
 
 parallelism is the ability to make things run quickly by using multiple processors.
 
-An experiential rule of thumb seems to be that for n cores setting GOMAXPROCS to n-`1 yields the best the performance,
+An experiential rule of thumb seems to be that for n cores setting GOMAXPROCS to n-1 yields the best the performance,
 and the following should also be followed: number of goroutines > 1 + GOMAXPROCS > 1
 
 If we do not wai int main(), the program stop the goroutines die with it.
@@ -307,3 +307,118 @@ difference bewteen goroutines and coroutines(c# and python):
 
 - goroutines imply parallelism, coroutines in general do not
 - goroutines communicate via channels; coroutines communicate via yield and resume operations
+
+## 14.2 Channels for communication between goroutines
+
+Using shared variables is not discouranged.
+Only one goroutine has access to a  data item at any given time: so data races cannot occur, by design. Channels a firstclass objects.
+
+```
+var identifier chan datatype // uniniitialized channel is nil
+var cha1 chan string // reference type
+ch1 = make(chan string)
+```
+
+Channel send and receive operations are aotmic, they always complete without interruption.
+
+### 14.2.3 Blocking of channels
+
+default communication is synchronous and unbuffered: sends do not complete until there is a receiver to accept the value. So channel send/receive block until the other side is ready.
+
+- A send opeartion on a channel blocks until a receiver is available. for the same channel.
+- A receive operation for a channel blocks until a sender is available for the same channel.
+
+
+```
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	ch1 := make(chan int)
+	go pump(ch1)
+	// fmt.Println(<-ch1)
+	go suck(ch1)
+	time.Sleep(1e9)
+}
+
+func pump(ch chan int) {
+	for i := 0; ; i++ {
+		ch <- i
+	}
+}
+
+func suck(ch chan int) {
+	for {
+		fmt.Println(<-ch)
+	}
+}
+```
+
+### 14.2.5 Asynchronous channels-making a channel with a buffer
+
+An unbuffered channel can only contain 1 item and is for that reason somethimes too restrictive.
+
+```
+buf := 100
+ch1 := make(chan string, buf) //buf is the number of elements the channel can hold
+```
+
+sending to a bufferd channel will not blocked unless buffer is full, reading not blocked unless buffer is empty.
+If the capacity is greater than 0, channel is asychronous
+
+Semaphore pattern
+
+
+```
+	ch := make(chan int)
+	go func() {
+		// do something
+		ch <- 1
+	}()
+	doSomethingElseForAWhile()
+	<-ch // wait for goroutine to finish. discard send value
+```
+
+### 14.2.9 Implementing a semaphore using a buffered channel
+
+```
+type Empty interface{}
+type semaphore chan Empty
+
+
+sem = make(semaphore, N)
+
+// acauire n resourdces
+func (s semaphore) P(n int) {
+	e := new(Empty)
+	for i :=0 ; i < n; i ++ {
+		s <- e
+	}
+}
+// release n resources
+func (s semaphore) V(n int) {
+	for i :=0 ;i <n;i ++ {
+		<-s
+	}
+}
+
+// mutexes
+func (s semaphore) Lock() {
+	s.P(1)
+}
+func (s semaphore) Unlock() {
+	s.V(1)
+}
+
+// signal-wait
+func (s semaphore) Wait(n int) {
+	s.P(n)
+}
+func (s semaphore) Signal() {
+	s.V(1)
+}
+```
