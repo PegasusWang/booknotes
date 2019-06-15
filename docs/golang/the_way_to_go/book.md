@@ -422,3 +422,436 @@ func (s semaphore) Signal() {
 	s.V(1)
 }
 ```
+### 14.2.10 For-range applied to channels
+
+It reads from the given channel ch until the channel is closed and then the code following for continue to execute. Obviously another goroutine must be writing to ch(otherwise the executino blocks in the for-loop) and must close ch when it's done writing.
+
+producer consumer pattern:
+
+
+```
+for {
+	Consume(Product())
+}
+```
+
+### 14.2.11 Channel directionality
+
+```
+var send_only chan<- int // channel can only receive data (<-chan T)
+var recv_only <-chan int // channel can only send data
+```
+
+IDIOM: Pipe and filter pattern
+
+```
+sendChan := make(chan int)
+receiveChan := make(chan string)
+go processChannel(sendChan, receiveChan)
+
+func processChannel(in <- chan int, out chan<- string) {
+	for inValue := range in {
+		result := // process inValue
+		out<-result
+	}
+}
+```
+
+```
+// sieve primer number
+package main
+
+import "fmt"
+
+func generate() chan int {
+	ch := make(chan int)
+	go func() {
+		for i := 2; ; i++ {
+			ch <- i
+		}
+	}()
+	return ch
+}
+
+func filter(in chan int, prime int) chan int {
+	out := make(chan int)
+	go func() {
+		for {
+			if i := <-in; i%prime != 0 {
+				out <- i
+			}
+		}
+	}()
+	return out
+}
+
+func sieve() chan int {
+	out := make(chan int)
+	go func() {
+		ch := generate()
+		for {
+			prime := <-ch
+			ch = filter(ch, prime)
+			out <- prime
+		}
+	}()
+	return out
+}
+
+func main() {
+	primes := sieve()
+	for {
+		fmt.Println(<-primes)
+	}
+}
+```
+
+
+## 14.3 Synchronization of goroutine: closing a channel - testing for blocked channels
+
+Only the sender should close a channel, never receiver.
+Sending or Closing a closed channel causes a run-time panic.
+
+```
+if v, ok := <-ch; ok {
+	process(v)
+}
+```
+
+To do a non-blocking channel you need to use a select.
+for range will automatically detect when the channel is closed.
+
+## 14.4 Switching between goroutines with select
+
+Getting the values out of dirrerent concurrently executing goroutines can be accomplisehd with
+the select ekyworkd. A select is terminated when a break or return is executed in one of its cases.
+
+- if all are blocked, it waits until one can proceed
+- if multiple can proceed, it choose one at random
+- when none of the channel operations can proceed and default clause is present, default is always runnable
+
+```
+// sieve primer number
+package main
+
+import (
+	"fmt"
+	"runtime"
+	"time"
+)
+
+func main() {
+	runtime.GOMAXPROCS(2)
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+
+	go pump1(ch1)
+	go pump2(ch2)
+	go suck(ch1, ch2)
+	time.Sleep(1e9)
+}
+
+func pump1(ch chan int) {
+	for i := 0; ; i++ {
+		ch <- i * 2
+	}
+}
+
+func pump2(ch chan int) {
+	for i := 0; ; i++ {
+		ch <- i + 5
+	}
+}
+func suck(ch1 chan int, ch2 chan int) {
+	for {
+		select {
+		case v := <-ch1:
+			fmt.Printf("received on channel 1 :%d\n", v)
+		case v := <-ch2:
+			fmt.Printf("received on channel 2 :%d\n", v)
+		}
+	}
+}
+```
+
+## 14.5 Channels, Timeouts and Tickers
+
+time.Ticker is an object that repeatedly sends a time value on a contained channel C at a specified time interval.
+
+```
+func main() {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+	select {
+	case u := <-ch1:
+		//...
+	case v := <-ch2:
+		//...
+	case <-ticker.C:
+		logState(status) // call some logging function logState
+	default: // novalue ready to be received
+		//...
+	}
+}
+```
+
+rate limiter:
+
+
+```
+rate_per_sec := 10
+var dur Dration = 1e9
+chRate := time.Tick(dur)
+for req := range requests {
+	<- chRate
+	go client.Call("service.Method", req, ...)
+}
+```
+
+time.After(d) only send time once:
+
+
+```
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	tick := time.Tick(1e8)
+	boom := time.After(5e8)
+	for {
+		select {
+		case <-tick:
+			fmt.Println("tick.")
+		case <-boom:
+			fmt.Println("Boom.")
+			return
+		default:
+			fmt.Println("     .")
+			time.Sleep(5e7)
+		}
+	}
+}
+```
+
+## 14.6 Using recover with goroutines
+
+```
+func server(workChan <-chan *Work) {
+	for work := range workChan {
+		go safelyDo(work)
+	}
+}
+
+func safelyDo(work *Work) {
+	defer func() {
+		if err := recover(); err !=nil {
+			log.Printf("work faield with %s in %v:", err, work)
+		}
+	}()
+	do(work)
+}
+```
+
+### 14.7 Tasks and Worker processes
+
+
+```
+// Master-worker paradigm
+func Worker(in, out chan *Task){
+	for {
+		t := <-in
+		process(t)
+		out <- t
+	}
+}
+```
+
+when to use: a sync.Mutex or a channel?
+
+- use locking(mutexes) when:
+    - caching information in a shared data structure
+    - holding state information, that is context or status of the running application
+
+- use channels when:
+    - communicating asynchronous results
+    - distributing units of work
+    - passing owership of data
+
+## 14.8 Implementing a lazy generator
+
+A generator is a function that returns the next value in a sequence each time the function is called.
+
+```
+package main
+
+import (
+	"fmt"
+)
+
+var resume chan int
+
+func intergers() chan int {
+	yield := make(chan int)
+	count := 0
+	go func() {
+		for {
+			yield <- count
+			count++
+		}
+	}()
+	return yield
+}
+func generateInteger() int {
+	return <-resume
+}
+func main() {
+	resume = intergers()
+	fmt.Println(generateInteger())
+	fmt.Println(generateInteger())
+	fmt.Println(generateInteger())
+}
+```
+
+## 14.9 Implementing Futures
+
+future: somtimes you know yopu need to compute a value before you need to actually use the value.
+in this case, you can potentially start computing the value on another processor and have it ready
+when you need it.
+
+
+```
+func InverseProduct(a Matrix, b Matrix) {
+	a_inv := Inverse(a)
+	b_inv := Inverse(b)
+	return Product(a_inv, b_inv)
+}
+
+
+/// a_inv and b_inv can compute parallel
+
+fucn InverseProduct(a Matrix, b Matrix) {
+	a_inv_future := InverseFuture(a) //. started as a goroutine
+	b_inv_future := InverseFuture(b)
+	a_inv := <-a_inv_future
+	b_inv := <-b_inv_future
+	return Product(a_inv,b_inv)
+}
+
+func InverseFuture(a Matrix) {
+	future := make(chan Matrix)
+	go func() { future<-Inverse(a) } () // launched a closure as a goroutine
+	return future
+}
+```
+
+## 14.10 Multiplexing
+## 14.11 Limiting the number of requests processed concurrently
+
+## 14.12 Chaining goroutines
+## 14.13 Parallelzing a computation over a number of cores
+
+```
+func DoAll() {
+	sem := make(chan int, NCPU)
+	for i := 0; i < NCPU; i ++ {
+		go DoPart(sem)
+	}
+	// Drain the channel sem, waiting for  NCPU tasks to complete
+	for i:= 0; i < NCPU; i ++ {
+		<-sem
+	}
+	// All done
+}
+
+func DoPart(sem chan int) {
+	// do the part of the computation
+	sem <- 1 // signal that thie piece is done
+}
+
+func main() {
+	runtime.GOMAXPROCS = NCPU
+	DoAll()
+}
+```
+
+## 14.14 Parallelizing a computation over a large amount of data
+
+a number of steps: Preprocess / StepA / StepB / ... / PostProcess
+
+pipelining algorithm:
+
+
+```
+func SerialProcessData(in <- chan *Data, out <- chan *Data) {
+	for data := range in {
+		tmpA := PreprocessData(data)
+		tmpB := ProcessStepA(tmpA)
+		tmpC := ProcessStepA(tmpB)
+		out <- PostProcess(tmpC)
+	}
+}
+
+func ParallelProcessData(in <- chan  *Data, out <- chan *Data) {
+	// make channels:
+	preOut := make(chan *Data, 100)
+	stepAOut := make(chan *Data, 100)
+	stepBOut := make(chan *Data, 100)
+	stepCOut := make(chan *Data, 100)
+	// start parallel computations
+	go PreprocessData(in, preOut)
+	go ProcessStepA(preOut, stepAOut)
+	go ProcessStepB(stepAOut, stepBOut)
+	go ProcessStepC(stepBOut, stepCOut)
+	go PostProcessData(stepOut, out)
+}
+```
+
+## 14.15 The leaky bucket algorithm
+
+```
+var freeList = make(chan *Buffer, 100)
+var serverChan = make(chan *Buffer)
+
+func client() {
+	for {
+		var b *Buffer
+		select {
+		case b = <-freeList:
+			// Got one; nothing more todo
+		default:
+			b = new(Buffer)
+			loadInto(b) // read next message from the network
+		}
+		serverChan <- b //send to server
+	}
+}
+
+func server() {
+	for  {
+		b := <-serverChan // wait for work
+		process(b)
+		// reuse buffer is threre's room
+		select {
+		case freeList <- b:
+			// Reuse buffer if free slot on freeList; nothing more to do
+		default:
+			// freeList is full, just carry on : the buffer is 'dropped'
+			// doesn't work when freeList is full, leaky bucket
+		}
+	}
+
+}
+```
+
+## 14.16 Benchmarking goroutines
+
+## 14.17 Concurrent access to object using a chnnel
+
+To safeguard concurrent modifications of an object instead of using locking with a sync Mutex,
+we can also use a backend goroutine for the sequential execution of anonymous functions.
+
+
