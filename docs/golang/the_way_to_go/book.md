@@ -857,3 +857,143 @@ we can also use a backend goroutine for the sequential execution of anonymous fu
 
 # 16 Common Go Pitfalls or Mistakes
 
+## 16.1 Hiding(shadowing) a variable by misusing short declaration
+
+```
+var remeber bool = false
+if somehting {
+	remeber := true // use = not :=
+}
+// use member
+
+
+func shadow() (err error) {
+	x, err := check1() // x is created, err is assigned to
+	if err != nil {
+		return   // err correctly returned
+	}
+	if y, err := check2(x); err !=nil { //y and inner err are created
+		return // inner err shadows err so nil is wrongly returned!
+	} else {
+		fmt.Println(y)
+	}
+	return
+}
+
+```
+
+## 16.2 Misusing strings
+mind that strings in go(like java and python) are immutable, Do not use a + b in a for loop,
+intead one should use a bytes.Buffer to accumulate string content.
+
+```
+func shadow() (err error) {
+	x, err := check1() // x is created, err is assigned to
+	if err != nil {
+		return   // err correctly returned
+	}
+	if y, err := check2(x); err !=nil { //y and inner err are created
+		return // inner err shadows err so nil is wrongly returned!
+	} else {
+		fmt.Println(y)
+	}
+	return
+}
+```
+
+## 16.3 Using defer for closing a file in the wrong scope
+
+Defer is only executed at the return of a function, not at the end of a loop or some other limited scope.
+
+## 16.4 Confusing new() and make()
+
+- for slices, maps and channels, use make
+- for arrays, structs and all value types: use new
+
+## 16.5 No need to pass a pointer to a slice to a function
+
+## 16.6 Using pointers to interface types
+
+Never use a pointer to an interface type, this is already a pointer!
+
+## 16.7 Misusing pointers wiht value types
+
+## 16.8 Misusing goroutines and channels
+Only using goroutines and channels only where concurrency is important!
+
+## 16.9 Using closures with goroutines
+
+```
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+var values = [5]int{10, 11, 12, 13, 14}
+
+func main() {
+	// version A
+	for ix := range values {
+		func() {
+			fmt.Print(ix, " ")
+		}()
+	}
+	fmt.Println()   // 0,1,2,3,4
+
+	// version B
+	for ix := range values {
+		go func() {  // invoke each closure as a goroutine
+			fmt.Print(ix, " ")
+		}() // the goroutine will probably not begin executing until after the loop
+	}
+	fmt.Println() // 4,4,4,4,4
+	time.Sleep(5e9)
+	// Version C: the right way
+	for ix := range values {
+		go func(ix interface{}) { // invoke each closure with ix as a parameter
+			fmt.Print(ix, " ") //ix is the evaluated at each iteration and placed on the stack of goroutine
+		}(ix)
+	}
+	fmt.Println()  // random
+	time.Sleep(5e9)
+	// Version D: print out values
+	for ix := range values {
+		val := values[ix] // variables declared witin the body of a loop are not shared between iterations
+		go func() {
+			fmt.Print(val, " ")
+		}()
+	}
+	time.Sleep(1e9) //10,11,12,13,14
+}
+```
+
+## 16.10 Bad error handling
+
+wrap your error conditions in a closure wherever possible, like in the following example.
+
+
+```
+// seperate error checking, error reporting, and normal program logic
+
+func httpRequestHandler(w http.ResponseWriter, req *http.Request) {
+	err := func() error {
+		if req.Method != "GET"{
+			return errors.New("expected GET")
+		}
+		if input := paraseInput(req); input != "command" {
+			return errors.New("malformed command")
+		}
+	}()
+	// other error conditions can be tested here
+	if err != nil {
+		w.WriteHeader(400)
+		io.WriterString(w, err)
+		return
+	}
+	doSomething() //
+}
+```
+
+# 17 Go Language Patterns
