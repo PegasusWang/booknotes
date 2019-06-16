@@ -855,5 +855,5 @@ To safeguard concurrent modifications of an object instead of using locking with
 we can also use a backend goroutine for the sequential execution of anonymous functions.
 
 
-
+# 16 Common Go Pitfalls or Mistakes
 
