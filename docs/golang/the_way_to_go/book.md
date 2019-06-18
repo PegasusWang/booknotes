@@ -973,7 +973,6 @@ func main() {
 
 wrap your error conditions in a closure wherever possible, like in the following example.
 
-
 ```
 // seperate error checking, error reporting, and normal program logic
 
@@ -997,3 +996,14 @@ func httpRequestHandler(w http.ResponseWriter, req *http.Request) {
 ```
 
 # 17 Go Language Patterns
+
+## 17.1 The comma, ok pattern
+
+## 17.2 The defer pattern
+
+## 17.3 The visibility pattern
+
+## 17.4 The operator pattern and interface
+go不支持操作符重载，可以使用函数/方法/接口 来模拟。
+
+
