@@ -119,3 +119,59 @@ close(ch) //close channel
 x, ok :=<=ch //如果返回的 ok false，表示 ch已经被关闭了
 // 使用 runtime.Gosched() 出让时间片
 ```
+
+go 提供了 sync.Mutex和sync.RWmutex 锁类型
+
+sync.Once 全局唯一操作。
+
+sync.atomic 提供了对于一些基础数据类型的原子操作。
+
+
+# 5.网络编程
+
+
+## 5.1 socket编程
+
+```go
+package main
+// conn, err  net.Dioal("tcp", "127.0.0.1")
+
+import (
+	"fmt"
+	"io/ioutil"
+	"net"
+	"os"
+)
+
+func main() {
+	if len(os.Args) != 2 {
+		fmt.Fprintf(os.Stderr, "Usage: %s host:port", os.Args[0])
+		os.Exit(1)
+	}
+	service := os.Args[1]
+
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", service)
+	checkError(err)
+
+	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	checkError(err)
+
+	_, err = conn.Write([]byte("HEAD / HTTP/1.1\r\n\r\n"))
+	checkError(err)
+
+	result, err := ioutil.ReadAll(conn)
+	checkError(err)
+
+	fmt.Println(string(result))
+	os.Exit(0)
+}
+
+func checkError(err error) {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal Error:%s", err.Error())
+		os.Exit(1)
+	}
+}
+```
+
+
