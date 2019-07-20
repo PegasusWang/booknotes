@@ -174,3 +174,58 @@ redis 使用52位的整数进行编码，放到 zset 里边，value 是元素 ke
 
 集群环境中单个 zset key 数据量不宜超过 1M，否则迁移集群出现卡顿。
 可以根据国家，省份，市区等进行拆分，显著降低 zset 集合大小
+
+
+# 应用9：大海捞针-Scan
+
+从海量 key 找出特定前缀的key列表。
+redis keys 简单粗暴列出所有 满足特定正则的key.  `keys codehole*`
+缺点：
+- 没有 limit， offet，刷屏
+- O(n)，千外级别以上的 key导致 redis 卡顿
+
+redis2.8 加入了 scan 用来大海捞针
+
+- 复杂度虽然也是O(n)，但是通过游标分布进行，不会阻塞线程
+- limit 参数，limit 返回的只是 hint，结果可大可小
+- 同 keys 有模式匹配
+- 返回结构可能重复，需要客户端去重
+- 如果遍历过程期间有修改，改动后的数据能否遍历到不确定
+- 通过返回的游标是否为0决定是否遍历结束，而不是返回的个数
+
+避免大 key 产生。如果你观察 redis 内存大起大落，很有可能是大 key 导致的。
+定位到 key 然后改进业务代码。
+
+redis提供了大 key 扫描功能。
+
+- redis-cli -h 127.0.0.1 -p 7001 --bigkeys -i 0.1
+- 0.1 表示每隔100条scan 休眠 0.1 ，防止 ops 剧烈抬升，扫描时间会变久
+
+
+# 原理1：线程 IO 模型
+
+redis是单线程程序，一定要小心使用O(n)的指令，防止 redis 卡顿
+
+```
+read_events, write_events = select(read_fds, write_fds, timeout)
+for event in read_events:
+    handle_read(event.fd)
+for event in write_events:
+    handle_write(enent.fd)
+handle_others() # 处理其他任务，比如定时任务
+```
+###  指令队列
+redis 为每个客户端维护了一个指令队列，先来先服务
+
+### 响应队列
+redis 同样也为每个客户端套接字关联一个响应队列，redis服务器通过响应队列来讲指令的结果返回给客户端。
+如果队列为空，意味着连接暂时空闲，不需要获取写17:26:02，可以把当前客户端 socket 从write_fds移出来。
+等到队列有数据了再放进去，避免select系统调用立即返回写事件，结果发现没什么数据可写，线程飙高 cpu。
+
+### 定时任务
+redis定时任务记录在一个最小堆。快要执行的任务放在堆顶，每个循环周期，redis 都会把最小堆里已经到点的任务
+立即进行处理。处理完毕后，把最快要执行的任务还需要的时间记录下来，这个时间就是 select 的 timeout 参数。
+redis 知道未来 timeout 时间段内，没有其他定时任务需要处理，可以安心睡眠 timeout 的时间。
+
+# 原理2：交头接耳- 通信协议
+
