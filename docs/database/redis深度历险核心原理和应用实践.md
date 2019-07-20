@@ -127,3 +127,50 @@ def is_action_allowed(user_id, action_key, capacity, leaking_rate):
 for i in range(20):
     print(is_action_allowed("laoqian", "reply", 15, 0.5))
 ```
+
+如何实现分布式限流呢？这里其实可以把 dict 替换成hash，但是要保证从 hash 取值/内存计算/取出字段的原子性。
+Redis4.0 提供了一个限流 redis 模块，redis-cell，提供了漏斗算法和原子限流指令。
+
+```
+# 表示user_id的回复行为频率每60秒最多30次。
+cl.throttle user_id:reply 15 30 60 1
+
+15 capacity 漏斗容量
+30 operations/60seconds 漏水速率
+1 是可选quota, 默认值1
+```
+
+# 应用8：近水楼台-GeHash
+
+redis3.2 以后增加了地理位置 GEO，可以实现附近的餐馆这种功能。
+
+地图元素的位置数据使用二维经纬度表示，经度范围(-180, 180]，纬度范围（-90，90]
+
+比如指定一个半径r，使用 sql 可以圈出来。如果用户不满意，可以扩大半径继续筛选。
+
+```
+select id from positions where x0-r <x< x0+r and y0-r<y<y0+r
+```
+一般为了性能加上双向符合索引 (x,y)。但是在高并发场景不是好的选择。
+
+
+### GEOHash 算法，地理位置距离排序
+
+原理：把地球看成二维平面，划分成一系列的正方形方格（类似棋盘）。
+所有地图元素坐标都放置在唯一的方格中，方格越小越精确。
+然后对这些方格整数编码，越是靠近方格的编码越是接近。比如两刀切蛋糕，可以用 00,01,10,11四个二进制数字
+表示。继续切下去正方形会越来越小，二进制正数也会越来越长，精度更高。
+编码之后每个地图元素的坐标都是一个整数，通过整数可以快速还原出坐标。
+
+redis 使用52位的整数进行编码，放到 zset 里边，value 是元素 key，score 是 GeoHash 的52位整数值。
+
+- 增加：geoadd company 116.48015 39.996794 juejin
+- 计算距离：geodist company juejin ireader km
+- 获取元素位置(轻微误差，不影响附近的人功能)：geopos company juejin ireader
+- 获取元素 hash(geohash 52位编码)：geohash company ireader   # http://gohash.org/XXXX 可以获取位置
+- 附近的公司: georadiusbymember copany ireader 20 km count 3 asc
+  - 范围20公里以内最多的3个元素按照距离正序排序，不会排除自身
+- 根据坐标查询：georadius company 116.514202 39.905409 20 km withdist count 3 asc
+
+集群环境中单个 zset key 数据量不宜超过 1M，否则迁移集群出现卡顿。
+可以根据国家，省份，市区等进行拆分，显著降低 zset 集合大小
