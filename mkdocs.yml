@@ -55,8 +55,8 @@ pages:
       - 《3 The Go Programming Language》: 'golang/3_the_go_programming_lauguage.md'
       - 《Build Web Application With Golang》: 'golang/build-web-application-with-golang.md'
       - 《Go In Action》: 'golang/go_in_action(go语言实战).md'
-      - 《Go学习笔记语言详解》: 'golang/Go学习笔记语言详解.md'
-      - 《Go学习笔记源码剖析》: 'golang/Go学习笔记源码剖析.md'
+      - 《Go学习笔记语言详解》: 'golang/Go语言学习笔记语言详解.md'
+      - 《Go学习笔记源码剖析》: 'golang/Go语言学习笔记源码剖析.md'
     - java:
       - 《java basic introduction》: 'java/java-basic-introduction.md'
     - 网络:
