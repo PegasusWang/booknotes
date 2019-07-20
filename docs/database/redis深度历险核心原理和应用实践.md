@@ -10,7 +10,7 @@ redis2.8 之后加入了set 指令的扩展参数， 使得 setnx 和 expire 可
 # 应用2：缓兵之计-延时队列
 
 使用 list 作为异步消息队列（你对可靠性没有极致追求）
-`blpop,brpop 阻塞操作，如果list 没有数据就会进入休眠。这里需要注意长时间连接断开，需要处理超时异常并重试。
+blpop,brpop 阻塞操作，如果list 没有数据就会进入休眠。这里需要注意长时间连接断开，需要处理超时异常并重试。
 
 
 # 应用3：节衣缩食：位图
@@ -27,3 +27,103 @@ redis 位图自动扩展，如果某个偏移位置超出了现有的内容范�
 解决统计问题的，比如统计UV(unique visit)，pv 好统计，直接可以用hash(key,val) 计数。
 
 提供不精确的去重计数方案，标准误差 0.81%.
+
+pfadd,pfcount 类似 sadd,scard。 (pf 是其HyperLogLog 发明人首字母缩写)
+
+HyperLogLog  占据 12k 存储空间
+
+
+# 应用5：布隆过滤器
+
+比如用户推荐系统的去重复。布隆过滤器说某个值存在，这个值可能不存在，但是若确定不存在，则肯定不存在。
+
+redis4.0 提供了插件功能之后才有布隆过滤器功能。
+
+bf.add, bf.exists
+
+bloom filter calculator
+
+# 应用6：断尾求生-简单限流
+
+思想是使用 zset 记录用户在一个时间窗口之内的操作数量。
+这种方式适合小规模的限流，比如用户发帖等。
+
+
+```py
+import time
+import redis
+
+
+client = client.StrictRedis()
+
+
+def is_action_allowed(user_id, action_key, period, max_count):
+    key = "hist:%s:%s" % (user_id, action_key)
+    now_ts = int(time.time() * 1000)  # 毫秒时间戳
+    with client.pipeline() as pipe:
+        # 记录行为，这里第一个 now_ts 没啥意义，用 uuid 之类的也可以
+        pipe.zadd(key, now_ts, now_ts)
+        # 移除时间窗口之前的行为记录，剩下的都是时间窗口之内的
+        pipe.zremrangbyscore(key, 0, now_ts - period * 1000)
+        # 获取时间窗口内的行为数量
+        pipe.zcard(key)
+        pipe.expire(key, perid + 1)  # 设置 zset 过期时间，主要是为了处理冷用户持续占用内存
+        _, _, current_count = pipe.execute()
+    return current_count <= max_count
+
+
+for i in range(20):
+    print(is_action_allowed('laowang', 'reply', 60, 5))
+```
+
+# 应用7：一毛不拔-漏斗限流
+
+
+```py
+# 单机漏斗算法
+
+import time
+# 漏斗的剩余空间代表当前行为可以持续进行的数量
+# 漏斗的流水速度代表系统允许该行为的最大频率
+
+
+class Funnel:
+    def __init__(self, capacity, leaking_rate):
+        self.capacity = capacity  # 漏斗容量
+        self.leaking_rate = leaking_rate  # 流水速率
+        self.left_quota = capacity
+        self.leaking_ts = time.tiem()  # 上一次漏水时间
+
+    def make_space(self):
+        now_ts = time.time()
+        delta_ts = now_ts - self.leaking_ts  # 距离上一次漏水过了多久
+        delta_quota = delta_ts * self.leaking_rate  # 又可以腾出来的空间
+        if delta_quota < 1:  # 腾出来的空间太少，等下一次
+            return
+        self.left_quota += delta_quota
+        self.leaking_ts = now_ts  # 更新漏水时间
+        if self.left_quota > self.capacity:
+            self.left_quota = self.capacity  # 不能多余容量
+
+    def watering(self, quota):
+        self.make_space()
+        if self.left_quota >= quota:  # 判断剩余空间是否足够
+            self.left_quota -= quota
+            return True
+        return False
+
+
+funnels = {}  # 所有漏斗
+
+
+def is_action_allowed(user_id, action_key, capacity, leaking_rate):
+    key = '%s:%s' % (user_id, action_key)
+    funnel = funnels.get(key)
+    if not funnel:
+        funnel = Funnel(capacity, leaking_rate)
+        funnels[key] = funnel
+    return funnel.watering(1)
+
+for i in range(20):
+    print(is_action_allowed("laoqian", "reply", 15, 0.5))
+```
