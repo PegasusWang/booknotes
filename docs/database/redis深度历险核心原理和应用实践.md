@@ -309,4 +309,78 @@ Redis4.0 增加了混合持久化。rdb文件内容和增量的 AOF 日志文件
 Redis重启，先加载 rdb 内容，然后重放增量 AOF 日志就可以完全替代之前的 AOF 全量文件重放，大幅提升重启效率。
 
 
+# 原理4：雷厉风行-管道
+管道本质是 client 提供的，不是 redis server.
 
+# 原理5：同舟共济-事务
+
+redis 事务模型不严格。
+传统事务又 begin,commit,rollback，redis 是 multi,exec,discard，分别是事务开始，执行和丢弃。
+所有指令在 exec 之前不执行，而是缓存在服务器的一个事务队列中，服务器一旦收到 exec，
+开始执行整个事务队列，并且期间不会被其他指令打扰。
+如果遇到一个失败了，后续指令还是会继续执行，不能算是原子性，仅仅是满足了事务的隔离性。
+
+discard 用于丢弃事务缓冲队列种的所有指令，在 exec 执行之前。
+通常结合 pipeline 使用减少网络IO。
+
+```
+pipe = redis.pipeline(transaction=True)
+pipe.multi()
+pipe.incr('a')
+pipe.incr('a')
+values = pipe.execute()
+```
+
+### redis Watch
+
+乐观锁，解决并发修改。
+
+```
+while True:
+    do_watch()
+    commands()
+    multi()
+    send_commands()
+    try:
+        exec()
+        break
+    except WatchError:
+        continue
+```
+
+watch 监控的变量如果事务执行的时候发现被修改了（包括当前客户端），
+exec 指令返回 null 告诉 client 执行失败，一般由 client 重试。
+```
+# 使用 redis-py 实现余额加倍
+
+import redis
+
+
+def key_for(user_id):
+    return 'account_{}'.format(user_id)
+
+
+def double_account(client, user_id):
+    key = key_for(user_id)
+    while True:
+        client.watch(key)
+        value = int(client.get(key))
+        value *= 2
+        pipe = client.pipeline(transaction=True)
+        pipe.multi()
+        pipe.set(key, value)
+        try:
+            pipeline.execute()
+            break  # 成功，退出
+        except redis.WatchError:
+            continue  # 重试
+    return int(client.get(key))  # 重新获余额
+
+
+client = client.StrictRedis()
+user_id = 1
+client.setnx(ke_for(user_id), 5)  # 初始化
+print(double_account(client, user_id))
+```
+
+#  原理6：Pubsub
