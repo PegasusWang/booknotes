@@ -384,3 +384,8 @@ print(double_account(client, user_id))
 ```
 
 #  原理6：Pubsub
+
+发布订阅，不过无法持久化消息队列，一般没啥用。
+
+redis5.0 加入了 stream 数据结构，给redis 带来了持久化消息队列。
+从此 pubsub 可以消失了。
