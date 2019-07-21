@@ -1,4 +1,4 @@
-《Concurrency In Go》 
+《Concurrency In Go》
 
 # 1 An Introduction to Concurrency
 
@@ -15,7 +15,7 @@ Deadlocks conditions:
 - No Preemption
 - Circular Wait
 
-Livelocks: 活锁。想象两个人迎面走来，一个人向一遍转，然后另一个人也同方向转，一直僵持谁都过不去。
+Livelocks: 活锁。想象两个人迎面走来，一个人向一边转，然后另一个人也同方向转，如此循环一直僵持谁都过不去。
 
 Starvation: 饥饿 ，一个并发的进程无法获取所有需要工作的资源。一个贪心的进程阻止其他进程获取执行资源。
 
@@ -36,8 +36,17 @@ func CalculatePi(bengin,end int64) <-chan uint
 
 # 2 Modeling Your Code: Communicating Sequential Processes
 
-# Concurrency vs Parallelism
+### Concurrency vs Parallelism
 
 Concurrency is a property of the code; parallelism is a property of the runnning programm.
 
-# What Is CAP?
+### What Is CAP?
+
+### Go's Philosophy on Concurrency
+
+CSP primitives or Memory access synchronizations.
+Use whichever is most expressive and/or most simple.
+
+![](./decision_tree.png)
+
+Aim for simplicity, use channels when possible, and treat goroutines like a free resource.
