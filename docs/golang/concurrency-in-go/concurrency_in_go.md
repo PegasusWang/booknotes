@@ -72,3 +72,235 @@ wg.Add(1)
 go sayHello()
 wg.Wait() # this is the join point
 ```
+
+### The sync Package
+
+The sync package contains the concurrency primitives that are most useful for low-level memory access synchronization.
+
+#### WaitGroup
+
+Wait for a set of concurrent operations to complete when you either don't care about the result of the concurrent 
+operations , or you have other means of collecting their results.
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func main() {
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		fmt.Println("1st goroutine sleeping...")
+		time.Sleep(1)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		fmt.Println("2nd goroutine sleeping...")
+		time.Sleep(2)
+	}()
+
+	wg.Wait()
+	fmt.Println("All goroutines complete")
+}
+```
+
+#### Mutex and RWMutex
+
+```go
+// Mutex demo 
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	var count int
+	var lock sync.Mutex
+
+	incr := func() {
+		lock.Lock()
+		defer lock.Unlock()
+		count++
+		fmt.Printf("Incr: %d\n", count)
+	}
+
+	decr := func() {
+		lock.Lock()
+		defer lock.Unlock()
+		count--
+		fmt.Printf("Decr: %d\n", count)
+	}
+
+	var arithmetic sync.WaitGroup
+	for i := 0; i <= 5; i++ {
+		arithmetic.Add(1)
+		go func() {
+			defer arithmetic.Done()
+			incr()
+		}()
+	}
+
+	for i := 0; i <= 5; i++ {
+		arithmetic.Add(1)
+		go func() {
+			defer arithmetic.Done()
+			decr()
+		}()
+	}
+
+	arithmetic.Wait()
+	fmt.Println("Done")
+}
+```
+
+RWMutex: 适合读多写少场景。可以获取多个读锁，除非锁用来持有写入。
+
+
+#### Cond
+
+A rendezvous point for goroutine waiting for or announcing the occurrence of an event.
+
+```
+for conditoinTrue() == false{
+	time.Sleep(1*time.Millisecond) //sleep多久是个问题，太久效率低下，太快消耗 cpu
+}
+```
+use Cond, we cloud write like this:
+
+```
+c := sync.NewCond(&sync.Mutex{})
+c.L.Lock()
+for conditoinTrue() == false {
+	c.Wait() // blocking call, will suspend
+}
+c.L.UnLock()
+```
+考虑有一个固定长度为2的队列，10个 items 想要 push 进去。
+只要有空间我们就希望入队，被尽早通知。
+
+```
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func main() {
+	c := sync.NewCond(&sync.Mutex{})
+	queue := make([]interface{}, 0, 10)
+
+	removeFromQueue := func(delay time.Duration) {
+		time.Sleep(delay)
+		c.L.Lock() // enter the critical section
+		queue = queue[1:] //simulate dequeuing an item
+		fmt.Println("removed from queue")
+		c.L.Unlock() // exit critical section
+		c.Signal() // let a goroutine waiting on the condition know that something has occured
+	}
+
+	for i := 0; i < 10; i++ {
+		c.L.Lock() //进入临界区, critical section
+		for len(queue) == 2 {
+			c.Wait() //will suspend the main goroutine until a signal on the condition has been sent
+		}
+		fmt.Println("Adding to queue")
+		queue = append(queue, struct{}{})
+		go removeFromQueue(1 * time.Second)
+		c.L.Unlock() //exit critical section
+	}
+}
+```
+#### Once
+
+only one call to "Do", even on different goroutines.
+
+```
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	var count int
+
+	increment := func() {
+		count++
+	}
+
+	var once sync.Once
+	var wg sync.WaitGroup
+	wg.Add(100)
+	for i := 0; i < 100; i++ {
+		go func() {
+			defer wg.Done()
+			once.Do(increment)
+		}()
+	}
+	wg.Wait()
+	fmt.Printf("count is %d\n", count) //1
+}
+```
+NOTES: sync.Once only counts the number of times Do is Called, not 
+how many times unique functions passed into Do are called.
+
+```
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	var count int
+	increment := func() { count++ }
+	decremet := func() { count-- }
+
+	var once sync.Once
+	once.Do(increment)
+	once.Do(decremet)
+	fmt.Printf("count is %d\n", count) //1
+}
+```
+
+#### Pool
+
+Pool is a concurrent-safe implementation of the object pool pattern.
+
+```
+myPool := &sync.Pool{
+	New: func() interface{}{
+		fmt.Println("Creating new instance.")
+		return struct{}{}
+	},
+}
+
+myPool.Get()
+instance:=myPool.Get()
+myPool.Put(instance)
+myPool.Get()
+```
+
+Another common situation where a Pool is useful is for warming a cache of pre-allocated
+objects for operations that must run as quickly as possible.
+
+When working with sync.Pool:
+
+- give it a New member variable that is thread-safe when called
+- when receive an instance from Get,make no assumptions regarding the state of the object you receive back
+- Make sure to call Put when you're finished with the object you pulled out of the pool.(with defer)
+- Objects in the pool must be roughly uniform in makeup
