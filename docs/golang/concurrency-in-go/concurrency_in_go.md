@@ -50,3 +50,25 @@ Use whichever is most expressive and/or most simple.
 ![](./decision_tree.png)
 
 Aim for simplicity, use channels when possible, and treat goroutines like a free resource.
+
+
+# 3 Go's Concurrency Building Blocks
+
+Coroutines are simply concurrent subroutines(functions, clousures or methods in Go) that are nonpreemptive.
+
+Go follows a model of concurrency called the fork-join model.
+
+
+![](./join_point.png)
+
+```go
+var wg sync.WaitGroup
+
+sayHello := func() {
+	defer wg.Done()
+	fmt.Println("hello")
+}
+wg.Add(1)
+go sayHello()
+wg.Wait() # this is the join point
+```
