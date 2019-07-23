@@ -484,3 +484,74 @@ this function controls the number of OS threads that will host so-called "work q
 
 
 # 4. Concurrency Patterns in Go
+
+### Confinement(限制)
+
+When working with concurrent code
+
+- Synchronization primitives for sharing memory (sync.Mutex)
+- Synchronization via Communicating (channels)
+- Immutable Data (copy of values)
+- Data protected by confinement (ad hoc and lexical)
+
+
+```
+func main() {
+	// confines the write aspect of this channel to prevent other goroutines from writing to it
+	chanOnwer := func() <-chan int {
+		results := make(chan int, 5)
+		go func() {
+			defer close(results)
+			for i := 0; i <= 5; i++ {
+				results <- i
+			}
+		}()
+		return results
+	}
+
+	consumer := func(results <-chan int) {
+		for result := range results {
+			fmt.Printf("Received : %d\n", result)
+		}
+		fmt.Println("Done receiving!")
+	}
+
+	results := chanOnwer()
+	consumer(results)
+}
+```
+### The for-select Loop
+
+- Sending iteration variables out on a channel
+
+```
+	for _, s := range []string{"a", "b", "c"} {
+		select {
+		case <-done:
+			return
+		case stringStream <- s:
+		}
+	}
+```
+
+- Looping infinitely waiting to be stopped
+
+```
+	for {
+		select {
+		case <-done:
+			return
+		default:
+		}
+		// do non-preemptable work
+	}
+```
+
+	for {
+		select {
+		case <-done:
+			return
+		default:
+		}
+		// do non-preemptable work
+	}
