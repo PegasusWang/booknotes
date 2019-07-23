@@ -79,7 +79,7 @@ The sync package contains the concurrency primitives that are most useful for lo
 
 #### WaitGroup
 
-Wait for a set of concurrent operations to complete when you either don't care about the result of the concurrent 
+Wait for a set of concurrent operations to complete when you either don't care about the result of the concurrent
 operations , or you have other means of collecting their results.
 ```go
 package main
@@ -115,7 +115,7 @@ func main() {
 #### Mutex and RWMutex
 
 ```go
-// Mutex demo 
+// Mutex demo
 package main
 
 import (
@@ -254,7 +254,7 @@ func main() {
 	fmt.Printf("count is %d\n", count) //1
 }
 ```
-NOTES: sync.Once only counts the number of times Do is Called, not 
+NOTES: sync.Once only counts the number of times Do is Called, not
 how many times unique functions passed into Do are called.
 
 ```
@@ -332,3 +332,155 @@ We can use "for range" iter channel, it will automatically break the loop when c
 
 Buffred channels, even if no reads are performed on the channel, a goroutine can still perform n writes.
 You can treat buffered channels are an inmemory FIFO queue for concurrent processes to communicate over.
+
+![](./channel1.png)
+![](./channel2.png)
+
+The first thing we should do to put channels in the right context is to assign channel ownership.
+
+- Instaniate the channel.
+- Perform writes, os pass ownership to another goroutine.
+- Close the channel
+- Ecapsulate the previous three things in this list and expose them via a reader channel.
+
+As a consumer of a channel, I only have to worry about two things.
+
+- Knowing when a channel is closed (use val, ok)
+- Responsibly handling blocking for any reason
+
+```
+// keep the scope of channel ownership small
+func main() {
+
+	chanOwner := func() <-chan int {
+		resultStream := make(chan int, 5)
+		go func() {
+			defer close(resultStream)
+			for i := 0; i <= 5; i++ {
+				resultStream <- i
+			}
+		}()
+		return resultStream // will implicityly converted to read-only for consumers
+	}
+
+	resultStream := chanOwner()
+	for result := range resultStream {
+		fmt.Printf("received : %d\n", result)
+	}
+
+	fmt.Println("Done receiving!")
+}
+```
+
+### The select Statement
+
+The select statement is the glue that binds channels together,
+it can help safely bring channels together with concepts like cancellations, timeouts, waiting, and default values.
+
+
+```
+func main() {
+	// a bit like switch
+	var c1, c2 <-chan interface{}
+	var c3 chan<- interface{}
+	// all channels reads and writes are considered simultaneously to see if any of them are ready
+	// populated or closed channels in the case of reads, and channels that are not at capacity in the case of writes
+	// if none of the channels are ready, the entire select statement blocks
+	select {
+	case <-c1:
+		// do something
+	case <-c2:
+		// do something
+	case c3 <- struct{}{}:
+		// do something
+	}
+}
+```
+
+- What happens when multiple channels have something to read?
+	- random select, each has an equal  chance of being selected as all the others
+
+
+```
+func main() {
+	c1 := make(chan interface{})
+	close(c1)
+	c2 := make(chan interface{})
+	close(c2)
+	var c1Count, c2Count int
+	for i := 1000; i >= 0; i-- {
+		select {
+		case <-c1:
+			c1Count++
+		case <-c2:
+			c2Count++
+		}
+	}
+	fmt.Printf("c1: %d\n, c2: %d\n", c1Count, c2Count)
+}
+```
+
+- What if there are never any channels that become ready?
+	- you may want to timeout
+
+```
+func main() {
+	var c <-chan int
+	select {
+	case <-c:
+	case <-time.After(1 * time.Second):
+		fmt.Println("Time out")
+	}
+}
+```
+
+- what if we want to do something but no channels are currently ready?
+	- use default
+	- this allows a goroutine to make progress on work while waiting for another goroutine to report a result
+
+```
+func main() {
+	start := time.Now()
+	var c1, c2 <-chan int
+	select {
+	case <-c1:
+	case <-c2:
+	default:
+		fmt.Printf("In default after %v\n\n", time.Since(start))
+	}
+}
+```
+
+
+```
+func main() {
+	done := make(chan interface{})
+	go func() {
+		time.Sleep(5 * time.Second)
+		close(done)
+	}()
+	workCounter := 0
+loop:
+	for {
+		select {
+		case <-done:
+			break loop
+		default:
+		}
+		// simulate work
+		workCounter++
+		time.Sleep(1 * time.Second)
+	}
+	fmt.Printf("Achieved %v cycles of work before signalled to stop.\n", workCounter)
+}
+```
+###### empty select
+`seelct {}` will block forever.
+
+
+### The GOMAXPROCS lever
+
+this function controls the number of OS threads that will host so-called "work queues"
+
+
+# 4. Concurrency Patterns in Go
