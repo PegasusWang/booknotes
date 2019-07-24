@@ -942,3 +942,160 @@ func main() {
 ### Fan-Out, Fan-In
 
 
+Fan-out is a term to describe the process of starting multiple gortouine to handle input from the pipeline,
+and Fan-in is a term to describe the process of combining results into one channel.
+
+Fanout one of your stages if both of the following apply:
+
+- It doesn't rely on values that the stage had calulated before.
+- It takes a long time to run
+
+
+### The or-done-channel
+
+```
+	orDone := func(done, c <-chan interface{}) <-chan interface{} {
+		valStream := make(chan interface{})
+		go func() {
+			defer close(valStream)
+			for {
+				select {
+				case <-done:
+					return
+				case v, ok := <-c:
+					if ok == false {
+						return
+					}
+					select {
+					case valStream <- v:
+					case <-done:
+					}
+				}
+			}
+		}()
+		return valStream
+	}
+
+	for val := range orDone(done, myChan) {
+		// Do something with val
+	}
+```
+
+### The tee-channel
+
+Sometimes you may want to split values coming in from a channel so that you can send them off
+into two separate areas of your codebase.
+
+You can pass it a channel to read from , and it will return two seperate channels that will get the same value:
+
+```
+package main
+
+import "fmt"
+
+func main() {
+	tee := func(done <-chan interface{}, in <-chan interface{}) (<-chan interface{}, <-chan interface{}) {
+		out1 := make(chan interface{})
+		out2 := make(chan interface{})
+		go func() {
+			defer close(out1)
+			defer close(out2)
+			for val := range orDone(done, in) {
+				var out1, out2 = out1, out2 //shadow the variables
+				for i := 0; i < 2; i++ {
+					select {
+					case <-done:
+					case out1 <- val:
+						// set its shadowed copy to nil,so further writes will block and the other channel may continue
+						out1 = nil
+					case out2 <- val:
+						out2 = nil
+					}
+				}
+			}
+		}()
+		return out1, out2
+	}
+
+	done := make(chan interface{})
+	defer close(done)
+	out1, out2 := tee(done, take(done, repeat(done, 1, 2), 4))
+
+	for val1 := range out1 {
+		fmt.Printf("out1: %v, out2:%v\n", val1, <-out2)
+	}
+}
+```
+
+### The bridge-channel
+
+define a function that can destructure the channel of channels into s simple channel(bridging the channels)
+
+
+```
+package main
+
+import "fmt"
+
+func main() {
+	bridge := func(done <-chan interface{}, chanStream <-chan <-chan interface{}) <-chan interface{} {
+		valStream := make(chan interface{})
+		go func() {
+			defer close(valStream)
+			for {
+				var stream <-chan interface{} //this is the channel that will return all values from bridge
+				select {
+				case maybeStream, ok := <-chanStream:
+					if ok == false {
+						return
+					}
+					stream = maybeStream
+				case <-done:
+					return
+				}
+				for val := range orDone(done, stream) {
+					select {
+					case valStream <- val:
+					case <-done:
+					}
+				}
+
+			}
+		}()
+		return valStream
+	}
+
+	genVals := func() <-chan <-chan interface{} {
+		chanStream := make(chan (<-chan interface{}))
+		go func() {
+			defer close(chanStream)
+			for i := 0; i < 10; i++ {
+				stream := make(chan interface{}, 1)
+				stream <- i
+				close(stream)
+				chanStream <- stream
+			}
+		}()
+		return chanStream
+	}
+
+	for v := range bridge(nil, genVals()) {
+		fmt.Printf("%v ", v) //0 1 2 3 4 5 6 7 8 9
+	}
+}
+```
+
+
+### Queuing
+
+queuing should be implemented either:
+
+- At the entrance to your pipeline
+- In stages where batching will lead to higher efficiency
+
+### The context Package
+
+context package serves two primary purposes:
+
+- to provide an API for canceling branches of you call-graph
+- to provide a data-bag for transporting request-scoped data through your call-graph
