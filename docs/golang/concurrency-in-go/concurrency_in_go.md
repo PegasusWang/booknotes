@@ -1099,3 +1099,15 @@ context package serves two primary purposes:
 
 - to provide an API for canceling branches of you call-graph
 - to provide a data-bag for transporting request-scoped data through your call-graph
+
+
+# 5. Concurrency at Scale
+
+### Error Progagation
+
+critical information:
+
+- What happend
+- When and where it occured(stack track, UTC time, machine)
+- A friendly usre-facing message
+- How the user can get more information(track id)
