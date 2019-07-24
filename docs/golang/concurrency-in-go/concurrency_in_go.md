@@ -751,3 +751,194 @@ func test() {
 	fmt.Printf("done after %v\n", time.Since(start))
 }
 ```
+### Error Handling
+
+```
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+// Result is http result
+type Result struct {
+	Error    error
+	Response *http.Response
+}
+
+func main() {
+	checkStatus := func(done <-chan interface{}, urls ...string) <-chan Result {
+		results := make(chan Result)
+		go func() {
+			defer close(results)
+			for _, url := range urls {
+				var result Result
+				resp, err := http.Get(url)
+				result = Result{Error: err, Response: resp}
+				select {
+				case <-done:
+					return
+				case results <- result:
+				}
+			}
+		}()
+		return results
+	}
+
+	done := make(chan interface{})
+	defer close(done)
+	urls := []string{"https://www.baidu.com", "https://badhost"}
+	for result := range checkStatus(done, urls...) {
+		if result.Error != nil {
+			fmt.Printf("error:%v", result.Error)
+			continue
+		}
+		fmt.Printf("Response: %\n", result.Response.Status)
+	}
+}
+```
+
+Errors should be considered first-class citizens when constructing values to return from goroutines.
+If your goroutine can produce errors, those errors should be tightly coupled with your result type,
+and passed along through the same lines of communication.
+
+### Pipelines
+
+It is a very powerful tool to use when your program needs to process streams, or batched of data.
+
+Stage: taskes data in , performs a transformation on it, and sends the data back out
+
+
+```
+	multiply := func(values []int, multiplier int) []int {
+		multipliedValues := make([]int, len(values))
+		for i, v := range values {
+			multipliedValues[i] = v * multiplier
+		}
+		return multipliedValues
+	}
+```
+
+#### Best practice for constructing Pipelines
+
+```
+package main
+
+import "fmt"
+
+func main() {
+	generator := func(done <-chan interface{}, integers ...int) <-chan int {
+		intStream := make(chan int)
+		go func() {
+			defer close(intStream)
+			for _, i := range integers {
+				select {
+				case <-done:
+					return
+				case intStream <- i:
+				}
+			}
+		}()
+		return intStream
+	}
+
+	multiply := func(done <-chan interface{}, intStream <-chan int, multiplier int) <-chan int {
+		multipliedStream := make(chan int)
+		go func() {
+			defer close(multipliedStream)
+			for i := range intStream {
+				select {
+				case <-done:
+					return
+				case multipliedStream <- i * multiplier:
+				}
+			}
+		}()
+		return multipliedStream
+	}
+
+	add := func(done <-chan interface{}, intStream <-chan int, additive int) <-chan int {
+		addedStream := make(chan int)
+		go func() {
+			defer close(addedStream)
+			for i := range intStream {
+				select {
+				case <-done:
+					return
+				case addedStream <- i + additive:
+				}
+			}
+		}()
+		return addedStream
+	}
+
+	done := make(chan interface{})
+	defer close(done)
+
+	intStream := generator(done, 1, 2, 3, 4)
+	pipeline := multiply(done, add(done, multiply(done, intStream, 2), 1), 2)
+	for v := range pipeline {
+		fmt.Println(v)
+	}
+
+}
+```
+#### Some Handy Generators
+
+
+```
+package main
+
+import "fmt"
+
+func main() {
+
+	repeat := func(done <-chan interface{}, values ...interface{}) <-chan interface{} {
+		valueStream := make(chan interface{})
+		go func() {
+			defer close(valueStream)
+			for {
+				for _, v := range values {
+					select {
+					case <-done:
+						return
+					case valueStream <- v:
+					}
+				}
+			}
+		}()
+		return valueStream
+	}
+
+	take := func(done <-chan interface{}, valueStream <-chan interface{}, num int) <-chan interface{} {
+		takeStream := make(chan interface{})
+		go func() {
+			defer close(takeStream)
+			for i := 0; i < num; i++ {
+				select {
+				case <-done:
+					return
+				case takeStream <- <-valueStream:
+				}
+			}
+
+		}()
+		return takeStream
+	}
+
+	done := make(chan interface{})
+	defer close(done)
+
+	for num := range take(done, repeat(done, 1), 10) {
+		fmt.Printf("%v ", num)
+	}
+	// 1 1 1 1 1 1 1 1 1 1
+
+}
+```
+
+
+### Fan-Out, Fan-In
+
+
