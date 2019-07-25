@@ -1488,10 +1488,42 @@ synchronized through channels or types in the sync package.
 
 The work stealing algorithm follows a few basic rules, Given a thread of execution:
 
-1. At a fork point, add tasks to the tail of the deque associated with the thread
+1. At Aa fork point, add tasks to the tail of the deque associated with the thread
 2. If the thread is idle, steal work from the head of deque associated with som other random thread
 3. At a join point that cannot be realized yet(i.e.,the goroutine it is synchronized with has not completed yet), pop
 	 work off the tail of the thread's own deque.
 4. if the thread's deque is empty, either:
   - stall at a join
 	- steal work from the head of a random thread's associated deque
+
+### Stealing Tasks or Continuations?
+
+```
+func main() {
+	var fib func(n int) <-chan int
+	fib = func(n int) <-chan int {
+		result := make(chan int)
+		go func() { // tasks
+			defer close(result)
+			if n <= 2 {
+				result <- 1
+				return
+			}
+			result <- <-fib(n-1) + <-fib(n-2)
+		}()
+		return result // continuation
+	}
+	fmt.Printf("fib = %d", <-fib(4))
+}
+```
+
+- In go , goroutins are tasks
+- Everything after a goroutine is called is the continuation
+
+Continuation stealing is how Go's work-stealing algorithm is implemented
+
+Go's scheduler has three main concepts:
+
+- G: A goroutine
+- M: An OS thread(also referenced as a machine in the source code)
+- P: A context(also referecned as a processor in the source code), GOMAXPROCS
