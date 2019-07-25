@@ -696,7 +696,7 @@ it can stop the gorutine.
 
 ### The or-channel pattern
 
-At tiems you may find yourself wanting to combine one or more done channels into a single done channel 
+At times you may find yourself wanting to combine one or more done channels into a single done channel
 that closes if any of its component channels close.
 This pattern creates a composite done channel through recursion and goroutiens.
 
@@ -1415,3 +1415,83 @@ func (a *APIConnnection) ResolveAddress(ctx context.Context) errro {
 	return nil
 }
 ```
+
+### Healing Unhealthy Goroutines
+
+Ensure your long-lived goroutines stay up and healthy.
+
+```
+package main
+
+import (
+	"log"
+	"time"
+)
+
+type startGoroutineFn func(done <-chan interface{}, pulseInterval time.Duration) (heartbeat <-chan interface{})
+
+func main() {
+
+	newSteward := func(timeout time.Duration, startGoroutine startGoroutineFn) startGoroutineFn {
+		return func(done <-chan interface{}, pulseInterval time.Duration) <-chan interface{} {
+			heartbeat := make(chan interface{})
+			go func() {
+				defer close(heartbeat)
+
+				var wardDone chan interface{}
+				var wardHeartbeat <-chan interface{}
+				startWard := func() {
+					wardDone = make(chan interface{})
+					wardHeartbeat = startGoroutine(or(wardDone, done), timeout/2)
+				}
+				startWard()
+				pulse := time.Tick(pulseInterval)
+
+			monitorLoop:
+				for {
+					timeoutSignal := time.After(timeout)
+					for {
+						select {
+						case <-pulse:
+							select {
+							case heartbeat <- struct{}{}:
+							default:
+							}
+						case <-wardHeartbeat:
+							continue monitorLoop
+						case <-timeoutSignal:
+							log.Println("steward: ward unhealthy: restarting")
+							close(wardDone)
+							startWard()
+							continue monitorLoop
+						case <-done:
+							return
+						}
+					}
+
+				}
+			}()
+			return heartbeat
+		}
+	}
+}
+```
+
+
+# 6 Goroutines and the Go Runtime
+
+
+### Work Stealing
+work stealing strategy. Go follows a fork-join model for concurrency.
+Forks are when goroutines are started, and join points are when two or more goroutines are
+synchronized through channels or types in the sync package.
+
+The work stealing algorithm follows a few basic rules, Given a thread of execution:
+
+1. At a fork point, add tasks to the tail of the deque associated with the thread
+2. If the thread is idle, steal work from the head of deque associated with som other random thread
+3. At a join point that cannot be realized yet(i.e.,the goroutine it is synchronized with has not completed yet), pop
+	 work off the tail of the thread's own deque.
+4. if the thread's deque is empty, either:
+  - stall at a join
+	- steal work from the head of a random thread's associated deque
