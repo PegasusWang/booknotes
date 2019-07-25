@@ -1111,3 +1111,18 @@ critical information:
 - When and where it occured(stack track, UTC time, machine)
 - A friendly usre-facing message
 - How the user can get more information(track id)
+
+### Timeouts and Cancellation
+
+what the reasons we might want our concurrent processes to support timeouts?
+
+- System saturation(饱和)
+- Stale data
+- Attempting to prevent deadlocks
+
+There are a number of reasons why a concurrent process might be canceld:
+
+- Timeouts, a timeout is an implicit cancellation
+- User intervention(干预)
+- Parent cancellation
+- Replicated requests
