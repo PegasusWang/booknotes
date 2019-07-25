@@ -1271,3 +1271,147 @@ func main() {
 ```
 
 ### Rate Limiting
+
+Most rate limitings is done by utilizing an algorithm called the "token bucket".
+
+```
+package main
+
+import (
+	"context"
+	"log"
+	"os"
+	"sync"
+
+	"golang.org/x/time/rate" // go get github.com/golang/time/rate
+)
+
+func Open() *APIConnection {
+	return &APIConnection{
+		rateLimiter: rate.NewLimiter(rate.Limit(1), 1), //1 event per second
+	}
+}
+
+type APIConnection struct {
+	rateLimiter *rate.Limiter // https://godoc.org/golang.org/x/time/rate
+}
+
+func (a *APIConnection) ReadFile(ctx context.Context) error {
+	if err := a.rateLimiter.Wait(ctx); err != nil {
+		return err
+	}
+	return nil
+}
+func (a *APIConnection) ResoveAddress(ctx context.Context) error {
+	if err := a.rateLimiter.Wait(ctx); err != nil {
+		return err
+	}
+	return nil
+}
+
+func main() {
+	defer log.Printf("Done")
+	log.SetOutput(os.Stdout)
+	log.SetFlags(log.Ltime | log.LUTC)
+	apiConnection := Open()
+	var wg sync.WaitGroup
+	wg.Add(20)
+
+	for i := 0; i < 10; i++ {
+		go func() {
+			defer wg.Done()
+			err := apiConnection.ReadFile(context.Background())
+			if err != nil {
+				log.Printf("cannot ReadFile :%v", err)
+			}
+			log.Printf("ReadFile")
+		}()
+	}
+
+	for i := 0; i < 10; i++ {
+		go func() {
+			defer wg.Done()
+			err := apiConnection.ResoveAddress(context.Background())
+			if err != nil {
+				log.Printf("cannot ResolveAddress :%v", err)
+			}
+			log.Printf("ResolveAddress")
+		}()
+	}
+	wg.Wait()
+
+}
+```
+
+It's eaiser to keep the limiters separate and then combine them into one rate limiter that manages the interaction for
+you.
+
+
+```
+package main
+
+import (
+	"context"
+	"sort"
+	"time"
+
+	"golang.org/x/time/rate" // go get github.com/golang/time/rate
+)
+
+type RateLimiter interface {
+	Wait(context.Context) error
+	Limit() rate.Limit
+}
+
+func MultiLimiter(limiters ...RateLimiter) *multiLimiter {
+	byLimit := func(i, j int) bool {
+		return limiters[i].Limit() < limiters[j].Limit()
+	}
+	sort.Slice(limiters, byLimit)
+	return &multiLimiter{limiters: limiters}
+}
+
+type multiLimiter struct {
+	limiters []RateLimiter
+}
+
+func (l *multiLimiter) Wait(ctx context.Context) error {
+	for _, l := range l.limiters {
+		if err := l.Wait(ctx); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (l *multiLimiter) Limit() rate.Limit {
+	// return the most restrictive limit
+	return l.limiters[0].Limit()
+}
+
+func Open() *APIConnnection {
+	secondLimit := rate.NewLimiter(Per(2, time.Second), 1)
+	minuteLimit := rate.NewLimiter(Per(10, time.Minute), 10)
+	return &APIConnnection{
+		rateLimiter: MultiLimiter(secondLimit, minuteLimit),
+	}
+}
+
+type APIConnnection struct {
+	rateLimiter RateLimiter
+}
+
+func (a *APIConnnection) ReadFile(ctx context.Context) error {
+	if err := a.rateLimiter.Wait(ctx); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *APIConnnection) ResolveAddress(ctx context.Context) errro {
+	if err := a.rateLimiter.Wait(ctx); err != nil {
+		return err
+	}
+	return nil
+}
+```
