@@ -1126,3 +1126,148 @@ There are a number of reasons why a concurrent process might be canceld:
 - User intervention(干预)
 - Parent cancellation
 - Replicated requests
+
+
+### Heartbeats
+
+Heartbeats are a way for concurrent processes to signal life to outside parties. Two diferent types:
+
+- Heartbeats that occur on a time interval.
+- Heartbeats that occur at the beginning of a unit of work.
+
+
+```
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	doWork := func(done <-chan interface{}, pulseInterval time.Duration) (chan interface{}, <-chan time.Time) {
+		heartbeat := make(chan interface{})
+		results := make(chan time.Time)
+		go func() {
+			defer close(heartbeat)
+			defer close(results)
+
+			pulse := time.Tick(pulseInterval)
+			workGen := time.Tick(2 * pulseInterval) //another ticker to simulate work coming in
+
+			sendPulse := func() {
+				select {
+				case heartbeat <- struct{}{}:
+				default: // no one maybe listening to our hearteat
+				}
+			}
+			sendResult := func(r time.Time) {
+				for {
+					select {
+					case <-done:
+						return
+					case <-pulse:
+						sendPulse()
+					case results <- r:
+						return
+					}
+				}
+			}
+
+			for {
+				select {
+				case <-done:
+					return
+				case <-pulse:
+					sendPulse()
+				case r := <-workGen:
+					sendResult(r)
+				}
+			}
+		}()
+		return heartbeat, results
+	}
+
+	done := make(chan interface{})
+	time.AfterFunc(10*time.Second, func() { close(done) })
+
+	const timeout = 2 * time.Second
+	heartbeat, results := doWork(done, timeout/2)
+	for {
+		select {
+		case _, ok := <-heartbeat:
+			if ok == false {
+				return
+			}
+			fmt.Println("pulse")
+		case r, ok := <-results:
+			if ok == false {
+				return
+			}
+			fmt.Printf("results %v\n", r.Second())
+		case <-time.After(timeout):
+			return
+		}
+	}
+
+}
+```
+
+For any long-running goroutines, or goroutines that need to be tested, highly recommend this patern.
+
+### Replicated Request
+
+You can replicate the request to mulitple handlers(whether those be gorutines, processes, or servers),
+and one of them will run faster than other ones, you can then immediately return the result.
+The downside is that you'll have to utilize resources to keep multiple copies of the handlers running.
+
+
+```
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+func main() {
+	doWork := func(done <-chan interface{}, id int, wg *sync.WaitGroup, result chan<- int) {
+		started := time.Now()
+		defer wg.Done()
+
+		//Simulate random load
+		simulateLoadTime := time.Duration(1+rand.Intn(5)) * time.Second
+		select {
+		case <-done:
+		case <-time.After(simulateLoadTime):
+		}
+		select {
+		case <-done:
+		case result <- id:
+		}
+
+		took := time.Since(started)
+		if took < simulateLoadTime {
+			took = simulateLoadTime
+		}
+		fmt.Printf("%v took %v\n", id, took)
+	}
+
+	done := make(chan interface{})
+	result := make(chan int)
+	var wg sync.WaitGroup
+	wg.Add(10)
+
+	for i := 0; i < 10; i++ {
+		go doWork(done, i, &wg, result) //start 10 handlers to handle our request
+	}
+	firstReturned := <-result // grabs the first return value from the group of handlers
+	close(done)               //cancel all the remaining handlers
+	wg.Wait()
+	fmt.Printf("Received an answer from #%v\n", firstReturned)
+}
+```
+
+### Rate Limiting
