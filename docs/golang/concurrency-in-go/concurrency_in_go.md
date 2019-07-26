@@ -1494,7 +1494,7 @@ The work stealing algorithm follows a few basic rules, Given a thread of executi
 	 work off the tail of the thread's own deque.
 4. if the thread's deque is empty, either:
   - stall at a join
-	- steal work from the head of a random thread's associated deque
+  - steal work from the head of a random thread's associated deque
 
 ### Stealing Tasks or Continuations?
 
