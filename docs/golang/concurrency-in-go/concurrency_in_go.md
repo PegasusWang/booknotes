@@ -1527,3 +1527,76 @@ Go's scheduler has three main concepts:
 - G: A goroutine
 - M: An OS thread(also referenced as a machine in the source code)
 - P: A context(also referecned as a processor in the source code), GOMAXPROCS
+
+
+# Appendix
+
+### Anatomy of a Goroutine Error
+
+Prior to Go1.6, when a goroutine panicked, the runtime would print stack traces of all the currently executing
+goroutines.
+
+```
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	//go run -race main.go
+	var data int
+	go func() {
+		data++
+	}()
+	if data == 0 {
+		fmt.Printf("value is %v\n", data)
+	}
+}
+```
+
+### Race Detection
+
+go run -race main.go
+
+### pprof
+
+`runtime/pporf` package has predefined profiles to hook into and display:
+
+- goroutine
+- heap
+- threadcreate
+- block
+- primitives
+- mutex
+
+```
+package main
+
+import (
+	"log"
+	"os"
+	"runtime/pprof"
+	"time"
+)
+
+func main() {
+	log.SetFlags(log.Ltime | log.LUTC)
+	log.SetOutput(os.Stdout)
+
+	//every second , log how many goroutines are currently running
+	go func() {
+		goroutines := pprof.Lookup("goroutine")
+		for range time.Tick(1 * time.Second) {
+			log.Printf("goroutine count:%d\n", goroutines.Count())
+		}
+	}()
+
+	//create some goroutines which will never exit
+	var blockForever chan struct{}
+	for i := 0; i < 10; i++ {
+		go func() { <-blockForever }()
+		time.Sleep(500 * time.Millisecond)
+	}
+}
+```
