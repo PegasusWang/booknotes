@@ -57,3 +57,30 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
 ```
+
+### Building the simple static file server
+
+```
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+)
+
+func main() {
+	router := httprouter.New()
+	router.ServeFiles("/static/*filepath", http.Dir("/users/naren/static"))
+	log.Fatal(http.ListenAndServe(":8000", router))
+}
+```
+
+### Gorilla Mux, a powerful HTTP router
+
+- Path-based matching
+- Query-based matching
+- Domain-based matching
+- Sub-domain based matching
+- Reverse URL generation
