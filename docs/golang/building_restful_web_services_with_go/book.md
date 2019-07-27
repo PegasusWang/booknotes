@@ -359,4 +359,29 @@ func main() {
 
 ### Building a Metro Rail APi with go-restful
 
+// go get github.com/emicklei/go-restful
+
+
+### Building RESTful APIs with the Gin framework
+
+```
+// go get github.com/gin-gonic/gin
+// ginBasic.go
+package main
+
+import (
+	"time"
+
+	"github.com/gin-gonic/gin"
+)
+
+func main() {
+	r := gin.Default()
+	r.GET("/pingTime", func(c *gin.Context) {
+		c.JSON(200, gin.H{"serverTime": time.Now().UTC()})
+	})
+	r.Run(":8000")
+}
+```
+
 
