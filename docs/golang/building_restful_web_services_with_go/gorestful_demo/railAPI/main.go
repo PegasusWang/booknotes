@@ -95,3 +95,19 @@ func (t TrainResource) removeTrain(request *restful.Request, response *restful.R
 		response.WriteErrorString(http.StatusInternalServerError, err.Error())
 	}
 }
+func main() {
+	var err error
+	DB, err = sql.Open("sqlite3", "./railapi.db")
+	if err != nil {
+		log.Println("Driver creation failed!")
+	}
+	dbutils.Initialize(DB)
+	wsContainer := restful.NewContainer()
+
+	wsContainer.Router(restful.CurlyRouter{})
+	t := TrainResource{}
+	t.Register(wsContainer)
+	log.Printf("start listening on localhost:8000")
+	server := &http.Server{Addr: ":8000", Handler: wsContainer}
+	log.Fatal(server.ListenAndServe())
+}
