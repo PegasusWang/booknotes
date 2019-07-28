@@ -708,3 +708,13 @@ Microservices bring the following benefits to the plate:
 - Adaptability is easy for the new developers
 - Adopting best practices, such as Continuous Integration (CI) and Continuous Delivery (CD)
 - Easily replaceable software with loosely coupled architecture
+
+
+### Go Kit, a package for building microservices
+
+go get github.com/go-kit/kit
+
+
+# 10. Deplying Our REST srevices
+
+
