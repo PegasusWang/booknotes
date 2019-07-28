@@ -1,3 +1,5 @@
+《Building RESTful Web services with GO》 涉及面比较广，但是讲得太浅
+
 # 1. Getting started with REST API Development
 
 Live reloading the application with supervisord and gulp
@@ -394,3 +396,315 @@ go get github.com/revel/revel
 # 5. Working with MongoDB and Go to Create REST APIs
 
 ### Introducig mgo, a MongoDB deiver for Go
+
+get get gopkg.in/mgo.v2
+
+
+# 6. Wokring with Protocol Bufffers and GRPC
+
+### Protocol buffer language
+
+- Scalar values, Enumerations, Defalut values, Nested values, Unknown types
+
+```
+syntax 'proto3';
+
+message NetworkInterface {
+  int index=1;
+  int mtu=2;
+  string name=3;
+  string hardwareaddr=4;
+}
+```
+
+the protocol buffer message will be converted to a Go struct and fiels are filled with empty defaut values.
+
+### Compiling a protocol buffer with protoc
+
+install protobuf compiler on your meachine.  brew install protobuf
+
+### GRPC
+
+go get google.golang.org/grpc
+
+go get -u github.com/golang/protobuf/protoc-gen-go
+
+Grpc has the following benefits over HTTP/REST/JSON architecture:
+
+- GPRC use http/2, which is a binary protocol
+- Header compression is possible in http2
+- we can multiplex many requests on one connection
+- Usage of protobufs for strict typing of data
+- streaming of requests or responses is possible instead of request/response transactions
+
+### Bidirectional streaming with GRPC
+
+
+# 7. Working with PostgreSQL, JSON, and Go
+
+### install PostgreSQL
+
+brew install postgresql && brew services start postgresql // port 5432
+// use psql shell create new use and database and
+
+### pq, a pure PostgreSQL database driver for Go
+
+go get github.com/lib/pq
+
+### Exploring thj JSON store in PostgreSQL
+
+PostgreSQL > 9.2 has a feature called the JSON store.
+
+### GORM, a powerful ORM for GO
+
+go get -u github.com/jinzhu/gorm
+
+
+# 8. Building a REST API Client in Go and Unit Testing
+
+### Basics for writing a command-line tool in Go
+
+
+```
+// flagExample.go
+package main
+
+import (
+	"flag"
+	"log"
+)
+
+var name = flag.String("name", "stranger", "you wonderfule name")
+
+func main() {
+	flag.Parse()
+	log.Printf("Hello %s", *name)
+}
+// ./flagExample -name laowang or ./flagExample -name=laowang
+```
+
+### CLI - a library for building beautiful clients
+
+go get github.com/urfave/cli
+
+```
+// cliBasci.go
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/urfave/cli"
+)
+
+func main() {
+	app := cli.NewApp()
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "name",
+			Value: "stranger",
+			Usage: "you wonderful name",
+		},
+		cli.IntFlag{
+			Name:  "age",
+			Value: 0,
+			Usage: "your graceful age",
+		},
+	}
+	app.Action = func(c *cli.Context) error {
+		log.Printf("Hello %s (%d years), Welcome to the command line world", c.String("name"), c.Int("age"))
+		return nil
+	}
+	app.Run(os.Args)
+}
+```
+
+### Collecting command-line arguments in CLI
+
+![](./flag.png)
+
+```
+// storeMarks.go
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/urfave/cli"
+)
+
+func main() {
+	app := cli.NewApp()
+	// define flags
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "save",
+			Value: "no",
+			Usage: "Should save to database (yes/no)",
+		},
+	}
+
+	app.Version = "1.0"
+	// define action
+	app.Action = func(c *cli.Context) error {
+		var args []string
+		if c.NArg() > 0 {
+			// Fetch arguments in a array
+			args = c.Args()
+			personName := args[0]
+			marks := args[1:len(args)]
+			log.Println("Person: ", personName)
+			log.Println("marks", marks)
+		}
+		// check the flag value
+		if c.String("save") == "no" {
+			log.Println("Skipping saving to the database")
+		} else {
+			// Add database logic here
+			log.Println("Saving to the database", args)
+		}
+		return nil
+	}
+
+	app.Run(os.Args)
+}
+
+// ./storeMarks --save=yes Albert 89 85 97
+```
+
+### grequests - a REST API package for GO
+
+
+go get -u github.com/levigross/grequests
+
+```
+package main
+
+import (
+	"log"
+
+	"github.com/levigross/grequests"
+)
+
+func main() {
+	resp, err := grequests.GET("http://httpbin.org/get", nil)
+	if err != nil {
+		log.Fatalln("Unabled to make requests: ", err)
+	}
+	log.Println(resp.String())
+}
+package main
+
+import (
+	"log"
+
+	"github.com/levigross/grequests"
+)
+
+func main() {
+	resp, err := grequests.GET("http://httpbin.org/get", nil)
+	if err != nil {
+		log.Fatalln("Unabled to make requests: ", err)
+	}
+	log.Println(resp.String())
+}
+/*
+type Response struct {
+    Ok bool
+    Error error
+    RawResponse *http.Response
+    StatusCode int
+    Header http.Header
+}
+*/
+```
+
+### Getting comfortable with the GitHub REST API
+
+
+```
+// https://developer.github.com/v3/
+
+// export GITHUB_TOKEN=YOUR_GITHUB_ACCESS_TOKEN
+// getRepos.go
+package main
+
+import (
+  "github.com/levigross/grequests"
+  "log"
+  "os"
+)
+
+var GITHUB_TOKEN = os.Getenv("GITHUB_TOKEN")
+var requestOptions = &grequests.RequestOptions{Auth: []string{GITHUB_TOKEN, "x-oauth-basic"}}
+
+type Repo struct {
+  ID int `json:"id"`
+  Name string `json:"name"`
+  FullName string  `json:"full_name"`
+  Forks int `json:"forks"`
+  Private bool `json:"private"`
+}
+
+func getStats(url string) *grequests.Response{
+  resp, err := grequests.Get(url, requestOptions)
+  // You can modify the request by passing an optional RequestOptions struct
+  if err != nil {
+    log.Fatalln("Unable to make request: ", err)
+  }
+  return resp
+}
+
+func main() {
+  var repos []Repo
+  var repoUrl = "https://api.github.com/users/torvalds/repos"
+  resp := getStats(repoUrl)
+  resp.JSON(&repos)
+  log.Println(repos)
+}
+```
+
+### Using Redis for caching the API data
+
+
+go get github.com/go-redis/redis
+
+### Creating a unit testing tool for our URL shortening service
+
+```
+package main_test
+
+import (
+	"net/http"
+	"testing"
+)
+
+func TestGetoOriginalURL(t *testing.T) {
+	response, err := http.Get("http://localhost:8000/v1/short/1")
+	if http.StatusOK != response.StatusCode {
+		t.Errorf("Expected response code %d. Got %d\n", http.StatusOK)
+	}
+	if err != nil {
+		t.Errorf("encoutered an error:", err)
+	}
+}
+```
+
+# 9. Scaling Our REST API Using Microservices
+
+The disadvantage list of a monolithic application could be:
+
+- Tightly coupled architecture
+- Single point of failure
+- Velocity of adding new features and components
+- Fragmentation of work is limited to teams
+- Continuous deployment is very tough because an entire application needs to be pushed
+
+Microservices bring the following benefits to the plate:
+
+- If the team is big, people can work on chunks of applications
+- Adaptability is easy for the new developers
+- Adopting best practices, such as Continuous Integration (CI) and Continuous Delivery (CD)
+- Easily replaceable software with loosely coupled architecture
