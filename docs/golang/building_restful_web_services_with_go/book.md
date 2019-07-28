@@ -384,4 +384,8 @@ func main() {
 }
 ```
 
+### Building a RESTful API with Revel.go
 
+Like Python's Django.
+
+go get github.com/revel/revel
