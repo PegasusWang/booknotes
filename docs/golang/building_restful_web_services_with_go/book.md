@@ -1,5 +1,6 @@
 《Building RESTful Web services with GO》 涉及面比较广，但是讲得太浅
 
+
 # 1. Getting started with REST API Development
 
 Live reloading the application with supervisord and gulp
@@ -692,6 +693,7 @@ func TestGetoOriginalURL(t *testing.T) {
 }
 ```
 
+
 # 9. Scaling Our REST API Using Microservices
 
 The disadvantage list of a monolithic application could be:
@@ -723,7 +725,7 @@ The benefits of having a proxy server (Nginx):
 
 - It can act as a load balancer
 - It can sit in front of cluster of applications and redirect HTTP requests
-- It can serve a filesystem with a good performance 
+- It can serve a filesystem with a good performance
 - It streams media very well
 
 ### Load balancing with Nginx
@@ -737,9 +739,10 @@ The benefits of having a proxy server (Nginx):
 
 limit_conn_zone
 
+
 # 11. Using an API Gateway to Monitor and Metricize REST API
 
-They are authentication, logging, rate limiting, and so on. The best way to add those features is to use an API gateway. 
+They are authentication, logging, rate limiting, and so on. The best way to add those features is to use an API gateway.
 
 ### Why is an API gateway required?
 
@@ -753,3 +756,107 @@ An api gateway is a fine piece of middleware does these things:
 ### Kong, an open-source API gateway
 Kong is a cloud-native, fast, scalable, and distributed Microservice Abstraction Layer (also known as an API Gateway, API Middleware or in some cases Service Mesh). Made available as an open-source project in 2015, its core values are high performance and extensibility.
 Combination of OpenResty and Nginx.
+
+
+# 12 Handling Authentication for Our REST Services
+
+- session-based authentication
+- JSON Web Tokens (JWT)
+- Authentication2(OAuth2)
+
+```
+//go get github.com/gorilla/sessions
+var store = sessions.NewCookieStore([]byte("secret_key"))
+```
+
+### session-based authentication
+
+```
+package main
+
+import (
+	"log"
+	"net/http"
+	"os"
+	"time"
+
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+)
+
+// os.Getenv return empty string "" if not exists key
+var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+
+var users = map[string]string{"naren": "passme", "admin": "password"}
+
+func HealthcheckHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "session.id")
+	if (session.Values["authenticated"] != nil) && session.Values["authenticated"] != false {
+		w.Write([]byte(time.Now().String()))
+	} else {
+		http.Error(w, "Forbidden", http.StatusForbidden)
+	}
+}
+
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "session.id")
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "pass the data as URL form encoded", http.StatusBadRequest)
+		return
+	}
+	username := r.PostForm.Get("username")
+	password := r.PostForm.Get("password")
+
+	if originalPassword, ok := users[username]; ok {
+		if password == originalPassword {
+			session.Values["authenticated"] = true
+			session.Save(r, w) // save to response
+		} else {
+			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			return
+		}
+	} else {
+		http.Error(w, "user is not found", http.StatusNotFound)
+		return
+	}
+	w.Write([]byte("Logged In success"))
+}
+
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "session.id")
+	session.Values["authenticated"] = false
+	session.Save(r, w)
+	w.Write([]byte(""))
+}
+
+func main() {
+	r := mux.NewRouter()
+	r.HandleFunc("/login", LogoutHandler)
+	r.HandleFunc("/health", HealthcheckHandler)
+	r.HandleFunc("/logout", LogoutHandler)
+	http.Handle("/", r)
+	srv := &http.Server{
+		Handler:      r,
+		Addr:         "127.0.0.1:8000",
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
+
+}
+```
+
+```py
+# test py code
+import requests
+
+resp = requests.post("http://localhost:8000/login", data={"username": "admin", "password": "password"})
+print(resp.text)
+assert resp.status_code == 200
+
+cookies = resp.cookies
+resp = requests.get("http://localhost:8000/health", cookies=cookies)
+print(resp.text)
+assert resp.status_code == 200
+```
