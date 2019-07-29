@@ -717,4 +717,39 @@ go get github.com/go-kit/kit
 
 # 10. Deplying Our REST srevices
 
+### proxy server
 
+The benefits of having a proxy server (Nginx):
+
+- It can act as a load balancer
+- It can sit in front of cluster of applications and redirect HTTP requests
+- It can serve a filesystem with a good performance 
+- It streams media very well
+
+### Load balancing with Nginx
+
+- Round Robin
+- Least Coonection: send to the server that is currently serving the least number of clients
+- IP HASH
+- Least Time: send to the machine with the lowest average latency time
+
+### Rate limiting our REST API
+
+limit_conn_zone
+
+# 11. Using an API Gateway to Monitor and Metricize REST API
+
+They are authentication, logging, rate limiting, and so on. The best way to add those features is to use an API gateway. 
+
+### Why is an API gateway required?
+
+An api gateway is a fine piece of middleware does these things:
+
+- Loggig
+- Security
+- Traffic control
+- Transformations
+
+### Kong, an open-source API gateway
+Kong is a cloud-native, fast, scalable, and distributed Microservice Abstraction Layer (also known as an API Gateway, API Middleware or in some cases Service Mesh). Made available as an open-source project in 2015, its core values are high performance and extensibility.
+Combination of OpenResty and Nginx.
