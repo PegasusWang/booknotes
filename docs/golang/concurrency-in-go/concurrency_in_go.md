@@ -1600,19 +1600,3 @@ func main() {
 	}
 }
 ```
-
-### JWT
-
-![](./jwt.png)
-
-### Json web token format
-
-- Create a JWT header by doing Base64Url encoding on the header JSON.
-- Create a JWT payload by doing Base64Url encoding on the payload JSON.
-- Create a signature by encrypting the appended header and payload using a secret key.
-- JWT string can be obtained by appending the header, payload, and signature.
-
-signature = HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
-tokenString = base64UrlEncode(header) + "." + base64UrlEncode(payload) + "." + signature
-
-go get github.com/dgrijalva/jwt-go

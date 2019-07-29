@@ -860,3 +860,141 @@ resp = requests.get("http://localhost:8000/health", cookies=cookies)
 print(resp.text)
 assert resp.status_code == 200
 ```
+
+### JWT
+
+![](./jwt.png)
+
+### Json web token format
+
+- Create a JWT header by doing Base64Url encoding on the header JSON.
+- Create a JWT payload by doing Base64Url encoding on the payload JSON.
+- Create a signature by encrypting the appended header and payload using a secret key.
+- JWT string can be obtained by appending the header, payload, and signature.
+
+signature = HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
+tokenString = base64UrlEncode(header) + "." + base64UrlEncode(payload) + "." + signature
+
+go get github.com/dgrijalva/jwt-go
+
+### Auth2
+
+Authentication is the process of identifying whether a client is genuine or not. When a server authenticates a client, it checks the username/password pair and creates session cookie/JWT.
+
+Authorization is the process of differentiating one client from another after a successful authentication. In cloud services, the resources requested by a client need to be served by checking that the resources belong to that client but not the other client. The permissions and access to resources vary for different clients. For example, the admin has the highest privileges of resources. A normal user's access is limited.
+
+OAuth2 is a protocol for authenticating multiple clients to a service, whereas the JWT is a token format. We need to encode/decode JWT tokens to implement the second stage (dashed lines in the following screenshot) of OAuth 2.
+
+![](./oauth2.png)
+
+```
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"time"
+
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go/request"
+	"github.com/gorilla/mux"
+)
+
+var secretKey = []byte(os.Getenv("SESSION_SECRET"))
+
+// var secretKey = []byte("test")
+
+var users = map[string]string{"naren": "passme", "admin": "password"}
+
+// json response for jwt
+type Response struct {
+	Token  string `json:"token"`
+	Status string `json:"status"`
+}
+
+func HealthcheckHandler(w http.ResponseWriter, r *http.Request) {
+	tokenString, err := request.HeaderExtractor{"access_token"}.ExtractToken(r)
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		// hmacSampleSecret is a
+		return secretKey, nil
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Access Denied; Please check access token"))
+		return
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// If token is valid
+		response := make(map[string]string)
+		// response["user"] = claims["username"]
+		response["time"] = time.Now().String()
+		response["user"] = claims["username"].(string) // claims value is interface, convert to string
+		responseJSON, _ := json.Marshal(response)
+		w.Write(responseJSON)
+	} else {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte(err.Error()))
+	}
+}
+
+// LoginHandler validates the user credentials
+func getTokenHandler(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Please pass the data as URL form encoded", http.StatusBadRequest)
+		return
+	}
+	username := r.PostForm.Get("username")
+	password := r.PostForm.Get("password")
+	if originalPassword, ok := users[username]; ok {
+		if password == originalPassword {
+			// Create a claims map
+			claims := jwt.MapClaims{
+				"username":  username,
+				"ExpiresAt": 15000,
+				"IssuedAt":  time.Now().Unix(),
+			}
+			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+			tokenString, err := token.SignedString(secretKey)
+			if err != nil {
+				w.WriteHeader(http.StatusBadGateway)
+				w.Write([]byte(err.Error()))
+			}
+			response := Response{Token: tokenString, Status: "success"}
+			responseJSON, _ := json.Marshal(response)
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(responseJSON)
+		} else {
+			http.Error(w, "Invalid Credentials", http.StatusUnauthorized)
+			return
+		}
+	} else {
+		http.Error(w, "User is not found", http.StatusNotFound)
+		return
+
+	}
+}
+func main() {
+	r := mux.NewRouter()
+	r.HandleFunc("/getToken", getTokenHandler)
+	r.HandleFunc("/healthcheck", HealthcheckHandler)
+	http.Handle("/", r)
+	srv := &http.Server{
+		Handler: r,
+		Addr:    "127.0.0.1:8000",
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
+}
+```
