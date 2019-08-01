@@ -118,3 +118,16 @@ go-resiliency package and the retryier package
 
 #### Circuit breaking
 Circuit breaking is all about failing fast, automatically degrade functionality when the system is under stress.
+
+![](./circuit.png)
+
+```
+// go-resilience
+
+// Threshold: number of times a request can fail before the circuit opens
+// success
+//
+func New (error Threshold, successThreshold int, timeout time.Duration) *Breaker
+```
+
+
