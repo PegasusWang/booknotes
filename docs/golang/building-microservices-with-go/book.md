@@ -209,5 +209,34 @@ Implement in Go
 `func NewLoadBalancer(strategy Strategy, endpoints []url.URL) * loadBalancer`
 
 ### Caching
-
 you should be talking about consistency and the tradeoffs with performance and cost.
+
+
+# 6. Microservices Frameworks
+
+### What makes a good microservice Frameworkds
+![](./microservice.png)
+
+### Micro
+
+github.com/micro/go-micro
+
+- Tooling (CI/CD, cross platform):  protoc
+- Maintainable: verion
+- Format(REST/RPC): use googles Protocol Buffers
+- Patterns: most have been implemented in Micro and many more are avaiable as plugins.
+- Language independence: proto buffer support
+- Ability to interface with other frameworks:
+- Efficiency:
+- Quality: very high with automated builds
+
+### Kite
+
+go get github.com/koding/kite
+
+### gRPC
+
+```
+$ go get google.golang.org/grpc
+$ go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+```
