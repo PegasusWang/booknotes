@@ -362,11 +362,10 @@ TLS works using symmetrical encryption, where the client and the server both hav
 - DDoS protection
 	- UDP fragment: creating datagrams which contain fake packets, when server attempts to reassemble packets, it is unable to do so and the resources are quickly overwhelmed
 	- UDP flood: sending a flood of UDP packets with a spoofed source address to an IP address
-	- DNS
-	- NTP
-	- Chargen
-	- UDP
-	- SYN
-	- SSDP
-	- ACK
+	- DNS: A DNS attack utilizes a UDP flood to take out a DNS server.
+	- NTP: is another amplification attach which takes advantage of a feature built into NTP servers
+	- Chargen: character generation protocol
+	- SYN flood: a classic DDoS attack that sends a lot of packets to a machine
+	- SSDP: simple services discovery protocol
+	- ACK: firewall; network scrubbing filters
 
