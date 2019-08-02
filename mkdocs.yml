@@ -106,12 +106,12 @@ pages:
       - 《高效程序员的45个习惯》: '思维认知/高效程序员的45个习惯.md'
     - 源码:
       - 《源码阅读》: '源码阅读_sourcecode/README.md'
-    - 网站架构:
-      - 《从0开始学架构》: '网站架构/从0开始学架构/从0开始学架构.md'
-      - 《web scalavility for startup engineers》: '网站架构/web_scalavility_for_startup_engineers.md'
-      - 《design_data_instensive_application》: '网站架构/design_data_instensive_application.md'
-      - 《clean_architecture》: '网站架构/clean_architecture.md'
-      - 《微服务设计》: '网站架构/微服务设计.md'
+    - 网站架构微服务:
+      - 《从0开始学架构》: '网站架构微服务/从0开始学架构/从0开始学架构.md'
+      - 《web scalavility for startup engineers》: '网站架构微服务/web_scalavility_for_startup_engineers.md'
+      - 《design_data_instensive_application》: '网站架构微服务/design_data_instensive_application.md'
+      - 《clean_architecture》: '网站架构微服务/clean_architecture.md'
+      - 《微服务设计》: '网站架构微服务/微服务设计.md'
     - 软件工程/项目管理:
       - 《人月神话》: '软件工程_项目管理/人月神话.md'
       - 《代码之殇》: '软件工程_项目管理/代码之殇.md'
