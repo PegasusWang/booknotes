@@ -324,3 +324,49 @@ func (p *panicHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 ### Encryption and signing
 
+##### Symmetric-key encryption
+one key is used for both the encryption and desryption.
+
+##### Public-key cryptography (asynmmetric encryption)
+both sides requiring to know the secret.
+
+The public key is used for encrypting information while the private can only be used for decrypting.
+
+##### Digital signatures
+A digital signature works by encrypting a message with a private key and then transferring the signed message.
+
+##### X.509 digital certificates
+man-in-the-middle-attack
+
+A digital certificate contains three things:
+
+- A public key
+- Certificate information such as the owner's name of ID
+- One or more digital signatures
+
+##### TLS/SSL
+
+TLS works using symmetrical encryption, where the client and the server both have a key which is used for encryption and decryption. If you remember the previous section, we introduced symmetrical encryption and the problems of distributing keys. TLS gets around this problem by using asymmetrical encryption in the first part of the handshake. The client retrieves the certificate containing the public key from the server and generates a random number; it uses the public key to encrypt this random number and sends it back to the server. Now that both parties have the random number, they use this to generate symmetrical keys which are used for encrypting and decrypting the data over the transport.
+
+### External security
+
+- Layer 2 or 3 firewalls
+- Web application firewall(WAF), Cloudflare supports OWASP CRS
+- API Gateway
+	- Request validation
+	- Authorization
+	- Rate limiting
+	- Logging
+	- Caching
+	- Request and response transformations
+- DDoS protection
+	- UDP fragment: creating datagrams which contain fake packets, when server attempts to reassemble packets, it is unable to do so and the resources are quickly overwhelmed
+	- UDP flood: sending a flood of UDP packets with a spoofed source address to an IP address
+	- DNS
+	- NTP
+	- Chargen
+	- UDP
+	- SYN
+	- SSDP
+	- ACK
+
