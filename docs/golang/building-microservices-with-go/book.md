@@ -240,3 +240,87 @@ go get github.com/koding/kite
 $ go get google.golang.org/grpc
 $ go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 ```
+
+# 7. Logging and Montoring
+
+stack traces and other application outout which helps you diagnose a problem can be broken down into three categories:
+
+- Metrics: such as time series data(for example, transaction or individual component timings)
+- Text-based logs: such as Nginx or text log from your application software
+- Exceptions
+
+### Metrics
+
+time-series database using a unique key as an identifier
+
+Types of data best represented by metrics: it is the data that is meaningful when expressed by simple numbers,
+such as request timings and counts.
+
+##### Name convertions (命名惯例)
+良好一致性的设计允许我们使用通配符过滤。statsd
+
+##### Saas(software as a service): Datadog
+
+##### Self-hosted:
+
+There are many options for backend data stores such as Graphite, Prometheus, InfluxDB, ElasticSearch.
+However, when it comes to graphing, Grafana leads the way.
+
+##### Graafana
+
+Display metrics
+
+### Logging
+
+##### Distributed tracing with correlation IDs
+zipkin is a distributed tracing system designed to trouble shoot latency.
+
+##### ELK (Elasticsearch, Logstash, and Kibana)
+
+- Elasticsearch: databastore for logging data
+- Logstash: is used for reading the data from your application logs and storing it in ElasticSearch
+- Kibana: use for query data
+
+### Exceptions
+Go has two great methods for handling unexpected errors:
+
+##### panic
+
+`func panic(v interface{})`, built-in panic stops normal execution of the current goroutine,
+All the defered functions are run in the normal way then the program is terminated.
+
+##### recover
+
+The recover function allows to manage the behavior of a panicking goroutine.
+When called inside a deferred function, recover stops the execution of the panic and returns the error passed to the
+call of panic.
+
+`func recover() interface{}`
+
+```go
+func (p *panicHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if err := recover(); err != nil {
+			p.logger.WithFields(
+				logrus.Fields{
+					"handler": "panic",
+					"status":  http.StatusInternalServerError,
+					"method":  r.Method,
+					"path":    r.URL.Path,
+					"query":   r.URL.RawQuery,
+				},
+			).Error(fmt.Sprintf("Error: %v\n%s", err, debug.Stack()))
+			// runtime/debug returns a formatted stack trace of the goroutine that calls it
+			rw.WriteHeader(http.StatusInternalServerError)
+		}
+	}()
+
+	p.next.ServeHTTP(rw, r)
+}
+```
+
+
+# 8. Security
+
+### Encryption and signing
+
