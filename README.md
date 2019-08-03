@@ -28,4 +28,4 @@ mkdocs gh-deploy    # 部署到自己的 github pages, 如果是 readthedocs 会
 
 [https://pegasuswang.readthedocs.io/zh/latest/](https://pegasuswang.readthedocs.io/zh/latest/)
 
-[https://ningning.today/booknotes/](https://ningning.today/booknotes/)
+[https://pegasuswang.github.io/booknotes/](https://pegasuswang.github.io/booknotes/)
