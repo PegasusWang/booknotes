@@ -534,3 +534,21 @@ What does Go bring as a language which helps us with this? Now, let's look at th
 
 - Managed, such as PasS solutions like AWS ECS
 - Unmanaged, like Kubenetes
+
+### What is immutable infrastructure?
+
+### Terraform
+
+https://terraform.io, which enables the provisioning of infrastructure for several applications and cloud providers.
+
+### Continuous delivery workflow
+
+- Compile application
+- Unit test
+- Benchmark
+- Static code analysis: megacheck, safesql
+- Integration test
+- Build Docker image
+- Deploy application
+- Smoke test
+- Monitoring/Alerting
