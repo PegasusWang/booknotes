@@ -12,3 +12,11 @@ http://luohaha.github.io/Chinese-uvbook/index.html
 
 # gevent
 http://www.cnblogs.com/xybaby/p/6370799.html
+
+# 微服务
+
+# 消息队列
+
+# 中间件
+
+# 领域驱动设计
