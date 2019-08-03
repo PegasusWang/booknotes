@@ -143,7 +143,7 @@ go 有个 gofmt 工具可以用来格式化代码（类似 autopep8，笔者用�
     	}
     }
 
-接下来是一个爬虫的例子，当然看起来没有用 python requests 那么优雅：
+接下来是一个爬虫的例子，当然看起来没有用 python requests 那么优雅，有个类似的 grequests 更精简：
 
     package main
 
