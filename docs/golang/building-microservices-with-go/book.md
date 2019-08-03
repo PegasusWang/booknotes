@@ -441,3 +441,65 @@ func Handler(rw http.ResponseWriter, r *http.Request) {
 	- bcrypt: golang.org/x/crypto/bcrypt
 
 ### Maintenance
+
+- Patching containers: run a regular build and deploy even if the application code does not change
+- Software upadtes:
+- Patching application code
+- Logging
+	- Who is preforming the action
+	- what has failed or succeed
+	- when is the action occurring
+	- why this has failed or succeeded
+	- how you can deal with the issue
+
+
+# 9. Event-Driven Architecture
+
+### Differences between synchronous and asynchronous processing
+
+- synchronous: easier to understand, write, debug
+- asynchronous: decoupling, scale, bath processing, time-based processing
+
+![](./async.png)
+
+### Types of asynchronous messages
+
+- Pull/queue messaging
+
+
+May have a worker process running, read from the queue retrieving the messages one by one, perform the required work,
+then delete the message from the queue.
+Often there is also a queue commonly called a "dead letter queue" should the worker process fail for any reason then
+the message would be added to the dead letter queue.
+
+![](./pull.png)
+
+- Push messaging
+
+![](./push.png)
+
+NATS.io
+
+github.com/nats-io/go-nats
+
+### Domain-Driven Design
+
+Anatomy of DDD:
+
+- Straegic design
+- Tactical design
+- Ubiquitous language
+- Bounded Contexts
+- Context Mapping
+
+### Sofware
+
+- Kafka : is a distributed streaming platform allows you to publish and subscribe to streams of records
+- NATS.io: open source messaging system written in Go. Can perform at-most-once and at-least-once delivery
+- AWS SNS/SQS
+- Google Cloud Pub/Sub
+
+
+# 10. Continuous Delivery
+
+
