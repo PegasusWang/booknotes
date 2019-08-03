@@ -369,3 +369,75 @@ TLS works using symmetrical encryption, where the client and the server both hav
 	- SSDP: simple services discovery protocol
 	- ACK: firewall; network scrubbing filters
 
+
+### Application sercurity
+
+- Prevention
+	- secure communication
+	- authorization
+	- authentication
+
+- Detection: applications logs
+
+- Response
+
+- Recovery: well backed up and aotomated
+
+- input validation: github.com/go-playground/validator
+
+```
+package validation
+
+import (
+	"encoding/json"
+	"net/http"
+
+	validator "gopkg.in/go-playground/validator.v9"
+)
+
+// Request defines the input structure received by a http handler
+type Request struct {
+	Name  string `json:"name"`
+	Email string `json:"email" validate:"email"`
+	URL   string `json:"url" validate:"url"`
+}
+
+var validate = validator.New()
+
+func Handler(rw http.ResponseWriter, r *http.Request) {
+	request := Request{}
+
+	err := json.NewEncoder(rw).Encode(&request)
+	if err != nil {
+		http.Error(rw, "Invalid request object", http.StatusBadRequest)
+		return
+	}
+
+	err = validate.Struct(request)
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}
+```
+
+- Fuzzing : github.com/dvyukov/go-fuzz/go-fuzz  generating random input
+
+- TLS:
+
+- Securing data at rest : encrypt data in the database
+
+- Physical machine access
+
+- OWASP: REST Security Cheat Sheet (https://www.owasp.org/index.php/REST\_Security\_Cheat\_Sheet).
+	- Never storing session tokens in a URL, use cookie or a post value (url can query in log)
+	- XSS and CSRF.
+	- Insecure direct object references. Checking authenticated users can modify the object in the request
+
+- Password Hashing, hash is one-way cryptography
+	- Adding a salt and a pepper. （加盐是一种常见的方式，防止被彩虹表暴力破解）
+	- bcrypt: golang.org/x/crypto/bcrypt
+
+### Maintenance
