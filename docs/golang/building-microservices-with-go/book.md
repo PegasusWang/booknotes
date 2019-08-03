@@ -502,4 +502,35 @@ Anatomy of DDD:
 
 # 10. Continuous Delivery
 
+### What is Continuous Delivery?
 
+Aspects of continuous delivery
+
+- Reproducibility and easy setup
+- Artifact storage
+- Automation of tests
+- Automation of integration tests
+- Infrastructure as code
+- Security scanning
+- Static code analysis
+- Smoke testing
+- End 2 end testing
+- Monitoring - track deployments in metrics
+
+
+What does Go bring as a language which helps us with this? Now, let's look at the process:
+
+- Build
+- Test
+- Package
+- Integration test
+- Benchmark test
+- Security test
+- Provision production
+- Smoke test
+- Monitor
+
+### What is container orchestration ?
+
+- Managed, such as PasS solutions like AWS ECS
+- Unmanaged, like Kubenetes
