@@ -306,11 +306,11 @@ var p Point
 ## 2.1 Names
 
 go 定义了几十个关键字，不能用来给变量命名，go 使用一般使用骆驼命名法(HTTP等缩略词除外)。需要注意的是只有大骆驼命名
-"fmt.Fprintf" 这种是可以被其他包引入使用的。go 通过大小写表示是否能够引入。
+"fmt.Fprintf" 这种是可以被其他包引入使用的。go 通过大小写表示是否能够引入，没有访问控制声明符。
 
 ## 2.2 Declarations
 
-var, const ,type, func
+var, const ,type, func 声明
 
     func fToC(f float64) float64 {
     	return (f - 32) * 5 / 9
@@ -322,7 +322,7 @@ var, const ,type, func
 
     var name type = expression
     // 可以一次性定义多个
-    var i, j, k int
+    var i, j, k int   //i,j,k == 0
     var b, f, s  = true, 2.3. "four"    // 同样有类似解包的操作
 
     // 接下来是 short variable declarations， 短赋值，`:=` 是 声明，而 `=` 是赋值
@@ -331,7 +331,7 @@ var, const ,type, func
 
     // multiple variables declared
     i, j = 0, 1
-    i, j = j, i    // swap
+    i, j = j, i    // swap, 这个和python一样支持
 
     f, err := os.Open()
     f, err := os.Close()     // wrong,  a short variable declaration must declare at least one new variable
@@ -345,7 +345,8 @@ var, const ,type, func
     fmt.Println(x) // "2"
 
     var x, y int
-    fmt.Println(&x == &x, &x == &y, &x == nil) // "true false false"，指针可以比较，当指向相同的值的时候相等
+    fmt.Println(&x == &x, &x == &y, &x == nil)
+    // "true false false"，指针可以比较，当指向相同的值的时候相等。但是为了简化，go指针不能做运算
 
     // 函数返回一个局部变量的指针也是安全的
     var p = f()
@@ -428,7 +429,7 @@ package-level变量在整个程序执行过程中都存在。局部变量生存�
 
 ## 2.6 Packages and Files
 
-每个包都声明了名字空间，当有名字冲突的时候，需要显示通过包名调用。大写开头的标识符才可以被导出。把上面的例子改成包，
+每个包都声明了名字空间，当有名字冲突的时候，需要显式通过包名调用。大写开头的标识符才可以被导出。把上面的例子改成包，
 
     // gopl.io/ch2/tempconv
     // tempconv.go
@@ -448,6 +449,7 @@ package-level变量在整个程序执行过程中都存在。局部变量生存�
     	BoilingC      Celsius = 100
     )
 
+    // 可以给自定义的类型来编写方法
     func (c Celsius) String() string    { return fmt.Sprintf("%g°C", c) }
     func (f Fahrenheit) String() string { return fmt.Sprintf("%g°F", c) }
 
@@ -509,10 +511,10 @@ go的数据类型分成4类：
 int8, int16, int32, int64, uint8, uint16, uint32, uint64
 rune &lt;=> int32 , byte &lt;=> uint8
 
-有符号数： -2**(n-1) to 2**(n-1)-1
-有符号数: 0 to 2\*\*n-1
+- 有符号数： `-2**(n-1) to 2**(n-1)-1`
+- 无符号数: `0 to 2**n-1`
 
-注意不同类型之间数字强转可能会有精度损失
+尤其注意不同类型之间数字强转可能会有精度损失
 
 ## 3.2 Floating-Point Numbers
 
@@ -532,7 +534,7 @@ rune &lt;=> int32 , byte &lt;=> uint8
 
 -   true
 -   false
--   短路求值特性
+-   短路求值特性，比如 a() || b()，如果 a() 返回true，b()不会执行
 
 ## 3.5 Strings
 
@@ -547,25 +549,26 @@ rune &lt;=> int32 , byte &lt;=> uint8
 -   Go’s range loop, when applied to a string, performs UTF-8 decoding implicitly
 -   A \[]rune conversion applied to a UTF-8-encoded string returns the sequence of Unicode code points that the string encodes
 
+```
+package main
 
-    package main
+import (
+    "fmt"
+    "unicode/utf8"
+)
 
-    import (
-    	"fmt"
-    	"unicode/utf8"
-    )
-
-    func main() {
-    	s := "hello, 世界"
-    	fmt.Println(len(s))                    // 13
-    	fmt.Println(utf8.RuneCountInString(s)) // 9
-    }
+func main() {
+    s := "hello, 世界"
+    fmt.Println(len(s))                    // 13
+    fmt.Println(utf8.RuneCountInString(s)) // 9
+}
+```
 
 几个用来处理字符串的包：
 
 -   bytes:  操作 slices of bytes, type \[]byte
 -   strings: searching, replacing, comparing, trimming, splitting, joining
--   srconv: boolean, integer, floating-point values 和 他们的 string 表示形式来回转；
+-   strconv: boolean, integer, floating-point values 和 他们的 string 表示形式来回转；
 -   unicode: IsDigit, IsLetter, IsUpper, IsLower识别 runes
 
 ## 3.6 Constants
@@ -601,7 +604,7 @@ iota: 定义从0 开始的递增枚举
     	}
 
     	var q [3]int = [3]int{1, 2, 3} //初始化
-    	p := [...]int{1, 2, 3}         // 省略号代表长度由右边的长度决定
+    	p := [...]int{1, 2, 3}         // 省略号代表长度由右边的长度决定, []int{1,2,3} slice
 
     	// 数组还支持用 下标和值 初始化
     	type Currency int
@@ -775,7 +778,7 @@ append 是个可变参数的函数，可以接收多个参数， ... 运算符�
     	}
     	fmt.Println(ages2)
 
-    	ages["bob"] = ages["bob"] + 1 // bob不存在的 key 默认是0，不像 py 访问不存在的 key 会 KeyError
+    	ages["bob"] = ages["bob"] + 1 // bob不存在的 key 默认是0，注意不像 py 访问不存在的 key 会 KeyError
     	delete(ages, "alice")         //删除 key
     	fmt.Println(ages)
 
@@ -1041,7 +1044,7 @@ Go data structure like movies to JSON is called marshaling. Marshaling is done b
     type Movie struct {
     	Title  string
     	Year   int  `json:"released"`
-    	Color  bool `json:"color,omitempty"`     // json tag 可以用来重名 ing
+    	Color  bool `json:"color,omitempty"`     // json tag 可以用来重命名字段
     	Actors []string
     }
 
@@ -1065,7 +1068,7 @@ Go data structure like movies to JSON is called marshaling. Marshaling is done b
     	fmt.Println(titles)
     }
 
-注意到 field 后边的 `json:"released"` 叫做 field tags，是在编译器旧绑定到 field 上的元信息，可以控制序列化/反序列化的行为。
+注意到 field 后边的 `json:"released"` 叫做 field tags，是在编译器就绑定到 field 上的元信息，可以控制序列化/反序列化的行为。
 field tag 第一部分指定了 field 的 json 名称（比如从骆驼命名改成下划线命名），第二个可选的选项（omitempty），指定了当如果该 field 是零值的时候不会输出该字段.
 
 ## 4.6 Text and HTML Templates
@@ -1156,7 +1159,7 @@ go和 python 一样可以返回多个值：
     	return visit(nil, doc), nil
     }
 
-当函数返回多个同类型的值的时候，挑选好名字可以使返回结构更有意义
+命名返回值：当函数返回多个同类型的值的时候，挑选好名字可以使返回结构更有意义
 
     func Size(rect image.Rectangle) (width, height int)
     func Split(path string) (dir, file string)
@@ -1183,7 +1186,7 @@ bare return: 如果函数命名了返回值，return 后的返回结果可以省
 
 有些函数总会执行成功，比如 strings.Contains and strconv.FormatBool，但是有些无法预料的场景比如内存用光了就很难恢复了。
 其他函数只要先验条件是满足的总会执行成功，比如 time.Date，只要参数正确总会构造出 time.Time，除非最后一个 timezone 参数是
-nil，这是就会产生 panic，panic 是调用代码的时候产生 bug 的明确标志在良好书写的程序中是不该出现的。
+nil，这是就会产生 panic，panic 是调用代码的时候产生 bug 的明确标志，在良好书写的程序中是不该出现的。
 对于其他一些编写良好的函数，依然无法保证程序成功执行，因为依赖程序员的控制。任何涉及到 IO
 的程序都需要处理出错的可能。错误对于重要的包 API 或应用程序接口是非常重要的一部分，而且应该是预期的几个行为之一。
 
@@ -1205,7 +1208,6 @@ errors，这种方式需要付出更多精力来应对错误处理逻辑。
 
 -   1.propagate the error：传播错误使得被调用者的错误成为调用者错误。通常直接返回或者构造新的错误信息后返回
 
-
     	resp, err := http.Get(url)
     	if err != nil {
     		return nil, err    // just return
@@ -1219,58 +1221,62 @@ errors，这种方式需要付出更多精力来应对错误处理逻辑。
 
 -   2.对于短暂或者非预期的错误，可以尝试采用一定策略重试。最常见的就是爬虫里的重试策略。
 
-
-    func WaitForServer(url string) error {
-    	const timeout = 1 * time.Minute
-    	deadline := time.Now().Add(timeout)
-    	for tries := 0; time.Now().Before(deadline); tries++ {
-    		_, err := http.Head(url)
-    		if err == nil {
-    			return nil // success
-    		}
-    		log.Printf("server not responding (%s); retrying...", err)
-    		time.Sleep(time.Second << uint(tries)) // exponential back-off
-    	}
-    	return fmt.Errorf("server %s failed to respond after %s", url, timeout)
+```
+func WaitForServer(url string) error {
+    const timeout = 1 * time.Minute
+    deadline := time.Now().Add(timeout)
+    for tries := 0; time.Now().Before(deadline); tries++ {
+	    _, err := http.Head(url)
+	    if err == nil {
+		    return nil // success
+	    }
+	    log.Printf("server not responding (%s); retrying...", err)
+	    time.Sleep(time.Second << uint(tries)) // exponential back-off
     }
+    return fmt.Errorf("server %s failed to respond after %s", url, timeout)
+}
+```
 
 -   3.如果无法继续处理，调用者可以打印 error 然后停止执行，通常是 main
     包的保留行为。库函数通常应该传递错误给调用者，除非遇到了内部不一致性，也就是有 bug。
 
+```
+// (In function main.)
+if err := WaitForServer(url); err != nil {
+    fmt.Fprintf(os.Stderr, "Site is down: %v\n", err)
+    os.Exit(1)
+}
+// 或者更方便完成一样的功能，调用 log.Fatalf
+if err := WaitForServer(url); err != nil {
+    log.Fatalf("Site is down: %v\n", err)
+}
+```
 
-    // (In function main.)
-    if err := WaitForServer(url); err != nil {
-    	fmt.Fprintf(os.Stderr, "Site is down: %v\n", err)
-    	os.Exit(1)
-    }
-    // 或者更方便完成一样的功能，调用 log.Fatalf
-    if err := WaitForServer(url); err != nil {
-    	log.Fatalf("Site is down: %v\n", err)
-    }
-
--   4.有些情况直接打印 error 然后继续执行
+-   4.有些情况直接打印 error 然后继续执行，比如无关紧要的问题
 -   5.极少数情况下可以完全忽略整个错误，但是需要做好代码注释。比如创建临时文件失败了可以不用管，操作系统定期会回收。
 
 EOF(End of File): io package 保证任何由 end-of-file 造成的读取失败都会被报告成为另一种不同的 error:io.EOF
 
-    package io
-    import "errors"
-    // EOF is the error returned by Read when no more input is available.
-    var EOF = errors.New("EOF")
+```
+package io
+import "errors"
+// EOF is the error returned by Read when no more input is available.
+var EOF = errors.New("EOF")
 
-    func main() {
-    	in := bufio.NewReader(os.Stdin)
-    	for {
-    		r, _, err := in.ReadRune()
-    		if err == io.EOF {
-    			break // finished reading
-    		}
-    		if err != nil {
-    			return fmt.Errorf("read failed: %v", err)
-    		}
-    		// ...use r...
-    	}
+func main() {
+    in := bufio.NewReader(os.Stdin)
+    for {
+	    r, _, err := in.ReadRune()
+	    if err == io.EOF {
+		    break // finished reading
+	    }
+	    if err != nil {
+		    return fmt.Errorf("read failed: %v", err)
+	    }
+	    // ...use r...
     }
+}
+```
 
 ## 5.5 Function Values
 
@@ -1327,7 +1333,7 @@ go里同样支持闭包:
 
 loop 循环引入了一个新的词法块，d 在这里声明，所有在 loop
 里的函数值捕获并且共享同一个变量，而不是特定情况下当时的值。当执行os.RemoveAll的时候 dir 已经被 "now-completed"的 for
-循环更新到了最后一个。
+循环更新到了最后一个。解决方式一般有两种：使用一个内部变量覆盖。比如上例 dir:=d。或者作为参数传给匿名函数
 
 ## 5.7 Variadic Functions
 
@@ -1388,7 +1394,7 @@ loop 循环引入了一个新的词法块，d 在这里声明，所有在 loop
 
 注意到这里的 `resp.Body.Close()` 重复了几次吗，如果逻辑更复杂就需要更多处的调用，为了消除这个问题，go 提供了 defer
 声明。语法上来说就是 普通的函数或者方法前面加个 defer 前缀，这样就会在包含 defer
-的函数完成的时候才调用，无论是函数正常return 或者 panic 了。多个 defer 声明会按照声明顺序反序执行。
+的函数完成的时候才调用，无论是函数正常return 或者 panic 了。多个 defer 声明会按照声明顺序逆序执行。
 
 defer 经常用在结对操作中，比如打开或关闭，连接或断开，加锁和解锁，保证资源正确释放，而不用管代码逻辑多复杂。
 
@@ -1778,11 +1784,17 @@ receiver。
 ## 6.6 Encapsulation
 
 如果一个对象的变量或者方法无法被客户端代码访问就是被封装的（信息隐藏）。go 里为了封装一个对象，需要把它变成 struct。
-封装有三个好处：阻止客户端直接修改对象变量；防止客户端依赖将来可能会变动的内部细节；阻止客户端代码随意设置对象的值
+封装有三个好处：
 
-    type IntSet struct {   //  隐藏 words，防止客户端直接修改
-    	words []uint64
-    }
+- 阻止客户端直接修改对象变量；
+- 防止客户端依赖将来可能会变动的内部细节；
+- 阻止客户端代码随意设置对象的值
+
+  ```
+type IntSet struct {   //  隐藏 words，防止客户端直接修改
+    words []uint64
+}
+  ```
 
 # 7 Interfaces
 
@@ -1929,8 +1941,8 @@ sort package 提供了任何序列的原地排序。
     func (x byArtist) Less(i, j int) bool { return x[i].Artist < x[j].Artist }
     func (x byArtist) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
     func main() {
-    	sort.Sort(byArtist(tracks))
-      sort.sort(sort.Reverse(byArtist(tracks)))
+        sort.Sort(byArtist(tracks))
+        sort.Sort(sort.Reverse(byArtist(tracks)))
     }
 
 ## 7.7 The http.Handler Interface
@@ -1990,7 +2002,7 @@ sort package 提供了任何序列的原地排序。
     	}
     }
 
-我们也可以使用 htp.NewServeMux 实现一样的功能：
+我们也可以使用 http.NewServeMux 实现一样的功能：
 
     package http
 
@@ -2036,31 +2048,33 @@ sort package 提供了任何序列的原地排序。
 
 -   T is concrete type, 检查 x 的动态类型是否是 T，成功的话结构就是动态值，否则 panic
 
+```
+package main
 
-    package main
+import (
+    "bytes"
+    "io"
+    "os"
+)
 
-    import (
-    	"bytes"
-    	"io"
-    	"os"
-    )
-
-    func main() {
-    	var w io.Writer
-    	w = os.Stdout
-    	f := w.(*os.File)      // success: f == os.Stdout
-    	c := w.(*bytes.Buffer) // panic: interface holds *os.File, not *bytes.Buffer
-    }
+func main() {
+    var w io.Writer
+    w = os.Stdout
+    f := w.(*os.File)      // success: f == os.Stdout
+    c := w.(*bytes.Buffer) // panic: interface holds *os.File, not *bytes.Buffer
+}
+```
 
 -   T is interface type: 检查 x 的动态值是否满足T，检查成功动态值不会被提取出来，结果仍然是接口值，但是具有接口类型 T。
     换言之，对于接口类型的类型断言表达式改变了表达式的类型，使得更多方法可以被访问，但是保留接口值里的接口类型和值组件。
 
-
-    var w io.Writer
-    w = os.Stdout
-    rw := w.(io.ReadWriter) // success: *os.File has both Read and Write
-    w = new(ByteCounter)
-    rw = w.(io.ReadWriter) // panic: *ByteCounter has no Read method
+```
+var w io.Writer
+w = os.Stdout
+rw := w.(io.ReadWriter) // success: *os.File has both Read and Write
+w = new(ByteCounter)
+rw = w.(io.ReadWriter) // panic: *ByteCounter has no Read method
+```
 
 如果我们期望两个返回结果，检查不成功也不会 panic，而是返回是否 ok
 
