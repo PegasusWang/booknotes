@@ -9,7 +9,7 @@
 ## 10.2 Import Paths
 
 每个包都被一个独一无二的字符串标识，叫做导入路径(import path)。对于你想分享或者发布的包，导入路径必须是全局唯一的。
-为了防止冲突，凡事非官方的包都应该包含域名或者组织的前缀。
+为了防止冲突，非官方的包都应该包含域名或者组织的前缀。
 
     import (
     	"fmt"
@@ -592,23 +592,25 @@ go 提供了反射，允许把类型当做一等公民。(在动态语言里很�
 
 ## 12.2 reflect.Type and reflect.Value
 
-反射通过 reflect package 实习那，它定义了两种重要类型： Type and Value
+反射通过 reflect package 实现，它定义了两种重要类型： Type and Value
 
 -   Type: Type 是一个 Go 个接口，提供了很多方法用来区分不同类型检查它们的组件
 
+```
+t := reflect.TypeOf(3)  // a reflect.Type, TypeOf 接收 interface{} 并且返回它的动态类型
+fmt.Println(t.String()) // "int"
+fmt.Println(t)          // "int"
+fmt.Printf("%T\n", 3)   // 内部也会使用 reflect.TypeOf
+```
 
-    t := reflect.TypeOf(3)  // a reflect.Type, TypeOf 接收 interface{} 并且返回它的动态类型
-    fmt.Println(t.String()) // "int"
-    fmt.Println(t)          // "int"
-    fmt.Printf("%T\n", 3)   // 内部也会使用 reflect.TypeOf
+- Value: reflect.Value 能保存任何类型的值，reflect.ValueOf function accepts any interface{} and returns a reflect.Value containing the interface’s dynamic value.
 
--   Value: reflect.Value 能保存任何类型的值，reflect.ValueOf function accepts any interface{} and returns a reflect.Value containing the interface’s dynamic value.
-
-
-    v := reflect.ValueOf(3) // a reflect.Value
-    fmt.Println(v)          // "3"
-    fmt.Printf("%v\n", v)   // "3"
-    fmt.Println(v.String()) // NOTE: "<int Value>"
+```
+v := reflect.ValueOf(3) // a reflect.Value
+fmt.Println(v)          // "3"
+fmt.Printf("%v\n", v)   // "3"
+fmt.Println(v.String()) // NOTE: "<int Value>"
+```
 
 reflect.ValueOf 和 reflect.Value.Interface 互为反操作
 
@@ -1041,6 +1043,6 @@ Most programmers will never need to use unsafe at all. Nevertheless, there will 
 有点原始，可以用下 delve。用起来和 Python 的 pdb 和 ipdb 差不多，都是 gdb 风格的命令，平常笔者调试 python
 代码基本都是用的 ipdb。
 
-[ebugging-with-delve](https://blog.gopheracademy.com/advent-2015/debugging-with-delve/)
+[debugging-with-delve](https://blog.gopheracademy.com/advent-2015/debugging-with-delve/)
 
 <https://github.com/derekparker/delve>

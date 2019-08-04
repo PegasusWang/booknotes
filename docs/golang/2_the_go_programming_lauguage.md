@@ -460,7 +460,7 @@ block。另一种是在main goroutine 返回第一个 error 的时候创建一�
     	return thumbfiles, nil
     }
 
-当我们不知道会循环多少次的时候，可以使用 sync.WaitGroup 记录 goroutine 数：
+当我们不知道会循环多少次的时候，可以使用 sync.WaitGroup 记录 goroutine 数(Add and Done)：
 
     // makeThumbnails6 makes thumbnails for each file received from the channel.
     // It returns the number of bytes occupied by the files it creates.
@@ -608,7 +608,7 @@ select 允许我们轮训 channel (polling a channel):
     	fmt.Printf("Launch aborted!\n")
     	return
     default:
-    	// to nothing
+    	// do nothing
     }
 
 ## 8.8 Example: Concurrent Directory Traversal
@@ -1074,29 +1074,30 @@ amount`操作并非原子的，先读后写，记作 A1r, A1w，数据竞争(dat
 -   2.避免变量被多个 goroutine 访问。之前很多例子都是变量被限定在只有 main goroutine 能访问。如果我们想要更新变量， 可以通过 channel。(Do not communicate by sharing memory; instead, share memory by communicating.)
     限定变量只能通过 channel 代理访问的 goroutine 叫做这个变量的 monitor goroutine。
 
+```
+package bank
 
-    package bank
+var deposits = make(chan int) // send amount to deposit
+var balances = make(chan int) // receive balance
 
-    var deposits = make(chan int) // send amount to deposit
-    var balances = make(chan int) // receive balance
+func Deposit(amount int) { deposits <- amount }
+func Balance() int       { return <-balances }
 
-    func Deposit(amount int) { deposits <- amount }
-    func Balance() int       { return <-balances }
-
-    // 把 balance 变量限定在监控 goroutine teller 中
-    func teller() {
-    	var balance int // balance 被限定在了 teller goroutine
-    	for {
-    		select {
-    		case amount := <-deposits:
-    			balance += amount
-    		case balances <- balance:
-    		}
-    	}
+// 把 balance 变量限定在监控 goroutine teller 中
+func teller() {
+    var balance int // balance 被限定在了 teller goroutine
+    for {
+	    select {
+	    case amount := <-deposits:
+		    balance += amount
+	    case balances <- balance:
+	    }
     }
-    func init() {
-    	go teller() // start monitor goroutine
-    }
+}
+func init() {
+    go teller() // start monitor goroutine
+}
+```
 
 我们还可以通过在 pipeline 中的 goroutine 共享变量，如果 pipeline
 中在把变量发送到下一个阶段后都限制访问，所有访问变量就变成了序列化的。In effect, the variable is confined to one stage
@@ -1138,7 +1139,7 @@ of the pipeline, then confined to the next, and so on.
     func Balance() int {
     	sema <- struct{}{} // acquire token
     	b := balance
-    	<-sema // release token，这里就没 Python 的 context manager 语法糖爽啊
+    	<-sema
     	return b
     }
 
