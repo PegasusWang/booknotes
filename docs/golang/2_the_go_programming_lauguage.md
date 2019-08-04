@@ -10,7 +10,7 @@
 完成了再去调用另一个。但是在两个及多个 goroutine 的并发场景下，两个函数可以同时执行。
 程序执行的开始，只有一个调用 main 的goroutine，我们叫它 main goroutine，新的 goroutine 可以通过 go
 语句创建，语法上就是普通的函数或方法加上 go 关键字，go 声明使得函数在被创建的新的 goroutine 里执行，**go
-语句则会立刻返回**。
+语句则会立刻返回**，不会阻塞住。
 
     f()    // call f(); wait for it to return
     go f() // create a new goroutine that calls f(); don't wait
@@ -52,7 +52,7 @@
 ## 8.2 Example: Concurrent Clock Server
 
 web server 是最常用的使用并发的地方，要处理来自客户端的大量独立的连接。
-我们先来系诶个 tcp serer发送时间：
+我们先来写个 tcp serer发送时间：
 
     package main
 
@@ -125,7 +125,7 @@ web server 是最常用的使用并发的地方，要处理来自客户端的大
     			log.Print(err) // e.g., coonnection aborted
     			continue
     		}
-    		go handleConn(conn) // 并发处理连接，就是这么简单。艹，这一点确实比 python 强多了
+    		go handleConn(conn) // NOTE: 并发处理连接，就是这么简单
     	}
 
 这时候再运行 server，然后打开俩终端同时运行 client，你会发现俩 client 都有输出啦。
@@ -215,11 +215,12 @@ channel是一种通信机制允许一个 goroutine 向另一个 goroutine 发送
 的元素类型（element type）。比如 `chan int`，使用内置的 make 函数创建管道:
 `ch := make(chan int) // ch has type 'chan int'`
 和 map 一样，channel 也是引用类型，作为参数传递的时候会拷贝该引用本身，零值是 nil。
-channel 有两个基本操作，send 和 receive。一个 send 把值从一个 gortouine 发送到另一个对应使用 receive 接收的 goroutine。
+channel 有两个基本操作，send 和 receive。一个 send 把值从一个 goroutine 发送到另一个对应使用 receive 接收的 goroutine。
 
     ch <- x // send 语句
     x = <- ch  // 赋值语句中的 receive 表达式
     <- ch  // receive 语句，丢弃结果
+    close(ch) // 关闭之后send 将 panic,但是却可以接受
 
 channel 还支持第三个操作 close(ch)，设置 flag 指示没有值将会发送到 channel，后续尝试 send 将会 panic。
 在一个关闭的 channel 接收值将会一直接收到 channel 没有剩余的值，之后任何 receive 操作会立刻完成并且接收到 channel
@@ -232,7 +233,7 @@ make 创建 channel 还可以指定容量：
 
 ### 8.4.1 Unbuffered Channels
 
-在一个unbufferd channel 执行 send 操作 block send gortouine 直到另一个 goroutine 在相同 channel 执行对应的
+在一个unbufferd channel 执行 send后 操作会 block 发送goroutine，直到另一个 goroutine 在相同 channel 执行对应的
 receive，这样值才会被传输然后两个 goroutine 才有可能继续执行。如果 receive 先执行了，会被 block 直到对应的另一个
 goroutine 执行了send 操作。在 unbuffered channel 上通信使得接收和发送者 goroutine 同步，所以也叫 synchronous channels。
 在并发的讨论中，当我们说 x 在 y 之前发生，并不意味着时间上提前发生，而是保证它之前的操作（更新变量等），已经完成并且可以依赖它们了。
@@ -251,7 +252,7 @@ goroutine 执行了send 操作。在 unbuffered channel 上通信使得接收和
     	}()
     	mustCopy(conn, os.Stdin)
     	conn.Close()
-    	<-done // wait for background goroutine to finish
+    	<-done // wait for background goroutine to finish，即使main先执行了，也会block到goroutine 执行send
     }
 
 ### 8.4.2 Pipelines
@@ -352,11 +353,11 @@ slice。
     	go func() { responses <- request("asia.gopl.io") }()
     	go func() { responses <- request("europe.gopl.io") }()
     	go func() { responses <- request("americas.gopl.io") }()
-    	return <-responses // return the quickest response  ,慢的 gortouine 会泄露
+    	return <-responses // return the quickest response  ,慢的 goroutine 会泄露
     }
     func request(hostname string) (response string) { /* ... */ }
 
-goroutine leak: goroutine 泄露（视为bug）。泄露的 goroutine 不会被自动回收，必须确定不需要的时候自行终结。
+goroutine leak: goroutine 泄露（视为bug）。NOTE: 泄露的 goroutine 不会被自动回收，必须确定不需要的时候自行终结。
 
 ## 8.5 Looping in Parallel
 
@@ -397,7 +398,7 @@ parallel，这种方式是最容易实现并发的。你能会立马写出如下
     		go func(f string) {
     			thumbnail.ImageFile(f) // NOTE: ignoring errors
     			ch <- struct{}{}
-    		}(f)
+    		}(f) // 注意这里使用参数防止只使用最后一个循环
     	}
     	// wait for goroutine complete
     	for range filenames {

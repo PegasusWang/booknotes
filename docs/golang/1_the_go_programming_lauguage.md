@@ -2138,7 +2138,7 @@ os 包提供了不同的错误类型用来区分到底是哪种错误（权限�
 -   另一种是接口值可以保存任何具体类型的值，可以认为是这些类型的合集。类型断言式用来根据不同的类型区分对待。
     这里强调的是满足接口的具体类型，而不是接口的方法。(discriminated unions)
 
-如果你熟悉 OOP，这两种风格的对应者子类型多态(subtype polymorphism)和临时多态(ad hoc polymorphism)。后边讨论第二种形式。
+如果你熟悉 OOP，这两种风格的对应子类型多态(subtype polymorphism)和临时多态(ad hoc polymorphism)。后边讨论第二种形式。
 type switch:
 
     switch x.(type) {
