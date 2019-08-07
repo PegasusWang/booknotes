@@ -174,5 +174,77 @@ func (c *TCPConn) SetTimeout(nsec int64) os.Error
 
 // Staying alive, a client wish to stay connected to a server even if it has nothing to send
 func (c *TCPConn) SetKeepAlive(keepalive bool) os.Error
+```
 
+UDP client server demo:
+
+```
+// UDPDaytimeClient
+package main
+
+import (
+	"fmt"
+	"net"
+	"os"
+)
+
+func main() {
+	service := "localhost:1200"
+	udpAddr, err := net.ResolveUDPAddr("udp4", service)
+
+	conn, err := net.DialUDP("udp", nil, udpAddr)
+	checkError(err)
+
+	_, err = conn.Write([]byte("anything"))
+	checkError(err)
+	var buf [512]byte
+	n, err := conn.Read(buf[0:])
+	checkError(err)
+
+	fmt.Println(string(buf[0:n]))
+}
+func checkError(err error) {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+		os.Exit(1)
+	}
+}
+
+// udpserver.go
+package main
+
+import (
+	"fmt"
+	"net"
+	"os"
+	"time"
+)
+
+func main() {
+	service := ":1200"
+	updAddr, err := net.ResolveUDPAddr("udp4", service)
+	checkError(err)
+	conn, err := net.ListenUDP("udp", updAddr)
+	checkError(err)
+	for {
+		handleClient(conn)
+	}
+}
+
+func handleClient(conn *net.UDPConn) {
+	var buf [512]byte
+	_, addr, err := conn.ReadFromUDP(buf[0:])
+	if err != nil {
+		return
+	}
+	daytime := time.Now().String()
+	conn.WriteToUDP([]byte(daytime), addr)
+}
+
+func checkError(err error) {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+		os.Exit(1)
+	}
+}
 ```
