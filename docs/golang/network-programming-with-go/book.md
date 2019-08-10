@@ -1,3 +1,6 @@
+《Network Programming With Go》比较浅显，例子都使 hello world 级别的 demo。不太推荐看。两星都不给
+
+
 # 3. Socket level Programming
 
 ### socket
@@ -339,3 +342,141 @@ func checkSum(msg []byte) uint16 {
 - message format
 - data format: byte encoded or character encoded
 - state
+
+
+# 6. Managing character sets and encodings
+
+Go use utf8 encoded characters in its strings. Each character is of type rune(alias for int32)
+as a Unicode character can be 1,2 or 4 bytes in UTF8 encoding. A string is an array of rune.
+
+
+# 7. Security
+
+### Data integrity (数据完整性)
+
+```
+// MD5 Has
+package main
+
+import (
+	"crypto/md5"
+	"fmt"
+)
+
+func main() {
+	hash := md5.New()
+	bytes := []byte("hello\n")
+	hash.Write(bytes)
+	hashValue := hash.Sum(nil)
+	hashSize := hash.Size()
+	// print out in ASCII from as four hexadcimal numbers
+	for n := 0; n < hashSize; n += 4 {
+		var val uint32
+		val = uint32(hashValue[n])<<24 +
+			uint32(hashValue[n+1])<<16 +
+			uint32(hashValue[n+2])<<8 +
+			uint32(hashValue[n+3])
+		fmt.Printf("%x ", val)
+	}
+}
+```
+
+### Symmetric key encryption
+
+- Blowfish
+- DES
+
+### Public key encryption
+
+- crypto/rsa
+
+### X.509 certificates
+
+A public key infrastructure(PKI) is a framework for a collections of public keys,
+along with additional information such as owner name and location.
+
+### TLS
+
+- crypto/tls
+
+
+# 8. HTTP
+
+# HTTP client
+```
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"os"
+)
+
+func main() {
+	url := "http://127.0.0.1:8000"
+	response, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(2)
+	}
+	if response.Status != "200 OK" {
+		fmt.Println(response.Status)
+		os.Exit(2)
+	}
+	// b, _ := httputil.DumpResponse(response, false)
+	// fmt.Print(string(b))
+
+	var buf [512]byte
+	reader := response.Body
+	for {
+		n, err := reader.Read(buf[0:])
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(0)
+		}
+		fmt.Print(string(buf[0:n]))
+	}
+
+}
+```
+
+Proxy handling:
+
+```
+proxyURL, err := url.Parse(proxyString) // http://proxy-host:port
+transport := &http.Transport{Proxy: http.ProxyURL(proxyURL)}
+client := &http.Client{Transport: transport}
+// func ProxyFromEnvironment(req *Request) (*url.URL, error)
+```
+
+### Servers
+
+- File server
+
+```
+package main
+
+import "net/http"
+
+func main() {
+	fileServer := http.FileServer(http.Dir("/home/httpd/html"))
+	err := http.ListenAndServe(":8000", fileServer)
+	checkError(err)
+}
+```
+
+- Handler function
+
+```
+func Handle(pattern string, handler Handler)
+func HandleFunc(pattern string, handler func(*Conn, *Request))
+```
+
+
+# 9. Templates
+
+- html/template, text/template
+- pipelines: `{{. | html}}`
+- `template.FuncMap{"emailExpand": EmailExpand}`
+- variables in templates are prefixed by '$'
+- conditional
