@@ -1077,17 +1077,400 @@ func main() {
 
 # 9 测试和性能
 
-
+### 单元测试
 单测：用来测试包或者程序的一部分代码或者一组代码的函数。目的是确认目标代码在给定场景下，是否按照预期工作。
 
-基础测试和表组测试（多个测试用例）
+基础测试(basic test)和表组(table test)测试（多个测试用例）
 
-mocking: 标准库包含一个 httptest 可以 mock 网络调用
+```
+package listing01
 
-# TODO listing12_test.go 代码
+import (
+	"net/http"
+	"testing"
+)
+
+const checkMark = "\u2713"
+const ballotX = "\u2717"
+
+// TestDownload validates the http Get function can download content.
+func TestDownload(t *testing.T) {
+	url := "http://www.goinggo.net/feeds/posts/default?alt=rss"
+	statusCode := 200
+
+	t.Log("Given the need to test downloading content.")
+	{
+		t.Logf("\tWhen checking \"%s\" for status code \"%d\"",
+			url, statusCode)
+		{
+			resp, err := http.Get(url)
+			if err != nil {
+				t.Fatal("\t\tShould be able to make the Get call.",
+					ballotX, err)
+			}
+			t.Log("\t\tShould be able to make the Get call.",
+				checkMark)
+
+			defer resp.Body.Close()
+
+			if resp.StatusCode == statusCode {
+				t.Logf("\t\tShould receive a \"%d\" status. %v",
+					statusCode, checkMark)
+			} else {
+				t.Errorf("\t\tShould receive a \"%d\" status. %v %v",
+					statusCode, ballotX, resp.StatusCode)
+			}
+		}
+	}
+}
+```
+注意测试文件用 test_file 开头，测试函数需要 Test 开头并且接收 testing.T 指针，不能有返回值。
+
+如果有多组测试用例，使用表组测试:
+
+```
+package listing08
+
+import (
+	"net/http"
+	"testing"
+)
+
+const checkMark = "\u2713"   //输出对勾符号
+const ballotX = "\u2717"
+
+// TestDownload validates the http Get function can download
+// content and handles different status conditions properly.
+func TestDownload(t *testing.T) {
+	var urls = []struct {
+		url        string
+		statusCode int
+	}{
+		{
+			"http://www.goinggo.net/feeds/posts/default?alt=rss",
+			http.StatusOK,
+		},
+		{
+			"http://rss.cnn.com/rss/cnn_topstbadurl.rss",
+			http.StatusNotFound,
+		},
+	}
+
+	t.Log("Given the need to test downloading different content.")
+	{
+		for _, u := range urls {
+			t.Logf("\tWhen checking \"%s\" for status code \"%d\"",
+				u.url, u.statusCode)
+			{
+				resp, err := http.Get(u.url)
+				if err != nil {
+					t.Fatal("\t\tShould be able to Get the url.",
+						ballotX, err)
+				}
+				t.Log("\t\tShould be able to Get the url.",
+					checkMark)
+
+				defer resp.Body.Close()
+
+				if resp.StatusCode == u.statusCode {
+					t.Logf("\t\tShould have a \"%d\" status. %v",
+						u.statusCode, checkMark)
+				} else {
+					t.Errorf("\t\tShould have a \"%d\" status. %v %v",
+						u.statusCode, ballotX, resp.StatusCode)
+				}
+			}
+		}
+	}
+}
+```
+
+### mocking: 标准库包含一个 httptest 可以 mock 网络调用
+
+一般单元测试不要依赖网络或者其他服务。mock 是一种常见的手段，用来模拟访问不可用的资源。
+使用 httptest 来 mock 一个网络调用。(这个例子麻烦在处理这个返回的 xml)
+http和httptest会帮你处理请求哪个端口之类的问题。
+
+```
+// Sample test to show how to mock an HTTP GET call internally.
+// Differs slightly from the book to show more.
+package listing12
+
+import (
+	"encoding/xml"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+)
+
+const checkMark = "\u2713"
+const ballotX = "\u2717"
+
+// feed is mocking the XML document we except to receive.
+var feed = `<?xml version="1.0" encoding="UTF-8"?>
+<rss>
+<channel>
+    <title>Going Go Programming</title>
+    <description>Golang : https://github.com/goinggo</description>
+    <link>http://www.goinggo.net/</link>
+    <item>
+        <pubDate>Sun, 15 Mar 2015 15:04:00 +0000</pubDate>
+        <title>Object Oriented Programming Mechanics</title>
+        <description>Go is an object oriented language.</description>
+        <link>http://www.goinggo.net/2015/03/object-oriented</link>
+    </item>
+</channel>
+</rss>`
+
+// mockServer returns a pointer to a server to handle the get call.
+func mockServer() *httptest.Server {
+	f := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Header().Set("Content-Type", "application/xml")
+		fmt.Fprintln(w, feed)
+	}
+
+	return httptest.NewServer(http.HandlerFunc(f))
+}
+
+// TestDownload validates the http Get function can download content
+// and the content can be unmarshaled and clean.
+func TestDownload(t *testing.T) {
+	statusCode := http.StatusOK
+
+	server := mockServer()
+	defer server.Close()
+
+	t.Log("Given the need to test downloading content.")
+	{
+		t.Logf("\tWhen checking \"%s\" for status code \"%d\"",
+			server.URL, statusCode)
+		{
+			resp, err := http.Get(server.URL)
+			if err != nil {
+				t.Fatal("\t\tShould be able to make the Get call.",
+					ballotX, err)
+			}
+			t.Log("\t\tShould be able to make the Get call.",
+				checkMark)
+
+			defer resp.Body.Close()
+
+			if resp.StatusCode != statusCode {
+				t.Fatalf("\t\tShould receive a \"%d\" status. %v %v",
+					statusCode, ballotX, resp.StatusCode)
+			}
+			t.Logf("\t\tShould receive a \"%d\" status. %v",
+				statusCode, checkMark)
+
+			var d Document
+			if err := xml.NewDecoder(resp.Body).Decode(&d); err != nil {
+				t.Fatal("\t\tShould be able to unmarshal the response.",
+					ballotX, err)
+			}
+			t.Log("\t\tShould be able to unmarshal the response.",
+				checkMark)
+
+			if len(d.Channel.Items) == 1 {
+				t.Log("\t\tShould have \"1\" item in the feed.",
+					checkMark)
+			} else {
+				t.Error("\t\tShould have \"1\" item in the feed.",
+					ballotX, len(d.Channel.Items))
+			}
+		}
+	}
+}
+
+// Item defines the fields associated with the item tag in
+// the buoy RSS document.
+type Item struct {
+	XMLName     xml.Name `xml:"item"`
+	Title       string   `xml:"title"`
+	Description string   `xml:"description"`
+	Link        string   `xml:"link"`
+}
+
+// Channel defines the fields associated with the channel tag in
+// the buoy RSS document.
+type Channel struct {
+	XMLName     xml.Name `xml:"channel"`
+	Title       string   `xml:"title"`
+	Description string   `xml:"description"`
+	Link        string   `xml:"link"`
+	PubDate     string   `xml:"pubDate"`
+	Items       []Item   `xml:"item"`
+}
+
+// Document defines the fields associated with the buoy RSS document.
+type Document struct {
+	XMLName xml.Name `xml:"rss"`
+	Channel Channel  `xml:"channel"`
+	URI     string
+}
+```
+
+### 测试服务端点(endpoint)
+endpoint是指与服务宿主信息无关，用来分辨某个服务的地址，一般是不包含宿主的一个路径。
+（感觉这个测试相比动态语言还是麻烦太多了)
+
+```
+// Sample test to show how to test the execution of an
+// internal endpoint.
+package handlers_test
+
+import (
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/goinaction/code/chapter9/listing17/handlers"
+)
+
+const checkMark = "\u2713"
+const ballotX = "\u2717"
+
+func init() {
+	handlers.Routes()
+}
+
+// TestSendJSON testing the sendjson internal endpoint.
+func TestSendJSON(t *testing.T) {
+	t.Log("Given the need to test the SendJSON endpoint.")
+	{
+		req, err := http.NewRequest("GET", "/sendjson", nil)
+		if err != nil {
+			t.Fatal("\tShould be able to create a request.",
+				ballotX, err)
+		}
+		t.Log("\tShould be able to create a request.",
+			checkMark)
+
+		rw := httptest.NewRecorder()
+		http.DefaultServeMux.ServeHTTP(rw, req)
+
+		if rw.Code != 200 {
+			t.Fatal("\tShould receive \"200\"", ballotX, rw.Code)
+		}
+		t.Log("\tShould receive \"200\"", checkMark)
+
+		u := struct {
+			Name  string
+			Email string
+		}{}
+
+		if err := json.NewDecoder(rw.Body).Decode(&u); err != nil {
+			t.Fatal("\tShould decode the response.", ballotX)
+		}
+		t.Log("\tShould decode the response.", checkMark)
+
+		if u.Name == "Bill" {
+			t.Log("\tShould have a Name.", checkMark)
+		} else {
+			t.Error("\tShould have a Name.", ballotX, u.Name)
+		}
+
+		if u.Email == "bill@ardanstudios.com" {
+			t.Log("\tShould have an Email.", checkMark)
+		} else {
+			t.Error("\tShould have an for Email.", ballotX, u.Email)
+		}
+	}
+}
+```
+
+### Example 示例文档
+注意函数名需要时基于已经存在的公开的函数或者方法。
+```
+// Sample test to show how to write a basic example.
+package handlers_test
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"net/http/httptest"
+)
+
+// ExampleSendJSON provides a basic example.
+func ExampleSendJSON() {
+	r, _ := http.NewRequest("GET", "/sendjson", nil)
+	w := httptest.NewRecorder()
+	http.DefaultServeMux.ServeHTTP(w, r)
+
+	var u struct {
+		Name  string
+		Email string
+	}
+
+	if err := json.NewDecoder(w.Body).Decode(&u); err != nil {
+		log.Println("ERROR:", err)
+	}
+
+	fmt.Println(u)
+	// Output:
+	// {Bill bill@ardanstudios.com}
+}
+```
+使用 `godoc -http=":3000"` 启动能看到 godoc 多了示例代码。
+可以用 `go test -v -run="ExampleSendJSON"` 运行这个示例函数。支持正则和单元测试
 
 
-测试服务端点(endpoint): 是指与服务宿主信息无关，用来分表某个服务的地址，一般是不包含宿主的一个路径。
+### 基准测试(benchmark test)
 
+测试代码性能，不同代码方案的性能。可以识别某段代码的 cpu/mem 效率
+比如 go 里边有三种方式将一个整数转为字符串。来测试下哪种最快：
 
-基准测试(benchmark test)
+```
+// Sample benchmarks to test which function is better for converting
+// an integer into a string. First using the fmt.Sprintf function,
+// then the strconv.FormatInt function and then strconv.Itoa.
+package listing05_test
+
+import (
+	"fmt"
+	"strconv"
+	"testing"
+)
+
+// BenchmarkSprintf provides performance numbers for the
+// fmt.Sprintf function.
+func BenchmarkSprintf(b *testing.B) {  // benchmark 同样用 _test.go 结尾, testing.B 参数表示Benchmark
+	number := 10
+
+	b.ResetTimer() //重置计时器，保证测试代码执行之前的初始化代码，不会干扰计时器的结果
+
+	for i := 0; i < b.N; i++ { // 必须把要基准测试的代码都放到循环里，要使用 b.N
+		fmt.Sprintf("%d", number)
+	} // 测完发现这个最慢
+}
+
+// BenchmarkFormat provides performance numbers for the
+// strconv.FormatInt function.
+func BenchmarkFormat(b *testing.B) {
+	number := int64(10)
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		strconv.FormatInt(number, 10)
+	}
+}
+
+// BenchmarkItoa provides performance numbers for the
+// strconv.Itoa function.
+func BenchmarkItoa(b *testing.B) {
+	number := 10
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		strconv.Itoa(number)
+	}
+}
+// go test -v -run="none" -bench="BenchmarkSprintf"
+// go test -v -run="none" -bench=. -benchtime="3s"
+```
