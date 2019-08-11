@@ -27,7 +27,7 @@ slice := []int{}
 //NOTE: 注意不管是 nil 切片还是空切片，调用 append, len, cap 效果一样
 
 
-newSlice := slice[1:5] // 注意 newSlice, slice 共享了一个底层数组
+newSlice := slice[1:5] // 注意 newSlice, slice 共享了一个底层数组。这点和 py 不一样，py 切片会进行复制
 // copy slice
 arr := []int{1, 2, 3}
 tmp := make([]int, len(arr))
@@ -925,36 +925,89 @@ func main() {
 
 # 8 标准库
 
-
+### 标注库
 标准库的代码经过预编译的，这些预编译后的文件，称作归档文件(archive file, .a)，放在 pkg 下。
 
+### log
 unix 架构创建了  stderr 设备作为日志的默认输出地，把程序输出和日志分离开。
 如果用户程序只有记录日志，更常用的方式是将一般的日志写到 stdout， 错误或者警告写到 stderr。
 
-标准 log 记录是 goroutine 安全的。
+NOTE: 标准 log 记录是 goroutine 安全的。
+```
+// This sample program demonstrates how to create customized loggers.
+package main
 
-序列化和反序列化：marshal
+import (
+	"io"
+	"io/ioutil"
+	"log"
+	"os"
+)
 
+var (
+	Trace   *log.Logger // Just about anything
+	Info    *log.Logger // Important information
+	Warning *log.Logger // Be concerned
+	Error   *log.Logger // Critical problem
+)
 
-输入和输出：Writer/Reader
+func init() {
+	file, err := os.OpenFile("errors.txt",
+		os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalln("Failed to open error log file:", err)
+	}
 
+	Trace = log.New(ioutil.Discard,
+		"TRACE: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+	Info = log.New(os.Stdout,
+		"INFO: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+	Warning = log.New(os.Stdout,
+		"WARNING: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+	Error = log.New(io.MultiWriter(file, os.Stderr),
+		"ERROR: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+}
+
+func main() {
+	Trace.Println("I have something standard to say")
+	Info.Println("Special Information")
+	Warning.Println("There is something you need to know about")
+	Error.Println("Something has failed")
+}
+```
+
+### 序列化和反序列化：marshal
+
+- 序列化(marshal): 数据-> json
+- 反序列化(unmarshal): json -> 数据
+
+### 输入和输出：Writer/Reader
 
 ```
-// package main
-//
-// import (
-// 	"bytes"
-// 	"fmt"
-// 	"os"
-// )
-//
-// func main() {
-// 	var b bytes.Buffer
-// 	b.Write([]byte("hello "))
-// 	fmt.Fprintf(b, "world")
-// 	b.WriteTo(os.Stdout)
-// }
+package main
 
+import (
+      "bytes"
+      "fmt"
+      "os"
+)
+
+func main() {
+      var b bytes.Buffer
+      b.Write([]byte("hello "))
+      fmt.Fprintf(b, "world")
+      b.WriteTo(os.Stdout)
+}
+```
+
+```
 package main
 
 import (
@@ -976,6 +1029,44 @@ func main() {
 	defer file.Close()
 
 	dest := io.MultiWriter(os.Stdout, file)
+	io.Copy(dest, r.Body)
+	if err := r.Body.Close(); err != nil {
+		log.Println(err)
+	}
+}
+```
+
+```
+// 实现一个简单的 curl 请求，同时把返回结果写到 stdout 和文件
+package main
+
+import (
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+// main is the entry point for the application.
+func main() {
+	// r here is a response, and r.Body is an io.Reader.
+	r, err := http.Get(os.Args[1])
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Create a file to persist the response.
+	file, err := os.Create(os.Args[2])
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer file.Close()
+
+	// Use MultiWriter so we can write to stdout and
+	// a file on the same write operation.
+	dest := io.MultiWriter(os.Stdout, file)
+
+	// Read the response and write to both destinations.
 	io.Copy(dest, r.Body)
 	if err := r.Body.Close(); err != nil {
 		log.Println(err)
