@@ -1474,3 +1474,16 @@ func BenchmarkItoa(b *testing.B) {
 // go test -v -run="none" -bench="BenchmarkSprintf"
 // go test -v -run="none" -bench=. -benchtime="3s"
 ```
+
+commands:
+
+```sh
+# run all package's test
+go test ./...
+# code coverage
+go test -coverprofile=c.out
+go tool cover -func=c.out
+go tool cover -html=c.out
+```
+
+[How to write testable code](https://www.youtube.com/watch?v=BaMcmZRrG-c)
