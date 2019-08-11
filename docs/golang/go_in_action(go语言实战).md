@@ -1,5 +1,53 @@
 《Go 实战》 , https://github.com/goinaction/code
 
+# 4 数组，切片和映射
+
+### 数组
+
+数组类型包括元素类型和长度，只有长度和类型一致才能互相赋值。
+注意在函数之间传递数组变量可能有性能问题(copy 数组值)，使用切片更好。
+
+### 切片
+
+实现：指向底层数组的指针，元素个数，容量
+
+区分 nil和空切片：
+
+```
+// nil 切片
+var slice []int //nil切片，用于描述不存在的切片,比如函数返回切片但是发生异常了
+// nil(pointer), 0(len), 0(cap)
+
+
+// 空切片,比如数据库查询返回0个结果时表示空集合
+slice := make([]int, 0)
+// or
+slice := []int{}
+
+//NOTE: 注意不管是 nil 切片还是空切片，调用 append, len, cap 效果一样
+
+
+newSlice := slice[1:5] // 注意 newSlice, slice 共享了一个底层数组
+// copy slice
+arr := []int{1, 2, 3}
+tmp := make([]int, len(arr))
+copy(tmp, arr)
+fmt.Println(tmp)
+fmt.Println(arr)
+
+// for 遍历
+for idx, val := range slice {
+    // NOTE: val 这里是元素的拷贝，而不是直接引用的切片元素
+    fmt.Println(val)
+}
+```
+
+### 映射
+map使用两个数据结构实现。一个是数组，存储的是选择桶的散列键的高八位，区分每个键值对存储在哪个桶里。
+第二个是一个字节数组，用于存储键值对。
+传递映射同样不会拷贝副本，所以传递成本很小。
+
+
 # 5 Go 语言的类型系统
 
 值的类型给编译器提供两个信息:
