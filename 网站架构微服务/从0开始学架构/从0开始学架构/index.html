@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>《从0开始学架构》 - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300a\u4ece0\u5f00\u59cb\u5b66\u67b6\u6784\u300b";
+    var mkdocs_page_input_path = "\u7f51\u7ad9\u67b6\u6784\u5fae\u670d\u52a1/\u4ece0\u5f00\u59cb\u5b66\u67b6\u6784/\u4ece0\u5f00\u59cb\u5b66\u67b6\u6784.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go_in_action(go语言实战)/">《Go In Action》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">《从0开始学架构》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">负载均衡：</a></li>
+    
+
+    <li class="toctree-l3"><a href="#cap">CAP 理论：</a></li>
+    
+
+    <li class="toctree-l3"><a href="#cap_1">CAP 细节：</a></li>
+    
+
+    <li class="toctree-l3"><a href="#acid">ACID</a></li>
+    
+
+    <li class="toctree-l3"><a href="#base">BASE</a></li>
+    
+
+    <li class="toctree-l3"><a href="#fmea">FMEA，排除架构可用性隐患</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">双机架构</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_3">主备复制</a></li>
+        
+            <li><a class="toctree-l4" href="#_4">主从复制</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">双机切换</a></li>
+        
+            <li><a class="toctree-l4" href="#_6">主主复制</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_7">集群和分区</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_8">数据集群</a></li>
+        
+            <li><a class="toctree-l4" href="#_9">数据分区</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_10">如何设计计算高可用架构</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_11">业务高可用：异地多活架构</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_12">如何有效地学习开源项目</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_13">异地多活四大技巧</a></li>
+    
+
+    <li class="toctree-l3"><a href="#4">异地多活设计4步走</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1">1业务分级</a></li>
+        
+            <li><a class="toctree-l4" href="#2">2数据分类</a></li>
+        
+            <li><a class="toctree-l4" href="#3">3数据同步</a></li>
+        
+            <li><a class="toctree-l4" href="#4_1">4异常处理</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_14">如何应对接口级别故障</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_15">降级</a></li>
+        
+            <li><a class="toctree-l4" href="#_16">熔断</a></li>
+        
+            <li><a class="toctree-l4" href="#_17">限流</a></li>
+        
+            <li><a class="toctree-l4" href="#_18">排队</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_19">可扩展架构的基本思想和模式</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_20">可扩展的基本思想（拆）</a></li>
+        
+            <li><a class="toctree-l4" href="#_21">可扩展方式</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#soa">传统的可扩展架构模式：分层架构和 SOA</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_22">分层架构</a></li>
+        
+            <li><a class="toctree-l4" href="#soa_1">SOA</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#or">深入理解微服务架构：银弹or焦油坑</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#soa_2">微服务与 SOA 关系</a></li>
+        
+            <li><a class="toctree-l4" href="#_23">微服务的陷阱</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#-">微服务架构最佳实践 - 方法篇</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_24">服务粒度</a></li>
+        
+            <li><a class="toctree-l4" href="#_25">拆分方法</a></li>
+        
+            <li><a class="toctree-l4" href="#_26">基础设施</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_27">微服务架构最佳实践：基础设施篇</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_28">自动化测试</a></li>
+        
+            <li><a class="toctree-l4" href="#_29">自动化部署</a></li>
+        
+            <li><a class="toctree-l4" href="#_30">配置中心</a></li>
+        
+            <li><a class="toctree-l4" href="#_31">接口框架</a></li>
+        
+            <li><a class="toctree-l4" href="#api">API网关</a></li>
+        
+            <li><a class="toctree-l4" href="#_32">服务发现</a></li>
+        
+            <li><a class="toctree-l4" href="#_33">服务路由</a></li>
+        
+            <li><a class="toctree-l4" href="#_34">服务容错</a></li>
+        
+            <li><a class="toctree-l4" href="#_35">服务监控</a></li>
+        
+            <li><a class="toctree-l4" href="#_36">服务跟踪</a></li>
+        
+            <li><a class="toctree-l4" href="#_37">服务安全</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_38">微内核架构</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_39">基本架构</a></li>
+        
+            <li><a class="toctree-l4" href="#_40">设计关键点</a></li>
+        
+            <li><a class="toctree-l4" href="#osgi">OSGI</a></li>
+        
+            <li><a class="toctree-l4" href="#_41">规则引擎</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_42">架构师如何判断技术演进的方向</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_43">互联网技术演进模式</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_44">互联网架构模板：存储层技术</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#sql">SQL</a></li>
+        
+            <li><a class="toctree-l4" href="#nosql">NoSQL</a></li>
+        
+            <li><a class="toctree-l4" href="#_45">小文件存储</a></li>
+        
+            <li><a class="toctree-l4" href="#_46">大文件存储</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_47">互联网架构模板：开发层和服务层技术</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_48">开发层</a></li>
+        
+            <li><a class="toctree-l4" href="#_49">服务层</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_50">互联网架构模板：网络层技术</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_51">负载均衡</a></li>
+        
+            <li><a class="toctree-l4" href="#cdn">CDN</a></li>
+        
+            <li><a class="toctree-l4" href="#_52">多机房</a></li>
+        
+            <li><a class="toctree-l4" href="#_53">多中心</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_54">互联网架构模板：用户层和业务层技术</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_55">用户层技术</a></li>
+        
+            <li><a class="toctree-l4" href="#_56">业务层技术</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_57">互联网架构模板：平台技术</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_58">运维平台</a></li>
+        
+            <li><a class="toctree-l4" href="#_59">测试平台</a></li>
+        
+            <li><a class="toctree-l4" href="#_60">数据平台</a></li>
+        
+            <li><a class="toctree-l4" href="#_61">管理平台</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_62">架构重构内功心法第一式：有的放矢</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_63">架构重构内功心法第二式：合纵连横</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_64">合纵</a></li>
+        
+            <li><a class="toctree-l4" href="#_65">连横</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_66">架构重构内功心法第二式：运筹帷幄</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_67">如何选择、使用以及二次开发</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_68">如何选择一个开源项目</a></li>
+        
+            <li><a class="toctree-l4" href="#_69">如何使用开源项目</a></li>
+        
+            <li><a class="toctree-l4" href="#_70">如何基于开源项目二次开发</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#app">APP 架构演进</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_71">备选方案模板</a></li>
+        
+            <li><a class="toctree-l4" href="#_72">架构设计模板</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效15法则/">《高效15法则》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>网站架构微服务 &raquo;</li>
+        
+      
+    
+    <li>《从0开始学架构》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>《从0开始学架构》- 李运华 读书笔记</p>
+<h3 id="_1">负载均衡：</h3>
+<ul>
+<li>DNS(地理级别)</li>
+<li>硬件(集群级别)</li>
+<li>软件(机器级别)</li>
+</ul>
+<h3 id="cap">CAP 理论：</h3>
+<p>在一个分布式系统（指相互连接并共享数据的节点的集合）中，当涉及读写操作时，
+只能保证一致性(Consistence)，可用性(Availability)，分区容错性(Partition Tolerance)三者中两个，另外一个必须牺牲。</p>
+<ul>
+<li>一致性(C): 对某个指定的客户端来说，读操作保证能够返回最新的写操作结果</li>
+<li>可用性(A)：非故障的节点在合理的时间内返回合理的响应（不是错误和超时的响应）</li>
+<li>分区容忍性(P)：当出现网络分区后，系统能够继续『履行职责』（丢包、连接中断、拥塞等导致网络分区）</li>
+</ul>
+<p>必须选择 P 因为网络无法100%可靠。如果我们选择了 CA 放弃了 P，发生分区现象时，为了保证 C
+就得禁止写入，有写入请求时候系统返回 Error，这又和 A 冲突了。
+所以分布式系统理论上只能用(保证 CA 发生 P 的时候矛盾)，只能选择AP/AP。</p>
+<p><img alt="CAP" src="../CAP.png" /></p>
+<ul>
+<li>CP: 当发生分区后， N1节点已经更新数据到 y，但是 N1和 N2 复制通道中断了，N2还是 x。
+  这时client 访问 N2时，N2需要返回 Error，提示客户端系统发生了错误。违背了可用性要求</li>
+<li>AP: 还是上一种场景但是 N2 直接返回了老的数据 x，虽然不正确确是一个合理的结果，违背了 C。</li>
+</ul>
+<h3 id="cap_1">CAP 细节：</h3>
+<ul>
+<li>关注的粒度是数据，不是整个系统。需要根据不同应用场景和要求来设计，每类数据用不同策略。</li>
+<li>CAP是忽略网络延迟的。布鲁尔定义一致性没考虑复制延迟，而现实中复制总是需要花费时间的。
+  C不可能完美实现，总会有延迟，数据复制过程中不一致，</li>
+<li>正常运行情况下，不存在CP和 AP 的选择，可以同时 CA。分区没发生的时候可以考虑 CA。</li>
+<li>放弃不等于什么都不做，需要未分区恢复后做准备，牺牲只是说分区过程中无法保证 C or
+  A。可以在分区之间进行一些操作，从而让分区故障解决后，系统重新达到 CA 的状态。</li>
+</ul>
+<h3 id="acid">ACID</h3>
+<p>ACID 是为了保证数据库事务的正确性提出来的一个理论。</p>
+<ul>
+<li>Atomicity（原子性）</li>
+</ul>
+<p>一个事务中的所有操作，要么全部完成，要么全部不完成，不会在中间某个环节结束。事务在执行过程中发生错误，会被回滚到事务开始前的状态，就像这个事务从来没有执行过一样。</p>
+<ul>
+<li>Consistency（一致性）</li>
+</ul>
+<p>在事务开始之前和事务结束以后，数据库的完整性没有被破坏。比如A向B转账，不可能A扣了钱，B却没收到。</p>
+<ul>
+<li>Isolation（隔离性）</li>
+</ul>
+<p>数据库允许多个并发事务同时对数据进行读写和修改的能力。隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括读未提交（Read uncommitted）、读提交（read committed）、可重复读（repeatable read）和串行化（Serializable）。</p>
+<ul>
+<li>Durability（持久性）</li>
+</ul>
+<p>事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。</p>
+<h3 id="base">BASE</h3>
+<ul>
+<li>BA(Baciscally Available): 基本可用。分布式系统发生故障，允许损失部分可用性，保证核心可用</li>
+<li>S(Soft State): 软状态。允许中间状态，该中间状态不会影响系统整体可用性。（这里的中间状态就是 CAP 中数据不一致）</li>
+<li>E(Eventual Consistency): 最终一致性。系统中的所有数据副本一定时间后，最终能够达到一致的状态。</li>
+</ul>
+<p>核心思想是如果无法做到强一致性(CAP中的一致性就是强一致性)，应用适当的方式达到最终一致性，对 AP 的一种补充。</p>
+<ul>
+<li>CAP 是忽略延时的，实际场景无法避免(完美的 CP 不存在)</li>
+<li>AP 牺牲一致性只是指分区期间，而不是永远放弃一致性</li>
+</ul>
+<p>ACID 是数据库事务完整性的理论，CAP 是分布式设计理论，BASE 是 CAP 中 AP 方案的延伸。</p>
+<h3 id="fmea">FMEA，排除架构可用性隐患</h3>
+<p>FMEA(Failure mode and effects analysis, 故障模式与影响分析)</p>
+<ul>
+<li>给出初始的架构设计图</li>
+<li>假设架构中某个部件故障</li>
+<li>分析故障对系统功能的影响</li>
+<li>分居分析结构判断是否需要优化</li>
+</ul>
+<p>FMEA 分析表：</p>
+<ul>
+<li>功能点。从用户角度看</li>
+<li>故障模式。故障点和故障形式，尽量精确描述</li>
+<li>故障影响。功能点受到的具体影响</li>
+<li>严重程度。业务角度，致命/高/中/低/无</li>
+<li>故障原因。</li>
+<li>故障概率。高中低。硬件、开源系统、自研系统</li>
+<li>风险程度，综合严重程度和故障概率判断最终等级。风险程度=严重程度x故障概率</li>
+<li>已有措施。报警、 容错、自恢复</li>
+<li>规避措施。技术手段和管理手段</li>
+<li>解决措施：技术手段</li>
+<li>后续计划：哪些还缺少应对措施，根据优先级排序提出后续解决计划</li>
+</ul>
+<h1 id="_2">双机架构</h1>
+<h3 id="_3">主备复制</h3>
+<p>备机只起到备份作用，不承担实际读写操作。需要人工干预把备机改为主机。后台管理系统用得多</p>
+<h3 id="_4">主从复制</h3>
+<p>主写从读。可能出现数据不一致问题，故障要人工干预。适合写少读多，论坛、BBS、新闻网站等</p>
+<h3 id="_5">双机切换</h3>
+<p>主备切换和主从切换</p>
+<p>常见架构：</p>
+<ul>
+<li>互连式：主备机直接建立状态传递的渠道</li>
+<li>中介式：主备机都去连接中介，通过中介传递状态信息。mongodb 的 Replica set。成熟的中介式方案：ZooKeeper/Keepalived</li>
+<li>模拟式：备机模拟成客户端，向主机发起模拟的读写操作，根据读写操作的响应情况判断主机状态。</li>
+</ul>
+<h3 id="_6">主主复制</h3>
+<p>需要保证数据能双向复制，但是很多无法做到，用户 id，库存，余额等。一般是临时、可丢失可覆盖的数据场景</p>
+<h1 id="_7">集群和分区</h1>
+<h3 id="_8">数据集群</h3>
+<ul>
+<li>数据集中集群。ZooKeeper ZAB算法</li>
+<li>数据分散集群。均衡性、容错性、可伸缩性。Hadoop Namenode。Elasticsearch
+  集群通过选举一台服务器来做数据分区的分配，masternode</li>
+</ul>
+<h3 id="_9">数据分区</h3>
+<p>按照一定规则分区，不同分区放在不同地理位置。考虑因素</p>
+<ul>
+<li>数据量</li>
+<li>分区规则</li>
+<li>复制规则，集中式、互备式、独立式</li>
+</ul>
+<h1 id="_10">如何设计计算高可用架构</h1>
+<ul>
+<li>哪些服务器可以执行</li>
+<li>任务如何重新执行</li>
+</ul>
+<p>常用模式：</p>
+<ul>
+<li>主备：适合内部、后台使用人数不多，频率不高的业务，不太适合在线业务</li>
+<li>主从：从机也执行部分任务。任务分配器会复杂一些</li>
+<li>集群：<ul>
+<li>对称集群(负载均衡集群)，任务分配器需要选取分配策略，检查服务器状态。</li>
+<li>非对称集群。一部分任务给 master，一部分 slave。任务分配和角色分配更复杂（ZAB,Raft leader 选举）</li>
+</ul>
+</li>
+</ul>
+<h1 id="_11">业务高可用：异地多活架构</h1>
+<p>处理地域级别灾难。异地指的是地理位置不同地方，多活值得是每个位置都能提供服务（活跃）
+复杂度和成本会上升。特定业务需要异地多活</p>
+<p>架构模式</p>
+<ul>
+<li>同城异区。同一个城市不同区。无法应对极端场景</li>
+<li>跨城异地。不同城市的多个机房。复杂度大幅上升。不可控因素增多（网线挖断等），时延。
+  强一致性无法做到跨城异地多活（存款余额，支付宝余额等）这种只能用同城异区。
+  对数据一致性要求没那么高，或者数据不经常变动，或者丢失也没太大影响的可以用。</li>
+<li>跨国异地。场景：</li>
+<li>为不同地区用户提供服务</li>
+<li>只读类业务。比如搜索引擎</li>
+</ul>
+<h1 id="_12">如何有效地学习开源项目</h1>
+<p>自顶向下的学习技巧。</p>
+<ul>
+<li>安装。学习系统依赖组件，目录结构，系统工具。带着问题学习</li>
+<li>运行。命令行和配置文件</li>
+<li>原理研究。系统性。通读设计文档；阅读网上已有的分析文档；Demo验证</li>
+<li>关键特性的基本实现原理</li>
+<li>优缺点对比分析</li>
+<li>测试。先研究原理后测试</li>
+<li>源码研究。不建议通读所有代码。写demo测试调用基础库完成一些简单的功能，通过调用栈理解处理逻辑</li>
+</ul>
+<h1 id="_13">异地多活四大技巧</h1>
+<ul>
+<li>保证核心业务的异地多活</li>
+<li>保证核心数据最终一致性</li>
+<li>采用多种手段同步数据。消息队列、二次读取、存储系统同步方式、回源读取方式、重新生成数据方式</li>
+<li>只保证绝大部分用户的异地多活。补偿措施：挂公告；事后补偿；补充体验</li>
+</ul>
+<p>核心思想是才用多种手段保证大部分用户的核心业务异地多活</p>
+<h1 id="4">异地多活设计4步走</h1>
+<h3 id="1">1业务分级</h3>
+<p>访问量、核心业务、产生大量收入的业务</p>
+<h3 id="2">2数据分类</h3>
+<p>维度：数据量、唯一性、实时性、可丢失性(session)、可恢复性</p>
+<h3 id="3">3数据同步</h3>
+<ul>
+<li>存储系统同步</li>
+<li>消息队列同步(Kafka\ActiveMQ\RocketMQ)。适合无事务性或者无时序性</li>
+<li>重复生成可以重复生成的数据（session\cookie\缓存）</li>
+</ul>
+<h3 id="4_1">4异常处理</h3>
+<p>目的：</p>
+<ul>
+<li>发生问题，避免少量数据异常导致整体业务不可用</li>
+<li>问题恢复后，将异常的数据进行修正</li>
+<li>对用户安抚、模拟损失</li>
+</ul>
+<p>常见的异常处理措施：</p>
+<ul>
+<li>多通道。mysql主从和消息队列。多通道不要用相同的网络连接；需要数据是可覆盖的（帐号可以，密码就不行）</li>
+<li>同步和访问(异地机房通过系统的接口来进行数据访问)结合。</li>
+<li>日志记录，用于故障恢复。</li>
+<li>用户补偿。代金券、礼包、礼品、红包等</li>
+</ul>
+<h1 id="_14">如何应对接口级别故障</h1>
+<ul>
+<li>内部原因: 程序bug导致死循环，某个接口导致慢查询，程序逻辑不完善导致耗尽内存等</li>
+<li>外部原因: 黑客攻击、促销或抢购，三方系统大量请求，响应慢等</li>
+</ul>
+<h3 id="_15">降级</h3>
+<p>功能降低或者完全停掉所有功能。（丢车保帅，优先保证核心业务）</p>
+<ul>
+<li>系统后门降级。</li>
+<li>独立降级系统</li>
+</ul>
+<h3 id="_16">熔断</h3>
+<p>降级目的是应对自身系统故障，熔断目的是应对依赖的外部系统的故障。
+需要统一的 API 调用层。阈值的设计可以根据实际观察来确定。</p>
+<h3 id="_17">限流</h3>
+<p>从用户访问压力的角度，丢弃超出系统访问能力的请求。</p>
+<ul>
+<li>基于请求限流：限制总量、限制时间量。方式是限制某个指标的上限。根据阈值限制适合比较简单的系统(负载均衡、网关、抢购系统)</li>
+<li>基于资源限流。基于系统使用资源的上限限制。连接数、文件句柄、线程数、请求队列等。先推断、后优化</li>
+</ul>
+<h3 id="_18">排队</h3>
+<p>排队模块、调度模块、服务模块</p>
+<h1 id="_19">可扩展架构的基本思想和模式</h1>
+<h3 id="_20">可扩展的基本思想（拆）</h3>
+<p>常见的拆分思路：</p>
+<ul>
+<li>面向流程拆分：拆分业务流程为几个阶段，每个阶段作为一部分</li>
+<li>面相服务拆分</li>
+<li>面向功能拆分</li>
+</ul>
+<p>拆分方式决定了扩展方式</p>
+<h3 id="_21">可扩展方式</h3>
+<p>面向流程：扩展时大部分情况只需要修改某一层或关联的两层。
+面向服务：增加新服务只需要扩展相关服务
+面向功能：增加新的功能模块</p>
+<p>面向流程拆分：分层架构
+面向服务拆分：SOA、微服务
+面向功能拆分：微内核架构</p>
+<h1 id="soa">传统的可扩展架构模式：分层架构和 SOA</h1>
+<h3 id="_22">分层架构</h3>
+<p>常见 3 层(MVC)</p>
+<ul>
+<li>C/S, B/S</li>
+<li>MVC, MVP：划分对象是单个业务子系统，划分维度是职责</li>
+<li>逻辑分层架构：划分维度也是职责。自顶向下依赖</li>
+</ul>
+<p>无论何种分层维度，核心是保证各层之间差异足够清晰，边界足够明显，让人看到架构图之后就能看懂整个架构
+隔离关注点，只关心本层逻辑。保证层与层之间依赖是稳定的，才能支撑快速扩展</p>
+<h3 id="soa_1">SOA</h3>
+<p>SOA(Service Oriented Architecture)，面向服务的架构。三个关键概念：</p>
+<ul>
+<li>服务。所有业务功能都是一项服务。粒度划分需要根据企业实际情况判断</li>
+<li>ESB(Enterprise Service Bus，企业服务总线)。屏蔽异构系统对外提供各种不同的接口方式，达到服务间高效的互联沟通。</li>
+<li>松耦合。独立运行</li>
+</ul>
+<h1 id="or">深入理解微服务架构：银弹or焦油坑</h1>
+<h3 id="soa_2">微服务与 SOA 关系</h3>
+<p>small, lightweight, automated</p>
+<h3 id="_23">微服务的陷阱</h3>
+<ul>
+<li>划分服务过细，服务间关系复杂。单个复杂度下降，系统复杂度上升，将系统内复杂度上升到了系统间</li>
+<li>服务数量多，团队效率急剧下降。</li>
+<li>多个接口、多个工程</li>
+<li>多个环境</li>
+<li>运维工程师每次都要操作多个微服务</li>
+<li>调用链太长，性能下降，定位问题变难</li>
+</ul>
+<h1 id="-">微服务架构最佳实践 - 方法篇</h1>
+<h3 id="_24">服务粒度</h3>
+<p>基于团队规模。三个火枪手（一个微服务三个人负责开发）</p>
+<h3 id="_25">拆分方法</h3>
+<ul>
+<li>基于业务逻辑。确定合适的职责范围。</li>
+<li>基于可扩展拆分。按照稳定性排序，拆分为稳定服务和变动服务</li>
+<li>基于可靠性。可靠性要求高的和低的</li>
+<li>基于性能。压力大的模块拆出来</li>
+</ul>
+<h3 id="_26">基础设施</h3>
+<ul>
+<li>服务发现、服务路由、容错</li>
+<li>接口框架、API网关：提升开发对接效率</li>
+<li>自动化部署、服务跟踪、配置中心：测试和运维效率</li>
+<li>服务监控、跟踪、服务安全：运维效率</li>
+</ul>
+<h1 id="_27">微服务架构最佳实践：基础设施篇</h1>
+<h3 id="_28">自动化测试</h3>
+<p>单测、系统级集成测试、系统间接口测试</p>
+<h3 id="_29">自动化部署</h3>
+<p>版本管理、资源管理、部署和回退操作</p>
+<h3 id="_30">配置中心</h3>
+<p>配置版本管理、增删改查、节点管理、配置同步、配置推送</p>
+<h3 id="_31">接口框架</h3>
+<p>统一形式（接口协议和数据格式），提供统一的不同语言的包</p>
+<h3 id="api">API网关</h3>
+<p>外部系统访问接口都需要通过 API 网关。主要包括接入鉴权、权限控制、传输加密、请求路由、流量控制等</p>
+<h3 id="_32">服务发现</h3>
+<p>自理式: 每个微服务自己完成服务发现。实现简单，可以通过统一程序包提供给各个微服务</p>
+<p>代理式：微服务之间有个负载均衡系统完成服务发现。可用性和性能风险</p>
+<p>核心功能就是服务注册表，记录所有服务节点的配置和状态。每个微服务启动后都要将自己的信息注册到服务注册表，
+然后由微服务或者 locad balancer 系统到服务注册表查询可用服务。</p>
+<h3 id="_33">服务路由</h3>
+<p>一般和服务发现一起，挑选一个具体节点发起请求。常见算法：随机路由、轮询路由、 最小压力路由、最小连接数路由等</p>
+<h3 id="_34">服务容错</h3>
+<p>节点数增加导致某个微服务故障概率增加。
+请求重试、流控和服务隔离，通常服务容错会集成在服务发现和服务路由系统中</p>
+<h3 id="_35">服务监控</h3>
+<ul>
+<li>实时搜集信息并进行分析</li>
+<li>实时分析基础上进行预警</li>
+</ul>
+<p>建议独立系统</p>
+<h3 id="_36">服务跟踪</h3>
+<p>目前绝大部分实现都是基于 google dapper 论文
+《Dapper, A Large-Scale Distributed Systems Tracing Infrastructure》</p>
+<h3 id="_37">服务安全</h3>
+<p>接入安全、数据安全、传输安全</p>
+<h1 id="_38">微内核架构</h1>
+<p>Microkernel Architecture，也被称为插件化架构(Plug-in Architecture)</p>
+<h3 id="_39">基本架构</h3>
+<ul>
+<li>核心系统：负责和具体业务功能无关的通用功能，如模块加载、模块间通信等</li>
+<li>插件模块：负责实现具体业务逻辑</li>
+</ul>
+<h3 id="_40">设计关键点</h3>
+<ul>
+<li>插件管理,插件注册表机制</li>
+<li>插件连接，连接规范。OSGI(Eclipse)、消息模式、依赖注入(Spring)</li>
+<li>插件通信</li>
+</ul>
+<h3 id="osgi">OSGI</h3>
+<p>open services gateway initiative</p>
+<h3 id="_41">规则引擎</h3>
+<p>可扩展、易理解、高效率</p>
+<h1 id="_42">架构师如何判断技术演进的方向</h1>
+<ul>
+<li>潮流派</li>
+<li>保守派。拿一把锤子解决所有问题</li>
+<li>跟风派。跟着竞争对手步子走</li>
+</ul>
+<p>从企业业务发展考虑（铁三角：市场、技术、管理）</p>
+<h1 id="_43">互联网技术演进模式</h1>
+<p>初创、发展、竞争、成熟期</p>
+<p>复杂性和用户规模</p>
+<h1 id="_44">互联网架构模板：存储层技术</h1>
+<h3 id="sql">SQL</h3>
+<p>中间件(DBProxy)
+平台：淘宝 UMP(unified mysql platform)</p>
+<h3 id="nosql">NoSQL</h3>
+<p>存储平台</p>
+<ul>
+<li>资源动态按需分配</li>
+<li>资源自动化管理</li>
+<li>故障自动化处理</li>
+</ul>
+<h3 id="_45">小文件存储</h3>
+<p>比如图片，商品描述。 数据小、量大、访问量巨大</p>
+<p>Hbase, Hadoop, Hypertable, FastDFS
+淘宝 TFS，京东 JFS, Facebook Haystack</p>
+<h3 id="_46">大文件存储</h3>
+<p>业务大数据：视频、电影</p>
+<p>海量日志：访问日志、操作日志、用户轨迹日志</p>
+<p>Bigtable
+Hadoop 系列（HDFS, HBase）</p>
+<p>淘宝云梯，腾讯 TDW</p>
+<h1 id="_47">互联网架构模板：开发层和服务层技术</h1>
+<h3 id="_48">开发层</h3>
+<p>统一的开发框架；web服务器；容器技术</p>
+<h3 id="_49">服务层</h3>
+<p>降低系统间相互关联复杂度</p>
+<ul>
+<li>配置中心 通过系统标识+host+port</li>
+<li>服务中心</li>
+<li>服务名字系统</li>
+<li>服务总线系统</li>
+<li>消息队列。RocketMQ, Kafka, ActiveMQ</li>
+</ul>
+<h1 id="_50">互联网架构模板：网络层技术</h1>
+<h3 id="_51">负载均衡</h3>
+<ul>
+<li>DNS。地理级别负载。通用成本低，混存时间长，不灵活</li>
+<li>Nginx, LVS, F5。机器级别。 Nginx是7层，LVS是内核4层，F5是硬件的4层负载均衡。阿里SLB</li>
+</ul>
+<h3 id="cdn">CDN</h3>
+<p>内容缓存在离用户最近的地方</p>
+<h3 id="_52">多机房</h3>
+<p>同城多机房、跨城多机房、跨国多机房</p>
+<h3 id="_53">多中心</h3>
+<p>多机房为了容灾，多中心同时对外提供服务。关键在于数据一致性和数据事务性如何保证。</p>
+<h1 id="_54">互联网架构模板：用户层和业务层技术</h1>
+<h3 id="_55">用户层技术</h3>
+<ul>
+<li>用户管理</li>
+<li>单点登录(SSO), cookie, JSONP, token，最成熟的 CAS</li>
+<li>授权登录, OAuth2.0</li>
+<li>消息推送</li>
+<li>途径：短信、邮件、站内信、app推送</li>
+<li>APP: iOS APNS。Android 五花八门</li>
+<li>自研推送：设备管理（唯一标识、注册、注销）、连接管理和消息管理</li>
+<li>存储云、图片云</li>
+</ul>
+<h3 id="_56">业务层技术</h3>
+<p>拆，合(强相关)</p>
+<h1 id="_57">互联网架构模板：平台技术</h1>
+<h3 id="_58">运维平台</h3>
+<p>配置、部署、监控、应急</p>
+<ul>
+<li>标准化</li>
+<li>平台化</li>
+<li>自动化</li>
+<li>可视化</li>
+</ul>
+<h3 id="_59">测试平台</h3>
+<ul>
+<li>用例管理</li>
+<li>资源管理</li>
+<li>任务管理</li>
+<li>数据管理</li>
+</ul>
+<h3 id="_60">数据平台</h3>
+<p>数据管理、分析、应用</p>
+<ul>
+<li>数据管理。采集、存储、访问、安全</li>
+<li>数据分析。统计、挖掘、机器学习、深度学习</li>
+<li>数据应用。在线和离线</li>
+</ul>
+<h3 id="_61">管理平台</h3>
+<p>权限管理</p>
+<ul>
+<li>身份认证</li>
+<li>权限控制</li>
+</ul>
+<h1 id="_62">架构重构内功心法第一式：有的放矢</h1>
+<ul>
+<li>业务不能停</li>
+<li>关联方众多，牵一发而动全身</li>
+<li>旧架构约束</li>
+</ul>
+<p>从一大堆问题中识别真正需要重构来解决的问题，集中力量快速解决，而不是想着通过重构架构解决所有问题</p>
+<h1 id="_63">架构重构内功心法第二式：合纵连横</h1>
+<h3 id="_64">合纵</h3>
+<p>和利益相关方沟通好</p>
+<h3 id="_65">连横</h3>
+<p>换位思考、合作双赢、关注长期</p>
+<h1 id="_66">架构重构内功心法第二式：运筹帷幄</h1>
+<p>分段实施，将要解决的问题根据优先级、重要性、实施难度等划分为不同的阶段，每个阶段聚焦于一个整体的目标，
+集中精力和资源解决一类问题。</p>
+<ul>
+<li>优先级排序。</li>
+<li>问题分类</li>
+<li>先易后难</li>
+<li>循序渐进。每个阶段最少一个月，最长不要超过3个月。</li>
+</ul>
+<h1 id="_67">如何选择、使用以及二次开发</h1>
+<p>DRY
+不要重复发明轮子，但要找到合适的轮子</p>
+<h3 id="_68">如何选择一个开源项目</h3>
+<ul>
+<li>是否满足业务</li>
+<li>是否成熟（版本号、使用公司数量、社区活跃度）</li>
+<li>运维能力</li>
+</ul>
+<h3 id="_69">如何使用开源项目</h3>
+<ul>
+<li>深入研究、仔细测试</li>
+<li>小心应用，灰度发布</li>
+<li>做好应急</li>
+</ul>
+<h3 id="_70">如何基于开源项目二次开发</h3>
+<ul>
+<li>保持纯洁，加以包装</li>
+<li>发明你想要的轮子</li>
+</ul>
+<h1 id="app">APP 架构演进</h1>
+<ul>
+<li>WebAPP</li>
+<li>原生APP</li>
+<li>Hybrid APP</li>
+<li>组件化 &amp; 容器化</li>
+<li>跨平台APP(FB React Native, 阿里Weex, Google Flutter)</li>
+</ul>
+<p># 架构实战：架构设计文档模板</p>
+<h3 id="_71">备选方案模板</h3>
+<ul>
+<li>需求介绍: 背景、目标、范围</li>
+<li>需求分析：</li>
+<li>5w(who, when, what, why, where)</li>
+<li>1H(how)</li>
+<li>8C(Constraints, Performance, Cost, Reliability, Security, Compliance, Technology, Compatibility)</li>
+<li>复杂度分析：高可用、高性能、可扩展</li>
+<li>备选方案：至少三个</li>
+<li>备选方案评估：360度环评</li>
+</ul>
+<h3 id="_72">架构设计模板</h3>
+<ul>
+<li>1.总体方案：核心是架构图</li>
+<li>2.架构总览：设计关键点</li>
+<li>3.核心流程</li>
+<li>4.详细设计</li>
+<li>5.架构演进规划</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../web_scalavility_for_startup_engineers/" class="btn btn-neutral float-right" title="《web scalavility for startup engineers》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../../源码阅读_sourcecode/" class="btn btn-neutral" title="《源码阅读》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../../源码阅读_sourcecode/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../web_scalavility_for_startup_engineers/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../../search/main.js" defer></script>
+
+</body>
+</html>

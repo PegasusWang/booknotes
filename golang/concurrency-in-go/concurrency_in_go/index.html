@@ -1,0 +1,2263 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>《Concurrency In Go》 - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300aConcurrency In Go\u300b";
+    var mkdocs_page_input_path = "golang/concurrency-in-go/concurrency_in_go.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《Concurrency In Go》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1-an-introduction-to-concurrency">1 An Introduction to Concurrency</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#deadlocks-livelocks-and-starvation">Deadlocks, Livelocks, and Starvation</a></li>
+        
+            <li><a class="toctree-l4" href="#determining-concurrency-safety">Determining Concurrency Safety</a></li>
+        
+            <li><a class="toctree-l4" href="#simplicity-in-the-face-of-complexity">Simplicity in the Face of Complexity</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#2-modeling-your-code-communicating-sequential-processes">2 Modeling Your Code: Communicating Sequential Processes</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#concurrency-vs-parallelism">Concurrency vs Parallelism</a></li>
+        
+            <li><a class="toctree-l4" href="#what-is-cap">What Is CAP?</a></li>
+        
+            <li><a class="toctree-l4" href="#gos-philosophy-on-concurrency">Go's Philosophy on Concurrency</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#3-gos-concurrency-building-blocks">3 Go's Concurrency Building Blocks</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#the-sync-package">The sync Package</a></li>
+        
+            <li><a class="toctree-l4" href="#channels">Channels</a></li>
+        
+            <li><a class="toctree-l4" href="#the-select-statement">The select Statement</a></li>
+        
+            <li><a class="toctree-l4" href="#the-gomaxprocs-lever">The GOMAXPROCS lever</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#4-concurrency-patterns-in-go">4. Concurrency Patterns in Go</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#confinement">Confinement(限制)</a></li>
+        
+            <li><a class="toctree-l4" href="#the-for-select-loop">The for-select Loop</a></li>
+        
+            <li><a class="toctree-l4" href="#preventing-goroutine-leaks">Preventing Goroutine Leaks</a></li>
+        
+            <li><a class="toctree-l4" href="#the-or-channel-pattern">The or-channel pattern</a></li>
+        
+            <li><a class="toctree-l4" href="#error-handling">Error Handling</a></li>
+        
+            <li><a class="toctree-l4" href="#pipelines">Pipelines</a></li>
+        
+            <li><a class="toctree-l4" href="#fan-out-fan-in">Fan-Out, Fan-In</a></li>
+        
+            <li><a class="toctree-l4" href="#the-or-done-channel">The or-done-channel</a></li>
+        
+            <li><a class="toctree-l4" href="#the-tee-channel">The tee-channel</a></li>
+        
+            <li><a class="toctree-l4" href="#the-bridge-channel">The bridge-channel</a></li>
+        
+            <li><a class="toctree-l4" href="#queuing">Queuing</a></li>
+        
+            <li><a class="toctree-l4" href="#the-context-package">The context Package</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#5-concurrency-at-scale">5. Concurrency at Scale</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#error-progagation">Error Progagation</a></li>
+        
+            <li><a class="toctree-l4" href="#timeouts-and-cancellation">Timeouts and Cancellation</a></li>
+        
+            <li><a class="toctree-l4" href="#heartbeats">Heartbeats</a></li>
+        
+            <li><a class="toctree-l4" href="#replicated-request">Replicated Request</a></li>
+        
+            <li><a class="toctree-l4" href="#rate-limiting">Rate Limiting</a></li>
+        
+            <li><a class="toctree-l4" href="#healing-unhealthy-goroutines">Healing Unhealthy Goroutines</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#6-goroutines-and-the-go-runtime">6 Goroutines and the Go Runtime</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#work-stealing">Work Stealing</a></li>
+        
+            <li><a class="toctree-l4" href="#stealing-tasks-or-continuations">Stealing Tasks or Continuations?</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#appendix">Appendix</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#anatomy-of-a-goroutine-error">Anatomy of a Goroutine Error</a></li>
+        
+            <li><a class="toctree-l4" href="#race-detection">Race Detection</a></li>
+        
+            <li><a class="toctree-l4" href="#pprof">pprof</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go_in_action(go语言实战)/">《Go In Action》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效15法则/">《高效15法则》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>golang &raquo;</li>
+        
+      
+    
+    <li>《Concurrency In Go》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>《Concurrency In Go》</p>
+<h1 id="1-an-introduction-to-concurrency">1 An Introduction to Concurrency</h1>
+<p>critical section（临界区）：for a section of your program needs exclusive access to a shared resource.</p>
+<h3 id="deadlocks-livelocks-and-starvation">Deadlocks, Livelocks, and Starvation</h3>
+<p>Deadlocks conditions:</p>
+<ul>
+<li>Mutual Exclusion</li>
+<li>Wait For Condition</li>
+<li>No Preemption</li>
+<li>Circular Wait</li>
+</ul>
+<p>Livelocks: 活锁。想象两个人迎面走来，一个人向一边转，然后另一个人也同方向转，如此循环一直僵持谁都过不去。</p>
+<p>Starvation: 饥饿 ，一个并发的进程无法获取所有需要工作的资源。一个贪心的进程阻止其他进程获取执行资源。</p>
+<h3 id="determining-concurrency-safety">Determining Concurrency Safety</h3>
+<ul>
+<li>who is responsible for the Concurrency?</li>
+<li>how is the problem space mapped onto concurrency primitives?</li>
+<li>who is responsible for the synchronization?</li>
+</ul>
+<pre><code class="go">func CalculatePi(begin,end int64, pi *Pi)
+func CalculatePi(begin,end int64) []int64
+func CalculatePi(bengin,end int64) &lt;-chan uint
+</code></pre>
+
+<h3 id="simplicity-in-the-face-of-complexity">Simplicity in the Face of Complexity</h3>
+<h1 id="2-modeling-your-code-communicating-sequential-processes">2 Modeling Your Code: Communicating Sequential Processes</h1>
+<h3 id="concurrency-vs-parallelism">Concurrency vs Parallelism</h3>
+<p>Concurrency is a property of the code; parallelism is a property of the runnning programm.</p>
+<h3 id="what-is-cap">What Is CAP?</h3>
+<h3 id="gos-philosophy-on-concurrency">Go's Philosophy on Concurrency</h3>
+<p>CSP primitives or Memory access synchronizations.
+Use whichever is most expressive and/or most simple.</p>
+<p><img alt="" src="../decision_tree.png" /></p>
+<p>Aim for simplicity, use channels when possible, and treat goroutines like a free resource.</p>
+<h1 id="3-gos-concurrency-building-blocks">3 Go's Concurrency Building Blocks</h1>
+<p>Coroutines are simply concurrent subroutines(functions, clousures or methods in Go) that are nonpreemptive.</p>
+<p>Go follows a model of concurrency called the fork-join model.</p>
+<p><img alt="" src="../join_point.png" /></p>
+<pre><code class="go">var wg sync.WaitGroup
+
+sayHello := func() {
+    defer wg.Done()
+    fmt.Println(&quot;hello&quot;)
+}
+wg.Add(1)
+go sayHello()
+wg.Wait() # this is the join point
+</code></pre>
+
+<h3 id="the-sync-package">The sync Package</h3>
+<p>The sync package contains the concurrency primitives that are most useful for low-level memory access synchronization.</p>
+<h4 id="waitgroup">WaitGroup</h4>
+<p>Wait for a set of concurrent operations to complete when you either don't care about the result of the concurrent
+operations , or you have other means of collecting their results.</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    var wg sync.WaitGroup
+
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        fmt.Println(&quot;1st goroutine sleeping...&quot;)
+        time.Sleep(1)
+    }()
+
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        fmt.Println(&quot;2nd goroutine sleeping...&quot;)
+        time.Sleep(2)
+    }()
+
+    wg.Wait()
+    fmt.Println(&quot;All goroutines complete&quot;)
+}
+</code></pre>
+
+<h4 id="mutex-and-rwmutex">Mutex and RWMutex</h4>
+<pre><code class="go">// Mutex demo
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+func main() {
+    var count int
+    var lock sync.Mutex
+
+    incr := func() {
+        lock.Lock()
+        defer lock.Unlock()
+        count++
+        fmt.Printf(&quot;Incr: %d\n&quot;, count)
+    }
+
+    decr := func() {
+        lock.Lock()
+        defer lock.Unlock()
+        count--
+        fmt.Printf(&quot;Decr: %d\n&quot;, count)
+    }
+
+    var arithmetic sync.WaitGroup
+    for i := 0; i &lt;= 5; i++ {
+        arithmetic.Add(1)
+        go func() {
+            defer arithmetic.Done()
+            incr()
+        }()
+    }
+
+    for i := 0; i &lt;= 5; i++ {
+        arithmetic.Add(1)
+        go func() {
+            defer arithmetic.Done()
+            decr()
+        }()
+    }
+
+    arithmetic.Wait()
+    fmt.Println(&quot;Done&quot;)
+}
+</code></pre>
+
+<p>RWMutex: 适合读多写少场景。可以获取多个读锁，除非锁用来持有写入。</p>
+<h4 id="cond">Cond</h4>
+<p>A rendezvous point for goroutine waiting for or announcing the occurrence of an event.</p>
+<pre><code>for conditoinTrue() == false{
+    time.Sleep(1*time.Millisecond) //sleep多久是个问题，太久效率低下，太快消耗 cpu
+}
+</code></pre>
+
+<p>use Cond, we cloud write like this:</p>
+<pre><code>c := sync.NewCond(&amp;sync.Mutex{})
+c.L.Lock()
+for conditoinTrue() == false {
+    c.Wait() // blocking call, will suspend
+}
+c.L.UnLock()
+</code></pre>
+
+<p>考虑有一个固定长度为2的队列，10个 items 想要 push 进去。
+只要有空间我们就希望入队，被尽早通知。</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    c := sync.NewCond(&amp;sync.Mutex{})
+    queue := make([]interface{}, 0, 10)
+
+    removeFromQueue := func(delay time.Duration) {
+        time.Sleep(delay)
+        c.L.Lock() // enter the critical section
+        queue = queue[1:] //simulate dequeuing an item
+        fmt.Println(&quot;removed from queue&quot;)
+        c.L.Unlock() // exit critical section
+        c.Signal() // let a goroutine waiting on the condition know that something has occured
+    }
+
+    for i := 0; i &lt; 10; i++ {
+        c.L.Lock() //进入临界区, critical section
+        for len(queue) == 2 {
+            c.Wait() //will suspend the main goroutine until a signal on the condition has been sent
+        }
+        fmt.Println(&quot;Adding to queue&quot;)
+        queue = append(queue, struct{}{})
+        go removeFromQueue(1 * time.Second)
+        c.L.Unlock() //exit critical section
+    }
+}
+</code></pre>
+
+<h4 id="once">Once</h4>
+<p>only one call to "Do", even on different goroutines.</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+func main() {
+    var count int
+
+    increment := func() {
+        count++
+    }
+
+    var once sync.Once
+    var wg sync.WaitGroup
+    wg.Add(100)
+    for i := 0; i &lt; 100; i++ {
+        go func() {
+            defer wg.Done()
+            once.Do(increment)
+        }()
+    }
+    wg.Wait()
+    fmt.Printf(&quot;count is %d\n&quot;, count) //1
+}
+</code></pre>
+
+<p>NOTES: sync.Once only counts the number of times Do is Called, not
+how many times unique functions passed into Do are called.</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+func main() {
+    var count int
+    increment := func() { count++ }
+    decremet := func() { count-- }
+
+    var once sync.Once
+    once.Do(increment)
+    once.Do(decremet)
+    fmt.Printf(&quot;count is %d\n&quot;, count) //1
+}
+</code></pre>
+
+<h4 id="pool">Pool</h4>
+<p>Pool is a concurrent-safe implementation of the object pool pattern.</p>
+<pre><code>myPool := &amp;sync.Pool{
+    New: func() interface{}{
+        fmt.Println(&quot;Creating new instance.&quot;)
+        return struct{}{}
+    },
+}
+
+myPool.Get()
+instance:=myPool.Get()
+myPool.Put(instance)
+myPool.Get()
+</code></pre>
+
+<p>Another common situation where a Pool is useful is for warming a cache of pre-allocated
+objects for operations that must run as quickly as possible.</p>
+<p>When working with sync.Pool:</p>
+<ul>
+<li>give it a New member variable that is thread-safe when called</li>
+<li>when receive an instance from Get,make no assumptions regarding the state of the object you receive back</li>
+<li>Make sure to call Put when you're finished with the object you pulled out of the pool.(with defer)</li>
+<li>Objects in the pool must be roughly uniform in makeup</li>
+</ul>
+<h3 id="channels">Channels</h3>
+<p>Go weill implicitly convert bidirectional channels to unidirectional channels when needed.</p>
+<pre><code>var receiveChan &lt;- chan interface{}
+var sendChan chan &lt;- interface{}
+dataStream := make(chan interface{})
+//valid statements
+receiveChan = dataStream
+sendChan = dataStream
+</code></pre>
+
+<p>Unbufferd channel in Go are said to be blocking.</p>
+<pre><code>val, ok := &lt;-stringStream
+</code></pre>
+
+<p>The second return value is a way for a read operation to indicate whether the read off the channel
+was a value generated by a write elsewhere in the process, or a default value generated from a closed channel.</p>
+<p>We can use "for range" iter channel, it will automatically break the loop when cahnnel is closed.</p>
+<p>Buffred channels, even if no reads are performed on the channel, a goroutine can still perform n writes.
+You can treat buffered channels are an inmemory FIFO queue for concurrent processes to communicate over.</p>
+<p><img alt="" src="../channel1.png" />
+<img alt="" src="../channel2.png" /></p>
+<p>The first thing we should do to put channels in the right context is to assign channel ownership.</p>
+<ul>
+<li>Instaniate the channel.</li>
+<li>Perform writes, os pass ownership to another goroutine.</li>
+<li>Close the channel</li>
+<li>Ecapsulate the previous three things in this list and expose them via a reader channel.</li>
+</ul>
+<p>As a consumer of a channel, I only have to worry about two things.</p>
+<ul>
+<li>Knowing when a channel is closed (use val, ok)</li>
+<li>Responsibly handling blocking for any reason</li>
+</ul>
+<pre><code>// keep the scope of channel ownership small
+func main() {
+
+    chanOwner := func() &lt;-chan int {
+        resultStream := make(chan int, 5)
+        go func() {
+            defer close(resultStream)
+            for i := 0; i &lt;= 5; i++ {
+                resultStream &lt;- i
+            }
+        }()
+        return resultStream // will implicityly converted to read-only for consumers
+    }
+
+    resultStream := chanOwner()
+    for result := range resultStream {
+        fmt.Printf(&quot;received : %d\n&quot;, result)
+    }
+
+    fmt.Println(&quot;Done receiving!&quot;)
+}
+</code></pre>
+
+<h3 id="the-select-statement">The select Statement</h3>
+<p>The select statement is the glue that binds channels together,
+it can help safely bring channels together with concepts like cancellations, timeouts, waiting, and default values.</p>
+<pre><code>func main() {
+    // a bit like switch
+    var c1, c2 &lt;-chan interface{}
+    var c3 chan&lt;- interface{}
+    // all channels reads and writes are considered simultaneously to see if any of them are ready
+    // populated or closed channels in the case of reads, and channels that are not at capacity in the case of writes
+    // if none of the channels are ready, the entire select statement blocks
+    select {
+    case &lt;-c1:
+        // do something
+    case &lt;-c2:
+        // do something
+    case c3 &lt;- struct{}{}:
+        // do something
+    }
+}
+</code></pre>
+
+<ul>
+<li>What happens when multiple channels have something to read?<ul>
+<li>random select, each has an equal  chance of being selected as all the others</li>
+</ul>
+</li>
+</ul>
+<pre><code>func main() {
+    c1 := make(chan interface{})
+    close(c1)
+    c2 := make(chan interface{})
+    close(c2)
+    var c1Count, c2Count int
+    for i := 1000; i &gt;= 0; i-- {
+        select {
+        case &lt;-c1:
+            c1Count++
+        case &lt;-c2:
+            c2Count++
+        }
+    }
+    fmt.Printf(&quot;c1: %d\n, c2: %d\n&quot;, c1Count, c2Count)
+}
+</code></pre>
+
+<ul>
+<li>What if there are never any channels that become ready?<ul>
+<li>you may want to timeout</li>
+</ul>
+</li>
+</ul>
+<pre><code>func main() {
+    var c &lt;-chan int
+    select {
+    case &lt;-c:
+    case &lt;-time.After(1 * time.Second):
+        fmt.Println(&quot;Time out&quot;)
+    }
+}
+</code></pre>
+
+<ul>
+<li>what if we want to do something but no channels are currently ready?<ul>
+<li>use default</li>
+<li>this allows a goroutine to make progress on work while waiting for another goroutine to report a result</li>
+</ul>
+</li>
+</ul>
+<pre><code>func main() {
+    start := time.Now()
+    var c1, c2 &lt;-chan int
+    select {
+    case &lt;-c1:
+    case &lt;-c2:
+    default:
+        fmt.Printf(&quot;In default after %v\n\n&quot;, time.Since(start))
+    }
+}
+</code></pre>
+
+<pre><code>func main() {
+    done := make(chan interface{})
+    go func() {
+        time.Sleep(5 * time.Second)
+        close(done)
+    }()
+    workCounter := 0
+loop:
+    for {
+        select {
+        case &lt;-done:
+            break loop
+        default:
+        }
+        // simulate work
+        workCounter++
+        time.Sleep(1 * time.Second)
+    }
+    fmt.Printf(&quot;Achieved %v cycles of work before signalled to stop.\n&quot;, workCounter)
+}
+</code></pre>
+
+<h6 id="empty-select">empty select</h6>
+<p><code>seelct {}</code> will block forever.</p>
+<h3 id="the-gomaxprocs-lever">The GOMAXPROCS lever</h3>
+<p>this function controls the number of OS threads that will host so-called "work queues"</p>
+<h1 id="4-concurrency-patterns-in-go">4. Concurrency Patterns in Go</h1>
+<h3 id="confinement">Confinement(限制)</h3>
+<p>When working with concurrent code</p>
+<ul>
+<li>Synchronization primitives for sharing memory (sync.Mutex)</li>
+<li>Synchronization via Communicating (channels)</li>
+<li>Immutable Data (copy of values)</li>
+<li>Data protected by confinement (ad hoc and lexical)</li>
+</ul>
+<pre><code>func main() {
+    // confines the write aspect of this channel to prevent other goroutines from writing to it
+    chanOnwer := func() &lt;-chan int {
+        results := make(chan int, 5)
+        go func() {
+            defer close(results)
+            for i := 0; i &lt;= 5; i++ {
+                results &lt;- i
+            }
+        }()
+        return results
+    }
+
+    consumer := func(results &lt;-chan int) {
+        for result := range results {
+            fmt.Printf(&quot;Received : %d\n&quot;, result)
+        }
+        fmt.Println(&quot;Done receiving!&quot;)
+    }
+
+    results := chanOnwer()
+    consumer(results)
+}
+</code></pre>
+
+<h3 id="the-for-select-loop">The for-select Loop</h3>
+<ul>
+<li>Sending iteration variables out on a channel</li>
+</ul>
+<pre><code>    for _, s := range []string{&quot;a&quot;, &quot;b&quot;, &quot;c&quot;} {
+        select {
+        case &lt;-done:
+            return
+        case stringStream &lt;- s:
+        }
+    }
+</code></pre>
+
+<ul>
+<li>Looping infinitely waiting to be stopped</li>
+</ul>
+<pre><code>    for {
+        select {
+        case &lt;-done:
+            return
+        default:
+        }
+        // do non-preemptable work
+    }
+</code></pre>
+
+<pre><code>for {
+    select {
+    case &lt;-done:
+        return
+    default:
+    }
+    // do non-preemptable work
+}
+</code></pre>
+<h3 id="preventing-goroutine-leaks">Preventing Goroutine Leaks</h3>
+<p>Goroutine are not garbage collected by the runtime.
+The goroutine has a few paths to terminiation:</p>
+<ul>
+<li>when it has completed its work</li>
+<li>when it cannnot continue its work due to an unrecoverable error</li>
+<li>when it's told to stop working</li>
+</ul>
+<p>A simple example of a goroutine leak:</p>
+<pre><code>func main() {
+    doWork := func(strings &lt;-chan string) &lt;-chan interface{} {
+        completed := make(chan interface{})
+        go func() {
+            defer fmt.Println(&quot;doWork exited.&quot;)
+            defer close(completed)
+            for s := range strings {
+                // do something interesting
+                fmt.Println(s)
+            }
+        }()
+        return completed
+    }
+    //pass nil, the strings channel will never actually gets any strings written onto it
+    //and the goroutine doWork will remain in meory for the liftime of this process
+    doWork(nil)
+    // perhaps more work is done here
+    fmt.Println(&quot;Done.&quot;)
+}
+</code></pre>
+
+<p>Use signal done. The parent goroutine passed this channel to child goroutine,
+and then closes the channel when it wants to cancel the child goroutine.</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+
+    doWork := func(
+        done &lt;-chan interface{},
+        strings &lt;-chan string,
+    ) &lt;-chan interface{} {
+        terminated := make(chan interface{})
+        go func() {
+            defer fmt.Println(&quot;doWork exited&quot;)
+            defer close(terminated)
+            for {
+                select {
+                case s := &lt;-strings:
+                    //do somthing
+                    fmt.Println(s)
+                case &lt;-done:
+                    return
+                }
+            }
+        }()
+
+        done := make(chan interface{})
+        terminated := doWork(done, nil)
+
+        go func() {
+            // cancel operation after 1 second
+            time.Sleep(1 * time.Second)
+            fmt.Println(&quot;canceling doWork goroutine...&quot;)
+            close(done)
+        }()
+
+        &lt;-terminated // joined the goroutine
+        fmt.Println(&quot;Done&quot;)
+    }
+}
+</code></pre>
+
+<p>What if a goroutine blocked on attempting wo write a value to a channel?</p>
+<pre><code>func main() {
+    newRandStream := func() &lt;-chan int {
+        randStream := make(chan int)
+        go func() {
+            defer fmt.Println(&quot;newRandStream closure exited.&quot;) //never run
+            defer close(randStream)
+            for {
+                randStream &lt;- rand.Int()
+            }
+        }()
+        return randStream
+    }
+
+    randStream := newRandStream()
+    fmt.Println(&quot;3 random ints:&quot;)
+    for i := 1; i &lt;= 3; i++ {
+        fmt.Printf(&quot;%d:%d\n&quot;, i, &lt;-randStream)
+    }
+}
+</code></pre>
+
+<p>We can also use a done channel:</p>
+<pre><code>func main() {
+    newRandStream := func(done &lt;-chan interface{}) &lt;-chan int {
+        randStream := make(chan int)
+        go func() {
+            defer fmt.Println(&quot;newRandStream closure exited.&quot;) //never run
+            defer close(randStream)
+            for {
+                select {
+                case randStream &lt;- rand.Int():
+                case &lt;-done:
+                    return
+                }
+            }
+        }()
+        return randStream
+    }
+
+    done :=make(chan interface{})
+    randStream := newRandStream()
+    fmt.Println(&quot;3 random ints:&quot;)
+    for i := 1; i &lt;= 3; i++ {
+        fmt.Printf(&quot;%d:%d\n&quot;, i, &lt;-randStream)
+    }
+    close(done)
+}
+</code></pre>
+
+<p>NOTE: If a goroutine is responsible for creating a goroutine, it is also responsible for ensuring
+it can stop the gorutine.</p>
+<h3 id="the-or-channel-pattern">The or-channel pattern</h3>
+<p>At times you may find yourself wanting to combine one or more done channels into a single done channel
+that closes if any of its component channels close.
+This pattern creates a composite done channel through recursion and goroutiens.</p>
+<pre><code>func main() {
+    var or func(channels ...&lt;-chan interface{}) &lt;-chan interface{}
+    of = func(channels ...&lt;-chan interface{}) &lt;-chan interface{} {
+        switch len(channels) {
+        case 0:
+            return nil
+        case 1:
+            return channels[0]
+        }
+
+        orDone := make(chan interface{})
+        go func() {
+            defer close(orDone)
+            switch len(channels) {
+            case 2:
+                select {
+                case &lt;-channels[0]:
+                case &lt;-channels[1]:
+                }
+            default:
+                select {
+                case &lt;-channels[0]:
+                case &lt;-channels[1]:
+                case &lt;-channels[2]:
+                case &lt;-or(append(channels[3:], orDone)...):
+                }
+            }
+        }()
+        return orDone
+    }
+}
+
+func test() {
+    sig := func(after time.Duration) &lt;-chan interface{} {
+        c := make(chan interface{})
+        go func() {
+            defer close(c)
+            time.Sleep(after)
+        }()
+        return c
+    }
+    start := time.Now()
+    &lt;-or(
+        sig(2*time.Hour),
+        sig(5*time.Minute),
+        sig(1*time.Second),
+    )
+    fmt.Printf(&quot;done after %v\n&quot;, time.Since(start))
+}
+</code></pre>
+
+<h3 id="error-handling">Error Handling</h3>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;net/http&quot;
+)
+
+// Result is http result
+type Result struct {
+    Error    error
+    Response *http.Response
+}
+
+func main() {
+    checkStatus := func(done &lt;-chan interface{}, urls ...string) &lt;-chan Result {
+        results := make(chan Result)
+        go func() {
+            defer close(results)
+            for _, url := range urls {
+                var result Result
+                resp, err := http.Get(url)
+                result = Result{Error: err, Response: resp}
+                select {
+                case &lt;-done:
+                    return
+                case results &lt;- result:
+                }
+            }
+        }()
+        return results
+    }
+
+    done := make(chan interface{})
+    defer close(done)
+    urls := []string{&quot;https://www.baidu.com&quot;, &quot;https://badhost&quot;}
+    for result := range checkStatus(done, urls...) {
+        if result.Error != nil {
+            fmt.Printf(&quot;error:%v&quot;, result.Error)
+            continue
+        }
+        fmt.Printf(&quot;Response: %\n&quot;, result.Response.Status)
+    }
+}
+</code></pre>
+
+<p>Errors should be considered first-class citizens when constructing values to return from goroutines.
+If your goroutine can produce errors, those errors should be tightly coupled with your result type,
+and passed along through the same lines of communication.</p>
+<h3 id="pipelines">Pipelines</h3>
+<p>It is a very powerful tool to use when your program needs to process streams, or batched of data.</p>
+<p>Stage: taskes data in , performs a transformation on it, and sends the data back out</p>
+<pre><code>    multiply := func(values []int, multiplier int) []int {
+        multipliedValues := make([]int, len(values))
+        for i, v := range values {
+            multipliedValues[i] = v * multiplier
+        }
+        return multipliedValues
+    }
+</code></pre>
+
+<h4 id="best-practice-for-constructing-pipelines">Best practice for constructing Pipelines</h4>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func main() {
+    generator := func(done &lt;-chan interface{}, integers ...int) &lt;-chan int {
+        intStream := make(chan int)
+        go func() {
+            defer close(intStream)
+            for _, i := range integers {
+                select {
+                case &lt;-done:
+                    return
+                case intStream &lt;- i:
+                }
+            }
+        }()
+        return intStream
+    }
+
+    multiply := func(done &lt;-chan interface{}, intStream &lt;-chan int, multiplier int) &lt;-chan int {
+        multipliedStream := make(chan int)
+        go func() {
+            defer close(multipliedStream)
+            for i := range intStream {
+                select {
+                case &lt;-done:
+                    return
+                case multipliedStream &lt;- i * multiplier:
+                }
+            }
+        }()
+        return multipliedStream
+    }
+
+    add := func(done &lt;-chan interface{}, intStream &lt;-chan int, additive int) &lt;-chan int {
+        addedStream := make(chan int)
+        go func() {
+            defer close(addedStream)
+            for i := range intStream {
+                select {
+                case &lt;-done:
+                    return
+                case addedStream &lt;- i + additive:
+                }
+            }
+        }()
+        return addedStream
+    }
+
+    done := make(chan interface{})
+    defer close(done)
+
+    intStream := generator(done, 1, 2, 3, 4)
+    pipeline := multiply(done, add(done, multiply(done, intStream, 2), 1), 2)
+    for v := range pipeline {
+        fmt.Println(v)
+    }
+
+}
+</code></pre>
+
+<h4 id="some-handy-generators">Some Handy Generators</h4>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func main() {
+
+    repeat := func(done &lt;-chan interface{}, values ...interface{}) &lt;-chan interface{} {
+        valueStream := make(chan interface{})
+        go func() {
+            defer close(valueStream)
+            for {
+                for _, v := range values {
+                    select {
+                    case &lt;-done:
+                        return
+                    case valueStream &lt;- v:
+                    }
+                }
+            }
+        }()
+        return valueStream
+    }
+
+    take := func(done &lt;-chan interface{}, valueStream &lt;-chan interface{}, num int) &lt;-chan interface{} {
+        takeStream := make(chan interface{})
+        go func() {
+            defer close(takeStream)
+            for i := 0; i &lt; num; i++ {
+                select {
+                case &lt;-done:
+                    return
+                case takeStream &lt;- &lt;-valueStream:
+                }
+            }
+
+        }()
+        return takeStream
+    }
+
+    done := make(chan interface{})
+    defer close(done)
+
+    for num := range take(done, repeat(done, 1), 10) {
+        fmt.Printf(&quot;%v &quot;, num)
+    }
+    // 1 1 1 1 1 1 1 1 1 1
+
+}
+</code></pre>
+
+<h3 id="fan-out-fan-in">Fan-Out, Fan-In</h3>
+<p>Fan-out is a term to describe the process of starting multiple gortouine to handle input from the pipeline,
+and Fan-in is a term to describe the process of combining results into one channel.</p>
+<p>Fanout one of your stages if both of the following apply:</p>
+<ul>
+<li>It doesn't rely on values that the stage had calulated before.</li>
+<li>It takes a long time to run</li>
+</ul>
+<h3 id="the-or-done-channel">The or-done-channel</h3>
+<pre><code>    orDone := func(done, c &lt;-chan interface{}) &lt;-chan interface{} {
+        valStream := make(chan interface{})
+        go func() {
+            defer close(valStream)
+            for {
+                select {
+                case &lt;-done:
+                    return
+                case v, ok := &lt;-c:
+                    if ok == false {
+                        return
+                    }
+                    select {
+                    case valStream &lt;- v:
+                    case &lt;-done:
+                    }
+                }
+            }
+        }()
+        return valStream
+    }
+
+    for val := range orDone(done, myChan) {
+        // Do something with val
+    }
+</code></pre>
+
+<h3 id="the-tee-channel">The tee-channel</h3>
+<p>Sometimes you may want to split values coming in from a channel so that you can send them off
+into two separate areas of your codebase.</p>
+<p>You can pass it a channel to read from , and it will return two seperate channels that will get the same value:</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func main() {
+    tee := func(done &lt;-chan interface{}, in &lt;-chan interface{}) (&lt;-chan interface{}, &lt;-chan interface{}) {
+        out1 := make(chan interface{})
+        out2 := make(chan interface{})
+        go func() {
+            defer close(out1)
+            defer close(out2)
+            for val := range orDone(done, in) {
+                var out1, out2 = out1, out2 //shadow the variables
+                for i := 0; i &lt; 2; i++ {
+                    select {
+                    case &lt;-done:
+                    case out1 &lt;- val:
+                        // set its shadowed copy to nil,so further writes will block and the other channel may continue
+                        out1 = nil
+                    case out2 &lt;- val:
+                        out2 = nil
+                    }
+                }
+            }
+        }()
+        return out1, out2
+    }
+
+    done := make(chan interface{})
+    defer close(done)
+    out1, out2 := tee(done, take(done, repeat(done, 1, 2), 4))
+
+    for val1 := range out1 {
+        fmt.Printf(&quot;out1: %v, out2:%v\n&quot;, val1, &lt;-out2)
+    }
+}
+</code></pre>
+
+<h3 id="the-bridge-channel">The bridge-channel</h3>
+<p>define a function that can destructure the channel of channels into s simple channel(bridging the channels)</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func main() {
+    bridge := func(done &lt;-chan interface{}, chanStream &lt;-chan &lt;-chan interface{}) &lt;-chan interface{} {
+        valStream := make(chan interface{})
+        go func() {
+            defer close(valStream)
+            for {
+                var stream &lt;-chan interface{} //this is the channel that will return all values from bridge
+                select {
+                case maybeStream, ok := &lt;-chanStream:
+                    if ok == false {
+                        return
+                    }
+                    stream = maybeStream
+                case &lt;-done:
+                    return
+                }
+                for val := range orDone(done, stream) {
+                    select {
+                    case valStream &lt;- val:
+                    case &lt;-done:
+                    }
+                }
+
+            }
+        }()
+        return valStream
+    }
+
+    genVals := func() &lt;-chan &lt;-chan interface{} {
+        chanStream := make(chan (&lt;-chan interface{}))
+        go func() {
+            defer close(chanStream)
+            for i := 0; i &lt; 10; i++ {
+                stream := make(chan interface{}, 1)
+                stream &lt;- i
+                close(stream)
+                chanStream &lt;- stream
+            }
+        }()
+        return chanStream
+    }
+
+    for v := range bridge(nil, genVals()) {
+        fmt.Printf(&quot;%v &quot;, v) //0 1 2 3 4 5 6 7 8 9
+    }
+}
+</code></pre>
+
+<h3 id="queuing">Queuing</h3>
+<p>queuing should be implemented either:</p>
+<ul>
+<li>At the entrance to your pipeline</li>
+<li>In stages where batching will lead to higher efficiency</li>
+</ul>
+<h3 id="the-context-package">The context Package</h3>
+<p>context package serves two primary purposes:</p>
+<ul>
+<li>to provide an API for canceling branches of you call-graph</li>
+<li>to provide a data-bag for transporting request-scoped data through your call-graph</li>
+</ul>
+<h1 id="5-concurrency-at-scale">5. Concurrency at Scale</h1>
+<h3 id="error-progagation">Error Progagation</h3>
+<p>critical information:</p>
+<ul>
+<li>What happend</li>
+<li>When and where it occured(stack track, UTC time, machine)</li>
+<li>A friendly usre-facing message</li>
+<li>How the user can get more information(track id)</li>
+</ul>
+<h3 id="timeouts-and-cancellation">Timeouts and Cancellation</h3>
+<p>what the reasons we might want our concurrent processes to support timeouts?</p>
+<ul>
+<li>System saturation(饱和)</li>
+<li>Stale data</li>
+<li>Attempting to prevent deadlocks</li>
+</ul>
+<p>There are a number of reasons why a concurrent process might be canceld:</p>
+<ul>
+<li>Timeouts, a timeout is an implicit cancellation</li>
+<li>User intervention(干预)</li>
+<li>Parent cancellation</li>
+<li>Replicated requests</li>
+</ul>
+<h3 id="heartbeats">Heartbeats</h3>
+<p>Heartbeats are a way for concurrent processes to signal life to outside parties. Two diferent types:</p>
+<ul>
+<li>Heartbeats that occur on a time interval.</li>
+<li>Heartbeats that occur at the beginning of a unit of work.</li>
+</ul>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    doWork := func(done &lt;-chan interface{}, pulseInterval time.Duration) (chan interface{}, &lt;-chan time.Time) {
+        heartbeat := make(chan interface{})
+        results := make(chan time.Time)
+        go func() {
+            defer close(heartbeat)
+            defer close(results)
+
+            pulse := time.Tick(pulseInterval)
+            workGen := time.Tick(2 * pulseInterval) //another ticker to simulate work coming in
+
+            sendPulse := func() {
+                select {
+                case heartbeat &lt;- struct{}{}:
+                default: // no one maybe listening to our hearteat
+                }
+            }
+            sendResult := func(r time.Time) {
+                for {
+                    select {
+                    case &lt;-done:
+                        return
+                    case &lt;-pulse:
+                        sendPulse()
+                    case results &lt;- r:
+                        return
+                    }
+                }
+            }
+
+            for {
+                select {
+                case &lt;-done:
+                    return
+                case &lt;-pulse:
+                    sendPulse()
+                case r := &lt;-workGen:
+                    sendResult(r)
+                }
+            }
+        }()
+        return heartbeat, results
+    }
+
+    done := make(chan interface{})
+    time.AfterFunc(10*time.Second, func() { close(done) })
+
+    const timeout = 2 * time.Second
+    heartbeat, results := doWork(done, timeout/2)
+    for {
+        select {
+        case _, ok := &lt;-heartbeat:
+            if ok == false {
+                return
+            }
+            fmt.Println(&quot;pulse&quot;)
+        case r, ok := &lt;-results:
+            if ok == false {
+                return
+            }
+            fmt.Printf(&quot;results %v\n&quot;, r.Second())
+        case &lt;-time.After(timeout):
+            return
+        }
+    }
+
+}
+</code></pre>
+
+<p>For any long-running goroutines, or goroutines that need to be tested, highly recommend this patern.</p>
+<h3 id="replicated-request">Replicated Request</h3>
+<p>You can replicate the request to mulitple handlers(whether those be gorutines, processes, or servers),
+and one of them will run faster than other ones, you can then immediately return the result.
+The downside is that you'll have to utilize resources to keep multiple copies of the handlers running.</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    doWork := func(done &lt;-chan interface{}, id int, wg *sync.WaitGroup, result chan&lt;- int) {
+        started := time.Now()
+        defer wg.Done()
+
+        //Simulate random load
+        simulateLoadTime := time.Duration(1+rand.Intn(5)) * time.Second
+        select {
+        case &lt;-done:
+        case &lt;-time.After(simulateLoadTime):
+        }
+        select {
+        case &lt;-done:
+        case result &lt;- id:
+        }
+
+        took := time.Since(started)
+        if took &lt; simulateLoadTime {
+            took = simulateLoadTime
+        }
+        fmt.Printf(&quot;%v took %v\n&quot;, id, took)
+    }
+
+    done := make(chan interface{})
+    result := make(chan int)
+    var wg sync.WaitGroup
+    wg.Add(10)
+
+    for i := 0; i &lt; 10; i++ {
+        go doWork(done, i, &amp;wg, result) //start 10 handlers to handle our request
+    }
+    firstReturned := &lt;-result // grabs the first return value from the group of handlers
+    close(done)               //cancel all the remaining handlers
+    wg.Wait()
+    fmt.Printf(&quot;Received an answer from #%v\n&quot;, firstReturned)
+}
+</code></pre>
+
+<h3 id="rate-limiting">Rate Limiting</h3>
+<p>Most rate limitings is done by utilizing an algorithm called the "token bucket".</p>
+<pre><code>package main
+
+import (
+    &quot;context&quot;
+    &quot;log&quot;
+    &quot;os&quot;
+    &quot;sync&quot;
+
+    &quot;golang.org/x/time/rate&quot; // go get github.com/golang/time/rate
+)
+
+func Open() *APIConnection {
+    return &amp;APIConnection{
+        rateLimiter: rate.NewLimiter(rate.Limit(1), 1), //1 event per second
+    }
+}
+
+type APIConnection struct {
+    rateLimiter *rate.Limiter // https://godoc.org/golang.org/x/time/rate
+}
+
+func (a *APIConnection) ReadFile(ctx context.Context) error {
+    if err := a.rateLimiter.Wait(ctx); err != nil {
+        return err
+    }
+    return nil
+}
+func (a *APIConnection) ResoveAddress(ctx context.Context) error {
+    if err := a.rateLimiter.Wait(ctx); err != nil {
+        return err
+    }
+    return nil
+}
+
+func main() {
+    defer log.Printf(&quot;Done&quot;)
+    log.SetOutput(os.Stdout)
+    log.SetFlags(log.Ltime | log.LUTC)
+    apiConnection := Open()
+    var wg sync.WaitGroup
+    wg.Add(20)
+
+    for i := 0; i &lt; 10; i++ {
+        go func() {
+            defer wg.Done()
+            err := apiConnection.ReadFile(context.Background())
+            if err != nil {
+                log.Printf(&quot;cannot ReadFile :%v&quot;, err)
+            }
+            log.Printf(&quot;ReadFile&quot;)
+        }()
+    }
+
+    for i := 0; i &lt; 10; i++ {
+        go func() {
+            defer wg.Done()
+            err := apiConnection.ResoveAddress(context.Background())
+            if err != nil {
+                log.Printf(&quot;cannot ResolveAddress :%v&quot;, err)
+            }
+            log.Printf(&quot;ResolveAddress&quot;)
+        }()
+    }
+    wg.Wait()
+
+}
+</code></pre>
+
+<p>It's eaiser to keep the limiters separate and then combine them into one rate limiter that manages the interaction for
+you.</p>
+<pre><code>package main
+
+import (
+    &quot;context&quot;
+    &quot;sort&quot;
+    &quot;time&quot;
+
+    &quot;golang.org/x/time/rate&quot; // go get github.com/golang/time/rate
+)
+
+type RateLimiter interface {
+    Wait(context.Context) error
+    Limit() rate.Limit
+}
+
+func MultiLimiter(limiters ...RateLimiter) *multiLimiter {
+    byLimit := func(i, j int) bool {
+        return limiters[i].Limit() &lt; limiters[j].Limit()
+    }
+    sort.Slice(limiters, byLimit)
+    return &amp;multiLimiter{limiters: limiters}
+}
+
+type multiLimiter struct {
+    limiters []RateLimiter
+}
+
+func (l *multiLimiter) Wait(ctx context.Context) error {
+    for _, l := range l.limiters {
+        if err := l.Wait(ctx); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+func (l *multiLimiter) Limit() rate.Limit {
+    // return the most restrictive limit
+    return l.limiters[0].Limit()
+}
+
+func Open() *APIConnnection {
+    secondLimit := rate.NewLimiter(Per(2, time.Second), 1)
+    minuteLimit := rate.NewLimiter(Per(10, time.Minute), 10)
+    return &amp;APIConnnection{
+        rateLimiter: MultiLimiter(secondLimit, minuteLimit),
+    }
+}
+
+type APIConnnection struct {
+    rateLimiter RateLimiter
+}
+
+func (a *APIConnnection) ReadFile(ctx context.Context) error {
+    if err := a.rateLimiter.Wait(ctx); err != nil {
+        return err
+    }
+    return nil
+}
+
+func (a *APIConnnection) ResolveAddress(ctx context.Context) errro {
+    if err := a.rateLimiter.Wait(ctx); err != nil {
+        return err
+    }
+    return nil
+}
+</code></pre>
+
+<h3 id="healing-unhealthy-goroutines">Healing Unhealthy Goroutines</h3>
+<p>Ensure your long-lived goroutines stay up and healthy.</p>
+<pre><code>package main
+
+import (
+    &quot;log&quot;
+    &quot;time&quot;
+)
+
+type startGoroutineFn func(done &lt;-chan interface{}, pulseInterval time.Duration) (heartbeat &lt;-chan interface{})
+
+func main() {
+
+    newSteward := func(timeout time.Duration, startGoroutine startGoroutineFn) startGoroutineFn {
+        return func(done &lt;-chan interface{}, pulseInterval time.Duration) &lt;-chan interface{} {
+            heartbeat := make(chan interface{})
+            go func() {
+                defer close(heartbeat)
+
+                var wardDone chan interface{}
+                var wardHeartbeat &lt;-chan interface{}
+                startWard := func() {
+                    wardDone = make(chan interface{})
+                    wardHeartbeat = startGoroutine(or(wardDone, done), timeout/2)
+                }
+                startWard()
+                pulse := time.Tick(pulseInterval)
+
+            monitorLoop:
+                for {
+                    timeoutSignal := time.After(timeout)
+                    for {
+                        select {
+                        case &lt;-pulse:
+                            select {
+                            case heartbeat &lt;- struct{}{}:
+                            default:
+                            }
+                        case &lt;-wardHeartbeat:
+                            continue monitorLoop
+                        case &lt;-timeoutSignal:
+                            log.Println(&quot;steward: ward unhealthy: restarting&quot;)
+                            close(wardDone)
+                            startWard()
+                            continue monitorLoop
+                        case &lt;-done:
+                            return
+                        }
+                    }
+
+                }
+            }()
+            return heartbeat
+        }
+    }
+}
+</code></pre>
+
+<h1 id="6-goroutines-and-the-go-runtime">6 Goroutines and the Go Runtime</h1>
+<h3 id="work-stealing">Work Stealing</h3>
+<p>work stealing strategy. Go follows a fork-join model for concurrency.
+Forks are when goroutines are started, and join points are when two or more goroutines are
+synchronized through channels or types in the sync package.</p>
+<p>The work stealing algorithm follows a few basic rules, Given a thread of execution:</p>
+<ol>
+<li>At Aa fork point, add tasks to the tail of the deque associated with the thread</li>
+<li>If the thread is idle, steal work from the head of deque associated with som other random thread</li>
+<li>At a join point that cannot be realized yet(i.e.,the goroutine it is synchronized with has not completed yet), pop
+     work off the tail of the thread's own deque.</li>
+<li>if the thread's deque is empty, either:</li>
+<li>stall at a join</li>
+<li>steal work from the head of a random thread's associated deque</li>
+</ol>
+<h3 id="stealing-tasks-or-continuations">Stealing Tasks or Continuations?</h3>
+<pre><code>func main() {
+    var fib func(n int) &lt;-chan int
+    fib = func(n int) &lt;-chan int {
+        result := make(chan int)
+        go func() { // tasks
+            defer close(result)
+            if n &lt;= 2 {
+                result &lt;- 1
+                return
+            }
+            result &lt;- &lt;-fib(n-1) + &lt;-fib(n-2)
+        }()
+        return result // continuation
+    }
+    fmt.Printf(&quot;fib = %d&quot;, &lt;-fib(4))
+}
+</code></pre>
+
+<ul>
+<li>In go , goroutins are tasks</li>
+<li>Everything after a goroutine is called is the continuation</li>
+</ul>
+<p>Continuation stealing is how Go's work-stealing algorithm is implemented</p>
+<p>Go's scheduler has three main concepts:</p>
+<ul>
+<li>G: A goroutine</li>
+<li>M: An OS thread(also referenced as a machine in the source code)</li>
+<li>P: A context(also referecned as a processor in the source code), GOMAXPROCS</li>
+</ul>
+<h1 id="appendix">Appendix</h1>
+<h3 id="anatomy-of-a-goroutine-error">Anatomy of a Goroutine Error</h3>
+<p>Prior to Go1.6, when a goroutine panicked, the runtime would print stack traces of all the currently executing
+goroutines.</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {
+    //go run -race main.go
+    var data int
+    go func() {
+        data++
+    }()
+    if data == 0 {
+        fmt.Printf(&quot;value is %v\n&quot;, data)
+    }
+}
+</code></pre>
+
+<h3 id="race-detection">Race Detection</h3>
+<p>go run -race main.go</p>
+<h3 id="pprof">pprof</h3>
+<p><code>runtime/pporf</code> package has predefined profiles to hook into and display:</p>
+<ul>
+<li>goroutine</li>
+<li>heap</li>
+<li>threadcreate</li>
+<li>block</li>
+<li>primitives</li>
+<li>mutex</li>
+</ul>
+<pre><code>package main
+
+import (
+    &quot;log&quot;
+    &quot;os&quot;
+    &quot;runtime/pprof&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    log.SetFlags(log.Ltime | log.LUTC)
+    log.SetOutput(os.Stdout)
+
+    //every second , log how many goroutines are currently running
+    go func() {
+        goroutines := pprof.Lookup(&quot;goroutine&quot;)
+        for range time.Tick(1 * time.Second) {
+            log.Printf(&quot;goroutine count:%d\n&quot;, goroutines.Count())
+        }
+    }()
+
+    //create some goroutines which will never exit
+    var blockForever chan struct{}
+    for i := 0; i &lt; 10; i++ {
+        go func() { &lt;-blockForever }()
+        time.Sleep(500 * time.Millisecond)
+    }
+}
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../go_in_action(go语言实战)/" class="btn btn-neutral float-right" title="《Go In Action》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../building_restful_web_services_with_go/book/" class="btn btn-neutral" title="《Building Restful Web Services with Go》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../building_restful_web_services_with_go/book/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../go_in_action(go语言实战)/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../../search/main.js" defer></script>
+
+</body>
+</html>

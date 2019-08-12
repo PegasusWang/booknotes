@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>应用1：分布式锁 - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u5e94\u75281\uff1a\u5206\u5e03\u5f0f\u9501";
+    var mkdocs_page_input_path = "database/redis\u6df1\u5ea6\u5386\u9669\u6838\u5fc3\u539f\u7406\u548c\u5e94\u7528\u5b9e\u8df5.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go_in_action(go语言实战)/">《Go In Action》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>应用1：分布式锁</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="1">应用1：分布式锁</h1>
+<p>redis2.8 之后加入了set 指令的扩展参数， 使得 setnx 和 expire 可以一起执行（保证原子性）</p>
+<p>可重入性：指的是线程持有锁的情况下再次请求加锁，如果一个锁 支持同一个线程的多次加锁，就是可重入的。</p>
+<h1 id="2-">应用2：缓兵之计-延时队列</h1>
+<p>使用 list 作为异步消息队列（你对可靠性没有极致追求）
+blpop,brpop 阻塞操作，如果list 没有数据就会进入休眠。这里需要注意长时间连接断开，需要处理超时异常并重试。</p>
+<h1 id="3">应用3：节衣缩食：位图</h1>
+<p>bit 数组，bytes 数组，使用 get/set/getbit/setbit/bitcount/bitops 操作</p>
+<p>redis 位图自动扩展，如果某个偏移位置超出了现有的内容范围，自动将位图数组进行零扩充。</p>
+<p>比如可以用来计算用户的签到时间，非常节省内存。</p>
+<h1 id="4-hyperloglog">应用4: 四两拨千斤：HyperLogLog</h1>
+<p>解决统计问题的，比如统计UV(unique visit)，pv 好统计，直接可以用hash(key,val) 计数。</p>
+<p>提供不精确的去重计数方案，标准误差 0.81%.</p>
+<p>pfadd,pfcount 类似 sadd,scard。 (pf 是其HyperLogLog 发明人首字母缩写)</p>
+<p>HyperLogLog  占据 12k 存储空间</p>
+<h1 id="5">应用5：布隆过滤器</h1>
+<p>比如用户推荐系统的去重复。布隆过滤器说某个值存在，这个值可能不存在，但是若确定不存在，则肯定不存在。</p>
+<p>redis4.0 提供了插件功能之后才有布隆过滤器功能。</p>
+<p>bf.add, bf.exists</p>
+<p>bloom filter calculator</p>
+<h1 id="6-">应用6：断尾求生-简单限流</h1>
+<p>思想是使用 zset 记录用户在一个时间窗口之内的操作数量。
+这种方式适合小规模的限流，比如用户发帖等。</p>
+<pre><code class="py">import time
+import redis
+
+
+client = client.StrictRedis()
+
+
+def is_action_allowed(user_id, action_key, period, max_count):
+    key = &quot;hist:%s:%s&quot; % (user_id, action_key)
+    now_ts = int(time.time() * 1000)  # 毫秒时间戳
+    with client.pipeline() as pipe:
+        # 记录行为，这里第一个 now_ts 没啥意义，用 uuid 之类的也可以
+        pipe.zadd(key, now_ts, now_ts)
+        # 移除时间窗口之前的行为记录，剩下的都是时间窗口之内的
+        pipe.zremrangbyscore(key, 0, now_ts - period * 1000)
+        # 获取时间窗口内的行为数量
+        pipe.zcard(key)
+        pipe.expire(key, perid + 1)  # 设置 zset 过期时间，主要是为了处理冷用户持续占用内存
+        _, _, current_count = pipe.execute()
+    return current_count &lt;= max_count
+
+
+for i in range(20):
+    print(is_action_allowed('laowang', 'reply', 60, 5))
+</code></pre>
+
+<h1 id="7-">应用7：一毛不拔-漏斗限流</h1>
+<pre><code class="py"># 单机漏斗算法
+
+import time
+# 漏斗的剩余空间代表当前行为可以持续进行的数量
+# 漏斗的流水速度代表系统允许该行为的最大频率
+
+
+class Funnel:
+    def __init__(self, capacity, leaking_rate):
+        self.capacity = capacity  # 漏斗容量
+        self.leaking_rate = leaking_rate  # 流水速率
+        self.left_quota = capacity
+        self.leaking_ts = time.tiem()  # 上一次漏水时间
+
+    def make_space(self):
+        now_ts = time.time()
+        delta_ts = now_ts - self.leaking_ts  # 距离上一次漏水过了多久
+        delta_quota = delta_ts * self.leaking_rate  # 又可以腾出来的空间
+        if delta_quota &lt; 1:  # 腾出来的空间太少，等下一次
+            return
+        self.left_quota += delta_quota
+        self.leaking_ts = now_ts  # 更新漏水时间
+        if self.left_quota &gt; self.capacity:
+            self.left_quota = self.capacity  # 不能多余容量
+
+    def watering(self, quota):
+        self.make_space()
+        if self.left_quota &gt;= quota:  # 判断剩余空间是否足够
+            self.left_quota -= quota
+            return True
+        return False
+
+
+funnels = {}  # 所有漏斗
+
+
+def is_action_allowed(user_id, action_key, capacity, leaking_rate):
+    key = '%s:%s' % (user_id, action_key)
+    funnel = funnels.get(key)
+    if not funnel:
+        funnel = Funnel(capacity, leaking_rate)
+        funnels[key] = funnel
+    return funnel.watering(1)
+
+for i in range(20):
+    print(is_action_allowed(&quot;laoqian&quot;, &quot;reply&quot;, 15, 0.5))
+</code></pre>
+
+<p>如何实现分布式限流呢？这里其实可以把 dict 替换成hash，但是要保证从 hash 取值/内存计算/取出字段的原子性。
+Redis4.0 提供了一个限流 redis 模块，redis-cell，提供了漏斗算法和原子限流指令。</p>
+<pre><code># 表示user_id的回复行为频率每60秒最多30次。
+cl.throttle user_id:reply 15 30 60 1
+
+15 capacity 漏斗容量
+30 operations/60seconds 漏水速率
+1 是可选quota, 默认值1
+</code></pre>
+
+<h1 id="8-gehash">应用8：近水楼台-GeHash</h1>
+<p>redis3.2 以后增加了地理位置 GEO，可以实现附近的餐馆这种功能。</p>
+<p>地图元素的位置数据使用二维经纬度表示，经度范围(-180, 180]，纬度范围（-90，90]</p>
+<p>比如指定一个半径r，使用 sql 可以圈出来。如果用户不满意，可以扩大半径继续筛选。</p>
+<pre><code>select id from positions where x0-r &lt;x&lt; x0+r and y0-r&lt;y&lt;y0+r
+</code></pre>
+
+<p>一般为了性能加上双向符合索引 (x,y)。但是在高并发场景不是好的选择。</p>
+<h3 id="geohash">GEOHash 算法，地理位置距离排序</h3>
+<p>原理：把地球看成二维平面，划分成一系列的正方形方格（类似棋盘）。
+所有地图元素坐标都放置在唯一的方格中，方格越小越精确。
+然后对这些方格整数编码，越是靠近方格的编码越是接近。比如两刀切蛋糕，可以用 00,01,10,11四个二进制数字
+表示。继续切下去正方形会越来越小，二进制正数也会越来越长，精度更高。
+编码之后每个地图元素的坐标都是一个整数，通过整数可以快速还原出坐标。</p>
+<p>redis 使用52位的整数进行编码，放到 zset 里边，value 是元素 key，score 是 GeoHash 的52位整数值。</p>
+<ul>
+<li>增加：geoadd company 116.48015 39.996794 juejin</li>
+<li>计算距离：geodist company juejin ireader km</li>
+<li>获取元素位置(轻微误差，不影响附近的人功能)：geopos company juejin ireader</li>
+<li>获取元素 hash(geohash 52位编码)：geohash company ireader   # http://gohash.org/XXXX 可以获取位置</li>
+<li>附近的公司: georadiusbymember copany ireader 20 km count 3 asc</li>
+<li>范围20公里以内最多的3个元素按照距离正序排序，不会排除自身</li>
+<li>根据坐标查询：georadius company 116.514202 39.905409 20 km withdist count 3 asc</li>
+</ul>
+<p>集群环境中单个 zset key 数据量不宜超过 1M，否则迁移集群出现卡顿。
+可以根据国家，省份，市区等进行拆分，显著降低 zset 集合大小</p>
+<h1 id="9-scan">应用9：大海捞针-Scan</h1>
+<p>从海量 key 找出特定前缀的key列表。
+redis keys 简单粗暴列出所有 满足特定正则的key.  <code>keys codehole*</code>
+缺点：
+- 没有 limit， offet，刷屏
+- O(n)，千外级别以上的 key导致 redis 卡顿</p>
+<p>redis2.8 加入了 scan 用来大海捞针</p>
+<ul>
+<li>复杂度虽然也是O(n)，但是通过游标分布进行，不会阻塞线程</li>
+<li>limit 参数，limit 返回的只是 hint，结果可大可小</li>
+<li>同 keys 有模式匹配</li>
+<li>返回结构可能重复，需要客户端去重</li>
+<li>如果遍历过程期间有修改，改动后的数据能否遍历到不确定</li>
+<li>通过返回的游标是否为0决定是否遍历结束，而不是返回的个数</li>
+</ul>
+<p>避免大 key 产生。如果你观察 redis 内存大起大落，很有可能是大 key 导致的。
+定位到 key 然后改进业务代码。</p>
+<p>redis提供了大 key 扫描功能。</p>
+<ul>
+<li>redis-cli -h 127.0.0.1 -p 7001 --bigkeys -i 0.1</li>
+<li>0.1 表示每隔100条scan 休眠 0.1 ，防止 ops 剧烈抬升，扫描时间会变久</li>
+</ul>
+<h1 id="1-io">原理1：线程 IO 模型</h1>
+<p>redis是单线程程序，一定要小心使用O(n)的指令，防止 redis 卡顿</p>
+<pre><code>read_events, write_events = select(read_fds, write_fds, timeout)
+for event in read_events:
+    handle_read(event.fd)
+for event in write_events:
+    handle_write(enent.fd)
+handle_others() # 处理其他任务，比如定时任务
+</code></pre>
+
+<h3 id="_1">指令队列</h3>
+<p>redis 为每个客户端维护了一个指令队列，先来先服务</p>
+<h3 id="_2">响应队列</h3>
+<p>redis 同样也为每个客户端套接字关联一个响应队列，redis服务器通过响应队列来讲指令的结果返回给客户端。
+如果队列为空，意味着连接暂时空闲，不需要获取写17:26:02，可以把当前客户端 socket 从write_fds移出来。
+等到队列有数据了再放进去，避免select系统调用立即返回写事件，结果发现没什么数据可写，线程飙高 cpu。</p>
+<h3 id="_3">定时任务</h3>
+<p>redis定时任务记录在一个最小堆。快要执行的任务放在堆顶，每个循环周期，redis 都会把最小堆里已经到点的任务
+立即进行处理。处理完毕后，把最快要执行的任务还需要的时间记录下来，这个时间就是 select 的 timeout 参数。
+redis 知道未来 timeout 时间段内，没有其他定时任务需要处理，可以安心睡眠 timeout 的时间。</p>
+<h1 id="2-_1">原理2：交头接耳- 通信协议</h1>
+<p>RESP(Redis Serialization Protocol): redis序列化协议</p>
+<p>resp 把传输的数据结构分成5种最小单元类型，单元结束后统一加上回车换行符 \r\n</p>
+<ul>
+<li>单行字符串以+开头</li>
+<li>+hello\r\n</li>
+<li>多行字符串以$开头，后缀字符串长度</li>
+<li>$11\r\nhello world\r\n</li>
+<li>整数值以: 开头，跟上字符串形式</li>
+<li>:1024\r\n</li>
+<li>错误消息，以-开头</li>
+<li>WRONGTYPE Operation against a key holding the wrong kind of value</li>
+<li>数组，以 * 开头，后跟数组的长度</li>
+<li>*3\r\n:1\r\n:2\r\n:3\r\n</li>
+</ul>
+<p>特殊：</p>
+<ul>
+<li>NULL 用多行字符串，长度-1</li>
+<li>$-1\r\n</li>
+<li>空串，用多行字符串表示，长度0。注意这里的俩\r\n 中间隔的是空串</li>
+<li>$0\r\n\r\n</li>
+</ul>
+<h3 id="-">客户端-&gt;服务器</h3>
+<p>只有一种格式，多行字符串数组</p>
+<h3 id="-_1">服务器-&gt;客户端</h3>
+<p>也是5种基本类型组合</p>
+<ul>
+<li>单行字符串响应</li>
+<li>错误响应</li>
+<li>整数响应</li>
+<li>多行字符串响应</li>
+<li>数组响应</li>
+<li>嵌套</li>
+</ul>
+<h1 id="3-">原理3：未雨绸缪-持久化</h1>
+<h3 id="_4">快照，一次全量备份，内存数据的二进制序列化格式</h3>
+<ul>
+<li>redis使用操作系统的多进程 COW(copy on write) 机制来实现快照持久化</li>
+<li>glibc fork产生一个子进程，快照持久化完全交给子进程处理。</li>
+<li>cow 机制进行数据段页面的分离，数据段由很多操作系统的页面组合而成。
+  当父进程对其中一个页面的数据修改时，会将被共享的页面复制一份出来，然后对这个复制的页面修改。
+  子进程还是 fork 瞬间的数据。</li>
+</ul>
+<pre><code>pid = os.fork()
+if pid &gt; 0:
+    handle_client_requests() #父进程继续处理 client 请求
+if pid == 0:
+    handle_snapshot_write() # 子进程快照写磁盘
+if pid &lt; 0:
+    # fork error
+</code></pre>
+
+<h3 id="aof">AOF日志，连续的增量备份，记录内存数据修改的指令记录版本。</h3>
+<p>只记录对内存进行修改的指令记录。通过『重放』恢复 Redis 当前实例的内存数据结构状态。</p>
+<p>AOF 重写：gbrewriteaof 指令用于对 AOF 日志瘦身。开辟一个子进程对内存遍历转换成一系列 Redis 操作指令，
+序列化到一个新的 AOF 日志文件中。序列化完毕后再把操作期间发生的增量 AOF 日志追到薪的 AOF 日志文件中，
+追加完毕立即替换旧的 AOF 文件。瘦身完成。</p>
+<p>linux glibc提供了 fsync(int fd) 函数可以将指定文件内容强制从内核缓存刷到磁盘。
+只要 redis 进程实时调用 fsync 可以保证 aof日志不丢失。</p>
+<p>运维：通常不在 master 持久化，而是从节点进行。做好主从监控。</p>
+<h3 id="_5">混合持久化</h3>
+<p>Redis4.0 增加了混合持久化。rdb文件内容和增量的 AOF 日志文件存到一起，AOF 不再是全量的的日志，
+而是自持久化开始 到 持久化结束 这段时间的增量 AOF 日志，通常会比较小。</p>
+<p>Redis重启，先加载 rdb 内容，然后重放增量 AOF 日志就可以完全替代之前的 AOF 全量文件重放，大幅提升重启效率。</p>
+<h1 id="4-">原理4：雷厉风行-管道</h1>
+<p>管道本质是 client 提供的，不是 redis server.</p>
+<h1 id="5-">原理5：同舟共济-事务</h1>
+<p>redis 事务模型不严格。
+传统事务又 begin,commit,rollback，redis 是 multi,exec,discard，分别是事务开始，执行和丢弃。
+所有指令在 exec 之前不执行，而是缓存在服务器的一个事务队列中，服务器一旦收到 exec，
+开始执行整个事务队列，并且期间不会被其他指令打扰。
+如果遇到一个失败了，后续指令还是会继续执行，不能算是原子性，仅仅是满足了事务的隔离性。</p>
+<p>discard 用于丢弃事务缓冲队列种的所有指令，在 exec 执行之前。
+通常结合 pipeline 使用减少网络IO。</p>
+<pre><code>pipe = redis.pipeline(transaction=True)
+pipe.multi()
+pipe.incr('a')
+pipe.incr('a')
+values = pipe.execute()
+</code></pre>
+
+<h3 id="redis-watch">redis Watch</h3>
+<p>乐观锁，解决并发修改。</p>
+<pre><code>while True:
+    do_watch()
+    commands()
+    multi()
+    send_commands()
+    try:
+        exec()
+        break
+    except WatchError:
+        continue
+</code></pre>
+
+<p>watch 监控的变量如果事务执行的时候发现被修改了（包括当前客户端），
+exec 指令返回 null 告诉 client 执行失败，一般由 client 重试。</p>
+<pre><code># 使用 redis-py 实现余额加倍
+
+import redis
+
+
+def key_for(user_id):
+    return 'account_{}'.format(user_id)
+
+
+def double_account(client, user_id):
+    key = key_for(user_id)
+    while True:
+        client.watch(key)
+        value = int(client.get(key))
+        value *= 2
+        pipe = client.pipeline(transaction=True)
+        pipe.multi()
+        pipe.set(key, value)
+        try:
+            pipeline.execute()
+            break  # 成功，退出
+        except redis.WatchError:
+            continue  # 重试
+    return int(client.get(key))  # 重新获余额
+
+
+client = client.StrictRedis()
+user_id = 1
+client.setnx(ke_for(user_id), 5)  # 初始化
+print(double_account(client, user_id))
+</code></pre>
+
+<h1 id="6pubsub">原理6：Pubsub</h1>
+<p>发布订阅，不过无法持久化消息队列，一般没啥用。</p>
+<p>redis5.0 加入了 stream 数据结构，给redis 带来了持久化消息队列。
+从此 pubsub 可以消失了。</p>
+<h1 id="7-_1">原理7：开源节流-小对象压缩</h1>
+<p>32 vs 64 bit: 如果使用不超过4g，可以考虑32bit编译，内部所有数据结构所使用的指针空间占用少一半。</p>
+<p>小对象压缩存储 : ziplist, intset</p>
+<p>内存回收机制：redis 并不总是可以将空闲内存立即归还给操作系统。原因os 回收内存以page 为单位，
+如果这个页上只要有一个 key 还在使用，那么它就不能被回收。但是 Redis 会对这些内存重用。</p>
+<p>内存分配算法：redis 将内存分配细节丢给了第三方，目前可以用 jemalloc(facebook)库来管理内存，
+或者切换到tcmalloc(google)，默认 redis 使用了性能更好的 jemalloc。</p>
+<p>info memory 命令查看redis 内存信息。</p>
+<h1 id="8-">原理8：有备无患-主从同步</h1>
+<p>增量同步：同步指令流，主节点会把那些对自己的状态产生修改性影响的指令记录在本地内存 buffer，
+然后异步将 buffer 中的指令同步到从节点。使用的 buffer 是环形 buffer，存在覆盖丢失数据危险</p>
+<p>快照同步：非常耗费资源的操作，首先在主库上进行一次bgsave将当前内存的数据全部快照到磁盘文件中，
+然后再将快照文件的内容全部传送到从节点。从节点将快照文件接收完毕后， 立即清空数据然后全量加载。
+加载完毕后同事主节点继续增量同步（之所以需要继续增量是同步期间还有新的执行指令需要同步到从节点）
+(快照同步可能遇到死循环，配置一个合适的 buffer 大小)</p>
+<p>增加从节点：从节点刚刚加入到集群先要进行一次快照同步，同步完成后再继续进行增量同步。</p>
+<p>Wait指令：redis 复制是异步进行的，wait 可以让异步复制变身同步复制，确保强一致性（不严格）</p>
+<p>小结：如果只用来做缓存可以不用复制功能，否则就要保证主从复制。</p>
+<h1 id="1sentinel">集群1：Sentinel</h1>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>13 准备 - PegasusWang的读书笔记</title>
+  <title>《Go学习笔记源码剖析》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "13 \u51c6\u5907";
+    var mkdocs_page_name = "\u300aGo\u5b66\u4e60\u7b14\u8bb0\u6e90\u7801\u5256\u6790\u300b";
     var mkdocs_page_input_path = "golang/go\u8bed\u8a00\u5b66\u4e60\u7b14\u8bb0\u6e90\u7801\u5256\u6790.md";
     var mkdocs_page_url = null;
   </script>
@@ -51,73 +51,6 @@
             <li class="toctree-l1">
 		
     <a class="" href="../..">简介</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">职场</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../../career/give_and_take/">《give and take》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/光速成长/">《光速成长》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/向上管理/">《向上管理》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/成功动机与目标/">《成功动机与目标》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/知识变现/">《知识变现》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/软技能/">《软技能》</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
-                </li>
-    </ul>
 	    </li>
           
             <li class="toctree-l1">
@@ -247,15 +180,48 @@
                 </li>
                 <li class="">
                     
+    <a class="" href="../building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="../go_in_action(go语言实战)/">《Go In Action》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../Go学习笔记语言详解.md">《Go学习笔记语言详解》</a>
+    <a class="" href="../go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../Go学习笔记源码剖析.md">《Go学习笔记源码剖析》</a>
+    <a class="current" href="./">《Go学习笔记源码剖析》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#13">13 准备</a></li>
+    
+
+    <li class="toctree-l3"><a href="#14">14 引导</a></li>
+    
+
+    <li class="toctree-l3"><a href="#15">15 初始化</a></li>
+    
+
+    <li class="toctree-l3"><a href="#16">16 内存分配</a></li>
+    
+
+    <li class="toctree-l3"><a href="#17">17 垃圾回收</a></li>
+    
+
+    <li class="toctree-l3"><a href="#18">18 并发调度</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -484,27 +450,27 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">网站架构</span>
+    <span class="caption-text">网站架构微服务</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../网站架构/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+    <a class="" href="../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../网站架构/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+    <a class="" href="../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../网站架构/design_data_instensive_application/">《design_data_instensive_application》</a>
+    <a class="" href="../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../网站架构/clean_architecture/">《clean_architecture》</a>
+    <a class="" href="../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../网站架构/微服务设计/">《微服务设计》</a>
+    <a class="" href="../../网站架构微服务/微服务设计/">《微服务设计》</a>
                 </li>
     </ul>
 	    </li>
@@ -588,6 +554,73 @@
     </ul>
 	    </li>
           
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+    </ul>
+	    </li>
+          
         </ul>
       </div>
       &nbsp;
@@ -609,8 +642,12 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>golang &raquo;</li>
+        
+      
     
-    <li>13 准备</li>
+    <li>《Go学习笔记源码剖析》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -646,21 +683,21 @@
 <p>所有问题的核心：抑制堆增长，充分利用CPU资源。为此，Go引入一系列举措。</p>
 <p>三色标记和写屏障、控制器、辅助回收</p>
 <h1 id="18">18 并发调度</h1>
-<pre><code>            +--------------------sysmon---------------//------+ 
-            |                                                   | 
-            |                                                   | 
-        +---+      +---+-------+                   +--------+          +---+---+ 
-go func() ---&gt; |G| ---&gt; |P|local| &lt;===balance===&gt; |global| &lt;--//--- |P|M| 
-        +---+      +---+-------+                   +--------+          +---+---+ 
-            |                                 |                 | 
-            |      +---+                      |                 | 
-            +----&gt; |M| &lt;---findrunnable---+---steal&lt;--//--+ 
-                +---+ 
+<pre><code>            +--------------------sysmon---------------//------+
+            |                                                   |
+            |                                                   |
+        +---+      +---+-------+                   +--------+          +---+---+
+go func() ---&gt; |G| ---&gt; |P|local| &lt;===balance===&gt; |global| &lt;--//--- |P|M|
+        +---+      +---+-------+                   +--------+          +---+---+
+            |                                 |                 |
+            |      +---+                      |                 |
+            +----&gt; |M| &lt;---findrunnable---+---steal&lt;--//--+
+                +---+
                     |                1. 语句go func() 创建G
-                    |               2. 放入P本地队列（或平衡到全局队列） 
-        +---execute&lt;-----schedule            3. 唤醒或新建M执行任务 
+                    |               2. 放入P本地队列（或平衡到全局队列）
+        +---execute&lt;-----schedule            3. 唤醒或新建M执行任务
         |                      |              4. 进入调度循环schedule
-        |                      |              5. 竭力获取待执行G任务并执行 
+        |                      |              5. 竭力获取待执行G任务并执行
         +--&gt;G.fn--&gt;goexit--+                6. 清理现场，重新进入调度循环
 </code></pre>
 <p>本节介绍与任务执行有关的几种暂停操作:</p>
@@ -669,10 +706,20 @@ go func() ---&gt; |G| ---&gt; |P|local| &lt;===balance===&gt; |global| &lt;--//-
 <p>notesleep:相比gosched、gopark，反应更敏捷的notesleep既不让出M，也就不会让G重回任务队列。它直接让线程休眠直到被唤醒，更适合stopm、gcMark这类近似自旋的场景。</p>
 <p>Goexit:用户可调用runtime.Goexit立即终止G任务，不管当前处于调用堆栈的哪个层次。在终止前，它确保所有G.defer被执行。</p>
 <p>stopTheWorld:用户逻辑必须暂停在一个安全点上，否则会引发很多意外问题。因此，stopTheWorld同样是通过“通知”机制，让G主动停止。比如，设置“gcwaiting=1”让调度函数schedule主动休眠M；向所有正在运行的G任务发出抢占调度，使其暂停。</p>
+<p>考参：G-P-M 模型。</p>
               
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../java/java-basic-introduction/" class="btn btn-neutral float-right" title="《java basic introduction》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../go语言学习笔记语言详解/" class="btn btn-neutral" title="《Go学习笔记语言详解》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -696,6 +743,10 @@ go func() ---&gt; |G| ---&gt; |P|local| &lt;===balance===&gt; |global| &lt;--//-
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="../go语言学习笔记语言详解/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../java/java-basic-introduction/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
