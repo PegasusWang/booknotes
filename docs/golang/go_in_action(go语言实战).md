@@ -24,7 +24,8 @@ slice := make([]int, 0)
 // or
 slice := []int{}
 
-//NOTE: 注意不管是 nil 切片还是空切片，调用 append, len, cap 效果一样
+//NOTE: 注意不管是 nil 切片还是空切片，调用 append, len, cap 效果一样。
+// 但是如果是做 json 序列化，一个是序列化成 None，一个是空[]，注意区别
 
 
 newSlice := slice[1:5] // 注意 newSlice, slice 共享了一个底层数组。这点和 py 不一样，py 切片会进行复制
