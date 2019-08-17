@@ -9,11 +9,12 @@ markdown 语法参考：http://xianbai.me/learn-md/article/about/readme.html
 
 安装依赖：
 ```sh
+# 方式1：
 pip install mkdocs    # 制作电子书, http://markdown-docs-zh.readthedocs.io/zh_CN/latest/
 # https://stackoverflow.com/questions/27882261/mkdocs-and-mathjax/31874157
 pip install https://github.com/mitya57/python-markdown-math/archive/master.zip
 
-# 或者直接
+# 推荐方式2：
 pip install -r requirements.txt
 ```
 
