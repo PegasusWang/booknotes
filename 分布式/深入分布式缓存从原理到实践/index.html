@@ -622,6 +622,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -956,16 +967,16 @@ Cache: 一个内存型键值对存储系统</p>
 </ul>
 <h5 id="_13">热点数据处理</h5>
 <ul>
-<li>数据预热。</li>
+<li>数据预热。<ul>
 <li>是否有监控机制确保预热数据都写入成功</li>
 <li>数据预热配备回滚方案</li>
 <li>评估数据量</li>
-<li>
-<p>注意是否会引发数据库批量操作和慢查询问题</p>
+<li>注意是否会引发数据库批量操作和慢查询问题</li>
+</ul>
 </li>
-<li>
-<p>非预期热点：nginx+lua 应用内缓存（热点发现系统）</p>
-</li>
+</ul>
+<ul>
+<li>非预期热点：nginx+lua 应用内缓存（热点发现系统）</li>
 <li>多级缓存：localCache</li>
 <li>数据复制模式：通过多个 key_index 解决热点读问题。所有热点 key 发布到所有的 web 服务器</li>
 </ul>

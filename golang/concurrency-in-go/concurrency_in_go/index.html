@@ -653,6 +653,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -1093,10 +1104,8 @@ it can help safely bring channels together with concepts like cancellations, tim
 </code></pre>
 
 <ul>
-<li>What happens when multiple channels have something to read?<ul>
-<li>random select, each has an equal  chance of being selected as all the others</li>
-</ul>
-</li>
+<li>What happens when multiple channels have something to read?
+    - random select, each has an equal  chance of being selected as all the others</li>
 </ul>
 <pre><code>func main() {
     c1 := make(chan interface{})
@@ -1117,10 +1126,8 @@ it can help safely bring channels together with concepts like cancellations, tim
 </code></pre>
 
 <ul>
-<li>What if there are never any channels that become ready?<ul>
-<li>you may want to timeout</li>
-</ul>
-</li>
+<li>What if there are never any channels that become ready?
+    - you may want to timeout</li>
 </ul>
 <pre><code>func main() {
     var c &lt;-chan int
@@ -1133,11 +1140,9 @@ it can help safely bring channels together with concepts like cancellations, tim
 </code></pre>
 
 <ul>
-<li>what if we want to do something but no channels are currently ready?<ul>
-<li>use default</li>
-<li>this allows a goroutine to make progress on work while waiting for another goroutine to report a result</li>
-</ul>
-</li>
+<li>what if we want to do something but no channels are currently ready?
+    - use default
+    - this allows a goroutine to make progress on work while waiting for another goroutine to report a result</li>
 </ul>
 <pre><code>func main() {
     start := time.Now()
@@ -2114,9 +2119,11 @@ synchronized through channels or types in the sync package.</p>
 <li>If the thread is idle, steal work from the head of deque associated with som other random thread</li>
 <li>At a join point that cannot be realized yet(i.e.,the goroutine it is synchronized with has not completed yet), pop
      work off the tail of the thread's own deque.</li>
-<li>if the thread's deque is empty, either:</li>
+<li>if the thread's deque is empty, either:<ul>
 <li>stall at a join</li>
 <li>steal work from the head of a random thread's associated deque</li>
+</ul>
+</li>
 </ol>
 <h3 id="stealing-tasks-or-continuations">Stealing Tasks or Continuations?</h3>
 <pre><code>func main() {

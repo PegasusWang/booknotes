@@ -535,6 +535,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -1211,21 +1222,15 @@ func Worker(in, out chan *Task){
 
 <p>when to use: a sync.Mutex or a channel?</p>
 <ul>
-<li>
-<p>use locking(mutexes) when:</p>
-<ul>
-<li>caching information in a shared data structure</li>
-<li>holding state information, that is context or status of the running application</li>
+<li>use locking(mutexes) when:
+    - caching information in a shared data structure
+    - holding state information, that is context or status of the running application</li>
 </ul>
-</li>
-<li>
-<p>use channels when:</p>
 <ul>
-<li>communicating asynchronous results</li>
-<li>distributing units of work</li>
-<li>passing owership of data</li>
-</ul>
-</li>
+<li>use channels when:
+    - communicating asynchronous results
+    - distributing units of work
+    - passing owership of data</li>
 </ul>
 <h2 id="148-implementing-a-lazy-generator">14.8 Implementing a lazy generator</h2>
 <p>A generator is a function that returns the next value in a sequence each time the function is called.</p>

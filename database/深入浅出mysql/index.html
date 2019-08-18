@@ -606,6 +606,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -739,22 +750,18 @@
 </ul>
 <p>需要注意的一些数据类型：</p>
 <ul>
-<li>
-<p>char与varchar: 保存和检索方式不同，最大长度和是否尾部空格被保留也不同。char固定长度，长度不够用空格填充，获取时如果没有设置 PAD_CHAR_TO_FULL_LENGTH默认去除尾部空格。
-varchar变长字符串，检索时尾部空格会被保留。注意查询时候不区分大小写，如果用sqlalchemy区分大小写不要用func.binary函数。</p>
-</li>
-<li>
-<p>text和blob: text和blob执行大量的更新或者删除的时候会留下很大『空洞』，建议定期用OPTIMIZE TABLE功能对这类表碎片整理。避免检索大型的blob或text值 。把text和blob列分离到单独的表中。</p>
-</li>
-<li>
-<p>浮点数float与定点数decimal: 注意几个点：</p>
-<ul>
-<li>1.浮点数虽然能表示更大的数据范围，但是有误差问题。</li>
-<li>2.对货币等精度敏感的问题，应使用定点数存储。之前项目踩过坑，结果不得不用放大和缩小倍数的方法解决，比较ugly。</li>
-<li>3.编程如果遇到浮点数，注意误差问题，尽量避免浮点数比较（比较浮点数需要作差小于一个特定精度），python3.5中可以这么比较：<code>float_eq = partial(math.isclose, rel_tol=1e-09, abs_tol=0.0)</code></li>
-<li>4.注意浮点数中一些特殊值的处理。</li>
+<li>char与varchar: 保存和检索方式不同，最大长度和是否尾部空格被保留也不同。char固定长度，长度不够用空格填充，获取时如果没有设置 PAD_CHAR_TO_FULL_LENGTH默认去除尾部空格。
+varchar变长字符串，检索时尾部空格会被保留。注意查询时候不区分大小写，如果用sqlalchemy区分大小写不要用func.binary函数。</li>
 </ul>
-</li>
+<ul>
+<li>text和blob: text和blob执行大量的更新或者删除的时候会留下很大『空洞』，建议定期用OPTIMIZE TABLE功能对这类表碎片整理。避免检索大型的blob或text值 。把text和blob列分离到单独的表中。</li>
+</ul>
+<ul>
+<li>浮点数float与定点数decimal: 注意几个点：
+    - 1.浮点数虽然能表示更大的数据范围，但是有误差问题。
+    - 2.对货币等精度敏感的问题，应使用定点数存储。之前项目踩过坑，结果不得不用放大和缩小倍数的方法解决，比较ugly。
+    - 3.编程如果遇到浮点数，注意误差问题，尽量避免浮点数比较（比较浮点数需要作差小于一个特定精度），python3.5中可以这么比较：<code>float_eq = partial(math.isclose, rel_tol=1e-09, abs_tol=0.0)</code>
+    - 4.注意浮点数中一些特殊值的处理。</li>
 </ul>
 <h2 id="4">4章：字符集</h2>
 <p>一开始要选择合适的字符集，否则后期更换代价很高。python2中字符集就是个老大难问题，困然很多新手。之前维护过的项目使用了msyql默认的latin1字符集，导致每次写入的时候都要对字符串手动encode成utf8。最近用python3.5+flask做项目直接使用utf8，再也没碰到过编码问题：</p>
@@ -774,12 +781,10 @@ varchar变长字符串，检索时尾部空格会被保留。注意查询时候�
 <p>InnoDB引擎提提供行级锁，支持共享锁和排他锁两种锁定模式，以及四种不同的隔离级别。mysql通过AUTOCOMIT, START TRANSACTIONS, COMMIT和ROLLBACK等语句支持本地事务。</p>
 <h2 id="7sql">7章：SQL中的安全问题</h2>
 <ul>
-<li>SQL注入：利用某些数据库的外部接口把用户数据插入到实际的数据库操作语音（sql）中，从而达到入侵数据库甚至操作系统的目的。产生原因主要是因为程序堆用户输入的数据没有进行严格的过滤，导致非法数据库查询语句的执行，防范措施：<ul>
-<li>prepareStatement = Bind-variable，不要使用拼接的sql</li>
-<li>使用应用程序提供的转换函数</li>
-<li>自定义函数校验（表单校验等）</li>
-</ul>
-</li>
+<li>SQL注入：利用某些数据库的外部接口把用户数据插入到实际的数据库操作语音（sql）中，从而达到入侵数据库甚至操作系统的目的。产生原因主要是因为程序堆用户输入的数据没有进行严格的过滤，导致非法数据库查询语句的执行，防范措施：
+    - prepareStatement = Bind-variable，不要使用拼接的sql
+    - 使用应用程序提供的转换函数
+    - 自定义函数校验（表单校验等）</li>
 </ul>
 <h2 id="8sql-mode">8章：SQL Mode及相关问题</h2>
 <p>更改默认的mysql执行模式，比如严格模式下列的插入或者更新不正确时mysql会给出错误，并放弃操作。<code>set session sql_mode='STRICT_TRANS_TABLES'</code>。设置sql_mode需要应用人员权衡各种得失，做一个合适的选择。</p>
@@ -800,34 +805,28 @@ varchar变长字符串，检索时尾部空格会被保留。注意查询时候�
 <ul>
 <li>1.使用show status和应用特点了解各种SQL的执行频率，了解各种SQL大致的执行比例。比如InnoDB的的参数Innode_rows_read查询返回的行数，Innodb_rows_inserted执行insert插入的行数，Innodb_rows_updated更新的行数。还有一下几个参数：Connections试图连接mysql服务器嗯出书，Uptime服务器的工作时间，Slow_queries慢查询的次数。</li>
 <li>2.定位执行效率低的SQL语句。两种方式：一种是通过慢查询日志定位执行效率低的语句,使用--log-slow-queries[=file_name]选项启动时，mysqld写一个包含所有执行时间超过long_query_time秒的SQL语句的日志文件。另一种是show processlist查看当前mysql在进行的线程，包括线程的状态，所否锁表等，可以实时查看SQL执行情况，同时对一些锁表操作进行优化。</li>
-<li>
-<p>3.通过EXPLAIN分析低效SQL的执行计划：explain可以知道什么时候必须为表假如索引以得到一个使用索引来寻找记录的更快的SELECT，以下是EXPLAIN执行后得到的结果说明：</p>
-<ul>
-<li>select_type: select类型</li>
-<li>table: 输出结果集的表</li>
-<li>type: 表示表的连接类型。当表中仅有一行是type的值为system是最佳的连接类型；当select操作中使用索引进行表连接时type值为ref；当select的表连接没有使用索引时，经常看到type的值为ALL，表示对该表进行了全表扫描，这时需要考虑通过创建索引提高表连接效率。</li>
-<li>possible_keys: 表示查询时，可以使用的索引列。</li>
-<li>key： 表示使用的索引</li>
-<li>key_len: 索引长度</li>
-<li>rows: 扫描范围</li>
-<li>Extra: 执行情况的说明和描述</li>
+<li>3.通过EXPLAIN分析低效SQL的执行计划：explain可以知道什么时候必须为表假如索引以得到一个使用索引来寻找记录的更快的SELECT，以下是EXPLAIN执行后得到的结果说明：
+    - select_type: select类型
+    - table: 输出结果集的表
+    - type: 表示表的连接类型。当表中仅有一行是type的值为system是最佳的连接类型；当select操作中使用索引进行表连接时type值为ref；当select的表连接没有使用索引时，经常看到type的值为ALL，表示对该表进行了全表扫描，这时需要考虑通过创建索引提高表连接效率。
+    - possible_keys: 表示查询时，可以使用的索引列。
+    - key： 表示使用的索引
+    - key_len: 索引长度
+    - rows: 扫描范围
+    - Extra: 执行情况的说明和描述</li>
 </ul>
-</li>
-<li>
-<p>4.确定问题，并采取相应优化措施。</p>
-</li>
+<ul>
+<li>4.确定问题，并采取相应优化措施。</li>
 </ul>
 <h4 id="_1">索引问题</h4>
 <ul>
-<li>
-<p>索引的存储分类: myisam表的数据文件和索引文件自动分开，innodb的数据和索引放在同一个表空间里面。myisam和innodb的索引存储类型都是btree</p>
-</li>
-<li>
-<p>Mysql如何使用索引: 索引用于快速查找某个列中特定值的行。查询要使用索引最主要的条件是要在查询条件中使用索引关键子，如果是多列索引，那么只有查询条件中使用了多列关键字最左边的前缀时，才可以使用索引，否则将不能使用索引。</p>
-</li>
-<li>
-<p>查看索引的使用情况：Handler_read_key的值代表一个行被索引次数，值低表示索引不被经常使用。Handler_read_rnd_next值高意味着查询运行低效，应该建立索引补救。<code>show status like 'Handler_read%';</code></p>
-</li>
+<li>索引的存储分类: myisam表的数据文件和索引文件自动分开，innodb的数据和索引放在同一个表空间里面。myisam和innodb的索引存储类型都是btree</li>
+</ul>
+<ul>
+<li>Mysql如何使用索引: 索引用于快速查找某个列中特定值的行。查询要使用索引最主要的条件是要在查询条件中使用索引关键子，如果是多列索引，那么只有查询条件中使用了多列关键字最左边的前缀时，才可以使用索引，否则将不能使用索引。</li>
+</ul>
+<ul>
+<li>查看索引的使用情况：Handler_read_key的值代表一个行被索引次数，值低表示索引不被经常使用。Handler_read_rnd_next值高意味着查询运行低效，应该建立索引补救。<code>show status like 'Handler_read%';</code></li>
 </ul>
 <h4 id="_2">两个简单实用的优化方法</h4>
 <ul>
@@ -846,16 +845,12 @@ varchar变长字符串，检索时尾部空格会被保留。注意查询时候�
 <h2 id="12">12章: 优化数据库对象</h2>
 <ul>
 <li>优化表的数据类型：PROCEDURE ANALYZE()对当前表类型的判断提出优化建议。实际可以通过统计信息结合应用实际优化。</li>
-<li>
-<p>通过拆分，提高表的访问效率：这里拆分主要是针对Myisam类型的表。</p>
-<ul>
-<li>纵向拆分：按照应用访问的频度，将表中经常访问的字段和不经常访问的字段拆分成两个表，经常访问的字段尽量是定长的。</li>
-<li>横向拆分：按照应用情况，有目的地将数据横向拆分成几个表或者通过分区分到多个分区中，这样可以有效避免Myisam表的读取和更新导致的锁问题。</li>
+<li>通过拆分，提高表的访问效率：这里拆分主要是针对Myisam类型的表。
+    - 纵向拆分：按照应用访问的频度，将表中经常访问的字段和不经常访问的字段拆分成两个表，经常访问的字段尽量是定长的。
+    - 横向拆分：按照应用情况，有目的地将数据横向拆分成几个表或者通过分区分到多个分区中，这样可以有效避免Myisam表的读取和更新导致的锁问题。</li>
 </ul>
-</li>
-<li>
-<p>逆规范化：规范化设计强调独立性，数据尽可能少冗余，更多冗余意味着占用更多物理空间，同事也对数据维护和一致性检查带来问题。适当冗余可以减少多表访问，查询效率明显提高，这种情况可以考虑适当通过冗余提高效率。</p>
-</li>
+<ul>
+<li>逆规范化：规范化设计强调独立性，数据尽可能少冗余，更多冗余意味着占用更多物理空间，同事也对数据维护和一致性检查带来问题。适当冗余可以减少多表访问，查询效率明显提高，这种情况可以考虑适当通过冗余提高效率。</li>
 <li>使用冗余统计表：使用create temporary table做统计分析</li>
 <li>选择更合适的表类型：1.如果应用出现比较严重的锁冲突，请考虑是否刻意更改存储引擎到InnoDB,行锁机制可以有效减少锁冲突出现。2.如果应用查询操作很多，且对事务完整性要求不严格，可以考虑使用Myisam。</li>
 </ul>

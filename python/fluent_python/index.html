@@ -788,6 +788,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -940,20 +951,18 @@ t[2] += [1,2]    # t 变成 (1, 2, [1,2,1,2]) 同时抛出异常，用dis模块�
 <li>collections.OrderedDict: 保持 key 的顺序</li>
 <li>collections.ChainMap: 容纳多个不同的映射对象</li>
 <li>collections.Counter: 计数器</li>
-<li>
-<p>collections.UserDict : 其实就是把标准 dict 用纯 python 实习一遍</p>
-<p>import UserDict</p>
+<li>collections.UserDict : 其实就是把标准 dict 用纯 python 实习一遍<p>import UserDict</p>
 <p>class StrKeyDict(UserDict):</p>
-<pre><code>def __missing__(self, key):
-    if isinstance(key, str):    # 如果 str 的 key 还找不到就抛出 KeyError，没有这句会无限递归
-        raise KeyError(key)
-    return self[str(key)]
+<pre><code>  def __missing__(self, key):
+      if isinstance(key, str):    # 如果 str 的 key 还找不到就抛出 KeyError，没有这句会无限递归
+          raise KeyError(key)
+      return self[str(key)]
 
-def __setitem__(self, key, item):
-    self.data[str(key)] = item
+  def __setitem__(self, key, item):
+      self.data[str(key)] = item
 
-def __contains__(self, key):
-    return str(key) in self.data
+  def __contains__(self, key):
+      return str(key) in self.data
 </code></pre>
 </li>
 </ul>
@@ -1187,42 +1196,38 @@ class Base(abc.ABC):    # py3， py2 中使用  __metaclass__ = abc.ABCMeta
 <li>通过 mixin 重用代码。mixin 不定义新类型, 只是打包方法，便于重用。mixin 类绝对不能实例化，应该提供某方面的特定行为，只是实现少量关系非常紧密的方法</li>
 <li>明确指名 mixin。类应该以 mixin 后缀</li>
 <li>抽象基类可以作为 mixin，但是反过来不成立</li>
-<li>
-<p>不要子类化多个具体类。具体类的超类中除了一个具体类，其他都应该是抽象基类或者 mixin</p>
-<p>class MyConcreteClass(Alpha, Beta, Gamma):
-    """ 如果 Alpha 是具体类，Beta 和 Gamma 必须是抽象基类或者 mixin"""
-    pass</p>
+<li>不要子类化多个具体类。具体类的超类中除了一个具体类，其他都应该是抽象基类或者 mixin<p>class MyConcreteClass(Alpha, Beta, Gamma):
+      """ 如果 Alpha 是具体类，Beta 和 Gamma 必须是抽象基类或者 mixin"""
+      pass</p>
 </li>
-<li>
-<p>创建聚合类。django 中的 ListView，tinker中的 Widget</p>
-<p>class Widget(BaseWidget, Pack, Place, Grid):
-    pass</p>
+</ul>
+<ul>
+<li>创建聚合类。django 中的 ListView，tinker中的 Widget<p>class Widget(BaseWidget, Pack, Place, Grid):
+      pass</p>
 </li>
-<li>
-<p>优先使用组合而非继承。子类化是一种紧耦合，不要过度使用</p>
-</li>
+</ul>
+<ul>
+<li>优先使用组合而非继承。子类化是一种紧耦合，不要过度使用</li>
 </ul>
 <h1 id="13">13  正确重载运算符</h1>
 <p>python 不允许用户随意创建运算符，禁止重载内置类型的运算符。python支持运算符重载是其在科学计算领域使用广泛的原因。</p>
 <ul>
 <li>一元运算符：始终返回一个新对象。</li>
-<li>
-<p>NotImplemented 是个特殊的单例值，如果中缀运算符特殊方法不能处理给定的操作数，要把它返回给解释器。NotImplementedError 是一种异常，抽象类中的方法把它 raise 出，提醒子类必须覆盖。</p>
-<pre><code>  def __add__(self, other):
-      try:
-          pairs = itertools.zip_longest(self, other, fillvalue=0.0)
-          return Vector(a + b for a, b in pairs)
-      except TypeError:
-          # 返回 NotImplemented 解释器会尝试调用 反向运算符方法 __radd__
-          return NotImplemented
+<li>NotImplemented 是个特殊的单例值，如果中缀运算符特殊方法不能处理给定的操作数，要把它返回给解释器。NotImplementedError 是一种异常，抽象类中的方法把它 raise 出，提醒子类必须覆盖。<pre><code>    def __add__(self, other):
+        try:
+            pairs = itertools.zip_longest(self, other, fillvalue=0.0)
+            return Vector(a + b for a, b in pairs)
+        except TypeError:
+            # 返回 NotImplemented 解释器会尝试调用 反向运算符方法 __radd__
+            return NotImplemented
 
-  def __radd__(self, other):
-      return self + other
+    def __radd__(self, other):
+        return self + other
 </code></pre>
 </li>
-<li>
-<p>增量赋值运算符不会修改不可变目标，而是新建实例，然后重新绑定。</p>
-</li>
+</ul>
+<ul>
+<li>增量赋值运算符不会修改不可变目标，而是新建实例，然后重新绑定。</li>
 </ul>
 <h1 id="14">14 可迭代对象、迭代器和生成器</h1>
 <p>解释器需要迭代对象 x 时，会自动调用 iter(x)。内置的 iter 有以下作用：</p>

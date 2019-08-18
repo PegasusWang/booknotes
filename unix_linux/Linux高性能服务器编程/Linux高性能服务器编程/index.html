@@ -796,6 +796,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -1259,14 +1270,12 @@ TCP 连接</li>
 <p><img alt="" src="../epoll_proactor.png" /></p>
 <h3 id="85">8.5 两种高效的并发模式</h3>
 <ul>
-<li>
-<p>半同步/半异步(half-sync/half-async): 同步线程用来处理客户逻辑，异步线程处理I/O事件
-<img alt="" src="../half-sync_half-reactive.png" /></p>
-</li>
-<li>
-<p>领导者/追随者(Leader/Followers):领导者/追随者模式是多个工作线程轮流获得事件源集合，轮流监听、分发并处理事件的一种模式。在任意时间点，程序都仅有一个领导者线程，它负责监听I/O事件。而其他线程则都是追随者，它们休眠在线程池中等待成为新的领导者。当前的领导者如果检测到I/O事件，首先要从线程池中推选出新的领导者线程，然后处理I/O事件。此时，新的领导者等待新的I/O事件，而原来的领导者则处理I/O事件，二者实现了并发。
-<img alt="" src="../leader_followers.png" /></p>
-</li>
+<li>半同步/半异步(half-sync/half-async): 同步线程用来处理客户逻辑，异步线程处理I/O事件
+<img alt="" src="../half-sync_half-reactive.png" /></li>
+</ul>
+<ul>
+<li>领导者/追随者(Leader/Followers):领导者/追随者模式是多个工作线程轮流获得事件源集合，轮流监听、分发并处理事件的一种模式。在任意时间点，程序都仅有一个领导者线程，它负责监听I/O事件。而其他线程则都是追随者，它们休眠在线程池中等待成为新的领导者。当前的领导者如果检测到I/O事件，首先要从线程池中推选出新的领导者线程，然后处理I/O事件。此时，新的领导者等待新的I/O事件，而原来的领导者则处理I/O事件，二者实现了并发。
+<img alt="" src="../leader_followers.png" /></li>
 </ul>
 <h3 id="86">8.6 有限状态机</h3>
 <p>逻辑单元内部的一种高效编程方法</p>

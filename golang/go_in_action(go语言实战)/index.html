@@ -608,6 +608,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -728,7 +739,7 @@ slice := make([]int, 0)
 slice := []int{}
 
 //NOTE: 注意不管是 nil 切片还是空切片，调用 append, len, cap 效果一样。
-// 但是如果是做 json 序列化，一个是序列化成 None，一个是空[]，注意区别
+//NOTE: 但是如果是做 json 序列化，一个是序列化成 null，一个是空[]，要注意二者之间的区别
 
 
 newSlice := slice[1:5] // 注意 newSlice, slice 共享了一个底层数组。这点和 py 不一样，py 切片会进行复制

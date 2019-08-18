@@ -684,6 +684,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -990,9 +1001,11 @@ hash 值在应用中又被称为指纹（fingerprint）、摘要（digest）。 
 <li>正向快速：给定明文和 hash 算法，在有限时间和有限资源内能计算出 hash 值。</li>
 <li>逆向困难：给定（若干） hash 值，在有限时间内很难（基本不可能）逆推出明文。</li>
 <li>输入敏感：原始输入信息修改一点信息，产生的 hash 值看起来应该都有很大不同。</li>
-<li>冲突避免：很难找到两段内容不同的明文，使得它们的 hash 值一致（发生冲突）。</li>
-</ul>
+<li>
+<p>冲突避免：很难找到两段内容不同的明文，使得它们的 hash 值一致（发生冲突）。</p>
 <p>目前，一般认为 MD5 和 SHA1 已经不够安全，推荐至少使用 SHA2-256 算法。</p>
+</li>
+</ul>
 <p>一般的，Hash 算法都是算力敏感型，意味着计算资源是瓶颈，主频越高的 CPU 进行 Hash 的速度也越快。
 也有一些 Hash 算法不是算力敏感的，例如 scrypt，需要大量的内存资源，节点不能通过简单的增加更多 CPU 来获得 hash 性能的提升。</p>
 <h3 id="_23">加解密算法</h3>
@@ -1107,18 +1120,16 @@ PKI 并不代表某个特定的密码学技术和流程，PKI 是建立在公私
 在交易过程中，转账方需要通过签名脚本来证明自己是 UTXO 的合法使用者，并且指定输出脚本来限制未来对本交易的使用者（为收款方）。对每笔交易，转账方需要进行签名确认。并且，对每一笔交易来说，总输入不能小于总输出。</p>
 <h3 id="_36">概念：</h3>
 <ul>
-<li>
-<p>账户/地址：
+<li>账户/地址：
 比特币账户采用了非对称的加密算法，用户自己保留私钥，对他发出的交易进行签名确认，并公开公钥。
 比特币的账户地址其实就是用户公钥经过一系列 hash（HASH160，或先进行 SHA256，然后进行 RIPEMD160）及编码运算后生成的 160
-位（20 字节）的字符串。</p>
-</li>
+位（20 字节）的字符串。</li>
+</ul>
+<ul>
 <li>
 <p>交易</p>
-</li>
-<li>
-<p>付款人地址：合法的地址，公钥经过 SHA256 和 RIPEMD160 两次 hash，得到 160 位 hash 串；</p>
-</li>
+<ul>
+<li>付款人地址：合法的地址，公钥经过 SHA256 和 RIPEMD160 两次 hash，得到 160 位 hash 串；</li>
 <li>付款人对交易的签字确认：确保交易内容不被篡改；</li>
 <li>付款人资金的来源交易 ID：从哪个交易的输出作为本次交易的输入；</li>
 <li>交易的金额：多少钱，跟输入的差额为交易的服务费；</li>
@@ -1126,28 +1137,26 @@ PKI 并不代表某个特定的密码学技术和流程，PKI 是建立在公私
 <li>收款人的公钥：收款人的公钥；</li>
 <li>时间戳：交易何时能生效。</li>
 </ul>
-<p>网络中节点收到交易信息后，将进行如下检查：</p>
-<ul>
-<li>交易是否已经处理过；</li>
-<li>交易是否合法。包括地址是否合法、发起交易者是输入地址的合法拥有者、是否是 UTXO；</li>
-<li>交易的输入之和是否大于输出之和。</li>
-<li>
-<p>检查都通过，则将交易标记为合法的未确认交易，并在网络内进行广播。</p>
 </li>
-<li>
-<p>脚本
+</ul>
+<p>网络中节点收到交易信息后，将进行如下检查：</p>
+<p>- 交易是否已经处理过；
+  - 交易是否合法。包括地址是否合法、发起交易者是输入地址的合法拥有者、是否是 UTXO；
+  - 交易的输入之和是否大于输出之和。
+  - 检查都通过，则将交易标记为合法的未确认交易，并在网络内进行广播。</p>
+<ul>
+<li>脚本
 脚本（Script） 是保障交易完成（主要用于检验交易是否合法）的核心机制，当所依附的交易发生时被触发。通过脚本机制而非写死交易过程，比特币网络实现了一定的可扩展性。比特币脚本语言是一种非图灵完备的语言，类似 Forth 语言。
 一般每个交易都会包括两个脚本：输出脚本（scriptPubKey）和认领脚本（scriptSig）。
 输出脚本一般由付款方对交易设置锁定，用来对能动用这笔交易输出（例如，要花费交易的输出）的对象（收款方）进行权限控制，例如限制必须是某个公钥的拥有者才能花费这笔交易。
-认领脚本则用来证明自己可以满足交易输出脚本的锁定条件，即对某个交易的输出（比特币）的拥有权。</p>
-</li>
+认领脚本则用来证明自己可以满足交易输出脚本的锁定条件，即对某个交易的输出（比特币）的拥有权。</li>
+</ul>
+<ul>
 <li>
 <p>区块
 一个区块将主要包括如下内容：</p>
-</li>
-<li>
-<p>4 字节的区块大小信息；</p>
-</li>
+<ul>
+<li>4 字节的区块大小信息；</li>
 <li>80 字节的区块头信息：</li>
 <li>版本号：4 字节；</li>
 <li>上一个区块头的 SHA256 hash 值：链接到一个合法的块上，32 字节；</li>
@@ -1156,6 +1165,8 @@ PKI 并不代表某个特定的密码学技术和流程，PKI 是建立在公私
 <li>难度指标：4 字节；</li>
 <li>Nonce：4 字节，PoW 问题的答案；</li>
 <li>交易个数计数器：1~9 字节；</li>
+</ul>
+</li>
 </ul>
 <p>所有交易的具体内容，可变长。</p>
 <h4 id="_37">设计理念</h4>
@@ -1358,7 +1369,7 @@ sudo apt-get install ethereum
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../career/give_and_take/" class="btn btn-neutral float-right" title="《give and take》">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/" class="btn btn-neutral float-right" title="《哔哩哔哩的go微服务实战》">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../../互联网/用户思维/" class="btn btn-neutral" title="《用户思维》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -1390,7 +1401,7 @@ sudo apt-get install ethereum
         <span><a href="../../互联网/用户思维/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../career/give_and_take/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

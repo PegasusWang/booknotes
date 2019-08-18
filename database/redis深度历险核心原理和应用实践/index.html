@@ -535,6 +535,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -760,8 +771,10 @@ cl.throttle user_id:reply 15 30 60 1
 <li>计算距离：geodist company juejin ireader km</li>
 <li>获取元素位置(轻微误差，不影响附近的人功能)：geopos company juejin ireader</li>
 <li>获取元素 hash(geohash 52位编码)：geohash company ireader   # http://gohash.org/XXXX 可以获取位置</li>
-<li>附近的公司: georadiusbymember copany ireader 20 km count 3 asc</li>
+<li>附近的公司: georadiusbymember copany ireader 20 km count 3 asc<ul>
 <li>范围20公里以内最多的3个元素按照距离正序排序，不会排除自身</li>
+</ul>
+</li>
 <li>根据坐标查询：georadius company 116.514202 39.905409 20 km withdist count 3 asc</li>
 </ul>
 <p>集群环境中单个 zset key 数据量不宜超过 1M，否则迁移集群出现卡顿。
@@ -812,23 +825,37 @@ redis 知道未来 timeout 时间段内，没有其他定时任务需要处理�
 <p>RESP(Redis Serialization Protocol): redis序列化协议</p>
 <p>resp 把传输的数据结构分成5种最小单元类型，单元结束后统一加上回车换行符 \r\n</p>
 <ul>
-<li>单行字符串以+开头</li>
+<li>单行字符串以+开头<ul>
 <li>+hello\r\n</li>
-<li>多行字符串以$开头，后缀字符串长度</li>
+</ul>
+</li>
+<li>多行字符串以$开头，后缀字符串长度<ul>
 <li>$11\r\nhello world\r\n</li>
-<li>整数值以: 开头，跟上字符串形式</li>
+</ul>
+</li>
+<li>整数值以: 开头，跟上字符串形式<ul>
 <li>:1024\r\n</li>
-<li>错误消息，以-开头</li>
+</ul>
+</li>
+<li>错误消息，以-开头<ul>
 <li>WRONGTYPE Operation against a key holding the wrong kind of value</li>
-<li>数组，以 * 开头，后跟数组的长度</li>
+</ul>
+</li>
+<li>数组，以 * 开头，后跟数组的长度<ul>
 <li>*3\r\n:1\r\n:2\r\n:3\r\n</li>
+</ul>
+</li>
 </ul>
 <p>特殊：</p>
 <ul>
-<li>NULL 用多行字符串，长度-1</li>
+<li>NULL 用多行字符串，长度-1<ul>
 <li>$-1\r\n</li>
-<li>空串，用多行字符串表示，长度0。注意这里的俩\r\n 中间隔的是空串</li>
+</ul>
+</li>
+<li>空串，用多行字符串表示，长度0。注意这里的俩\r\n 中间隔的是空串<ul>
 <li>$0\r\n\r\n</li>
+</ul>
+</li>
 </ul>
 <h3 id="-">客户端-&gt;服务器</h3>
 <p>只有一种格式，多行字符串数组</p>

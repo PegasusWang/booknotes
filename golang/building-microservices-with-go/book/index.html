@@ -648,6 +648,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -1020,49 +1031,41 @@ call of panic.</p>
 <ul>
 <li>Layer 2 or 3 firewalls</li>
 <li>Web application firewall(WAF), Cloudflare supports OWASP CRS</li>
-<li>API Gateway<ul>
-<li>Request validation</li>
-<li>Authorization</li>
-<li>Rate limiting</li>
-<li>Logging</li>
-<li>Caching</li>
-<li>Request and response transformations</li>
-</ul>
-</li>
-<li>DDoS protection<ul>
-<li>UDP fragment: creating datagrams which contain fake packets, when server attempts to reassemble packets, it is unable to do so and the resources are quickly overwhelmed</li>
-<li>UDP flood: sending a flood of UDP packets with a spoofed source address to an IP address</li>
-<li>DNS: A DNS attack utilizes a UDP flood to take out a DNS server.</li>
-<li>NTP: is another amplification attach which takes advantage of a feature built into NTP servers</li>
-<li>Chargen: character generation protocol</li>
-<li>SYN flood: a classic DDoS attack that sends a lot of packets to a machine</li>
-<li>SSDP: simple services discovery protocol</li>
-<li>ACK: firewall; network scrubbing filters</li>
-</ul>
-</li>
+<li>API Gateway
+    - Request validation
+    - Authorization
+    - Rate limiting
+    - Logging
+    - Caching
+    - Request and response transformations</li>
+<li>DDoS protection
+    - UDP fragment: creating datagrams which contain fake packets, when server attempts to reassemble packets, it is unable to do so and the resources are quickly overwhelmed
+    - UDP flood: sending a flood of UDP packets with a spoofed source address to an IP address
+    - DNS: A DNS attack utilizes a UDP flood to take out a DNS server.
+    - NTP: is another amplification attach which takes advantage of a feature built into NTP servers
+    - Chargen: character generation protocol
+    - SYN flood: a classic DDoS attack that sends a lot of packets to a machine
+    - SSDP: simple services discovery protocol
+    - ACK: firewall; network scrubbing filters</li>
 </ul>
 <h3 id="application-sercurity">Application sercurity</h3>
 <ul>
-<li>
-<p>Prevention</p>
-<ul>
-<li>secure communication</li>
-<li>authorization</li>
-<li>authentication</li>
+<li>Prevention
+    - secure communication
+    - authorization
+    - authentication</li>
 </ul>
-</li>
-<li>
-<p>Detection: applications logs</p>
-</li>
-<li>
-<p>Response</p>
-</li>
-<li>
-<p>Recovery: well backed up and aotomated</p>
-</li>
-<li>
-<p>input validation: github.com/go-playground/validator</p>
-</li>
+<ul>
+<li>Detection: applications logs</li>
+</ul>
+<ul>
+<li>Response</li>
+</ul>
+<ul>
+<li>Recovery: well backed up and aotomated</li>
+</ul>
+<ul>
+<li>input validation: github.com/go-playground/validator</li>
 </ul>
 <pre><code>package validation
 
@@ -1102,47 +1105,39 @@ func Handler(rw http.ResponseWriter, r *http.Request) {
 </code></pre>
 
 <ul>
-<li>
-<p>Fuzzing : github.com/dvyukov/go-fuzz/go-fuzz  generating random input</p>
-</li>
-<li>
-<p>TLS:</p>
-</li>
-<li>
-<p>Securing data at rest : encrypt data in the database</p>
-</li>
-<li>
-<p>Physical machine access</p>
-</li>
-<li>
-<p>OWASP: REST Security Cheat Sheet (https://www.owasp.org/index.php/REST_Security_Cheat_Sheet).</p>
-<ul>
-<li>Never storing session tokens in a URL, use cookie or a post value (url can query in log)</li>
-<li>XSS and CSRF.</li>
-<li>Insecure direct object references. Checking authenticated users can modify the object in the request</li>
+<li>Fuzzing : github.com/dvyukov/go-fuzz/go-fuzz  generating random input</li>
 </ul>
-</li>
-<li>
-<p>Password Hashing, hash is one-way cryptography</p>
 <ul>
-<li>Adding a salt and a pepper. （加盐是一种常见的方式，防止被彩虹表暴力破解）</li>
-<li>bcrypt: golang.org/x/crypto/bcrypt</li>
+<li>TLS:</li>
 </ul>
-</li>
+<ul>
+<li>Securing data at rest : encrypt data in the database</li>
+</ul>
+<ul>
+<li>Physical machine access</li>
+</ul>
+<ul>
+<li>OWASP: REST Security Cheat Sheet (https://www.owasp.org/index.php/REST_Security_Cheat_Sheet).
+    - Never storing session tokens in a URL, use cookie or a post value (url can query in log)
+    - XSS and CSRF.
+    - Insecure direct object references. Checking authenticated users can modify the object in the request</li>
+</ul>
+<ul>
+<li>Password Hashing, hash is one-way cryptography
+    - Adding a salt and a pepper. （加盐是一种常见的方式，防止被彩虹表暴力破解）
+    - bcrypt: golang.org/x/crypto/bcrypt</li>
 </ul>
 <h3 id="maintenance">Maintenance</h3>
 <ul>
 <li>Patching containers: run a regular build and deploy even if the application code does not change</li>
 <li>Software upadtes:</li>
 <li>Patching application code</li>
-<li>Logging<ul>
-<li>Who is preforming the action</li>
-<li>what has failed or succeed</li>
-<li>when is the action occurring</li>
-<li>why this has failed or succeeded</li>
-<li>how you can deal with the issue</li>
-</ul>
-</li>
+<li>Logging
+    - Who is preforming the action
+    - what has failed or succeed
+    - when is the action occurring
+    - why this has failed or succeeded
+    - how you can deal with the issue</li>
 </ul>
 <h1 id="9-event-driven-architecture">9. Event-Driven Architecture</h1>
 <h3 id="differences-between-synchronous-and-asynchronous-processing">Differences between synchronous and asynchronous processing</h3>

@@ -535,6 +535,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -681,29 +692,23 @@
 <h5 id="implementation-of-replication-logs">Implementation of Replication Logs</h5>
 <p>几种不同方式在实践中被使用：</p>
 <ul>
-<li>
-<p>Statement-based replication: 最简单的场景，每个 leader 的写请求都被执行然后发送 log 到它的 followers, mysql5.1 之前使用。有以下问题：</p>
-<ul>
-<li>未决函数。比如 NOW ， RAND 等是会返回不同的值的</li>
-<li>如果语句使用的是自增列，或者基于已有的数据，那这些语句必须在 replica 上用相同顺序执行，否则会有副作用</li>
-<li>语句可能有副作用。（触发器、存储过程、用户定义函数）可能在不同的 replica 上有不同的副作用，及时副作用是确定性的</li>
-</ul>
+<li>Statement-based replication: 最简单的场景，每个 leader 的写请求都被执行然后发送 log 到它的 followers, mysql5.1 之前使用。有以下问题：<p>-   未决函数。比如 NOW ， RAND 等是会返回不同的值的
+  -   如果语句使用的是自增列，或者基于已有的数据，那这些语句必须在 replica 上用相同顺序执行，否则会有副作用
+  -   语句可能有副作用。（触发器、存储过程、用户定义函数）可能在不同的 replica 上有不同的副作用，及时副作用是确定性的</p>
 </li>
-<li>
-<p>Write-ahead log(WAL) shipping
+</ul>
+<ul>
+<li>Write-ahead log(WAL) shipping
     把语句变成 append-only 的字节序列当成 log 发送给 follower，当 follower 处理这些 log 的时候，就建立了和原始写入一样的数据结构
-    PostgresSQL 和 Oracle 采用这种方式。缺陷：如果不同版本的 replication 协议版本有变化，升级会不兼容</p>
-</li>
-<li>
-<p>Logic (row-based) log replication
-    一种选择是对于 replication 和 数据存储引擎 使用不同的 log 格式，允许 replication log 从数据引擎log 解耦，这种叫做
-    Logic log。通常是一些列记录用来描述行级粒度的写入：</p>
-<ul>
-<li>对于插入一行，log 包含所有列的新值</li>
-<li>对于删除一行， log 包含足够的信息来定位需要删除的行。通常是主键</li>
-<li>对于更新一行，log 包含足够的信息去更新需要更新的列数据</li>
+    PostgresSQL 和 Oracle 采用这种方式。缺陷：如果不同版本的 replication 协议版本有变化，升级会不兼容</li>
 </ul>
-</li>
+<ul>
+<li>Logic (row-based) log replication
+    一种选择是对于 replication 和 数据存储引擎 使用不同的 log 格式，允许 replication log 从数据引擎log 解耦，这种叫做
+    Logic log。通常是一些列记录用来描述行级粒度的写入：
+    -   对于插入一行，log 包含所有列的新值
+    -   对于删除一行， log 包含足够的信息来定位需要删除的行。通常是主键
+    -   对于更新一行，log 包含足够的信息去更新需要更新的列数据</li>
 </ul>
 <p>一个修改了多行的事务会生成多个 logic log，然后是一个记录事务被提交的记录。mysql bin-log 配置成row-based replication 使用的就是这种方式。
 好处是可以跨数据库版本（和存储引擎的log解耦），也方便被其他的系统解析和使用。</p>
@@ -723,9 +728,7 @@ follower，对用户而言数据好像丢失了。这个时候需要 read-after-
 <li>当读取用户可能修改过的数据的时候，从 leader 读，否则从 follower 读取。总是从 leader 读取用户个人信息之类的东西，其他的从 followers 读。</li>
 <li>跟踪数据变更时间，在更新的后一分钟内都从 leader 读取。</li>
 <li>客户端记住最近的更新时间戳，然后系统可以从有该时间戳以后更新数据的 replica 读取，或者等待直到更新了数据。</li>
-<li>
-<p>如果数据中心分布在不同地理位置，请求必须路由到有改 leader 的数据中心读取。</p>
-<p>更麻烦的是跨设备读取，比如在移动设备上更新了数据，在其他设备上要能看到更新。</p>
+<li>如果数据中心分布在不同地理位置，请求必须路由到有改 leader 的数据中心读取。<p>更麻烦的是跨设备读取，比如在移动设备上更新了数据，在其他设备上要能看到更新。</p>
 </li>
 </ul>
 <h5 id="monotonic-reads">Monotonic Reads</h5>
@@ -756,22 +759,16 @@ leader，当执行异步复制的时候就会检测到冲突。</p>
 <ul>
 <li>Synchronous versus asynchronous conflict detection: 使用同步冲突检测会丧失多主可以分别写入的优点，如果想用同步冲突检测，应该使用一主多从架构</li>
 <li>Conflict avoidance: 应用保证所有对于同一个记录的写入都写入到同一个 leader，冲突就可以避免。切换 leader 时会带来问题</li>
-<li>
-<p>Converging toward a consistent state: 达到一致状态</p>
-<ul>
-<li>给每次写入分配 id，最大的 id 写入视为最终写入，丢弃其他写入。或者用时间戳，最新的写入有效（last write wins,
-    LWW）。这种方式很流行，但是可能造成数据丢失</li>
-<li>给每个 replica 一个独一无二的 id，高 id 的 replica 优先</li>
-<li>记录冲突并提供保留所有信息，应用层代码之后处理冲突</li>
-</ul>
+<li>Converging toward a consistent state: 达到一致状态<p>-   给每次写入分配 id，最大的 id 写入视为最终写入，丢弃其他写入。或者用时间戳，最新的写入有效（last write wins,
+      LWW）。这种方式很流行，但是可能造成数据丢失
+  -   给每个 replica 一个独一无二的 id，高 id 的 replica 优先
+  -   记录冲突并提供保留所有信息，应用层代码之后处理冲突</p>
 </li>
-<li>
-<p>Custom conflict resolution logic: 在应用层代码决定。</p>
-<ul>
-<li>on write: conflict handler，在后台进程检测到 replicated 变化时处理冲突</li>
-<li>on read：读取的时候应用层代码处理冲突，然后写回数据库</li>
 </ul>
-</li>
+<ul>
+<li>Custom conflict resolution logic: 在应用层代码决定。
+    -   on write: conflict handler，在后台进程检测到 replicated 变化时处理冲突
+    -   on read：读取的时候应用层代码处理冲突，然后写回数据库</li>
 </ul>
 <p>自动解决并发修改数据冲突：</p>
 <ul>
@@ -872,13 +869,11 @@ hashing)，这里的一致性指的是重新分配 key 的方式，其实用术�
 <ul>
 <li>查询负载增加，你想添加更多 cpu 处理负载</li>
 <li>数据量增加，想增加更多 硬盘和内存去存储</li>
-<li>
-<p>一个机器挂了，其他需要接管挂掉机器的职责</p>
-<p>所有这些变化都会导致数据和请求从一个节点转移到另一个节点，把负载从一个集群中的节点转移到另一个叫做 "rebalancing"</p>
+<li>一个机器挂了，其他需要接管挂掉机器的职责<p>所有这些变化都会导致数据和请求从一个节点转移到另一个节点，把负载从一个集群中的节点转移到另一个叫做 "rebalancing"</p>
 </li>
-<li>
-<p>rebalancing 后负载均衡分配到各个节点</p>
-</li>
+</ul>
+<ul>
+<li>rebalancing 后负载均衡分配到各个节点</li>
 <li>rebalancing 期间数据库仍正常读取和写入</li>
 <li>只有必要的数据应该从节点迁移，降低 rebalancing 网络和磁盘IO 负载</li>
 </ul>
@@ -926,24 +921,22 @@ key连接到哪个 ip 和端口？</p>
 <p>事务能提供的安全保证经常缩写为 "ACID"，代表 Atomicity, Consistency, Isolation, Durability。不同数据库的 ACID
 实现是不一致的（其实成为了市场术语）。不符合 ACID 的通常叫做 BASE，Basically Available, Soft state, Eventual Consistency.</p>
 <ul>
-<li>
-<p>Atomicity: 数据库中原子性跟并发无关，而是描述了当一个 client 想做一些写入操作，但是在一些写入后出错了应该如何处理。
+<li>Atomicity: 数据库中原子性跟并发无关，而是描述了当一个 client 想做一些写入操作，但是在一些写入后出错了应该如何处理。
     比如被组织成一个原子事务的写入，一堆写入后进程挂了、数据库满了，事务可以保证丢弃这些请求。如果没有原子性，我们就无法知道
-    哪些写入生效，哪些没生效。如果 client 重试就有可能造成重复写入，原子性(abortability 术语可能更好)会丢弃这些写入，client 就能安全重试。</p>
-</li>
-<li>
-<p>Consistency: ACID 里的 一致性（这个词在最终一致性、一致性哈希、CAP里的一致性含义不同）指的是数据库处于 『good
+    哪些写入生效，哪些没生效。如果 client 重试就有可能造成重复写入，原子性(abortability 术语可能更好)会丢弃这些写入，client 就能安全重试。</li>
+</ul>
+<ul>
+<li>Consistency: ACID 里的 一致性（这个词在最终一致性、一致性哈希、CAP里的一致性含义不同）指的是数据库处于 『good
     state』的应用层概念(区别于其他三个概念），应用层代码可能需要依赖原子性和隔离性来实现一致性，而不是数据库单独支持。
     The idea of ACID consistency is that you have certain statements about your data(invariants) that must always be true.
-    比如在一个账户系统中，信誉和借贷在所有账户中都必须是平衡的，如果一个事务以一个合法的状态开始，任何这个事务中的写入都要保持合法性，</p>
-</li>
-<li>
-<p>Isolation: 大多数情况下一个数据库都会被几个 client 同时连接，如果他们访问了同样的数据库记录，会有并发问题。隔离性表示并发执行的事务是彼此隔离的，保证同一时间只有一个在执行，就好像串行执行的</p>
-</li>
-<li>
-<p>Durability: 持久性保证只要一个事务被提交成功，，所有的数据都保证不会丢失，即使有硬件错误后者软件crash。单个节点数据库保证写入到数据库，replica
-    保证数据被成功复制到其他节点，数据库需要保证这些操作完成才会报告 commit 是成功的。</p>
-</li>
+    比如在一个账户系统中，信誉和借贷在所有账户中都必须是平衡的，如果一个事务以一个合法的状态开始，任何这个事务中的写入都要保持合法性，</li>
+</ul>
+<ul>
+<li>Isolation: 大多数情况下一个数据库都会被几个 client 同时连接，如果他们访问了同样的数据库记录，会有并发问题。隔离性表示并发执行的事务是彼此隔离的，保证同一时间只有一个在执行，就好像串行执行的</li>
+</ul>
+<ul>
+<li>Durability: 持久性保证只要一个事务被提交成功，，所有的数据都保证不会丢失，即使有硬件错误后者软件crash。单个节点数据库保证写入到数据库，replica
+    保证数据被成功复制到其他节点，数据库需要保证这些操作完成才会报告 commit 是成功的。</li>
 </ul>
 <h3 id="single-object-and-multi-object-operations">Single-Object and Multi-Object Operations</h3>
 <p>总得来说，原子性和隔离性描述了如果一个 client 在同一个事务中的几个写入应该如何处理：</p>
@@ -984,13 +977,11 @@ skew)，临时不一致性。想像一个场景：如果一个用户有1000元�
 在事务没处理完的时候就去读，会发现一个帐号少了100，但是还没转到另一个账户，好像凭空消失了100。这种临时不一致大部分情况下是能接受的，
 但是也有一些场景不能容忍：</p>
 <ul>
-<li>
-<p>backups: 大量数据复制的场景下比较耗时，在备份进程处理期间，如果数据库仍在处理写入。这样可能导致备份一部分包含旧版本数据，一部分包含新版本数据。
-    从备份中恢复的时候就会导致永久不一致。</p>
-</li>
-<li>
-<p>Analytic queries and integrity checks: 数据分析场景的查询会在不同时刻查到不同的值</p>
-</li>
+<li>backups: 大量数据复制的场景下比较耗时，在备份进程处理期间，如果数据库仍在处理写入。这样可能导致备份一部分包含旧版本数据，一部分包含新版本数据。
+    从备份中恢复的时候就会导致永久不一致。</li>
+</ul>
+<ul>
+<li>Analytic queries and integrity checks: 数据分析场景的查询会在不同时刻查到不同的值</li>
 </ul>
 <p>Snapshot isolation(快照隔离)就是为了解决这个问题。每个事务从一致的数据库快照读取，每个事务只能看到一个时间点的旧数据。
 Snapshot isolation 被 PostgresSQL, Mysql with InnoDB，Oaacle, SQL Server 等支持。
@@ -1216,22 +1207,20 @@ Apache ZooKeeper, etcd 经常用来实现分布式锁和 leader 选举。</p>
 <p>Linearizability 意味着：表现的数据像是只有一份拷贝。，并且所有在它上面的操作都是原子的。
 通常让系统容错的方式是使用副本(replication)</p>
 <ul>
-<li>
-<p>Single-leader replication (potentially, linearizable): 
-一主多从架构中只有 leader 能写入，如果你从 leader 读，或者从同步更新的 follower 读，它们潜在是 linearizable</p>
-</li>
-<li>
-<p>Consensus algorithms (Linearizable)
-通过一致性算法实现类似一主多从架构</p>
-</li>
-<li>
-<p>Multi-leader replication (not linearizable)
-通常多主架构不是 Linearizable 的， 因为多主架构并发处理多个节点的写入需求并且异步复制到其他节点，可能造成冲突写入并且需要人工修复，无法实现 "single copy of data"</p>
-</li>
-<li>
-<p>Leaderless replication (probably not Linearizable)
-无主架构中有些人声称可以通过投票读取和写入<code>(w+r&gt;n)</code>的方式实现强一致性，但是依赖 w,r配置。</p>
-</li>
+<li>Single-leader replication (potentially, linearizable): 
+一主多从架构中只有 leader 能写入，如果你从 leader 读，或者从同步更新的 follower 读，它们潜在是 linearizable</li>
+</ul>
+<ul>
+<li>Consensus algorithms (Linearizable)
+通过一致性算法实现类似一主多从架构</li>
+</ul>
+<ul>
+<li>Multi-leader replication (not linearizable)
+通常多主架构不是 Linearizable 的， 因为多主架构并发处理多个节点的写入需求并且异步复制到其他节点，可能造成冲突写入并且需要人工修复，无法实现 "single copy of data"</li>
+</ul>
+<ul>
+<li>Leaderless replication (probably not Linearizable)
+无主架构中有些人声称可以通过投票读取和写入<code>(w+r&gt;n)</code>的方式实现强一致性，但是依赖 w,r配置。</li>
 </ul>
 <h5 id="linearizability-and-quorums">Linearizability and quorums</h5>
 <p>直觉上 strict quorum 读写能保证 linearizable, 但是当有网络延迟的时候，可能会出现竞争条件。</p>

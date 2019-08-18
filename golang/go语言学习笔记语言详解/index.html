@@ -621,6 +621,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -1060,14 +1071,12 @@ func main() {
 <p>方法和函数一样出了直接调用还可以赋值给变量、或者作为参数传递。按照具体引用方式不同，
 分为 expression/value 两种状态。</p>
 <ul>
-<li>
-<p>method expression: 通过类型引用的 method expression会被还原为普通函数样式，receiver是第一参数，调用时需要显示传参。</p>
-</li>
-<li>
-<p>method value:基于实例或者指针引用的method value，参数签名不会改变，按照正常方式调用。
+<li>method expression: 通过类型引用的 method expression会被还原为普通函数样式，receiver是第一参数，调用时需要显示传参。</li>
+</ul>
+<ul>
+<li>method value:基于实例或者指针引用的method value，参数签名不会改变，按照正常方式调用。
 但当method value被赋值给变量或者作为参数传递，会立即计算并复制该方法执行所需的receiver对象，与其绑定，
-以便稍后执行时，能隐式传入 receiver 参数。</p>
-</li>
+以便稍后执行时，能隐式传入 receiver 参数。</li>
 </ul>
 <h1 id="7">7 接口</h1>
 <p>接口代表一种调用契约，是多个方法声明的集合。
@@ -1409,24 +1418,22 @@ func main() {
 <ul>
 <li>向已关闭通道发送数据，引发panic。</li>
 <li>从已关闭接收数据，返回已缓冲数据或零值。</li>
-<li>
-<p>无论收发，nil通道都会阻塞。</p>
-<p>package main</p>
+<li>无论收发，nil通道都会阻塞。<p>package main</p>
 <p>func main() {
-    c := make(chan int, 3)
-    c &lt;- 10
-    c &lt;- 20
-    close(c)</p>
-<pre><code>for i := 0; i &lt; cap(c)+1; i++ {
-    x, ok := &lt;-c
-    println(i, ":", ok, x)
-}
+      c := make(chan int, 3)
+      c &lt;- 10
+      c &lt;- 20
+      close(c)</p>
+<pre><code>  for i := 0; i &lt; cap(c)+1; i++ {
+      x, ok := &lt;-c
+      println(i, ":", ok, x)
+  }
 </code></pre>
 <p>}
-// 0 : true 10
-// 1 : true 20
-// 2 : false 0
-// 3 : false 0</p>
+  // 0 : true 10
+  // 1 : true 20
+  // 2 : false 0
+  // 3 : false 0</p>
 </li>
 </ul>
 <p>单向通道：通道默认是双向的，并不区分发送和接收端。但某些时候，我们可限制收发操作的方向来获得更严谨的操作逻辑。
@@ -1894,20 +1901,18 @@ func main() {
 <li>测试代码须放在当前包以“_test.go”结尾的文件中。</li>
 <li>测试函数以Test为名称前缀。</li>
 <li>测试命令（go test）忽略以“_”或“.”开头的测试文件。</li>
-<li>
-<p>正常编译操作（go build/install）会忽略测试文件。</p>
-<p>// main_test.go
-// go test -v
-package main</p>
+<li>正常编译操作（go build/install）会忽略测试文件。<p>// main_test.go
+  // go test -v
+  package main</p>
 <p>import "testing"</p>
 <p>func add(x, y int) int {
-    return x + y
-}</p>
+      return x + y
+  }</p>
 <p>func TestAdd(t *testing.T) {
-    if add(1, 2) != 3 {
-        t.FailNow()
-    }
-}</p>
+      if add(1, 2) != 3 {
+          t.FailNow()
+      }
+  }</p>
 </li>
 </ul>
 <p>对于测试是否应该和目标放在同一目录，一直有不同看法。某些人认为应该另建一个专门的包用来存放单元测试，且只测试目标公开接口。好处是，当目标内部发生变化时，无须同步维护测试代码。每个人对于测试都有不同理解，就像覆盖率是否要做到90%以上，也是见仁见智。</p>

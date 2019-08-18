@@ -571,6 +571,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -747,42 +758,40 @@ nnoremap &lt;Leader&gt;w :w&lt;CR&gt;
 </code></pre>
 
 <ul>
-<li>
-<p>Automatic Completion:  ctrl + n/p, ctrl+x ctrl+f 补全文件名</p>
-</li>
-<li>
-<p>Using File Template: 创建一个文件模板放到 <code>~/.vim/templates/html.tpl</code>，然后 <code>:autocmd BufNewFile *.html 0r
-  ~/.vim/templates/html.tpl</code></p>
-</li>
-<li>
-<p>Repeat The last Ex command: 可以用 <code>@:</code> 在mormal 模式下重复上一个 ex command</p>
-</li>
-<li>
-<p>Paste text while in insert mode: <code>ctrl-r 0</code></p>
-</li>
-<li>
-<p>Delete in Insert mode: ctrl+h 删除一个字符， ctrl-w 删一个单词， ctrl-u 删除一行</p>
-</li>
-<li>
-<p>Repeatable operations on search matches: 比如想查询后一个个修改 <code>/string</code> 之后 cw 修改单词然后n找到下一个用 <code>.</code>
-  重复命令。可以使用 cgn 替代， c 执行修改，gn 向前找到下一个匹配并块选中。</p>
-</li>
-<li>
-<p>Copy lines without cursor movement: <code>:20,25co10</code> 把 20-25行copy到 10 行下</p>
-</li>
-<li>
-<p>Move lines without cursor movement:  <code>:6m28</code> 第6行移到第28行，然后用 <code>''</code> 移动回去之前的指针位置</p>
-</li>
-<li>
-<p>Delete lines without cursor movement: <code>5,10d</code></p>
-</li>
-<li>
-<p>Generating numbered lists: 生成序列 <code>:put =range(1,10)</code> ，甚至 ip 序列 <code>:for i in range(1,100) | put ='192.168.0.'.i | endfor</code></p>
-</li>
-<li>
-<p>Increasing or descreasing numbers: ctrl-a/x 可以递增或者递减数字
-批量递增数字：</p>
-</li>
+<li>Automatic Completion:  ctrl + n/p, ctrl+x ctrl+f 补全文件名</li>
+</ul>
+<ul>
+<li>Using File Template: 创建一个文件模板放到 <code>~/.vim/templates/html.tpl</code>，然后 <code>:autocmd BufNewFile *.html 0r
+  ~/.vim/templates/html.tpl</code></li>
+</ul>
+<ul>
+<li>Repeat The last Ex command: 可以用 <code>@:</code> 在mormal 模式下重复上一个 ex command</li>
+</ul>
+<ul>
+<li>Paste text while in insert mode: <code>ctrl-r 0</code></li>
+</ul>
+<ul>
+<li>Delete in Insert mode: ctrl+h 删除一个字符， ctrl-w 删一个单词， ctrl-u 删除一行</li>
+</ul>
+<ul>
+<li>Repeatable operations on search matches: 比如想查询后一个个修改 <code>/string</code> 之后 cw 修改单词然后n找到下一个用 <code>.</code>
+  重复命令。可以使用 cgn 替代， c 执行修改，gn 向前找到下一个匹配并块选中。</li>
+</ul>
+<ul>
+<li>Copy lines without cursor movement: <code>:20,25co10</code> 把 20-25行copy到 10 行下</li>
+</ul>
+<ul>
+<li>Move lines without cursor movement:  <code>:6m28</code> 第6行移到第28行，然后用 <code>''</code> 移动回去之前的指针位置</li>
+</ul>
+<ul>
+<li>Delete lines without cursor movement: <code>5,10d</code></li>
+</ul>
+<ul>
+<li>Generating numbered lists: 生成序列 <code>:put =range(1,10)</code> ，甚至 ip 序列 <code>:for i in range(1,100) | put ='192.168.0.'.i | endfor</code></li>
+</ul>
+<ul>
+<li>Increasing or descreasing numbers: ctrl-a/x 可以递增或者递减数字
+批量递增数字：</li>
 </ul>
 <pre><code>a[0] = 1
 a[0] = 2
@@ -799,32 +808,28 @@ a[4] = 4
 
 <p>使用 ctrl-v 块选中所有的 0，然后执行 <code>g ctrl+a</code> 完美解决。</p>
 <ul>
-<li>
-<p>Clear highlighted searches: <code>nmap &lt;silent&gt; ,/ :nohlsearch&lt;CR&gt;</code></p>
-</li>
-<li>
-<p>Execute multiple commands at once: <code>%s/Atom/Vim/c | %s/bad/good/c</code></p>
-</li>
-<li>
-<p>External program intergration: <code>%!&lt;command&gt;</code></p>
-</li>
-<li>
-<p>Auto remove trailing whitespace: 笔者用了一个 StripWhitespace 插件来解决的</p>
-</li>
+<li>Clear highlighted searches: <code>nmap &lt;silent&gt; ,/ :nohlsearch&lt;CR&gt;</code></li>
+</ul>
+<ul>
+<li>Execute multiple commands at once: <code>%s/Atom/Vim/c | %s/bad/good/c</code></li>
+</ul>
+<ul>
+<li>External program intergration: <code>%!&lt;command&gt;</code></li>
+</ul>
+<ul>
+<li>Auto remove trailing whitespace: 笔者用了一个 StripWhitespace 插件来解决的</li>
 </ul>
 <pre><code>match ErrorMsg '\s\s+$'
 autocmd BufWritePre * :%s/\s\+$//e
 </code></pre>
 
 <ul>
-<li>Navigation through cursor history:<ul>
-<li>Jumplist : 存储光标跳转的每个位置。ctrl-o ctrl-i 分别是向之前（backwards） 和之后(forwards) 跳转</li>
-<li>Changelist: 存储每个修改的可被 revert 的位置(with undo)。使用 g; 和 g, 向之前(backwards) 和之后(forwards) 跳转</li>
-<li>`.  command will bring you to your last change.</li>
-<li>`` which will bring you back to where the cursor was before you made your last jump.</li>
-<li>`^ this is the position where the cursor was the last time when insert mode was stopped</li>
-</ul>
-</li>
+<li>Navigation through cursor history:
+    - Jumplist : 存储光标跳转的每个位置。ctrl-o ctrl-i 分别是向之前（backwards） 和之后(forwards) 跳转
+    - Changelist: 存储每个修改的可被 revert 的位置(with undo)。使用 g; 和 g, 向之前(backwards) 和之后(forwards) 跳转
+    - <code>.  command will bring you to your last change.
+    - `` which will bring you back to where the cursor was before you made your last jump.
+    -</code>^ this is the position where the cursor was the last time when insert mode was stopped</li>
 </ul>
 <p>上边几个方便的跳转命令(https://vi.stackexchange.com/questions/2001/how-do-i-jump-to-the-location-of-my-last-edit):
 撇也可以用单引号替代(` -&gt; ')</p>

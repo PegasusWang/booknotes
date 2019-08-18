@@ -679,6 +679,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -1272,9 +1283,7 @@ rune &lt;=&gt; int32 , byte &lt;=&gt; uint8</p>
 <ul>
 <li>complex64</li>
 <li>complex128</li>
-<li>
-<p>math/cmplx package</p>
-<p><code>var x complex128 = complex(1,2)</code></p>
+<li>math/cmplx package<p><code>var x complex128 = complex(1,2)</code></p>
 </li>
 </ul>
 <h2 id="34-booleans">3.4 booleans</h2>
@@ -1901,23 +1910,21 @@ go 没有想其他很多语言一样用异常处理错误，因为异常经常�
 errors，这种方式需要付出更多精力来应对错误处理逻辑。</p>
 <p><strong>go 的5种常见错误处理策略</strong>：</p>
 <ul>
-<li>
-<p>1.propagate the error：传播错误使得被调用者的错误成为调用者错误。通常直接返回或者构造新的错误信息后返回</p>
-<pre><code>resp, err := http.Get(url)
-if err != nil {
-    return nil, err    // just return
-}
-// construct new error message includes both: 填充有用信息之后再 return ，需要注意出错信息的结构和内容
-doc, err := html.Parse(resp.Body)
-resp.Body.Close()
-if err != nil {
-    return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)  // 附加上了 url 信息
-}
+<li>1.propagate the error：传播错误使得被调用者的错误成为调用者错误。通常直接返回或者构造新的错误信息后返回<pre><code>  resp, err := http.Get(url)
+  if err != nil {
+      return nil, err    // just return
+  }
+  // construct new error message includes both: 填充有用信息之后再 return ，需要注意出错信息的结构和内容
+  doc, err := html.Parse(resp.Body)
+  resp.Body.Close()
+  if err != nil {
+      return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)  // 附加上了 url 信息
+  }
 </code></pre>
 </li>
-<li>
-<p>2.对于短暂或者非预期的错误，可以尝试采用一定策略重试。最常见的就是爬虫里的重试策略。</p>
-</li>
+</ul>
+<ul>
+<li>2.对于短暂或者非预期的错误，可以尝试采用一定策略重试。最常见的就是爬虫里的重试策略。</li>
 </ul>
 <pre><code>func WaitForServer(url string) error {
     const timeout = 1 * time.Minute
@@ -2441,11 +2448,13 @@ func (s *IntSet) UnionWith(t *IntSet) {
 <ul>
 <li>阻止客户端直接修改对象变量；</li>
 <li>防止客户端依赖将来可能会变动的内部细节；</li>
-<li>阻止客户端代码随意设置对象的值</li>
-</ul>
+<li>
+<p>阻止客户端代码随意设置对象的值</p>
 <p><code>type IntSet struct {   //  隐藏 words，防止客户端直接修改
-    words []uint64
+  words []uint64
 }</code></p>
+</li>
+</ul>
 <h1 id="7-interfaces">7 Interfaces</h1>
 <p>接口类型表示其他类型的通用或者抽象，接口允许我们写出更灵活和适配的函数。go
 里无需声明一个特定类型需要满足的所有接口，只提供必要的方法就足够了，这种方式允许我们在已有的具体类型上创建新的接口类型。</p>

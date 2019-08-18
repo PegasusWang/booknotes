@@ -535,6 +535,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -664,14 +675,16 @@
 </ul>
 <h1 id="4-events">4. Events</h1>
 <ul>
-<li>Simple Event Handler Registration</li>
-</ul>
+<li>
+<p>Simple Event Handler Registration</p>
 <p><code>$('p').click(function() {
-      $(this).css('background-color', 'gray');
-  })
-  blur() focusin() change() focusout() click() keydown() dblclick() keypress() error() keyup() focus() load()
-  mousedown() mouseenter() mouseleave() mousemove() mouseout() mouseover()
-  mouseup() resize() scroll() select() submit() unload()</code></p>
+    $(this).css('background-color', 'gray');
+})
+blur() focusin() change() focusout() click() keydown() dblclick() keypress() error() keyup() focus() load()
+mousedown() mouseenter() mouseleave() mousemove() mouseout() mouseover()
+mouseup() resize() scroll() select() submit() unload()</code></p>
+</li>
+</ul>
 <ul>
 <li>jQuery Event Handlers : That is, returning false is the same as calling the preventDefault() and stopPropagation() methods of the Event object</li>
 <li>The jQuery Event Object:</li>
@@ -687,100 +700,88 @@
       mouseover: mouseoverHandler,
       mouseout: mouseoutHandler
     });</code></li>
-<li>
-<p>Triggering Events: After invoking event handlers, trigger() (and the convenience methods that call it) perform
+<li>Triggering Events: After invoking event handlers, trigger() (and the convenience methods that call it) perform
   whatever default action is asso- ciated with the triggered event (assuming that the event han- dlers didn’t return
-  false or call preventDefault() on the event object.If you want to invoke event handlers without performing the default action, use triggerHandler(), which works just like trigger() except that it first calls the preventDefault() and cancelBubble() methods of the Event object.</p>
-<p>```
-// Act as if the user clicked the Submit button
-<script type="math/tex">("#my_form").submit();
-</script>('#my_form').trigger('submmit');</p>
+  false or call preventDefault() on the event object.If you want to invoke event handlers without performing the default action, use triggerHandler(), which works just like trigger() except that it first calls the preventDefault() and cancelBubble() methods of the Event object.<p>```
+  // Act as if the user clicked the Submit button
+  <script type="math/tex">("#my_form").submit();
+  </script>('#my_form').trigger('submmit');</p>
 <p>// Trigger button click handlers in namespace ns1
-$("button").trigger("click.ns1");</p>
+  $("button").trigger("click.ns1");</p>
 <p>// Add extra property to the event object when triggering
-<script type="math/tex">('#button1').trigger({type:'click', synthetic:true});
-</script>('#button1').click(function(e) {
-  if (e.synthetic) {...};
-});
-```</p>
+  <script type="math/tex">('#button1').trigger({type:'click', synthetic:true});
+  </script>('#button1').click(function(e) {
+    if (e.synthetic) {...};
+  });
+  ```</p>
 </li>
-<li>
-<p>Custom Events:</p>
-</li>
-<li>
-<p>Live Events: bind()方法不会对动态创建的元素起作用，这种问题称之为"live envents". To use live events, use the delegate() and undelegate() methods instead of bind() and unbind()<Paste>
+</ul>
+<ul>
+<li>Custom Events:</li>
+<li>Live Events: bind()方法不会对动态创建的元素起作用，这种问题称之为"live envents". To use live events, use the delegate() and undelegate() methods instead of bind() and unbind()<Paste>
     jQuery defines a method named live() that can also be used to register live events.
-    To deregister live event handlers, use die() or undelegate().</p>
-<p><code>html
-$(document).delegate("a", "mouseover", linkHa)
-// Remove all live handlers for mouseover on &lt;a&gt; tags
-$('a').die('mouseover');
-// Remove just one specific live handler
-$('a').die('mouseover', linkHandler);</code></p>
+    To deregister live event handlers, use die() or undelegate().<p><code>html
+  $(document).delegate("a", "mouseover", linkHa)
+  // Remove all live handlers for mouseover on &lt;a&gt; tags
+  $('a').die('mouseover');
+  // Remove just one specific live handler
+  $('a').die('mouseover', linkHandler);</code></p>
 </li>
 </ul>
 <h1 id="5-animated-effects">5 Animated Effects</h1>
 <ul>
-<li>Simple Effects: Query’s animations are queued by default<ul>
-<li>fadeIn(), fadeOut(), fadeTo()</li>
-<li>show(), hide(), toggle()</li>
-<li>slideDown(), slideUp(), slideToggle()</li>
-</ul>
-</li>
+<li>Simple Effects: Query’s animations are queued by default
+      - fadeIn(), fadeOut(), fadeTo()
+      - show(), hide(), toggle()
+      - slideDown(), slideUp(), slideToggle()</li>
 <li>Custom Animations: animate()</li>
-<li>
-<p>The Animation Properties Object</p>
-<p><code>$("p").animate({
-    "margin-left": "+=.5in", // Increase indent
-     opacity: "-=.1" // And decrease opacity
-  });</code></p>
+<li>The Animation Properties Object<pre><code>```
+$("p").animate({
+  "margin-left": "+=.5in", // Increase indent
+   opacity: "-=.1" // And decrease opacity
+});
+```
+</code></pre>
 </li>
-<li>
-<p>The Animation Options Object</p>
-</li>
+</ul>
+<ul>
+<li>The Animation Options Object</li>
 <li>Canceling, Delaying, and Queuing Effects: stop(), delay()</li>
 </ul>
 <h1 id="6-ajax">6 Ajax</h1>
 <ul>
 <li>The load() method: pass it a URL, which it will asynchronously load the content of, and then insert that content into each of the selected elements</li>
-<li>
-<p>Ajax Utility Functions:</p>
-<ul>
-<li>jQuery.getScript(): The jQuery.getScript() function takes the URL of a file of JavaScript code as its first argument. It asynchronously loads and then executes that code in the global scope. It can work for both same-origin and cross-origin scripts:</li>
-<li>jQuery.getJSON():  it fetches text and then processes it specially before invoking the specified call- back. Instead of executing the text as a script, jQuery.getJSON() parses it as JSON (using the jQuery.parseJSON() function;</li>
+<li>Ajax Utility Functions:
+      - jQuery.getScript(): The jQuery.getScript() function takes the URL of a file of JavaScript code as its first argument. It asynchronously loads and then executes that code in the global scope. It can work for both same-origin and cross-origin scripts:
+      - jQuery.getJSON():  it fetches text and then processes it specially before invoking the specified call- back. Instead of executing the text as a script, jQuery.getJSON() parses it as JSON (using the jQuery.parseJSON() function;<pre><code>```
+// Suppose data.json contains the text: '{"x":1,"y":2}'
+jQuery.getJSON("data.json", function(data) {
+// Now data is the object {x:1, y:2} }
+);
+```
+</code></pre>
+</li>
 </ul>
-<p><code>// Suppose data.json contains the text: '{"x":1,"y":2}'
-  jQuery.getJSON("data.json", function(data) {
-  // Now data is the object {x:1, y:2} }
-  );</code></p>
-</li>
-<li>
-<p>jQuery.get() and jQuery.post():  They both take the same three arguments as jQuery.getJSON(): a required URL, an optional data string or object, and a techni- cally optional but almost always used callback function.</p>
-</li>
-<li>
-<p>jQuery.ajax(): Common OPtions</p>
 <ul>
-<li>type: http method, "GET", "POST"</li>
-<li>url</li>
-<li>data: data to e append to the url(get method) or send in the body of post request</li>
-<li>dataType: Specifies the type of data expected in the response and how that data should be processed by jQuery. Legal values are “text”, “html”, “script”, “json”, “jsonp”, and “xml”.<Paste></li>
-<li>contentType: This specifies the HTTP Content-Type header for the re- quest. The default is “application/x-www-form- urlencoded”, which is the normal value used by HTML forms and most server-side scripts.</li>
-<li>timeout: milliseconds</li>
-<li>cache: For GET requests, if this option is set to false, jQuery will add a _= parameter to the URL or replace an existing pa- rameter with that name.</li>
-<li>ifModified: When this option is set to true, jQuery records the values of the Last-Modified and If-None-Match response headers for each URL it requests, and then sets those headers in any subsequent requests for the same URL.</li>
-<li>global: This option specifies whether jQuery should trigger events that describe the progress of the Ajax request.</li>
+<li>jQuery.get() and jQuery.post():  They both take the same three arguments as jQuery.getJSON(): a required URL, an optional data string or object, and a techni- cally optional but almost always used callback function.</li>
+<li>jQuery.ajax(): Common OPtions
+     - type: http method, "GET", "POST"
+     - url
+     - data: data to e append to the url(get method) or send in the body of post request
+     - dataType: Specifies the type of data expected in the response and how that data should be processed by jQuery. Legal values are “text”, “html”, “script”, “json”, “jsonp”, and “xml”.<Paste>
+     - contentType: This specifies the HTTP Content-Type header for the re- quest. The default is “application/x-www-form- urlencoded”, which is the normal value used by HTML forms and most server-side scripts.
+     - timeout: milliseconds
+     - cache: For GET requests, if this option is set to false, jQuery will add a _= parameter to the URL or replace an existing pa- rameter with that name.
+     - ifModified: When this option is set to true, jQuery records the values of the Last-Modified and If-None-Match response headers for each URL it requests, and then sets those headers in any subsequent requests for the same URL.
+     - global: This option specifies whether jQuery should trigger events that describe the progress of the Ajax request.</li>
 </ul>
-</li>
-<li>
-<p>callbacks:</p>
 <ul>
-<li>context: This option specifies the object to be used as the context —the this value—for invocations of the various callback functions.</li>
-<li>beforeSend: This option specifies a callback function that will be in- voked before the Ajax request is sent to the server.</li>
-<li>sucess: callback(data, statusCode, XMLHttpRequest) This option specifies the callback function to be invoked when an Ajax request completes successfully.</li>
-<li>error: callback(XMLHttpRequest, statuscode(str))</li>
-<li>complete: callback(XMLHttpRequest, statusCode) jQuery invokes the complete call- back after invoking either success or error.</li>
-</ul>
-</li>
+<li>callbacks:
+    - context: This option specifies the object to be used as the context —the this value—for invocations of the various callback functions.
+    - beforeSend: This option specifies a callback function that will be in- voked before the Ajax request is sent to the server.
+    - sucess: callback(data, statusCode, XMLHttpRequest) This option specifies the callback function to be invoked when an Ajax request completes successfully.
+    - error: callback(XMLHttpRequest, statuscode(str))
+    - complete: callback(XMLHttpRequest, statusCode) jQuery invokes the complete call- back after invoking either success or error.</li>
 </ul>
 <p>Uncommon Options and hooks:
     - async
@@ -814,31 +815,33 @@ $('a').die('mouseover', linkHandler);</code></p>
 <li>jQuery.parseJSON()</li>
 <li>jQuery.proxy()</li>
 <li>jQuery.support</li>
-<li>
-<p>jQuery.trim()</p>
-</li>
+<li>jQuery.trim()</li>
+</ul>
+<ul>
 <li>
 <h1 id="8-selectors-and-selection-methods">8. Selectors and Selection Methods</h1>
 </li>
 <li>Simple Selectors: css 选择符</li>
-<li>Selector Combinaitons: processed left-to-right.</li>
+<li>Selector Combinaitons: processed left-to-right.<ul>
 <li>A B   descendants</li>
 <li>A &gt; B   direct-children</li>
 <li>A + B  follow (ignoring text nodes and comments) elements</li>
 <li>A ~ B  sibling elements that come after elements that match A.</li>
+</ul>
+</li>
 <li>Selector Groups: "h1, h2, h3" A selector group matches all elements that match any of the selector combinations in the group.</li>
-<li>Selection Methods:</li>
+<li>Selection Methods:<ul>
 <li>single(): jQuery object that contains only the single selected element at the specified index. </li>
 <li>last()</li>
 <li>eq()</li>
 <li>slice()</li>
 <li>filter(): <script type="math/tex">("div").filter(function(i) { // Like </script>("div:even") return i % 2 == 0 })</li>
-<li>
-<p>not(): $("div").not("#header, #footer"); // All <div> tags except two special ones</p>
+<li>not(): $("div").not("#header, #footer"); // All <div> tags except two special ones</li>
+</ul>
 </li>
-<li>
-<p>Using a Selection As Context</p>
-</li>
+</ul>
+<ul>
+<li>Using a Selection As Context<ul>
 <li>find()</li>
 <li>children():  method returns the immediate child elements of each selected element, filtering them with an optional selector:<ul>
 <li>
@@ -852,10 +855,14 @@ $('a').die('mouseover', linkHandler);</code></p>
 <li>siblings() method returns all siblings of each selected element</li>
 <li>parent()</li>
 <li>closest()</li>
-<li>Reverting to a Previous Selection: To facilitate method chaining, most jQuery object methods return the object on which they are called. However, the meth- ods we’ve covered in this section all return new jQuery objects.</li>
+</ul>
+</li>
+<li>Reverting to a Previous Selection: To facilitate method chaining, most jQuery object methods return the object on which they are called. However, the meth- ods we’ve covered in this section all return new jQuery objects.<ul>
 <li>end(): To facilitate method chaining, most jQuery object methods return the object on which they are called. However, the meth- ods we’ve covered in this section all return new jQuery objects.</li>
 <li>push Stack()</li>
 <li>and Self() returns a new jQuery object that includes all of the el- ements of the current selection plus all of the elements (minus duplicates) of the previous selection</li>
+</ul>
+</li>
 </ul>
 <h1 id="9-extending-jquery-with-plugins">9 Extending jQuery with Plugins</h1>
 <p>The trick is to know that jQuery.fn is the prototype object for all jQuery objects.</p>

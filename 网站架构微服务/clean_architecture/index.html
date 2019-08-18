@@ -637,6 +637,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">职场</span>
     <ul class="subnav">
                 <li class="">
@@ -758,21 +769,19 @@
 <h1 id="3-paradigm-overview">3. Paradigm Overview</h1>
 <p>本章讲了三种编程范式：结构化、面向对象、函数式(你会发现都是几十年前发明的)</p>
 <ul>
-<li>
-<p>Structured Programming: Dijkstra 在 1968 发明，他提出随意使用 goto 语句对程序结构是有害的。</p>
-<blockquote>
+<li>Structured Programming: Dijkstra 在 1968 发明，他提出随意使用 goto 语句对程序结构是有害的。<blockquote>
 <p>Structured programming imposes discipline on direct transfer of control.</p>
 </blockquote>
 </li>
-<li>
-<p>Object-Oriented Programming: 1966 年由 Johan Dahl 和 Kristen Nvgaard 发明。</p>
-<blockquote>
+</ul>
+<ul>
+<li>Object-Oriented Programming: 1966 年由 Johan Dahl 和 Kristen Nvgaard 发明。<blockquote>
 <p>Object-oroented programming imposes discipline on indirect transfer of control.</p>
 </blockquote>
 </li>
-<li>
-<p>Functional Programming: 1936 年在 Alonzo Church(阿隆佐·邱奇) 在 Lambda calculus (lambda演算)中提出。</p>
-<blockquote>
+</ul>
+<ul>
+<li>Functional Programming: 1936 年在 Alonzo Church(阿隆佐·邱奇) 在 Lambda calculus (lambda演算)中提出。<blockquote>
 <p>Functional programming imposes discipline upon assignment.</p>
 </blockquote>
 </li>
@@ -811,9 +820,7 @@ It is Harmful to depend on modules that contain more than you need.</p>
 <li>Don't refer to volatile concrete classes. Refer to abstract interfaces instead.</li>
 <li>Don't derve from volatile concrete classes.</li>
 <li>Don't override concrete functions.</li>
-<li>
-<p>Never mention the name of anything concrete and volatile.</p>
-<p>为了满足以上限制，经常使用抽象工厂创建对象</p>
+<li>Never mention the name of anything concrete and volatile.<p>为了满足以上限制，经常使用抽象工厂创建对象</p>
 </li>
 </ul>
 <h1 id="12-components">12. Components</h1>
@@ -822,34 +829,30 @@ It is Harmful to depend on modules that contain more than you need.</p>
 <h1 id="13-component-cohesion">13. Component Cohesion</h1>
 <p>Three principles of component cohesion:</p>
 <ul>
-<li>
-<p>REP: The Resuse/Release Equivalence Principle: The granule of resuse is the granule of release. (重用粒度等价与发布粒度)
+<li>REP: The Resuse/Release Equivalence Principle: The granule of resuse is the granule of release. (重用粒度等价与发布粒度)
     这样可以通过发布版本号来更新重用的组件。从软件设计的角度说，这个原则意味着组成一个组件的类和模块应该是内聚的，
-    并且能被一起发布。</p>
-</li>
-<li>
-<p>CCP: The Common Closure Principle: Gather into components those classes that chagne for the same reasons and at the
-    same times.</p>
-</li>
-<li>
-<p>CRP: The Common Resuse Principle: Don't force users of a component to depend on things they don't need.
-    倾向于在一起被重复使用的类和模块应该放在一个组件里。</p>
-</li>
+    并且能被一起发布。</li>
+</ul>
+<ul>
+<li>CCP: The Common Closure Principle: Gather into components those classes that chagne for the same reasons and at the
+    same times.</li>
+</ul>
+<ul>
+<li>CRP: The Common Resuse Principle: Don't force users of a component to depend on things they don't need.
+    倾向于在一起被重复使用的类和模块应该放在一个组件里。</li>
 </ul>
 <h1 id="14-component-coupling">14. Component Coupling</h1>
 <ul>
-<li>
-<p>The Acyclic Dependencies Principle: Allow no cycles in the component dependency graph.  (避免循环依赖，各个组件的依赖应该是有向无环图)
-    如果有循环依赖，可以通过依赖倒置原则创见新的接口来打破循环依赖。(动态语言和静态语言实现上不同)</p>
-</li>
-<li>
-<p>The Stable Dependencies Principle: Depend in the direction of stability.
-    任何易变的组件都不应该依赖难以修改的组件。如何衡量一个组件的稳定性：一种方式是计算有多少组件依赖和被依赖(Fan-in, Fan-out)该组件</p>
-</li>
-<li>
-<p>The Stable Abstractions Principle: A component shoud be as abstract as it is stable.
-    一个稳定的组件应该是抽象的，而不稳定的组件应该是具体的。</p>
-</li>
+<li>The Acyclic Dependencies Principle: Allow no cycles in the component dependency graph.  (避免循环依赖，各个组件的依赖应该是有向无环图)
+    如果有循环依赖，可以通过依赖倒置原则创见新的接口来打破循环依赖。(动态语言和静态语言实现上不同)</li>
+</ul>
+<ul>
+<li>The Stable Dependencies Principle: Depend in the direction of stability.
+    任何易变的组件都不应该依赖难以修改的组件。如何衡量一个组件的稳定性：一种方式是计算有多少组件依赖和被依赖(Fan-in, Fan-out)该组件</li>
+</ul>
+<ul>
+<li>The Stable Abstractions Principle: A component shoud be as abstract as it is stable.
+    一个稳定的组件应该是抽象的，而不稳定的组件应该是具体的。</li>
 </ul>
 <h1 id="15-what-is-architecture">15. What is Architecture ?</h1>
 <ul>
@@ -872,25 +875,21 @@ It is Harmful to depend on modules that contain more than you need.</p>
 <p>软件界限划分的几种形式：单一文件、可单独部署的组件、线程、本地进程、服务</p>
 <h1 id="19-policy-and-level">19. Policy And Level</h1>
 <ul>
-<li>
-<p>Level: the distance from the inputs and outputs.</p>
-<p>Lower-level component should plug in to higher-level components.</p>
+<li>Level: the distance from the inputs and outputs.<p>Lower-level component should plug in to higher-level components.</p>
 </li>
 </ul>
 <h1 id="20-business-rules">20. Business Rules</h1>
 <ul>
-<li>
-<p>Entities: An Entity is an object within our computer system that embodies a small set of critical business rules
-    operating on Critical Business Data.</p>
-</li>
-<li>
-<p>Use case: A use case is an object. It has one or more functions that implement the application-specific business
-    rules.(比如数据校验层)</p>
-</li>
-<li>
-<p>Request And Response Modules: The use case class accepts simple request data structures for its input, and returns
-    simple response data structures as its output.</p>
-</li>
+<li>Entities: An Entity is an object within our computer system that embodies a small set of critical business rules
+    operating on Critical Business Data.</li>
+</ul>
+<ul>
+<li>Use case: A use case is an object. It has one or more functions that implement the application-specific business
+    rules.(比如数据校验层)</li>
+</ul>
+<ul>
+<li>Request And Response Modules: The use case class accepts simple request data structures for its input, and returns
+    simple response data structures as its output.</li>
 </ul>
 <h1 id="21-screaming-architecture">21. Screaming Architecture</h1>
 <ul>
