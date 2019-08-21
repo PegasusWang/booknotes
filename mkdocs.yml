@@ -72,6 +72,7 @@ pages:
       - 《Linux高性能服务器编程》: 'unix_linux/Linux高性能服务器编程/Linux高性能服务器编程.md'
       - 《unix编程艺术》: 'unix_linux/unix编程艺术.md'
     - 分布式:
+      - 《Kafka 权威指南》:  '分布式/Kafka权威指南.md'
       - 《分布式框架原理与应用》:  '分布式/分布式框架原理与应用.md'
       - 《大规模分布式存储系统》: '分布式/大规模分布式存储系统.md'
       - 《深入分布式缓存从原理到实践》: '分布式/深入分布式缓存从原理到实践.md'
@@ -94,6 +95,7 @@ pages:
     - 源码:
       - 《源码阅读》: '源码阅读_sourcecode/README.md'
     - 网站架构微服务:
+      - 《微服务架构设计模式》: '网站架构微服务/microservices_patterns_微服务架构设计模式/book.md'
       - 《从0开始学架构》: '网站架构微服务/从0开始学架构/从0开始学架构.md'
       - 《web scalavility for startup engineers》: '网站架构微服务/web_scalavility_for_startup_engineers.md'
       - 《design_data_instensive_application》: '网站架构微服务/design_data_instensive_application.md'
