@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../../img/favicon.ico">
-  <title>Book - PegasusWang的读书笔记</title>
+  <title>《微服务架构设计模式》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Book";
+    var mkdocs_page_name = "\u300a\u5fae\u670d\u52a1\u67b6\u6784\u8bbe\u8ba1\u6a21\u5f0f\u300b";
     var mkdocs_page_input_path = "\u7f51\u7ad9\u67b6\u6784\u5fae\u670d\u52a1/microservices_patterns_\u5fae\u670d\u52a1\u67b6\u6784\u8bbe\u8ba1\u6a21\u5f0f/book.md";
     var mkdocs_page_url = null;
   </script>
@@ -333,6 +333,10 @@
     <ul class="subnav">
                 <li class="">
                     
+    <a class="" href="../../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="../../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
                 </li>
                 <li class="">
@@ -431,6 +435,25 @@
 		
     <span class="caption-text">网站架构微服务</span>
     <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">《微服务架构设计模式》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1">1. 逃离单体地狱</a></li>
+    
+
+    <li class="toctree-l3"><a href="#2">2. 服务的拆分策略</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#22">2.2 为应用程序定义微服务架构</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
                 <li class="">
                     
     <a class="" href="../../从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
@@ -632,8 +655,12 @@
     <li><a href="../../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>网站架构微服务 &raquo;</li>
+        
+      
     
-    <li>Book</li>
+    <li>《微服务架构设计模式》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -643,11 +670,124 @@
           <div role="main">
             <div class="section">
               
-                
+                <h1 id="1">1. 逃离单体地狱</h1>
+<blockquote>
+<p>没有银弹。</p>
+</blockquote>
+<p>微服务：把应用程序功能性分解为一组服务的架构风格。每个服务是一组专注的、内聚的功能职责组成。
+每个服务是松耦合的，有自己的私有数据库，通过 API 通信。每个服务可以独立开发，部署，测试和扩展。</p>
+<p>好处：</p>
+<ul>
+<li>持续交付和部署</li>
+<li>容易维护</li>
+<li>独立部署，扩展</li>
+<li>团队自治</li>
+<li>实现和采纳新技术</li>
+<li>更好的容错性</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>服务拆分和定义是一项挑战（糟糕的是搞成了分布式单体应用）</li>
+<li>分布式系统带来的各种复杂性，使开发、部署和测试变得更困难</li>
+<li>跨服务开发需要协调多个团队。服务部署可能要按照依赖关系排序</li>
+<li>什么阶段使用微服务？初创公司几乎都是从单体应用开始</li>
+</ul>
+<p>模式：模式是针对特定上下文中发生的问题的可重用解决方案。</p>
+<p>常用的模式结构包括；</p>
+<ul>
+<li>需求:必须解决的问题和围绕这个问题的特定上下文环境。优先级排序</li>
+<li>结果上下文。好处，弊端，问题。</li>
+<li>相关模式：前导；后续，替代；泛化；特化</li>
+</ul>
+<p>服务拆分相关模式：</p>
+<ul>
+<li>根据业务能力分解，围绕业务功能组织服务</li>
+<li>根据子域分解，子域围绕领域驱动设计(DDD)来组织服务</li>
+</ul>
+<p>通信相关模式：</p>
+<ul>
+<li>服务风格：哪一种 IPC</li>
+<li>服务发现</li>
+<li>可靠性</li>
+<li>事务性消息：事件动作和数据库事务集成</li>
+<li>外部 API</li>
+</ul>
+<p>实现事务管理的数据一致性相关模式：Saga 模式</p>
+<p>查询数据：CQRS（命令查询职责隔离）</p>
+<p>部署模式：通过命令行或者界面部署和管理服务。部署平台往往基于虚拟机，容器</p>
+<p>可观测性：</p>
+<ul>
+<li>健康检查 API</li>
+<li>日志聚合: 集中式日志服务器来检索和触发报警</li>
+<li>分布式追踪：为外部请求分配唯一 ID，用于各个服务之间追踪</li>
+<li>异常跟踪：异常发送到跟踪服务</li>
+<li>应用指标：指标服务器</li>
+<li>审计日志：记录用户行为</li>
+</ul>
+<p>自动化测试相关模式：</p>
+<ul>
+<li>消费端驱动的契约测试</li>
+<li>消费端契约测试</li>
+<li>服务组件测试</li>
+</ul>
+<p>基础设置和边界问题：可观测性模式和服务发现模式</p>
+<p>安全相关模式：API Gateway。 （访问令牌模式）</p>
+<h1 id="2">2. 服务的拆分策略</h1>
+<p>软件架构4+1(场景)视图模型：</p>
+<ul>
+<li>逻辑视图</li>
+<li>实现视图</li>
+<li>进程视图</li>
+<li>部署视图</li>
+</ul>
+<p>什么是服务：单一的可独立部署的软件组件， 它实现了一些有用的功能。实现应用程序模块化，松耦合。</p>
+<p>微服务的大小『不是』重要考虑因素。如果你的服务出发其他服务同步更新，可能没有实现松耦合。</p>
+<h3 id="22">2.2 为应用程序定义微服务架构</h3>
+<h5 id="221">2.2.1 识别系统操作</h5>
+<ul>
+<li>定义系统操作。起点是用户需求，包含用户故事和相关用户场景。<ul>
+<li>
+<ol>
+<li>创建由关键类组成的抽象领域模型，这些关键类提供了用于系统操作的词汇表</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>确定系统操作， 并根据领域模型描述每个系统操作的行为</li>
+<li>命令型：创建，更新或者删除数据。命令对应的参数，返回值和行为（行为包括前置条件和后置条件）</li>
+<li>查询型：查询和读取数据的系统操作</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<p><img alt="" src="../定义系统操作.png" /></p>
+<h5 id="222">2.2.2 根据业务能力进行服务拆分</h5>
+<p>业务能力：能为公司或组织产生价值的商业活动。</p>
+<ul>
+<li>供应商管理</li>
+<li>消费者管理</li>
+<li>订单或者和执行</li>
+<li>会计记账</li>
+<li>其他</li>
+</ul>
+<h5 id="223">2.2.3 根据子域进行服务拆分</h5>
+<p>领域驱动设计</p>
+<p>领域的边界称为限界上下文(bounded context)</p>
+<p><img alt="" src="../ddd.png" /></p>
               
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../从0开始学架构/从0开始学架构/" class="btn btn-neutral float-right" title="《从0开始学架构》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../../源码阅读_sourcecode/" class="btn btn-neutral" title="《源码阅读》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -671,6 +811,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="../../../源码阅读_sourcecode/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../从0开始学架构/从0开始学架构/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

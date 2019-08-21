@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>1 初识Kafka - PegasusWang的读书笔记</title>
+  <title>《Kafka 权威指南》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "1 \u521d\u8bc6Kafka";
+    var mkdocs_page_name = "\u300aKafka \u6743\u5a01\u6307\u5357\u300b";
     var mkdocs_page_input_path = "\u5206\u5e03\u5f0f/Kafka\u6743\u5a01\u6307\u5357.md";
     var mkdocs_page_url = null;
   </script>
@@ -331,6 +331,188 @@
 		
     <span class="caption-text">分布式</span>
     <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">《Kafka 权威指南》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1-kafka">1 初识Kafka</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#11">1.1 发布与订阅消息系统</a></li>
+        
+            <li><a class="toctree-l4" href="#12-kakfa">1.2 Kakfa登场</a></li>
+        
+            <li><a class="toctree-l4" href="#14">1.4 数据生态系统</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#2-kafka">2 安装 Kafka</a></li>
+    
+
+    <li class="toctree-l3"><a href="#3-kafka-kafka">3. Kafka 生产者-向 Kafka 写入数据</a></li>
+    
+
+    <li class="toctree-l3"><a href="#4-kafka-kafka">4 Kafka消费者-从 Kafka 读取数据</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#41-kafkaconsumer">4.1 KafkaConsumer 概念</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#42-kafka">4.2 创建 Kafka 消费者</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#461">4.6.1 自动提交</a></li>
+        
+            <li><a class="toctree-l4" href="#462">4.6.2 提交当前偏移量</a></li>
+        
+            <li><a class="toctree-l4" href="#463">4.6.3 异步提交</a></li>
+        
+            <li><a class="toctree-l4" href="#411">4.11 独立消费者</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#5-kafka">5 深入 Kafka</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#51">5.1 集群成员关系</a></li>
+        
+            <li><a class="toctree-l4" href="#52">5.2 控制器</a></li>
+        
+            <li><a class="toctree-l4" href="#53">5.3 复制</a></li>
+        
+            <li><a class="toctree-l4" href="#54">5.4 处理请求</a></li>
+        
+            <li><a class="toctree-l4" href="#55">5.5 物理存储</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#6">6 可靠的数据传递</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#61">6.1 可靠性保证</a></li>
+        
+            <li><a class="toctree-l4" href="#62">6.2 复制</a></li>
+        
+            <li><a class="toctree-l4" href="#63-broker">6.3 broker 配置</a></li>
+        
+            <li><a class="toctree-l4" href="#_1">在可靠系统中使用生产者</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#65">6.5 在可靠的系统里使用消费者</a></li>
+    
+
+    <li class="toctree-l3"><a href="#66">6.6 验证系统可靠性</a></li>
+    
+
+    <li class="toctree-l3"><a href="#7">7 构建数据管道</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#71">7.1 构建数据管道需要考虑问题</a></li>
+        
+            <li><a class="toctree-l4" href="#72-connect-api-api">7.2 在 Connect API 和 客户端 API 选择</a></li>
+        
+            <li><a class="toctree-l4" href="#73-kafka-connect">7.3 Kafka Connect</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#8">8. 跨集群数据镜像</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#81">8.1 场景</a></li>
+        
+            <li><a class="toctree-l4" href="#82">8.2 多集群架构</a></li>
+        
+            <li><a class="toctree-l4" href="#83-kafaka-mirrormaker">8.3 Kafaka 的 MirrorMaker</a></li>
+        
+            <li><a class="toctree-l4" href="#84">8.4 其他跨集群同步方案</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#9-kafka">9 管理 Kafka</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#91">9.1 主题操作</a></li>
+        
+            <li><a class="toctree-l4" href="#92">9.2 消费者群组</a></li>
+        
+            <li><a class="toctree-l4" href="#93">9.3 动态配置变更</a></li>
+        
+            <li><a class="toctree-l4" href="#94">9.4 分区管理</a></li>
+        
+            <li><a class="toctree-l4" href="#95">9.5 消费和生产</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#kafka-console-producersh-broker-list">kafka-console-producer.sh --broker-list</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#96-acl">9.6 客户端 ACL</a></li>
+        
+            <li><a class="toctree-l4" href="#97">9.7 不安全操作</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#10-kafka">10 监控 Kafka</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#101">10.1 度量指标基础</a></li>
+        
+            <li><a class="toctree-l4" href="#102-borker">10.2 borker 的度量指标</a></li>
+        
+            <li><a class="toctree-l4" href="#103">10.3 客户端监控</a></li>
+        
+            <li><a class="toctree-l4" href="#104">10.4 延时监控</a></li>
+        
+            <li><a class="toctree-l4" href="#105">10.5 端到端监控</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#11_1">11 流式处理</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#111">11.1 什么是流式处理</a></li>
+        
+            <li><a class="toctree-l4" href="#112">11.2 流式处理的一些概念</a></li>
+        
+            <li><a class="toctree-l4" href="#113">11.3 流式处理的设计模式</a></li>
+        
+            <li><a class="toctree-l4" href="#114-streams">11.4 Streams 示例</a></li>
+        
+            <li><a class="toctree-l4" href="#115-kafka-streams">11.5 Kafka Streams 架构设计</a></li>
+        
+            <li><a class="toctree-l4" href="#116">11.6 流式处理使用场景</a></li>
+        
+            <li><a class="toctree-l4" href="#117">11.7 如何选择流式处理框架</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
                 <li class="">
                     
     <a class="" href="../分布式框架原理与应用/">《分布式框架原理与应用》</a>
@@ -431,6 +613,10 @@
 		
     <span class="caption-text">网站架构微服务</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
@@ -632,8 +818,12 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>分布式 &raquo;</li>
+        
+      
     
-    <li>1 初识Kafka</li>
+    <li>《Kafka 权威指南》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -1155,6 +1345,15 @@ kafka 可以对客户端的请求进行限流，防止客户端拖垮整个集�
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../分布式框架原理与应用/" class="btn btn-neutral float-right" title="《分布式框架原理与应用》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../unix_linux/unix编程艺术/" class="btn btn-neutral" title="《unix编程艺术》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
@@ -1177,6 +1376,10 @@ kafka 可以对客户端的请求进行限流，防止客户端拖垮整个集�
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="../../unix_linux/unix编程艺术/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../分布式框架原理与应用/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
