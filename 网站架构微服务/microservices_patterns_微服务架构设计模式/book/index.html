@@ -452,6 +452,17 @@
         </ul>
     
 
+    <li class="toctree-l3"><a href="#3">3. 微服务架构中的进程间通信</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#31">3.1 进程间通信</a></li>
+        
+            <li><a class="toctree-l4" href="#32">3.2 基于同步远程过程调用模式的通信</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -567,6 +578,10 @@
                 <li class="">
                     
     <a class="" href="../../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
                 </li>
     </ul>
 	    </li>
@@ -779,6 +794,43 @@
 <p>领域驱动设计</p>
 <p>领域的边界称为限界上下文(bounded context)</p>
 <p><img alt="" src="../ddd.png" /></p>
+<h5 id="224">2.2.4 拆分的指导原则</h5>
+<p>单一职责: 改变类应该只有一个理由</p>
+<p>闭包原则: 包中包含的所有类应该是对同类变化的一个集合。</p>
+<h5 id="225">2.2.5 拆分单体为微服务的难点</h5>
+<ul>
+<li>网络延迟。批处理</li>
+<li>同步进程间通信导致可用性降低</li>
+<li>服务之间维持数据一致性。Saga</li>
+<li>获取一致的数据视图</li>
+<li>上帝类。整个应用程序中使用到的全局类</li>
+</ul>
+<h5 id="226-api">2.2.6 定义服务 API</h5>
+<ul>
+<li>把系统操作分配给服务</li>
+<li>确定支持服务协作所需要的 API</li>
+</ul>
+<h1 id="3">3. 微服务架构中的进程间通信</h1>
+<h3 id="31">3.1 进程间通信</h3>
+<p>交互方式两个纬度：</p>
+<ul>
+<li>一对一</li>
+<li>一对多</li>
+</ul>
+<ul>
+<li>同步</li>
+<li>异步</li>
+</ul>
+<p>API 演化:</p>
+<ul>
+<li>语义化版本控制。MAJOR.MINOR.PATCH</li>
+</ul>
+<p>消息格式：</p>
+<ul>
+<li>文本。json/xml，易于修改</li>
+<li>二进制</li>
+</ul>
+<h3 id="32">3.2 基于同步远程过程调用模式的通信</h3>
               
             </div>
           </div>
