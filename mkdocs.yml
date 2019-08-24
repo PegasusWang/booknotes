@@ -120,6 +120,7 @@ pages:
     - 技术演讲:
       - 《哔哩哔哩的go微服务实战》: 'lecture/Gopher/哔哩哔哩的go微服务实战/note.md'
       - 《go业务基础库之Error&Context》: 'lecture/Gopher/Go_Error/go业务基础库之Error&Context.md'
+      - 《Go同步和并发设计模式》: 'lecture/Gopher/Go同步和并发设计模式/note.md'
 
     - 职场:
       - 《give and take》: 'career/give_and_take.md'
