@@ -28,7 +28,7 @@ Starvation: 饥饿 ，一个并发的进程无法获取所有需要工作的资�
 ```go
 func CalculatePi(begin,end int64, pi *Pi)
 func CalculatePi(begin,end int64) []int64
-func CalculatePi(bengin,end int64) <-chan uint
+func CalculatePi(begin,end int64) <-chan uint
 ```
 
 ### Simplicity in the Face of Complexity
@@ -54,7 +54,7 @@ Aim for simplicity, use channels when possible, and treat goroutines like a free
 
 # 3 Go's Concurrency Building Blocks
 
-Coroutines are simply concurrent subroutines(functions, clousures or methods in Go) that are nonpreemptive.
+Coroutines are simply concurrent subroutines(functions, clousures or methods in Go) that are nonpreemptive.(非抢占式)
 
 Go follows a model of concurrency called the fork-join model.
 
@@ -70,7 +70,7 @@ sayHello := func() {
 }
 wg.Add(1)
 go sayHello()
-wg.Wait() # this is the join point
+wg.Wait() # this is the join point，等 child 执行完毕
 ```
 
 ### The sync Package
@@ -81,6 +81,7 @@ The sync package contains the concurrency primitives that are most useful for lo
 
 Wait for a set of concurrent operations to complete when you either don't care about the result of the concurrent
 operations , or you have other means of collecting their results.
+
 ```go
 package main
 
@@ -93,7 +94,7 @@ import (
 func main() {
 	var wg sync.WaitGroup
 
-	wg.Add(1)
+	wg.Add(1) // 注意 Add 必须在外边而不是在 go func() 函数体里边
 	go func() {
 		defer wg.Done()
 		fmt.Println("1st goroutine sleeping...")
@@ -277,7 +278,7 @@ func main() {
 }
 ```
 
-#### Pool
+#### Pool(并发安全对象池)
 
 Pool is a concurrent-safe implementation of the object pool pattern.
 
@@ -314,7 +315,7 @@ Go weill implicitly convert bidirectional channels to unidirectional channels wh
 var receiveChan <- chan interface{}
 var sendChan chan <- interface{}
 dataStream := make(chan interface{})
-//valid statements
+//valid statements, 双向的可以赋值给单向的
 receiveChan = dataStream
 sendChan = dataStream
 ```
@@ -322,7 +323,7 @@ sendChan = dataStream
 Unbufferd channel in Go are said to be blocking.
 
 ```
-val, ok := <-stringStream
+val, ok := <-stringStream // ok 判断还有没有值，从一个已经 closed 的 channel 依然会获取默认值
 ```
 
 The second return value is a way for a read operation to indicate whether the read off the channel
@@ -381,8 +382,8 @@ it can help safely bring channels together with concepts like cancellations, tim
 ```
 func main() {
 	// a bit like switch
-	var c1, c2 <-chan interface{}
-	var c3 chan<- interface{}
+	var c1, c2 <-chan interface{}   // receive only chan
+	var c3 chan<- interface{}  // send only chan
 	// all channels reads and writes are considered simultaneously to see if any of them are ready
 	// populated or closed channels in the case of reads, and channels that are not at capacity in the case of writes
 	// if none of the channels are ready, the entire select statement blocks
@@ -498,6 +499,7 @@ When working with concurrent code
 ```
 func main() {
 	// confines the write aspect of this channel to prevent other goroutines from writing to it
+	// 限制向 channel 写数据到一个 func 里
 	chanOnwer := func() <-chan int {
 		results := make(chan int, 5)
 		go func() {
@@ -557,9 +559,9 @@ func main() {
 	}
 
 
-### Preventing Goroutine Leaks
+### Preventing Goroutine Leaks(goroutine 泄露)
 
-Goroutine are not garbage collected by the runtime.
+**Goroutine are not garbage collected by the runtime.**
 The goroutine has a few paths to terminiation:
 
 - when it has completed its work
@@ -583,7 +585,7 @@ func main() {
 		return completed
 	}
 	//pass nil, the strings channel will never actually gets any strings written onto it
-	//and the goroutine doWork will remain in meory for the liftime of this process
+	//and the goroutine doWork will remain in memory for the lifetime of this process
 	doWork(nil)
 	// perhaps more work is done here
 	fmt.Println("Done.")
@@ -658,6 +660,7 @@ func main() {
 	for i := 1; i <= 3; i++ {
 		fmt.Printf("%d:%d\n", i, <-randStream)
 	}
+	// 依然退出，输出1到3
 }
 ```
 
@@ -698,12 +701,12 @@ it can stop the gorutine.
 
 At times you may find yourself wanting to combine one or more done channels into a single done channel
 that closes if any of its component channels close.
-This pattern creates a composite done channel through recursion and goroutiens.
+This pattern creates a composite done channel through recursion and goroutines.
 
 ```
 func main() {
 	var or func(channels ...<-chan interface{}) <-chan interface{}
-	of = func(channels ...<-chan interface{}) <-chan interface{} {
+	or = func(channels ...<-chan interface{}) <-chan interface{} {
 		switch len(channels) {
 		case 0:
 			return nil
@@ -939,7 +942,7 @@ func main() {
 ```
 
 
-### Fan-Out, Fan-In
+### Fan-Out, Fan-In (扇出，扇入)
 
 
 Fan-out is a term to describe the process of starting multiple gortouine to handle input from the pipeline,
@@ -1213,7 +1216,7 @@ func main() {
 }
 ```
 
-For any long-running goroutines, or goroutines that need to be tested, highly recommend this patern.
+For any long-running goroutines, or goroutines that need to be tested, highly recommend this pattern.
 
 ### Replicated Request
 
@@ -1488,8 +1491,8 @@ synchronized through channels or types in the sync package.
 
 The work stealing algorithm follows a few basic rules, Given a thread of execution:
 
-1. At Aa fork point, add tasks to the tail of the deque associated with the thread
-2. If the thread is idle, steal work from the head of deque associated with som other random thread
+1. At A fork point, add tasks to the tail of the deque associated with the thread
+2. If the thread is idle, steal work from the head of deque associated with some other random thread
 3. At a join point that cannot be realized yet(i.e.,the goroutine it is synchronized with has not completed yet), pop
 	 work off the tail of the thread's own deque.
 4. if the thread's deque is empty, either:
@@ -1517,14 +1520,14 @@ func main() {
 }
 ```
 
-- In go , goroutins are tasks
+- In go , goroutines are tasks
 - Everything after a goroutine is called is the continuation
 
 Continuation stealing is how Go's work-stealing algorithm is implemented
 
 Go's scheduler has three main concepts:
 
-- G: A goroutine
+- G: A Goroutine
 - M: An OS thread(also referenced as a machine in the source code)
 - P: A context(also referecned as a processor in the source code), GOMAXPROCS
 
