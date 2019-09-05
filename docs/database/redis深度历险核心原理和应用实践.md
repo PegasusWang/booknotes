@@ -94,19 +94,21 @@ for i in range(20):
 
 
 ```py
+# coding:utf8
 # 单机漏斗算法
-
 import time
 # 漏斗的剩余空间代表当前行为可以持续进行的数量
 # 漏斗的流水速度代表系统允许该行为的最大频率
-
-
 class Funnel:
+    """
+    漏斗的剩余空间就代表着当前行为可以持续进行的数量，漏嘴的流水速率代表着
+    系统允许该行为的最大频率
+    """
     def __init__(self, capacity, leaking_rate):
         self.capacity = capacity  # 漏斗容量
         self.leaking_rate = leaking_rate  # 流水速率
         self.left_quota = capacity
-        self.leaking_ts = time.tiem()  # 上一次漏水时间
+        self.leaking_ts = time.time()  # 上一次漏水时间
 
     def make_space(self):
         now_ts = time.time()
@@ -130,6 +132,8 @@ class Funnel:
 funnels = {}  # 所有漏斗
 
 
+# capacity 漏斗容量
+# leaking_rate 漏嘴流水速率 quota/s
 def is_action_allowed(user_id, action_key, capacity, leaking_rate):
     key = '%s:%s' % (user_id, action_key)
     funnel = funnels.get(key)
@@ -137,6 +141,7 @@ def is_action_allowed(user_id, action_key, capacity, leaking_rate):
         funnel = Funnel(capacity, leaking_rate)
         funnels[key] = funnel
     return funnel.watering(1)
+
 
 for i in range(20):
     print(is_action_allowed("laoqian", "reply", 15, 0.5))
