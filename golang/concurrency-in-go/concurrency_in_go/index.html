@@ -122,6 +122,10 @@
                 </li>
                 <li class="">
                     
+    <a class="" href="../../../database/redis深度历险核心原理和应用实践/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="../../../database/redis设计与实现/">《redis设计与实现》</a>
                 </li>
                 <li class="">
@@ -240,7 +244,7 @@
         
             <li><a class="toctree-l4" href="#the-for-select-loop">The for-select Loop</a></li>
         
-            <li><a class="toctree-l4" href="#preventing-goroutine-leaks">Preventing Goroutine Leaks</a></li>
+            <li><a class="toctree-l4" href="#preventing-goroutine-leaksgoroutine">Preventing Goroutine Leaks(goroutine 泄露)</a></li>
         
             <li><a class="toctree-l4" href="#the-or-channel-pattern">The or-channel pattern</a></li>
         
@@ -248,7 +252,7 @@
         
             <li><a class="toctree-l4" href="#pipelines">Pipelines</a></li>
         
-            <li><a class="toctree-l4" href="#fan-out-fan-in">Fan-Out, Fan-In</a></li>
+            <li><a class="toctree-l4" href="#fan-out-fan-in">Fan-Out, Fan-In (扇出，扇入)</a></li>
         
             <li><a class="toctree-l4" href="#the-or-done-channel">The or-done-channel</a></li>
         
@@ -802,7 +806,7 @@
 </ul>
 <pre><code class="go">func CalculatePi(begin,end int64, pi *Pi)
 func CalculatePi(begin,end int64) []int64
-func CalculatePi(bengin,end int64) &lt;-chan uint
+func CalculatePi(begin,end int64) &lt;-chan uint
 </code></pre>
 
 <h3 id="simplicity-in-the-face-of-complexity">Simplicity in the Face of Complexity</h3>
@@ -816,7 +820,7 @@ Use whichever is most expressive and/or most simple.</p>
 <p><img alt="" src="../decision_tree.png" /></p>
 <p>Aim for simplicity, use channels when possible, and treat goroutines like a free resource.</p>
 <h1 id="3-gos-concurrency-building-blocks">3 Go's Concurrency Building Blocks</h1>
-<p>Coroutines are simply concurrent subroutines(functions, clousures or methods in Go) that are nonpreemptive.</p>
+<p>Coroutines are simply concurrent subroutines(functions, clousures or methods in Go) that are nonpreemptive.(非抢占式)</p>
 <p>Go follows a model of concurrency called the fork-join model.</p>
 <p><img alt="" src="../join_point.png" /></p>
 <pre><code class="go">var wg sync.WaitGroup
@@ -827,7 +831,7 @@ sayHello := func() {
 }
 wg.Add(1)
 go sayHello()
-wg.Wait() # this is the join point
+wg.Wait() # this is the join point，等 child 执行完毕
 </code></pre>
 
 <h3 id="the-sync-package">The sync Package</h3>
@@ -846,7 +850,7 @@ import (
 func main() {
     var wg sync.WaitGroup
 
-    wg.Add(1)
+    wg.Add(1) // 注意 Add 必须在外边而不是在 go func() 函数体里边
     go func() {
         defer wg.Done()
         fmt.Println(&quot;1st goroutine sleeping...&quot;)
@@ -1018,7 +1022,7 @@ func main() {
 }
 </code></pre>
 
-<h4 id="pool">Pool</h4>
+<h4 id="pool">Pool(并发安全对象池)</h4>
 <p>Pool is a concurrent-safe implementation of the object pool pattern.</p>
 <pre><code>myPool := &amp;sync.Pool{
     New: func() interface{}{
@@ -1047,13 +1051,13 @@ objects for operations that must run as quickly as possible.</p>
 <pre><code>var receiveChan &lt;- chan interface{}
 var sendChan chan &lt;- interface{}
 dataStream := make(chan interface{})
-//valid statements
+//valid statements, 双向的可以赋值给单向的
 receiveChan = dataStream
 sendChan = dataStream
 </code></pre>
 
 <p>Unbufferd channel in Go are said to be blocking.</p>
-<pre><code>val, ok := &lt;-stringStream
+<pre><code>val, ok := &lt;-stringStream // ok 判断还有没有值，从一个已经 closed 的 channel 依然会获取默认值
 </code></pre>
 
 <p>The second return value is a way for a read operation to indicate whether the read off the channel
@@ -1103,8 +1107,8 @@ func main() {
 it can help safely bring channels together with concepts like cancellations, timeouts, waiting, and default values.</p>
 <pre><code>func main() {
     // a bit like switch
-    var c1, c2 &lt;-chan interface{}
-    var c3 chan&lt;- interface{}
+    var c1, c2 &lt;-chan interface{}   // receive only chan
+    var c3 chan&lt;- interface{}  // send only chan
     // all channels reads and writes are considered simultaneously to see if any of them are ready
     // populated or closed channels in the case of reads, and channels that are not at capacity in the case of writes
     // if none of the channels are ready, the entire select statement blocks
@@ -1209,6 +1213,7 @@ loop:
 </ul>
 <pre><code>func main() {
     // confines the write aspect of this channel to prevent other goroutines from writing to it
+    // 限制向 channel 写数据到一个 func 里
     chanOnwer := func() &lt;-chan int {
         results := make(chan int, 5)
         go func() {
@@ -1267,8 +1272,8 @@ loop:
     // do non-preemptable work
 }
 </code></pre>
-<h3 id="preventing-goroutine-leaks">Preventing Goroutine Leaks</h3>
-<p>Goroutine are not garbage collected by the runtime.
+<h3 id="preventing-goroutine-leaksgoroutine">Preventing Goroutine Leaks(goroutine 泄露)</h3>
+<p><strong>Goroutine are not garbage collected by the runtime.</strong>
 The goroutine has a few paths to terminiation:</p>
 <ul>
 <li>when it has completed its work</li>
@@ -1290,7 +1295,7 @@ The goroutine has a few paths to terminiation:</p>
         return completed
     }
     //pass nil, the strings channel will never actually gets any strings written onto it
-    //and the goroutine doWork will remain in meory for the liftime of this process
+    //and the goroutine doWork will remain in memory for the lifetime of this process
     doWork(nil)
     // perhaps more work is done here
     fmt.Println(&quot;Done.&quot;)
@@ -1362,6 +1367,7 @@ func main() {
     for i := 1; i &lt;= 3; i++ {
         fmt.Printf(&quot;%d:%d\n&quot;, i, &lt;-randStream)
     }
+    // 依然退出，输出1到3
 }
 </code></pre>
 
@@ -1398,10 +1404,10 @@ it can stop the gorutine.</p>
 <h3 id="the-or-channel-pattern">The or-channel pattern</h3>
 <p>At times you may find yourself wanting to combine one or more done channels into a single done channel
 that closes if any of its component channels close.
-This pattern creates a composite done channel through recursion and goroutiens.</p>
+This pattern creates a composite done channel through recursion and goroutines.</p>
 <pre><code>func main() {
     var or func(channels ...&lt;-chan interface{}) &lt;-chan interface{}
-    of = func(channels ...&lt;-chan interface{}) &lt;-chan interface{} {
+    or = func(channels ...&lt;-chan interface{}) &lt;-chan interface{} {
         switch len(channels) {
         case 0:
             return nil
@@ -1625,7 +1631,7 @@ func main() {
 }
 </code></pre>
 
-<h3 id="fan-out-fan-in">Fan-Out, Fan-In</h3>
+<h3 id="fan-out-fan-in">Fan-Out, Fan-In (扇出，扇入)</h3>
 <p>Fan-out is a term to describe the process of starting multiple gortouine to handle input from the pipeline,
 and Fan-in is a term to describe the process of combining results into one channel.</p>
 <p>Fanout one of your stages if both of the following apply:</p>
@@ -1874,7 +1880,7 @@ func main() {
 }
 </code></pre>
 
-<p>For any long-running goroutines, or goroutines that need to be tested, highly recommend this patern.</p>
+<p>For any long-running goroutines, or goroutines that need to be tested, highly recommend this pattern.</p>
 <h3 id="replicated-request">Replicated Request</h3>
 <p>You can replicate the request to mulitple handlers(whether those be gorutines, processes, or servers),
 and one of them will run faster than other ones, you can then immediately return the result.
@@ -2131,8 +2137,8 @@ Forks are when goroutines are started, and join points are when two or more goro
 synchronized through channels or types in the sync package.</p>
 <p>The work stealing algorithm follows a few basic rules, Given a thread of execution:</p>
 <ol>
-<li>At Aa fork point, add tasks to the tail of the deque associated with the thread</li>
-<li>If the thread is idle, steal work from the head of deque associated with som other random thread</li>
+<li>At A fork point, add tasks to the tail of the deque associated with the thread</li>
+<li>If the thread is idle, steal work from the head of deque associated with some other random thread</li>
 <li>At a join point that cannot be realized yet(i.e.,the goroutine it is synchronized with has not completed yet), pop
      work off the tail of the thread's own deque.</li>
 <li>if the thread's deque is empty, either:<ul>
@@ -2161,13 +2167,13 @@ synchronized through channels or types in the sync package.</p>
 </code></pre>
 
 <ul>
-<li>In go , goroutins are tasks</li>
+<li>In go , goroutines are tasks</li>
 <li>Everything after a goroutine is called is the continuation</li>
 </ul>
 <p>Continuation stealing is how Go's work-stealing algorithm is implemented</p>
 <p>Go's scheduler has three main concepts:</p>
 <ul>
-<li>G: A goroutine</li>
+<li>G: A Goroutine</li>
 <li>M: An OS thread(also referenced as a machine in the source code)</li>
 <li>P: A context(also referecned as a processor in the source code), GOMAXPROCS</li>
 </ul>

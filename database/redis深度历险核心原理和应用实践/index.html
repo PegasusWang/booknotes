@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>应用1：分布式锁 - PegasusWang的读书笔记</title>
+  <title>《Redis深度历险核心原理和应用实践》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u5e94\u75281\uff1a\u5206\u5e03\u5f0f\u9501";
+    var mkdocs_page_name = "\u300aRedis\u6df1\u5ea6\u5386\u9669\u6838\u5fc3\u539f\u7406\u548c\u5e94\u7528\u5b9e\u8df5\u300b";
     var mkdocs_page_input_path = "database/redis\u6df1\u5ea6\u5386\u9669\u6838\u5fc3\u539f\u7406\u548c\u5e94\u7528\u5b9e\u8df5.md";
     var mkdocs_page_url = null;
   </script>
@@ -119,6 +119,107 @@
                 <li class="">
                     
     <a class="" href="../redis实战/">《Redis实战》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《Redis深度历险核心原理和应用实践》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1">应用1：分布式锁</a></li>
+    
+
+    <li class="toctree-l3"><a href="#2-">应用2：缓兵之计-延时队列</a></li>
+    
+
+    <li class="toctree-l3"><a href="#3">应用3：节衣缩食：位图</a></li>
+    
+
+    <li class="toctree-l3"><a href="#4-hyperloglog">应用4: 四两拨千斤：HyperLogLog</a></li>
+    
+
+    <li class="toctree-l3"><a href="#5">应用5：布隆过滤器</a></li>
+    
+
+    <li class="toctree-l3"><a href="#6-">应用6：断尾求生-简单限流</a></li>
+    
+
+    <li class="toctree-l3"><a href="#7-">应用7：一毛不拔-漏斗限流</a></li>
+    
+
+    <li class="toctree-l3"><a href="#8-gehash">应用8：近水楼台-GeHash</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#geohash">GEOHash 算法，地理位置距离排序</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#9-scan">应用9：大海捞针-Scan</a></li>
+    
+
+    <li class="toctree-l3"><a href="#1-io">原理1：线程 IO 模型</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_1">指令队列</a></li>
+        
+            <li><a class="toctree-l4" href="#_2">响应队列</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">定时任务</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#2-_1">原理2：交头接耳- 通信协议</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#-">客户端-&gt;服务器</a></li>
+        
+            <li><a class="toctree-l4" href="#-_1">服务器-&gt;客户端</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#3-">原理3：未雨绸缪-持久化</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_4">快照，一次全量备份，内存数据的二进制序列化格式</a></li>
+        
+            <li><a class="toctree-l4" href="#aof">AOF日志，连续的增量备份，记录内存数据修改的指令记录版本。</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">混合持久化</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#4-">原理4：雷厉风行-管道</a></li>
+    
+
+    <li class="toctree-l3"><a href="#5-">原理5：同舟共济-事务</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#redis-watch">redis Watch</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#6pubsub">原理6：Pubsub</a></li>
+    
+
+    <li class="toctree-l3"><a href="#7-_1">原理7：开源节流-小对象压缩</a></li>
+    
+
+    <li class="toctree-l3"><a href="#8-">原理8：有备无患-主从同步</a></li>
+    
+
+    <li class="toctree-l3"><a href="#1sentinel">集群1：Sentinel</a></li>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -648,8 +749,12 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>数据库 &raquo;</li>
+        
+      
     
-    <li>应用1：分布式锁</li>
+    <li>《Redis深度历险核心原理和应用实践》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -1008,6 +1113,15 @@ print(double_account(client, user_id))
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../redis设计与实现/" class="btn btn-neutral float-right" title="《redis设计与实现》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../redis实战/" class="btn btn-neutral" title="《Redis实战》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
@@ -1030,6 +1144,10 @@ print(double_account(client, user_id))
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="../redis实战/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../redis设计与实现/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

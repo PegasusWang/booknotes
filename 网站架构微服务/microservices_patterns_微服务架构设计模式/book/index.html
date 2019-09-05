@@ -122,6 +122,10 @@
                 </li>
                 <li class="">
                     
+    <a class="" href="../../../database/redis深度历险核心原理和应用实践/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="../../../database/redis设计与实现/">《redis设计与实现》</a>
                 </li>
                 <li class="">
@@ -460,7 +464,27 @@
         
             <li><a class="toctree-l4" href="#32">3.2 基于同步远程过程调用模式的通信</a></li>
         
+            <li><a class="toctree-l4" href="#33">3.3 基于异步消息模式的通信</a></li>
+        
+            <li><a class="toctree-l4" href="#34">3.4 使用异步消息提高可用性</a></li>
+        
         </ul>
+    
+
+    <li class="toctree-l3"><a href="#4-saga">4 使用 Saga 管理事务</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#41">4.1 微服务下的事务管理</a></li>
+        
+            <li><a class="toctree-l4" href="#42-saga">4.2 Saga 的协调模式</a></li>
+        
+            <li><a class="toctree-l4" href="#43">4.3 解决隔离问题</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#5">5. 微服务架构中的业务逻辑设计</a></li>
     
 
     </ul>
@@ -831,6 +855,92 @@
 <li>二进制</li>
 </ul>
 <h3 id="32">3.2 基于同步远程过程调用模式的通信</h3>
+<ul>
+<li>REST</li>
+</ul>
+<p>rest 没有 IDL，但是有 Open API 规范。
+grpc 不太好处理获取多个资源的情况</p>
+<ul>
+<li>gRPC</li>
+</ul>
+<p>使用二进制格式的 Protocol Buffers</p>
+<ul>
+<li>使用断路器模式处理局部故障：断路器在连续失败次数超过指定阈值的一段时间内，这个代理会立即拒绝其他调用。</li>
+</ul>
+<p>开发可靠的远程过程调用代理：</p>
+<ul>
+<li>网络超时</li>
+<li>限制客户端向服务器发出请求的数量</li>
+<li>断路器模式：失败超过一定阈值就启动断路器，让后续调用立刻失败。之后客户端继续尝试，如果调用成功，则解除断路器.</li>
+</ul>
+<p>Netflix Hystrix shi 一个实现这些和其它模式的开源库。</p>
+<p>从服务失效故障中恢复</p>
+<ul>
+<li>返回错误</li>
+<li>返回默认值或者缓存响应</li>
+</ul>
+<h5 id="324">3.2.4 使用服务发现</h5>
+<p>两种模式</p>
+<ul>
+<li>服务及其客户直接与服务注册表交互</li>
+<li>通过部署基础设置来处理服务发现(更推荐)</li>
+</ul>
+<h3 id="33">3.3 基于异步消息模式的通信</h3>
+<ul>
+<li>点对点</li>
+<li>发布订阅</li>
+</ul>
+<ul>
+<li>无代理架构: ZeroMQ</li>
+</ul>
+<ul>
+<li>基于代理的消息</li>
+</ul>
+<p>Apache ActiveMQ/RabbitMQ/Apache Kafka，还有基于云的消息服务 AWS Kinesis, SQS 等。</p>
+<h5 id="335">3.3.5 处理并发和消息顺序</h5>
+<p>通常使用分片键让消息落到同一个分片，而且该分片中的消息始终由同一个接收方实例读取，保证按顺序处理这些消息。</p>
+<h5 id="336">3.3.6 处理重置消息</h5>
+<p>大部分消息代理保证至少一次</p>
+<ul>
+<li>编写幂等消息处理程序。</li>
+<li>跟踪消息并处理重复项。比如在数据库中记录message id 来去重。</li>
+</ul>
+<h5 id="337">3.3.7 事务性消息</h5>
+<p>数据库更新和消息发送都必须在事务中进行。</p>
+<ul>
+<li>使用数据表作为消息队列（事务性发件箱）</li>
+<li>通过轮询模式发布事件</li>
+<li>使用事务日志拖尾(tailing)模式发布事件<ul>
+<li>Debezium</li>
+<li>LinkedIn Databus</li>
+<li>DynamoDB streams</li>
+<li>Eventuate Tram</li>
+</ul>
+</li>
+</ul>
+<h3 id="34">3.4 使用异步消息提高可用性</h3>
+<p>同步消息会降低可用性。（要求依赖的所有同步服务都可用）</p>
+<h1 id="4-saga">4 使用 Saga 管理事务</h1>
+<p>Saga 这个术语最早出现在一篇研究数据库事务的论文当中。</p>
+<h3 id="41">4.1 微服务下的事务管理</h3>
+<p>传统方式式采用分布式事务 XA，XA 采用两阶段提交 。</p>
+<p>一个Saga表示需要更新多个服务中数据的一个系统操作。Saga由一连串的本地事务组成。
+每一个本地事务负责更新它所在服务的私有数据库。</p>
+<p>挑战：缺乏隔离；回滚更改</p>
+<p>如果一个事务失败了，必须通过补偿事务撤销之前的更新。</p>
+<h3 id="42-saga">4.2 Saga 的协调模式</h3>
+<ul>
+<li>协同式(choreography)</li>
+<li>编排式(orchestration)</li>
+</ul>
+<h3 id="43">4.3 解决隔离问题</h3>
+<p>Saga包含三种类型事务：</p>
+<ul>
+<li>可补偿性事务</li>
+<li>关键性事务</li>
+<li>可重复性事务</li>
+</ul>
+<h1 id="5">5. 微服务架构中的业务逻辑设计</h1>
               
             </div>
           </div>
