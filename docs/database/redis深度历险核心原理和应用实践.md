@@ -50,30 +50,44 @@ bloom filter calculator
 
 
 ```py
+# coding:utf8
 import time
 import redis
 
-
-client = client.StrictRedis()
+client = redis.StrictRedis()
 
 
 def is_action_allowed(user_id, action_key, period, max_count):
+    """
+    # 指定用户 user_id 的某个行为 action_key 在特定的时间内 period 只允许发生一定的次数
+
+    :param user_id:
+    :param action_key: 行为字符串
+    :param period:
+    :param max_count:
+    """
     key = "hist:%s:%s" % (user_id, action_key)
     now_ts = int(time.time() * 1000)  # 毫秒时间戳
     with client.pipeline() as pipe:
-        # 记录行为，这里第一个 now_ts 没啥意义，用 uuid 之类的也可以
-        pipe.zadd(key, now_ts, now_ts)
+        # 记录行为，这里第一个 now_ts 没啥意义，用 uuid 之类的也可以。，每一个行为都会作为 zset 中的一个 key 保存下来。同一个用户同一种行为用一个 zset 记录
+        pipe.zadd(key, now_ts, now_ts)  # redis> ZADD myzset 1 "one"
         # 移除时间窗口之前的行为记录，剩下的都是时间窗口之内的
-        pipe.zremrangbyscore(key, 0, now_ts - period * 1000)
+        pipe.zremrangebyscore(key, 0, now_ts - period * 1000)
         # 获取时间窗口内的行为数量
         pipe.zcard(key)
-        pipe.expire(key, perid + 1)  # 设置 zset 过期时间，主要是为了处理冷用户持续占用内存
-        _, _, current_count = pipe.execute()
+        # 设置 zset 过期时间，主要是为了处理冷用户持续占用内存
+        # 过期时间应该等于时间窗口长度，多宽限1s
+        pipe.expire(key, period + 1)
+
+        _, _, current_count, _ = pipe.execute()
     return current_count <= max_count
 
 
 for i in range(20):
-    print(is_action_allowed('laowang', 'reply', 60, 5))
+    time.sleep(0.1)
+    print(
+        is_action_allowed('laowang', 'reply', 60, 5)
+    )
 ```
 
 # 应用7：一毛不拔-漏斗限流
