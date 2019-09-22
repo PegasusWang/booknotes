@@ -75,3 +75,7 @@ func main() {
 }
 
 ```
+
+- Channel Element Values are Transferred by Copy。If the passed value size too large, use a pointer element type instead.
+- A goroutine can be garbage collected when it has already exited.
+- Channel send and receive operatoins are simple statements.
