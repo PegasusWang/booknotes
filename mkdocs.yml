@@ -40,6 +40,7 @@ pages:
       - 《2 The Go Programming Language》: 'golang/2_the_go_programming_lauguage.md'
       - 《3 The Go Programming Language》: 'golang/3_the_go_programming_lauguage.md'
       - 《Build Web Application With Golang》: 'golang/build-web-application-with-golang.md'
+      - 《Go101》: 'golang/go101/book.md'
       - 《Network Programming with go》: 'golang/network-programming-with-go/book.md'
       - 《Building Microservices With Go》: 'golang/building-microservices-with-go/book.md'
       - 《Building Restful Web Services with Go》: 'golang/building_restful_web_services_with_go/book.md'
