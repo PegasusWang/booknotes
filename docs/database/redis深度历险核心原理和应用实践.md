@@ -567,3 +567,22 @@ redis 会将每个设置了过期时间的 key 放到一个单独的字典中，
 
 从库不会进行过期扫描，从库对过期处理是被动的。主库在 key 过期时，会在 AOF 文件增加一条 del 指令，
 同步到所有的从库，从库通过执行 del 来删除过期 key。
+
+
+# 扩展5：LRU
+当 redis 内存超过物理限制，内存数据会开始和磁盘产生频繁交换（swap），性能急剧下降，基本不可用。
+一般不允许 redis 出现交换。redis提供了配置参数 maxmemory 来限制内存超出期望大小。
+
+- noeviction。默认淘汰策略。禁止写请求，会导致线上业务不能进行
+- volatile-lru。尝试淘汰设置了过期时间的key，最少使用的 key 优先被淘汰
+- volatile-ttl: key的剩余寿命ttl越小，越先被淘汰
+- volatile-random
+- allkeys-lru : 没有设置过期时间的 key 也会被淘汰
+- allkeys-random
+
+volatile-xxx 只会淘汰带过期时间的key。如果只拿 redis 做缓存，应该用 allkeys-xxx，客户端写缓存不用带上过期时间。
+如果同时用 redis 持久化，那就用 volatile-xxx.
+
+### 近似 LRU
+redis 使用的一种近似 LRU，之所以不用 lru，是因为消耗大量额外内存。
+近似 lru 使用随机采样来淘汰元素，能达到和 lru 近似效果。lru 只有惰性处理。
