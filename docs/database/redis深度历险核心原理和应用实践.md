@@ -519,3 +519,28 @@ stream 有一个消费链表，将所有加入的消息都串起来，每个消�
 
 同一个消费组(consumer group)可以挂接多个消费者(consumer)，这些消费者是竞争关系，任意一个
 消费者读取了消息都会使游标 last_deliverd_id 往前移动。
+
+Stream 借鉴了 kafka 的消费分组概念，弥补了 Pub/Sub 不能持久化消息的缺陷。
+但是又不像 kafka，消息可以分 partition。如果非要 partion，要再客户端做，提供不同的 Stream 名称，
+对消息进行 hash 取模选择放入哪一个 Stream。
+
+# 扩展2：无所不知 - Info 指令
+
+```
+# 查看每秒操作数
+redis-cli info stats  | grep ops
+
+# 查看连接多少客户端, connected_clients，如果rejected_connections很大，需要调整macxclients.
+redis-cli info clients
+
+# 查看占用内存，如果单个 redis 内存占用过大，并且在业务上没有大多压缩空间，可以考虑集群化了
+redis-cli info memory | grep used | grep human
+
+# 复制积压缓冲区多大，严重影响主从复制效率。积压缓冲区是环形的
+# 如果从库断开时间太长，或者缓冲区设置太小，从库无法快速恢复中断的主从同步过程，
+# 因为中间的指令被覆盖了。这个时候从库会进行全量同步模式，非常消耗 cpu 和网络资源
+redis-cli info replication | grep backlog
+redis-cli info stats | grep sync # 通过sync_partial_err(主从半同步复制失败的次数) 次数决定是否需要扩大积压缓冲区
+```
+
+# 扩展3：再谈分布式锁
