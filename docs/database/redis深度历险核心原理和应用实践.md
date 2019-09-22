@@ -612,3 +612,18 @@ Java redis client。每次从 JedisPool 获取一个 Jedis 对象独占，使用
 ### 端口安全
 
 运维人员务必在 Redis 配置文件中指定监听的 IP 地址。指定密码
+
+### Lua 脚本安全
+
+开发者必须禁止 Lua 脚本由用户输入的内容(UGC)生成，可能被黑客利用植入恶意代码得到 redis 主机权限。
+
+同时应该让 redis 以普通用户身份启动，即使存在恶意代码黑客也无法获取 root 权限。
+
+### SSL 代理
+
+如果是公网上，可以考虑 ssl 代理。redis 官方推荐 spiped 工具
+
+
+# 扩展9：redis 安全通信
+
+spied 是一款 ssl 代理
