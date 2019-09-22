@@ -586,3 +586,29 @@ volatile-xxx 只会淘汰带过期时间的key。如果只拿 redis 做缓存，
 ### 近似 LRU
 redis 使用的一种近似 LRU，之所以不用 lru，是因为消耗大量额外内存。
 近似 lru 使用随机采样来淘汰元素，能达到和 lru 近似效果。lru 只有惰性处理。
+
+
+# 扩展6：懒惰删除
+
+如果删除一个 key 是一个大对象，比如一个包含了千万元素的 hash，删除会导致线程卡顿。
+redis4.0 引入了 unlink，能对删除进行惰性处理，丢给后台线程来异步回收内存。
+
+redis 同样提供了 flushdb async  和 flushall async 来让后台线程处理。
+
+# 扩展7：优雅使用 Jedis
+
+Java redis client。每次从 JedisPool 获取一个 Jedis 对象独占，使用完归还。
+
+
+# 扩展8：居安思危-保护 redis
+
+### 指令安全
+
+- keys 导致 redis 卡顿
+- flushdb/flushall 数据清空
+
+可以通过 rename-command 指令把一些危险的指令修改成特殊名称
+
+### 端口安全
+
+运维人员务必在 Redis 配置文件中指定监听的 IP 地址。指定密码
