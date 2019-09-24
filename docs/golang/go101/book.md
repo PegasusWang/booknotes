@@ -79,3 +79,17 @@ func main() {
 - Channel Element Values are Transferred by Copy。If the passed value size too large, use a pointer element type instead.
 - A goroutine can be garbage collected when it has already exited.
 - Channel send and receive operatoins are simple statements.
+
+empty select-case code block `select{}` will make current goroutine stay in blocking state forever.
+
+# 22 Methods in Go
+
+Should a method be declared with pointer receiver or value receiver ?
+
+- Too many pointer copies my cause heavier workload for garbage collector
+- if value receiver type is Large , should use pointer receiver.
+- declaring methods of both value receivers ans pointer receivers for the same base type is more
+	likely to cause data races if the declared methods are called concurrently in multiple goroutines.
+- values of the types in sync standard package should not be copied.
+
+If it is hard to make a decisoin , just choose the pointer receiver way.
