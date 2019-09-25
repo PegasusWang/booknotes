@@ -93,3 +93,10 @@ Should a method be declared with pointer receiver or value receiver ?
 - values of the types in sync standard package should not be copied.
 
 If it is hard to make a decisoin , just choose the pointer receiver way.
+
+# 23 Interfaces in Go
+
+type assert and type switch
+
+- Values of []t can't be directly converted to []I, even if type T implements interface type I.
+- Each method specified in a interface type corresponds to an implicit function.

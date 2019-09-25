@@ -2,9 +2,12 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"net"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -307,7 +310,7 @@ func NewConn(netConn net.Conn, readTimeout, writeTimeout time.Duration) Conn {
 /***** 接下来是 conn 实现接口(Conn) 的方法，重要的是 Do/Send/Receive *****/
 // 从关键方法『自顶向下』看代码，涉及到的地方可以跳转快速了解实现
 
-// 先来看发送Send，NOTE： 这里虽然叫做 send，其实并没有真正发送，而是写到了缓冲区
+// 先来看发送Send，NOTE： 这里虽然叫做 send，其实并没有真正发送，而是写到了缓冲区, Flush() 才发送
 func (c *conn) Send(cmd string, args ...interface{}) error {
 	c.mu.Lock()
 	c.pending++ // c.pending += 1  这里我的 golint 报错了，把源代码 pending += 1 改成了 pending++
@@ -362,8 +365,73 @@ func (c *conn) writeLen(prefix byte, n int) error {
 func (c *conn) writeString(s string) error {
 	c.writeLen('$', len(s))
 	c.bw.WriteString(s)
+	_, err := c.bw.WriteString("\r\n") //写入开头和结尾
+	return err
+}
+
+// 以下三个方法写入不同的数据类型
+func (c *conn) writeBytes(p []byte) error {
+	c.writeLen('$', len(p))
+	c.bw.Write(p)
 	_, err := c.bw.WriteString("\r\n")
 	return err
+}
+
+func (c *conn) writeInt64(n int64) error {
+	return c.writeBytes(strconv.AppendInt(c.numScratch[:0], n, 10))
+}
+
+func (c *conn) writeFloat64(n float64) error {
+	return c.writeBytes(strconv.AppendFloat(c.numScratch[:0], n, 'g', -1, 64))
+}
+
+// 接下来是写入命令。调用各种 write 来写入参数
+func (c *conn) writeArg(arg interface{}, argumentTypeOK bool) (err error) {
+	switch arg := arg.(type) {
+	case string:
+		return c.writeString(arg)
+	case []byte:
+		return c.writeBytes(arg)
+	case int:
+		return c.writeInt64(int64(arg))
+	case int64:
+		return c.writeInt64(arg)
+	case float64:
+		return c.writeFloat64(arg)
+	case bool:
+		if arg {
+			return c.writeString("1")
+		}
+		return c.writeString("0")
+	case nil:
+		return c.writeString("")
+	case Argument:
+		if argumentTypeOK {
+			return c.writeArg(arg.RedisArg(), false) // 递归写入
+		}
+		// See comment in default clause below.
+		var buf bytes.Buffer
+		fmt.Fprint(&buf, arg)
+		return c.writeBytes(buf.Bytes())
+	default:
+		// This default clause is intended to handle builtin numeric types.
+		// The function should return an error for other types, but this is not
+		// done for compatibility with previous versions of the package.
+		var buf bytes.Buffer
+		fmt.Fprint(&buf, arg)
+		return c.writeBytes(buf.Bytes())
+	}
+}
+
+// 上边看完了如何写入数据，然后就是 发送，之前的 send不是真正 send，而是写入到缓冲区，直到调用 Flush 才发送到 client
+func (c *conn) Flush() error {
+	if c.writeTimeout != 0 {
+		c.conn.SetWriteDeadline(time.Now().Add(c.writeTimeout))
+	}
+	if err := c.bw.Flush(); err != nil {
+		return c.fatal(err)
+	}
+	return nil
 }
 
 func (c *conn) Do(cmd string, args ...interface{}) (interface{}, error) {
