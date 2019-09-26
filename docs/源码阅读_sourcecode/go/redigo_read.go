@@ -6,9 +6,11 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -186,6 +188,10 @@ func ReceiveWithTimeout(c Conn, timeout time.Duration) (interface{}, error) {
 
 var _ ConnWithTimeout = (*conn)(nil) // 确保 conn 实现了 ConnWithTimeout interface
 
+func cloneTLSConfig(cfg *tls.Config) *tls.Config {
+	return cfg.Clone()
+}
+
 // conn is the low-level implementation of Conn
 // 注意所有的『内部』方法使用小写开头，但是没有保护作用，golang 的导出是以 package 为单位的
 type conn struct {
@@ -307,6 +313,36 @@ func NewConn(netConn net.Conn, readTimeout, writeTimeout time.Duration) Conn {
 	}
 }
 
+func (c *conn) Close() error { // 被 ConnPoll 调用
+	c.mu.Lock()
+	err := c.err
+	if c.err == nil {
+		c.err = errors.New("redigo: closed")
+		err = c.conn.Close()
+	}
+	c.mu.Unlock()
+	return err
+}
+
+func (c *conn) Err() error {
+	c.mu.Lock()
+	err := c.err
+	c.mu.Unlock()
+	return err
+}
+
+func (c *conn) fatal(err error) error {
+	c.mu.Lock()
+	if c.err == nil {
+		c.err = err
+		// Close connection to force errors on subsequent calls and to unblock
+		// other reader or writer.
+		c.conn.Close()
+	}
+	c.mu.Unlock()
+	return err
+}
+
 /***** 接下来是 conn 实现接口(Conn) 的方法，重要的是 Do/Send/Receive *****/
 // 从关键方法『自顶向下』看代码，涉及到的地方可以跳转快速了解实现
 
@@ -424,6 +460,8 @@ func (c *conn) writeArg(arg interface{}, argumentTypeOK bool) (err error) {
 }
 
 // 上边看完了如何写入数据，然后就是 发送，之前的 send不是真正 send，而是写入到缓冲区，直到调用 Flush 才发送到 client
+// 一般使用方式就是  client.send() （可以多次send) 之后调用 Flush 方法写入放到 client。之后就可以使用 Receive
+// 读取返回结果了。 send() -> flush() -> receive()
 func (c *conn) Flush() error {
 	if c.writeTimeout != 0 {
 		c.conn.SetWriteDeadline(time.Now().Add(c.writeTimeout))
@@ -433,6 +471,203 @@ func (c *conn) Flush() error {
 	}
 	return nil
 }
+
+// 读取redis 返回的结果
+func (c *conn) Receive() (interface{}, error) {
+	return c.ReceiveWithTimeout(c.readTimeout)
+}
+
+func (c *conn) ReceiveWithTimeout(timeout time.Duration) (reply interface{}, err error) {
+	var deadline time.Time
+	if timeout != 0 {
+		deadline = time.Now().Add(timeout)
+	}
+	c.conn.SetReadDeadline(deadline)
+
+	if reply, err = c.readReply(); err != nil { // 主要来看下 readReply 方法如何获取返回数据
+		return nil, c.fatal(err)
+	}
+	// When using pub/sub, the number of receives can be greater than the
+	// number of sends. To enable normal use of the connection after
+	// unsubscribing from all channels, we do not decrement pending to a
+	// negative value.
+	//
+	// The pending field is decremented after the reply is read to handle the
+	// case where Receive is called before Send.
+	c.mu.Lock()
+	if c.pending > 0 { // NOTE: 注意 send 的时候增加1，这里减去1
+		c.pending--
+	}
+	c.mu.Unlock()
+	if err, ok := reply.(Error); ok {
+		return nil, err
+	}
+	return
+}
+
+// 下边是读取 redis 返回数据，并且解析的代码。先再去熟悉下 resp 协议
+var (
+	okReply   interface{} = "OK"
+	pongReply interface{} = "PONG"
+)
+
+type protocolError string
+
+func (pe protocolError) Error() string {
+	return fmt.Sprintf("redigo: %s (possible server error or unsupported concurrent read by application)", string(pe))
+}
+
+func (c *conn) readReply() (interface{}, error) {
+	line, err := c.readLine() // 一会再去看下 readline 方法
+	if err != nil {
+		return nil, err
+	}
+	if len(line) == 0 {
+		return nil, protocolError("short response line")
+	}
+	switch line[0] { // 以下是解析 resp 返回协议的代码，5种类型
+	case '+': // - 单行字符串以+开头
+		switch {
+		case len(line) == 3 && line[1] == 'O' && line[2] == 'K':
+			// Avoid allocation for frequent "+OK" response.
+			return okReply, nil
+		case len(line) == 5 && line[1] == 'P' && line[2] == 'O' && line[3] == 'N' && line[4] == 'G':
+			// Avoid allocation in PING command benchmarks :)
+			return pongReply, nil
+		default:
+			return string(line[1:]), nil
+		}
+	case '-': // - 错误消息，以-开头
+		return Error(string(line[1:])), nil
+	case ':': // - 整数值以: 开头，跟上字符串形式
+		return parseInt(line[1:])
+	case '$': // - 多行字符串以$开头，后缀字符串长度
+		n, err := parseLen(line[1:])
+		if n < 0 || err != nil {
+			return nil, err
+		}
+		p := make([]byte, n)
+		_, err = io.ReadFull(c.br, p)
+		if err != nil {
+			return nil, err
+		}
+		if line, err := c.readLine(); err != nil {
+			return nil, err
+		} else if len(line) != 0 {
+			return nil, protocolError("bad bulk string format")
+		}
+		return p, nil
+	case '*': // - 数组，以 * 开头，后跟数组的长度
+		n, err := parseLen(line[1:])
+		if n < 0 || err != nil {
+			return nil, err
+		}
+		r := make([]interface{}, n)
+		for i := range r {
+			r[i], err = c.readReply()
+			if err != nil {
+				return nil, err
+			}
+		}
+		return r, nil
+	}
+	return nil, protocolError("unexpected response line")
+}
+
+// 看下上边用到的 readLine 方法
+// readLine reads a line of input from the RESP stream.
+func (c *conn) readLine() ([]byte, error) {
+	// To avoid allocations, attempt to read the line using ReadSlice. This
+	// call typically succeeds. The known case where the call fails is when
+	// reading the output from the MONITOR command.
+	p, err := c.br.ReadSlice('\n')
+	if err == bufio.ErrBufferFull {
+		// The line does not fit in the bufio.Reader's buffer. Fall back to
+		// allocating a buffer for the line.
+		buf := append([]byte{}, p...)
+		for err == bufio.ErrBufferFull {
+			p, err = c.br.ReadSlice('\n')
+			buf = append(buf, p...)
+		}
+		p = buf
+	}
+	if err != nil {
+		return nil, err
+	}
+	i := len(p) - 2
+	if i < 0 || p[i] != '\r' { // 不合法的 redis 协议
+		return nil, protocolError("bad response line terminator")
+	}
+	return p[:i], nil // 去掉了后缀的 \r\n
+}
+
+// 注意在readReply 中用到了很多 parse 函数，用来解析返回值，下边看下几个函数
+// parseLen parses bulk string and array lengths.
+func parseLen(p []byte) (int, error) {
+	if len(p) == 0 {
+		return -1, protocolError("malformed length")
+	}
+
+	if p[0] == '-' && len(p) == 2 && p[1] == '1' {
+		// handle $-1 and $-1 null replies.
+		return -1, nil
+	}
+
+	var n int
+	for _, b := range p { // 类似这种代码都是用来 转 bytes -> 数字的
+		n *= 10
+		if b < '0' || b > '9' {
+			return -1, protocolError("illegal bytes in length")
+		}
+		n += int(b - '0')
+	}
+
+	return n, nil
+}
+
+// parseInt parses an integer reply.
+func parseInt(p []byte) (interface{}, error) {
+	if len(p) == 0 {
+		return 0, protocolError("malformed integer")
+	}
+
+	var negate bool
+	if p[0] == '-' {
+		negate = true
+		p = p[1:]
+		if len(p) == 0 {
+			return 0, protocolError("malformed integer")
+		}
+	}
+
+	var n int64
+	for _, b := range p {
+		n *= 10
+		if b < '0' || b > '9' {
+			return 0, protocolError("illegal bytes in length")
+		}
+		n += int64(b - '0')
+	}
+
+	if negate {
+		n = -n
+	}
+	return n, nil
+}
+
+/*******
+到这里流程就清楚了：
+
+client.Send() 写入缓冲区，按照resp格式编码
+client.Flush() 才写入到socket，这个时候真正发送给客户端
+client.Receive() 接受并且解析客户端命令，主要是resp 5种协议格式解析，或者对应的数据
+
+这里需要注意：如果多次 Send 了 Receive 的次数要和 Send 次数对应
+
+
+每次都 send/flush/receive 比较麻烦，为了简化，redigo 还提供了 DO 方法来串起来这些操作，你可以看到 Do方法就是三者结合
+NOTE：注意 go 的方法都提供了 DoWithTimeout 类似的方法，默认的socket没有设置超时线上可能有问题，实际使用必须设置超时毫秒数
+*******/
 
 func (c *conn) Do(cmd string, args ...interface{}) (interface{}, error) {
 	return c.DoWithTimeout(c.readTimeout, cmd, args...)
@@ -492,4 +727,329 @@ func (c *conn) DoWithTimeout(readTimeout time.Duration, cmd string, args ...inte
 		}
 	}
 	return reply, err
+}
+
+/************
+到这里关于 conn 的操作实际上就了解差不多了，现在写一段代码来测试以下。
+通过内置的 net.Dial 返回一个 tcp 的 socket Conn，传给 NewConn，然后调用 send/flush/receive 测试一下
+************/
+
+func testRedigoConn() {
+	//搜了下代码发现 NewConn 函数其实并没有用到，好像只有 Dial 用到了
+
+	conn, err := net.Dial("tcp", "127.0.0.1:6379")
+	if err != nil {
+		return
+	}
+	redisConn := NewConn(conn, time.Second, time.Second)
+	defer redisConn.Close()
+	redisConn.Send("SET", "test", "hehe")
+	redisConn.Send("GET", "test")
+	redisConn.Flush()
+	res, err := redisConn.Receive()
+	fmt.Println(res, err)
+	res, err = redisConn.Receive()
+	fmt.Println(string(res.([]byte)), err)
+
+	// ^_^: 测试可以用（废话，都是copy 的代码)
+}
+
+func main() {
+	testRedigoConn()
+}
+
+/******
+上边看完了一个 tcp conn 如何和 redis server 交互的，如何解析协议的。之后看下如何实现一个 连接池(socket conn pool)
+pool 的主要作用是减少频繁的 tcp 创建和开销，实现 tcp socket 被不同客户端复用，从而提升redis 交互效率
+pool 的实现一般是使用队列/链表等
+******/
+
+// Pool 先来看下 redigo Pool 的实现定义，redigo 使用的是双链表来实现的。这里是个 struct 而不是接口
+type Pool struct {
+	// Dial is an application supplied function for creating and configuring a
+	// connection.
+	//
+	// The connection returned from Dial must not be in a special state
+	// (subscribed to pubsub channel, transaction started, ...).
+	Dial func() (Conn, error)
+
+	// TestOnBorrow is an optional application supplied function for checking
+	// the health of an idle connection before the connection is used again by
+	// the application. Argument t is the time that the connection was returned
+	// to the pool. If the function returns an error, then the connection is
+	// closed.
+	TestOnBorrow func(c Conn, t time.Time) error
+
+	// Maximum number of idle connections in the pool.
+	MaxIdle int
+
+	// Maximum number of connections allocated by the pool at a given time.
+	// When zero, there is no limit on the number of connections in the pool.
+	MaxActive int
+
+	// Close connections after remaining idle for this duration. If the value
+	// is zero, then idle connections are not closed. Applications should set
+	// the timeout to a value less than the server's timeout.
+	IdleTimeout time.Duration
+
+	// If Wait is true and the pool is at the MaxActive limit, then Get() waits
+	// for a connection to be returned to the pool before returning.
+	Wait bool
+
+	// Close connections older than this duration. If the value is zero, then
+	// the pool does not close connections based on age.
+	MaxConnLifetime time.Duration
+
+	chInitialized uint32 // set to 1 when field ch is initialized
+
+	mu     sync.Mutex    // mu protects the following fields
+	closed bool          // set to true when the pool is closed.
+	active int           // the number of open connections in the pool
+	ch     chan struct{} // limits open connections when p.Wait is true。用 bufferd channel 来限制连接数的
+	idle   idleList      // idle connections
+}
+
+// 代码给了一个示例来演示 Pool 的用法， 初始化函数不推荐使用了，直接用 struct 构造
+// pool := &redis.Pool{
+//   // Other pool configuration not shown in this example.
+//   Dial: func () (redis.Conn, error) {
+//     c, err := redis.Dial("tcp", server)
+//     if err != nil {
+//       return nil, err
+//     }
+//     if _, err := c.Do("AUTH", password); err != nil {
+//       c.Close()
+//       return nil, err
+//     }
+//     if _, err := c.Do("SELECT", db); err != nil {
+//       c.Close()
+//       return nil, err
+//     }
+//     return c, nil
+//   },
+// }
+//
+
+/*
+先来看下 pool 里边一个特殊的结构 idleList 是如何实现的，其他类型都是内置结构
+这个类型用来实现连接池里 conn 的放入和拿出
+*/
+
+type idleList struct { //实现的一个双端链表，front,back 分别指向 头和尾
+	count       int
+	front, back *poolConn
+}
+
+type poolConn struct {
+	c          Conn
+	t          time.Time // 放入时间, put 方法会更新t
+	created    time.Time
+	next, prev *poolConn
+}
+
+func (l *idleList) pushFront(pc *poolConn) {
+	pc.next = l.front
+	pc.prev = nil
+	if l.count == 0 {
+		l.back = pc
+	} else {
+		l.front.prev = pc
+	}
+	l.front = pc
+	l.count++
+	return
+}
+
+func (l *idleList) popFront() {
+	pc := l.front
+	l.count--
+	if l.count == 0 {
+		l.front, l.back = nil, nil
+	} else {
+		pc.next.prev = nil
+		l.front = pc.next
+	}
+	pc.next, pc.prev = nil, nil
+}
+
+func (l *idleList) popBack() {
+	pc := l.back
+	l.count--
+	if l.count == 0 {
+		l.front, l.back = nil, nil
+	} else {
+		pc.prev.next = nil
+		l.back = pc.prev
+	}
+	pc.next, pc.prev = nil, nil
+}
+
+// Get gets a connection. The application must close the returned connection.
+// This method always returns a valid connection so that applications can defer
+// error handling to the first use of the connection. If there is an error
+// getting an underlying connection, then the connection Err, Do, Send, Flush
+// and Receive methods return that error.
+func (p *Pool) Get() Conn { // 先来看下 get 方法从池里获取一个 conn
+	pc, err := p.get(nil)
+	if err != nil {
+		return errorConn{err}
+	}
+	return &activeConn{p: p, pc: pc}
+}
+
+type errorConn struct{ err error }
+
+func (ec errorConn) Do(string, ...interface{}) (interface{}, error) { return nil, ec.err }
+func (ec errorConn) DoWithTimeout(time.Duration, string, ...interface{}) (interface{}, error) {
+	return nil, ec.err
+}
+func (ec errorConn) Send(string, ...interface{}) error                     { return ec.err }
+func (ec errorConn) Err() error                                            { return ec.err }
+func (ec errorConn) Close() error                                          { return nil }
+func (ec errorConn) Flush() error                                          { return ec.err }
+func (ec errorConn) Receive() (interface{}, error)                         { return nil, ec.err }
+func (ec errorConn) ReceiveWithTimeout(time.Duration) (interface{}, error) { return nil, ec.err }
+
+// 活动连接
+type activeConn struct {
+	p     *Pool // 活动连接所在的 Pool
+	pc    *poolConn
+	state int // 参考下边的 state 定义, 表示现在的链接使用哪个
+}
+
+// 这里定义了几个 state
+const (
+	connectionWatchState = 1 << iota
+	connectionMultiState
+	connectionSubscribeState
+	connectionMonitorState
+)
+
+// 上边看到 Get 方法调用了内部方法 get 来获取。先清理过期conn，然后返回一个连接池的
+// conn，如果连接池空了则新建一个conn返回
+// get prunes stale connections and returns a connection from the idle list or
+// creates a new connection.
+func (p *Pool) get(ctx interface { // 类似匿名结构体那种定义方式,匿名接口的定义直接写到了参数里
+	Done() <-chan struct{}
+	Err() error
+}) (*poolConn, error) {
+
+	// Handle limit for p.Wait == true.
+	if p.Wait && p.MaxActive > 0 { // wait字段如果是 true，会限制达到最大MaxActive连接数以后，Get 方法等待
+		p.lazyInit() //lazyInit 用来设置这个字段 p.chInitialized 和初始化 p.ch (buffed channel 限制连接数)。
+		if ctx == nil {
+			<-p.ch // 这里直接用 buffed channel 来做限制连接数，可以直接使用channel 的 block 功能，而不是轮询重试
+		} else {
+			select {
+			case <-p.ch:
+			case <-ctx.Done():
+				return nil, ctx.Err()
+			}
+		}
+	}
+
+	p.mu.Lock() // 这里开始加锁，看起 Lock 范围还挺大的
+
+	// Prune stale connections at the back of the idle list. 清理长期不用的闲置连接，根据 IdleTimeout 判断
+	if p.IdleTimeout > 0 {
+		n := p.idle.count // 连接池连接数量。之后遍历n 次，从最后删除。链表尾部的 最后使用时间 t 小，闲置越久
+		for i := 0; i < n && p.idle.back != nil && p.idle.back.t.Add(p.IdleTimeout).Before(nowFunc()); i++ {
+			pc := p.idle.back
+			p.idle.popBack()
+			p.mu.Unlock()
+			pc.c.Close()
+			p.mu.Lock()
+			p.active--
+		}
+	}
+
+	// Get idle connection from the front of idle list.
+	for p.idle.front != nil {
+		pc := p.idle.front
+		p.idle.popFront() // 每次从头部取一个链接
+		p.mu.Unlock()
+		if (p.TestOnBorrow == nil || p.TestOnBorrow(pc.c, pc.t) == nil) &&
+			(p.MaxConnLifetime == 0 || nowFunc().Sub(pc.created) < p.MaxConnLifetime) {
+			return pc, nil
+		}
+		pc.c.Close()
+		p.mu.Lock()
+		p.active--
+	}
+
+	// Check for pool closed before dialing a new connection.
+	if p.closed {
+		p.mu.Unlock()
+		return nil, errors.New("redigo: get on closed pool")
+	}
+
+	// Handle limit for p.Wait == false.
+	if !p.Wait && p.MaxActive > 0 && p.active >= p.MaxActive {
+		p.mu.Unlock()
+		return nil, ErrPoolExhausted
+	}
+
+	p.active++
+	p.mu.Unlock()
+	c, err := p.Dial()
+	if err != nil {
+		c = nil
+		p.mu.Lock()
+		p.active--
+		if p.ch != nil && !p.closed {
+			p.ch <- struct{}{} // 用来限制连接数大小
+		}
+		p.mu.Unlock()
+	}
+	return &poolConn{c: c, created: nowFunc()}, err
+}
+
+// get 用到这个方法，主要作用是往 p.ch 中塞入 MaxActive 个 struct{}{}
+func (p *Pool) lazyInit() {
+	// Fast path.
+	if atomic.LoadUint32(&p.chInitialized) == 1 {
+		return
+	}
+	// Slow path.
+	p.mu.Lock()
+	if p.chInitialized == 0 {
+		p.ch = make(chan struct{}, p.MaxActive) // bufferd channel
+		if p.closed {
+			close(p.ch)
+		} else {
+			for i := 0; i < p.MaxActive; i++ {
+				p.ch <- struct{}{}
+			}
+		}
+		atomic.StoreUint32(&p.chInitialized, 1)
+	}
+	p.mu.Unlock()
+}
+
+// 看完 get 一个 conn的，再来看下放回一个 conn的
+func (p *Pool) put(pc *poolConn, forceClose bool) error {
+	p.mu.Lock()
+	if !p.closed && !forceClose {
+		pc.t = nowFunc()
+		p.idle.pushFront(pc) // 注意每次是放入头，更新 tc.t。所有 from -> back ，头部到尾部 t 依次减小
+		if p.idle.count > p.MaxIdle {
+			pc = p.idle.back
+			p.idle.popBack() // 如果超过了最大闲置数量，就从尾部踢出一个最久没用过的
+		} else {
+			pc = nil //没有满
+		}
+	}
+
+	if pc != nil { // 关闭被踢出的连接
+		p.mu.Unlock()
+		pc.c.Close()
+		p.mu.Lock()
+		p.active--
+	}
+
+	if p.ch != nil && !p.closed {
+		p.ch <- struct{}{}
+	}
+	p.mu.Unlock()
+	return nil
 }
