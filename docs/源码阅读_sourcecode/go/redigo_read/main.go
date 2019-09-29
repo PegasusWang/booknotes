@@ -3,6 +3,8 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"crypto/rand"
+	"crypto/sha1"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -735,8 +737,7 @@ func (c *conn) DoWithTimeout(readTimeout time.Duration, cmd string, args ...inte
 ************/
 
 func testRedigoConn() {
-	//搜了下代码发现 NewConn 函数其实并没有用到，好像只有 Dial 用到了
-
+	// 搜了下代码发现 NewConn 函数其实并没有用到，好像只有 Dial 用到了
 	conn, err := net.Dial("tcp", "127.0.0.1:6379")
 	if err != nil {
 		return
@@ -754,9 +755,9 @@ func testRedigoConn() {
 	// ^_^: 测试可以用（废话，都是copy 的代码)
 }
 
-func main() {
-	testRedigoConn()
-}
+// func main() {
+// 	testRedigoConn()
+// }
 
 /******
 上边看完了一个 tcp conn 如何和 redis server 交互的，如何解析协议的。之后看下如何实现一个 连接池(socket conn pool)
@@ -835,7 +836,7 @@ type Pool struct {
 这个类型用来实现连接池里 conn 的放入和拿出
 */
 
-type idleList struct { //实现的一个双端链表，front,back 分别指向 头和尾
+type idleList struct { //实现的一个双端链表，front,back 分别指向 头和尾。注意本身没加上线程安全控制，在调用点加上的
 	count       int
 	front, back *poolConn
 }
@@ -845,6 +846,10 @@ type poolConn struct {
 	t          time.Time // 放入时间, put 方法会更新t
 	created    time.Time
 	next, prev *poolConn
+}
+
+func (l *idleList) Count() int {
+	return l.count
 }
 
 func (l *idleList) pushFront(pc *poolConn) {
@@ -892,6 +897,7 @@ func (l *idleList) popBack() {
 func (p *Pool) Get() Conn { // 先来看下 get 方法从池里获取一个 conn
 	pc, err := p.get(nil)
 	if err != nil {
+		fmt.Println(err)
 		return errorConn{err}
 	}
 	return &activeConn{p: p, pc: pc}
@@ -917,13 +923,140 @@ type activeConn struct {
 	state int // 参考下边的 state 定义, 表示现在的链接使用哪个
 }
 
-// 这里定义了几个 state
-const (
-	connectionWatchState = 1 << iota
-	connectionMultiState
-	connectionSubscribeState
-	connectionMonitorState
+var (
+	sentinel     []byte
+	sentinelOnce sync.Once
 )
+var ErrPoolExhausted = errors.New("redigo: connection pool exhausted")
+
+var (
+	errPoolClosed = errors.New("redigo: connection pool closed")
+	errConnClosed = errors.New("redigo: connection closed")
+)
+
+func initSentinel() {
+	p := make([]byte, 64)
+	if _, err := rand.Read(p); err == nil {
+		sentinel = p
+	} else {
+		h := sha1.New()
+		io.WriteString(h, "Oops, rand failed. Use time instead.")
+		io.WriteString(h, strconv.FormatInt(time.Now().UnixNano(), 10))
+		sentinel = h.Sum(nil)
+	}
+}
+
+// 看下 activeConn 的几个方法
+// Close 这个方法用来放回连接池，根据状态先向 redis 发送中断命令，然后放回到连接池，注意并不会关闭 socket
+func (ac *activeConn) Close() error {
+	pc := ac.pc
+	if pc == nil {
+		return nil
+	}
+	ac.pc = nil
+
+	if ac.state&connectionMultiState != 0 { //这里需要根据状态来做一个清理，不能直接关闭 socket
+		pc.c.Send("DISCARD")
+		ac.state &^= (connectionMultiState | connectionWatchState)
+	} else if ac.state&connectionWatchState != 0 {
+		pc.c.Send("UNWATCH")
+		ac.state &^= connectionWatchState
+	}
+	if ac.state&connectionSubscribeState != 0 {
+		pc.c.Send("UNSUBSCRIBE")
+		pc.c.Send("PUNSUBSCRIBE")
+		// To detect the end of the message stream, ask the server to echo
+		// a sentinel value and read until we see that value.
+		sentinelOnce.Do(initSentinel)
+		pc.c.Send("ECHO", sentinel)
+		pc.c.Flush()
+		for {
+			p, err := pc.c.Receive()
+			if err != nil {
+				break
+			}
+			if p, ok := p.([]byte); ok && bytes.Equal(p, sentinel) {
+				ac.state &^= connectionSubscribeState
+				break
+			}
+		}
+	}
+	pc.c.Do("")
+	ac.p.put(pc, ac.state != 0 || pc.c.Err() != nil) //NOTE: 这一步又重新放回连接池
+	return nil
+}
+
+func (ac *activeConn) Err() error {
+	pc := ac.pc
+	if pc == nil {
+		return errConnClosed
+	}
+	return pc.c.Err()
+}
+
+func (ac *activeConn) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
+	pc := ac.pc
+	if pc == nil {
+		return nil, errConnClosed
+	}
+	ci := lookupCommandInfo(commandName)
+	ac.state = (ac.state | ci.Set) &^ ci.Clear
+	return pc.c.Do(commandName, args...)
+}
+
+func (ac *activeConn) DoWithTimeout(timeout time.Duration, commandName string, args ...interface{}) (reply interface{}, err error) {
+	pc := ac.pc
+	if pc == nil {
+		return nil, errConnClosed
+	}
+	cwt, ok := pc.c.(ConnWithTimeout)
+	if !ok {
+		return nil, errTimeoutNotSupported
+	}
+	ci := lookupCommandInfo(commandName)
+	ac.state = (ac.state | ci.Set) &^ ci.Clear
+	return cwt.DoWithTimeout(timeout, commandName, args...)
+}
+
+func (ac *activeConn) Send(commandName string, args ...interface{}) error {
+	pc := ac.pc
+	if pc == nil {
+		return errConnClosed
+	}
+	ci := lookupCommandInfo(commandName)
+	ac.state = (ac.state | ci.Set) &^ ci.Clear
+	return pc.c.Send(commandName, args...)
+}
+
+func (ac *activeConn) Flush() error {
+	pc := ac.pc
+	if pc == nil {
+		return errConnClosed
+	}
+	return pc.c.Flush()
+}
+
+func (ac *activeConn) Receive() (reply interface{}, err error) {
+	pc := ac.pc
+	if pc == nil {
+		return nil, errConnClosed
+	}
+	return pc.c.Receive()
+}
+
+func (ac *activeConn) ReceiveWithTimeout(timeout time.Duration) (reply interface{}, err error) {
+	pc := ac.pc
+	if pc == nil {
+		return nil, errConnClosed
+	}
+	cwt, ok := pc.c.(ConnWithTimeout)
+	if !ok {
+		return nil, errTimeoutNotSupported
+	}
+	return cwt.ReceiveWithTimeout(timeout)
+}
+
+var nowFunc = time.Now // for testing
 
 // 上边看到 Get 方法调用了内部方法 get 来获取。先清理过期conn，然后返回一个连接池的
 // conn，如果连接池空了则新建一个conn返回
@@ -1001,6 +1134,7 @@ func (p *Pool) get(ctx interface { // 类似匿名结构体那种定义方式,�
 		}
 		p.mu.Unlock()
 	}
+	fmt.Println("After GET count is", p.idle.Count(), p.active)
 	return &poolConn{c: c, created: nowFunc()}, err
 }
 
@@ -1026,12 +1160,12 @@ func (p *Pool) lazyInit() {
 	p.mu.Unlock()
 }
 
-// 看完 get 一个 conn的，再来看下放回一个 conn的
+// 看完 get 一个 conn的，再来看下放回一个 conn的。注意这个是私有方法，不对外暴露。看下一个 Close 如何调用 put
 func (p *Pool) put(pc *poolConn, forceClose bool) error {
 	p.mu.Lock()
 	if !p.closed && !forceClose {
 		pc.t = nowFunc()
-		p.idle.pushFront(pc) // 注意每次是放入头，更新 tc.t。所有 from -> back ，头部到尾部 t 依次减小
+		p.idle.pushFront(pc) // 注意每次是放入头(get也是从头部获取)，更新 tc.t。所有 from -> back ，头部到尾部 t 依次减小
 		if p.idle.count > p.MaxIdle {
 			pc = p.idle.back
 			p.idle.popBack() // 如果超过了最大闲置数量，就从尾部踢出一个最久没用过的
@@ -1051,5 +1185,49 @@ func (p *Pool) put(pc *poolConn, forceClose bool) error {
 		p.ch <- struct{}{}
 	}
 	p.mu.Unlock()
+	fmt.Println("After PUT count is", p.idle.Count(), p.active)
 	return nil
+}
+
+// Close releases the resources used by the pool.  TODO(wnn) 如何放回连接池的？-> 看 activeConn.Close
+func (p *Pool) Close() error { // 清理链表；关闭连接
+	p.mu.Lock()
+	if p.closed {
+		p.mu.Unlock()
+		return nil
+	}
+	p.closed = true
+	p.active -= p.idle.count
+	pc := p.idle.front
+	p.idle.count = 0
+	p.idle.front, p.idle.back = nil, nil
+	if p.ch != nil {
+		close(p.ch)
+	}
+	p.mu.Unlock()
+	for ; pc != nil; pc = pc.next { // 注意 activeConn.Close 是放回连接池，Pool 的 close 是真的关闭连接
+		pc.c.Close()
+	}
+	return nil
+}
+
+func testPool() {
+	pool := Pool{
+		// Other pool configuration not shown in this example.
+		Dial: func() (Conn, error) {
+			c, err := Dial("tcp", ":6379")
+			if err != nil {
+				return nil, err
+			}
+			return c, nil
+		},
+	}
+	conn := pool.Get()
+	defer conn.Close()
+	conn2 := pool.Get()
+	defer conn2.Close()
+}
+
+func main() {
+	testPool()
 }
