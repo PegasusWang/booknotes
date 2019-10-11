@@ -2,9 +2,11 @@
 "github.com/fatih/pool"
 关于实现一个连接池"github.com/fatih/pool" 代码阅读
 
-连接池：conn pool,通过实现 tcp 连接复用，防止频繁创建和销毁连接的开销
-go 里常见的使用 channel, 链表等（redigo) 来实现连接池。
+连接池：
+conn pool,通过实现 tcp 连接复用，防止频繁创建和销毁连接的开销，
+一般在 redis/mysql 实现的 client 中常见。
 
+go 里常见的使用 channel, 双端链表等（redigo)，slice(go-redis use []*Conn) 来实现连接池。
 */
 
 package main
@@ -27,7 +29,7 @@ var (
 // 先定义 Pool 接口，包括 get/close/len
 type Pool interface {
 	Get() (net.Conn, error)
-	Close()
+	Close() //关闭连接池中的连接，不同于 PoolConn 的 close 方法是放回(或者关闭)连接池
 	Len() int
 }
 
