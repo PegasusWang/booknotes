@@ -726,3 +726,15 @@ intset 是紧凑数组
 
 
 # 探索『快速列表』内部
+
+redis 早期存储 list 使用 ziplist 和 linkedlist，元素少时用 ziplist，元素多了用 linkedlist。
+考虑链表的附加空间太高， prev,next 占用空间，另外每个节点内存单独分配，加重碎片化，影响内存管理效率。
+
+![quicklist](./quicklist.png)
+![quicklist](./quicklist1.png)
+
+每个 ziplist 默认 8k 字节，超过了这个字节数，会新起一个 ziplist。ziplist 长度由 list-max-ziplist-size 决定
+
+默认 压缩深度0也就是不压缩，由 list-compress-depth 确定。
+为了支持快速 push/pop，quicklist 首尾两个 ziplist 不压缩，此时深度就是1。
+如果深度为2，就表示 quicklist 的首尾第一个 ziplist 和收尾第 2 个都不压缩。
