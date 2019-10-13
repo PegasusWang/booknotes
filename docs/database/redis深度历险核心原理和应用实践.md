@@ -627,3 +627,27 @@ Java redis client。每次从 JedisPool 获取一个 Jedis 对象独占，使用
 # 扩展9：redis 安全通信
 
 spied 是一款 ssl 代理
+
+
+# 源码1：字符串内部结构
+
+redis 字符串 sds (Simple Dynamic String)，带有长度信息的字节数组。
+redis 字符串在长度特别短时，使用 emb 形式存储(embeded)，长度超过44使用 raw 存储。
+字符串小于 1M 之前，扩容采用加倍策略，长度超过 1M 之后，每次扩容只增加 1M。
+
+```c
+struct SDS<T> {
+	T capacity; //1byte
+	T len; //1byte
+	byte flags;//特殊标识位, 1byte
+	byte[] content; 
+}
+struct RedisObject {
+	int4 type; //4bits
+	int4 encoding; // 4bits
+	int24 lru; //24bits
+	int32 refcount; // 4bytes
+	void *ptr; // 8bytes, 64-bit system
+} robj; // 一个RedisObject 对象头占用16 byte
+```
+
