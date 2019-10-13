@@ -26,7 +26,7 @@ pages:
       - 《mysql性能调优与架构实践》: 'database/mysql性能调优与架构实践.md'
       - 《Mysql技术内幕InnoDB存储引擎》: 'database/Mysql技术内幕InnoDB存储引擎.md'
       - 《Redis实战》: 'database/redis实战.md'
-      - 《Redis深度历险核心原理和应用实践》: 'database/redis深度历险核心原理和应用实践.md'
+      - 《Redis深度历险核心原理和应用实践》: 'database/redis深度历险核心原理和应用实践/book.md'
       - 《redis设计与实现》: 'database/redis设计与实现.md'
       - 《七周七数据库》: 'database/七周七数据库.md'
       - 《深入浅出mysql》: 'database/深入浅出mysql.md'

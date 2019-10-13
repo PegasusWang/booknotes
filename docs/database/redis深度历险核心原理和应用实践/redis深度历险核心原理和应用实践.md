@@ -651,3 +651,78 @@ struct RedisObject {
 } robj; // 一个RedisObject 对象头占用16 byte
 ```
 
+# 源码2：探索字典内部
+
+字典使用两个 hashtable，通常只有一个有值，但是当 dict 扩容缩容时，需要分配薪的 hashtable，然后渐进式搬迁，
+这时两个 hashtable 分别存储旧的和新的 hashtable。搬迁结束后，旧的 hashtable 被删除，新的 hashtable 取而代之。
+
+hashtable 和 java HashMap 类似，通过分桶的方式解决冲突，第一维是数组，第二维是链表。
+数组中存储的是第二维链表的第一个元素的指针。
+
+```c
+struct dictEntry {
+	void *key;
+	void *val;
+	dictEntry *next; // 链接下一个 entry
+}
+
+struct dictht {
+	dictEntry** table;
+	long size; // 第一维数组长度
+	long used; // hash 表中元素个数
+}
+```
+
+### 渐进式 rehash
+
+redis 使用渐进式rehash （直接 rehash 操作O(n)无法接受)，搬迁操作埋伏在当前字典的后续指令中（来自客户端的hset/hdel等),
+但是有可能客户端闲下来了，所以 redis 还会在定时任务中队字典进行主动搬迁。
+
+### 查找过程
+
+通过 hash 函数找到槽，如果对应的槽没有元素，就遍历它的链表继续找。
+
+### hash 函数
+
+最好是 hash 比较均匀，redis 字典默认是 hash 函数是 siphash。
+siphash在输入 key 很小的情况下，也能产生随机性很好的输出。
+
+### hash 攻击
+
+恶意构造是的 hash 很多元素到个别链表中，查找效率极速下降。
+
+### 扩容
+
+正常情况下当 hash 表中的元素个数等于第一维数组长度就会扩容到原来的两倍。
+不过 redis 做 bgsave时，为了减少内存页过多分离(Copy On Write)，redis 尽量不去扩容(dict_can_resize)，
+但是如果 hash 表元素个数已经达到了第一纬数组5倍(dict_force_resize_ratio)，会强制扩容。
+
+### 缩容
+
+元素个数低于数组长度的 10%，缩容不会考虑 redis 是否在做 bgsave.
+
+### set 结构
+也是字典，只不过所有的 value 值时NULL，其他特性和字典一样。
+
+
+# 探索『压缩列表』内部
+
+redis 为了节约空间，zset 和 hash 容器对象在元素较少的时候，使用 压缩列表ziplist 存储。
+
+![ziplist](./ziplist.png)
+
+ziplist紧凑存储，没有冗余空间，插入一个新的元素需要调用 realloc 扩展内存。
+如果 ziplist 占据内存太大，重新分配内存和拷贝内存就会有很大消耗。所以 ziplist 不适合大型字符串，元素也不宜过多。
+
+插入操作造成级联更新（修改prevlen字段）
+
+#### IntSet
+
+当 set 集合容纳的元素都是整数并且元素个数较小时，Redis 会使用 intset 来存储。
+
+intset 是紧凑数组
+
+![intset](./intset.png)
+
+
+# 探索『快速列表』内部
