@@ -122,7 +122,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../../../database/redis深度历险核心原理和应用实践/">《Redis深度历险核心原理和应用实践》</a>
+    <a class="" href="../../../database/redis深度历险核心原理和应用实践/book.md">《Redis深度历险核心原理和应用实践》</a>
                 </li>
                 <li class="">
                     
@@ -181,6 +181,14 @@
                 <li class="">
                     
     <a class="" href="../../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go101/book/">《Go101》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/network-programming-with-go/book/">《Network Programming with go》</a>
                 </li>
                 <li class="">
                     
@@ -485,6 +493,15 @@
     
 
     <li class="toctree-l3"><a href="#5">5. 微服务架构中的业务逻辑设计</a></li>
+    
+
+    <li class="toctree-l3"><a href="#6">6. 使用事件溯源开发业务逻辑</a></li>
+    
+
+    <li class="toctree-l3"><a href="#7">7. 在微服务架构中实现查询</a></li>
+    
+
+    <li class="toctree-l3"><a href="#8-api">8 外部 API 模式</a></li>
     
 
     </ul>
@@ -873,7 +890,7 @@ grpc 不太好处理获取多个资源的情况</p>
 <li>限制客户端向服务器发出请求的数量</li>
 <li>断路器模式：失败超过一定阈值就启动断路器，让后续调用立刻失败。之后客户端继续尝试，如果调用成功，则解除断路器.</li>
 </ul>
-<p>Netflix Hystrix shi 一个实现这些和其它模式的开源库。</p>
+<p>Netflix Hystrix 是 个实现这些和其它模式的开源库。</p>
 <p>从服务失效故障中恢复</p>
 <ul>
 <li>返回错误</li>
@@ -941,6 +958,70 @@ grpc 不太好处理获取多个资源的情况</p>
 <li>可重复性事务</li>
 </ul>
 <h1 id="5">5. 微服务架构中的业务逻辑设计</h1>
+<p>事务脚本模式通常是实现简单业务逻辑的好方法，复杂业务逻辑应该考虑面向对象的领域模型模式。</p>
+<p>创建或者更新聚合时应当发布领域事件。</p>
+<h1 id="6">6. 使用事件溯源开发业务逻辑</h1>
+<p>什么是事件溯源：以事件为中心的技术，用于实现业务逻辑和聚合的持久化。聚合作为一系列事件存储在数据库中。
+每个事件代表聚合的状态变化。聚合的业务逻辑围绕生成和使用这些事件的要求而构建。</p>
+<p>event_id, event_type, entity_type, entity_id, event_data</p>
+<p>幂等方式处理消息：可以使用相同的消息多次安全低调用消息接收方</p>
+<h1 id="7">7. 在微服务架构中实现查询</h1>
+<p>通常两种模式：</p>
+<ul>
+<li>API 组合模式：让拥有数据的服务的客户端负责调用服务，并组合服务返回的查询结果。(优先使用)</li>
+<li>CQRS(命令查询职责隔离)模式：维护了一个或者多个视图数据库，唯一目的是支持查询。</li>
+</ul>
+<p>API组合模式弊端：</p>
+<ul>
+<li>额外开销</li>
+<li>可用性降低风险。如果服务挂了，可以返回默认数据，缓存的数据，或者不完整数据</li>
+<li>缺乏事务数据一致性</li>
+</ul>
+<h1 id="8-api">8 外部 API 模式</h1>
+<p>使用 API 的客户端一共有四种：
+- web 应用程序
+- 浏览器 js 程序
+- 移动应用(iOS/Android)
+- 第三方开发人员编写的应用程序</p>
+<p>移动网络（和互联网）的延迟通常是局域网的100倍。</p>
+<p>API Geteway 模式：API Geteway是一种服务，该服务是外部 API 客户端进入基于微服务应用程序的入口点。
+负责请求路由，API 组合，身份验证，流量控制，速度限制等功能。负责请求路由，API 组合和协议转换。</p>
+<ul>
+<li>请求路由：类似 nginx 反向代理</li>
+<li>API 组合：提供粗粒度 API 暴露给客户端</li>
+<li>协议转换：客户端协议和内部协议转换</li>
+<li>边缘功能：身份验证，访问授权，速率限制，缓存，指标收集，请求日志</li>
+</ul>
+<p>API Geteway 使用分层模块化架构，API 层由每个客户端单独的模块实现，公共层处理公有功能，比如身份验证。</p>
+<p>后端前置：为每种类型的客户端实现单独的 API Gateway。</p>
+<ul>
+<li>好处: 封装了应用程序内部结构，减少客户端和应用程序之间的往返次数，简化客户端代码</li>
+<li>弊端：必须开发、部署和管理的高可用组件</li>
+</ul>
+<p>Netflix Faclor</p>
+<p>API Gateway 设计难题：</p>
+<ul>
+<li>性能和可扩展性</li>
+<li>使用响应式编程抽象编写可维护的代码。Futures 库</li>
+<li>处理局部故障。API Gateway  在调用服务时使用断路器模式。</li>
+<li>服务发现，监控等</li>
+</ul>
+<p>使用：</p>
+<ul>
+<li>现成的  API Gateway 产品或者服务。灵活性低，几乎不支持 API 组合<ul>
+<li>AWS API Gateway</li>
+<li>产品化的 API Gateway: Kong , Traefik。需要自己运维</li>
+</ul>
+</li>
+<li>使用 API Gateway 框架或者 web 框架自己开发<ul>
+<li>实现定义路由规则的机制以简化复杂代码</li>
+<li>正确实现 HTTP 代理行为，包括如何处理 HTTP 头</li>
+<li>Netflix Zuul(实现边缘路由功能), Spring Cloud Zuul</li>
+<li>Spring Cloud Gateway</li>
+</ul>
+</li>
+</ul>
+<p>使用GraphQL 来实现 API Gateway</p>
               
             </div>
           </div>

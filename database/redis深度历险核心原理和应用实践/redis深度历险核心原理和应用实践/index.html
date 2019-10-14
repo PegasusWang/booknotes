@@ -7,23 +7,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   
-  <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>《Redis深度历险核心原理和应用实践》 - PegasusWang的读书笔记</title>
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>应用1：分布式锁 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
-  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u300aRedis\u6df1\u5ea6\u5386\u9669\u6838\u5fc3\u539f\u7406\u548c\u5e94\u7528\u5b9e\u8df5\u300b";
-    var mkdocs_page_input_path = "database/redis\u6df1\u5ea6\u5386\u9669\u6838\u5fc3\u539f\u7406\u548c\u5e94\u7528\u5b9e\u8df5.md";
+    var mkdocs_page_name = "\u5e94\u75281\uff1a\u5206\u5e03\u5f0f\u9501";
+    var mkdocs_page_input_path = "database/redis\u6df1\u5ea6\u5386\u9669\u6838\u5fc3\u539f\u7406\u548c\u5e94\u7528\u5b9e\u8df5/redis\u6df1\u5ea6\u5386\u9669\u6838\u5fc3\u539f\u7406\u548c\u5e94\u7528\u5b9e\u8df5.md";
     var mkdocs_page_url = null;
   </script>
   
-  <script src="../../js/jquery-2.1.1.min.js" defer></script>
-  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../js/modernizr-2.8.3.min.js" defer></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
@@ -36,9 +36,9 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <a href="../../.." class="icon icon-home"> PegasusWang的读书笔记</a>
         <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
@@ -50,7 +50,7 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../..">简介</a>
+    <a class="" href="../../..">简介</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -59,39 +59,39 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+    <a class="" href="../../../code/work_with_legacy_code/">《Work with legacy code》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../code/代码大全/">《代码大全》</a>
+    <a class="" href="../../../code/代码大全/">《代码大全》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+    <a class="" href="../../../code/代码的未来/">《代码的未来》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../code/基本功/">《基本功》</a>
+    <a class="" href="../../../code/基本功/">《基本功》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+    <a class="" href="../../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+    <a class="" href="../../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+    <a class="" href="../../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+    <a class="" href="../../../code/编程匠艺/">《编程匠艺》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+    <a class="" href="../../../code/领域驱动设计/">《领域驱动设计》</a>
                 </li>
     </ul>
 	    </li>
@@ -102,140 +102,43 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../getting_started_with_impala/">《Getting started with impala》</a>
+    <a class="" href="../../getting_started_with_impala/">《Getting started with impala》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../mysql必知必会/">《mysql必知必会》</a>
+    <a class="" href="../../mysql必知必会/">《mysql必知必会》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+    <a class="" href="../../mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+    <a class="" href="../../Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../redis实战/">《Redis实战》</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">《Redis深度历险核心原理和应用实践》</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#1">应用1：分布式锁</a></li>
-    
-
-    <li class="toctree-l3"><a href="#2-">应用2：缓兵之计-延时队列</a></li>
-    
-
-    <li class="toctree-l3"><a href="#3">应用3：节衣缩食：位图</a></li>
-    
-
-    <li class="toctree-l3"><a href="#4-hyperloglog">应用4: 四两拨千斤：HyperLogLog</a></li>
-    
-
-    <li class="toctree-l3"><a href="#5">应用5：布隆过滤器</a></li>
-    
-
-    <li class="toctree-l3"><a href="#6-">应用6：断尾求生-简单限流</a></li>
-    
-
-    <li class="toctree-l3"><a href="#7-">应用7：一毛不拔-漏斗限流</a></li>
-    
-
-    <li class="toctree-l3"><a href="#8-gehash">应用8：近水楼台-GeHash</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#geohash">GEOHash 算法，地理位置距离排序</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#9-scan">应用9：大海捞针-Scan</a></li>
-    
-
-    <li class="toctree-l3"><a href="#1-io">原理1：线程 IO 模型</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#_1">指令队列</a></li>
-        
-            <li><a class="toctree-l4" href="#_2">响应队列</a></li>
-        
-            <li><a class="toctree-l4" href="#_3">定时任务</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#2-_1">原理2：交头接耳- 通信协议</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#-">客户端-&gt;服务器</a></li>
-        
-            <li><a class="toctree-l4" href="#-_1">服务器-&gt;客户端</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#3-">原理3：未雨绸缪-持久化</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#_4">快照，一次全量备份，内存数据的二进制序列化格式</a></li>
-        
-            <li><a class="toctree-l4" href="#aof">AOF日志，连续的增量备份，记录内存数据修改的指令记录版本。</a></li>
-        
-            <li><a class="toctree-l4" href="#_5">混合持久化</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#4-">原理4：雷厉风行-管道</a></li>
-    
-
-    <li class="toctree-l3"><a href="#5-">原理5：同舟共济-事务</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#redis-watch">redis Watch</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l3"><a href="#6pubsub">原理6：Pubsub</a></li>
-    
-
-    <li class="toctree-l3"><a href="#7-_1">原理7：开源节流-小对象压缩</a></li>
-    
-
-    <li class="toctree-l3"><a href="#8-">原理8：有备无患-主从同步</a></li>
-    
-
-    <li class="toctree-l3"><a href="#1sentinel">集群1：Sentinel</a></li>
-    
-
-    </ul>
+    <a class="" href="../../redis实战/">《Redis实战》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../redis设计与实现/">《redis设计与实现》</a>
+    <a class="" href="../book.md">《Redis深度历险核心原理和应用实践》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../七周七数据库/">《七周七数据库》</a>
+    <a class="" href="../../redis设计与实现/">《redis设计与实现》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../深入浅出mysql/">《深入浅出mysql》</a>
+    <a class="" href="../../七周七数据库/">《七周七数据库》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../高性能mysql第三版/">《高性能mysql第三版》</a>
+    <a class="" href="../../深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../高性能mysql第三版/">《高性能mysql第三版》</a>
                 </li>
     </ul>
 	    </li>
@@ -246,15 +149,15 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+    <a class="" href="../../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+    <a class="" href="../../../frontend/reactjs_小书/">《reactjs小书》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../frontend/es6标准入门/">《ES6标准入门》</a>
+    <a class="" href="../../../frontend/es6标准入门/">《ES6标准入门》</a>
                 </li>
     </ul>
 	    </li>
@@ -265,43 +168,51 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+    <a class="" href="../../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+    <a class="" href="../../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+    <a class="" href="../../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+    <a class="" href="../../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
+    <a class="" href="../../../golang/go101/book/">《Go101》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+    <a class="" href="../../../golang/network-programming-with-go/book/">《Network Programming with go》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+    <a class="" href="../../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/go_in_action(go语言实战)/">《Go In Action》</a>
+    <a class="" href="../../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+    <a class="" href="../../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../golang/go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+    <a class="" href="../../../golang/go_in_action(go语言实战)/">《Go In Action》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
                 </li>
     </ul>
 	    </li>
@@ -312,7 +223,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../java/java-basic-introduction/">《java basic introduction》</a>
+    <a class="" href="../../../java/java-basic-introduction/">《java basic introduction》</a>
                 </li>
     </ul>
 	    </li>
@@ -323,7 +234,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+    <a class="" href="../../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
                 </li>
     </ul>
 	    </li>
@@ -334,39 +245,39 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+    <a class="" href="../../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+    <a class="" href="../../../psychology/亲密关系/">《亲密关系》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../psychology/情商/">《情商》</a>
+    <a class="" href="../../../psychology/情商/">《情商》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+    <a class="" href="../../../psychology/拖延心理学/">《拖延心理学》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+    <a class="" href="../../../psychology/积极心理学/">《积极心理学》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+    <a class="" href="../../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+    <a class="" href="../../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+    <a class="" href="../../../psychology/超越自卑/">《超越自卑》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../psychology/反脆弱/">《反脆弱》</a>
+    <a class="" href="../../../psychology/反脆弱/">《反脆弱》</a>
                 </li>
     </ul>
 	    </li>
@@ -377,19 +288,19 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../python/fluent_python/">《Fluent Python》</a>
+    <a class="" href="../../../python/fluent_python/">《Fluent Python》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+    <a class="" href="../../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../python/high_performance_python/">《High Performance Python》</a>
+    <a class="" href="../../../python/high_performance_python/">《High Performance Python》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../python/python_网络编程/">《Python网络编程》</a>
+    <a class="" href="../../../python/python_网络编程/">《Python网络编程》</a>
                 </li>
     </ul>
 	    </li>
@@ -400,15 +311,15 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+    <a class="" href="../../../startup/hello_startup/">《Hello Startup》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+    <a class="" href="../../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+    <a class="" href="../../../startup/运营其实很简单/">《运营其实很简单》</a>
                 </li>
     </ul>
 	    </li>
@@ -419,11 +330,11 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+    <a class="" href="../../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+    <a class="" href="../../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
                 </li>
     </ul>
 	    </li>
@@ -434,19 +345,19 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
+    <a class="" href="../../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+    <a class="" href="../../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+    <a class="" href="../../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+    <a class="" href="../../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
                 </li>
     </ul>
 	    </li>
@@ -457,19 +368,19 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+    <a class="" href="../../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+    <a class="" href="../../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+    <a class="" href="../../../开发工具/pro_git/">《Pro Git》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+    <a class="" href="../../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
                 </li>
     </ul>
 	    </li>
@@ -480,43 +391,43 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+    <a class="" href="../../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+    <a class="" href="../../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维认知/刻意练习/">《刻意练习》</a>
+    <a class="" href="../../../思维认知/刻意练习/">《刻意练习》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+    <a class="" href="../../../思维认知/如何想到又做到/">《如何想到又做到》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维认知/学习之道/">《学习之道》</a>
+    <a class="" href="../../../思维认知/学习之道/">《学习之道》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+    <a class="" href="../../../思维认知/批判性思维工具/">《批判性思维工具》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+    <a class="" href="../../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维认知/认知天性/">《认知天性》</a>
+    <a class="" href="../../../思维认知/认知天性/">《认知天性》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维认知/超效率手册/">《超效率手册》</a>
+    <a class="" href="../../../思维认知/超效率手册/">《超效率手册》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+    <a class="" href="../../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
                 </li>
     </ul>
 	    </li>
@@ -527,7 +438,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../源码阅读_sourcecode/">《源码阅读》</a>
+    <a class="" href="../../../源码阅读_sourcecode/">《源码阅读》</a>
                 </li>
     </ul>
 	    </li>
@@ -538,27 +449,27 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+    <a class="" href="../../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+    <a class="" href="../../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+    <a class="" href="../../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+    <a class="" href="../../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+    <a class="" href="../../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../网站架构微服务/微服务设计/">《微服务设计》</a>
+    <a class="" href="../../../网站架构微服务/微服务设计/">《微服务设计》</a>
                 </li>
     </ul>
 	    </li>
@@ -569,23 +480,23 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+    <a class="" href="../../../软件工程_项目管理/人月神话/">《人月神话》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+    <a class="" href="../../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+    <a class="" href="../../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+    <a class="" href="../../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+    <a class="" href="../../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
                 </li>
     </ul>
 	    </li>
@@ -596,11 +507,11 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+    <a class="" href="../../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+    <a class="" href="../../../运维/python自动化运维/">《python自动化运维》</a>
                 </li>
     </ul>
 	    </li>
@@ -611,7 +522,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
+    <a class="" href="../../../金融_finance/穷查理宝典/">《穷查理宝典》</a>
                 </li>
     </ul>
 	    </li>
@@ -622,11 +533,11 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+    <a class="" href="../../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../互联网/用户思维/">《用户思维》</a>
+    <a class="" href="../../../互联网/用户思维/">《用户思维》</a>
                 </li>
     </ul>
 	    </li>
@@ -637,7 +548,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+    <a class="" href="../../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
                 </li>
     </ul>
 	    </li>
@@ -648,15 +559,15 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+    <a class="" href="../../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+    <a class="" href="../../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
                 </li>
     </ul>
 	    </li>
@@ -667,63 +578,63 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../career/give_and_take/">《give and take》</a>
+    <a class="" href="../../../career/give_and_take/">《give and take》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+    <a class="" href="../../../career/the_effective_engineer/">《the_effective_engineer》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/光速成长/">《光速成长》</a>
+    <a class="" href="../../../career/光速成长/">《光速成长》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/向上管理/">《向上管理》</a>
+    <a class="" href="../../../career/向上管理/">《向上管理》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/成功动机与目标/">《成功动机与目标》</a>
+    <a class="" href="../../../career/成功动机与目标/">《成功动机与目标》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+    <a class="" href="../../../career/番茄工作法/">《番茄工作法》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+    <a class="" href="../../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/知识变现/">《知识变现》</a>
+    <a class="" href="../../../career/知识变现/">《知识变现》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+    <a class="" href="../../../career/职场动物进化手册/">《职场动物进化手册》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+    <a class="" href="../../../career/职场解释系/">《职场解释系》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+    <a class="" href="../../../career/请停止无效努力/">《请停止无效努力》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/软技能/">《软技能》</a>
+    <a class="" href="../../../career/软技能/">《软技能》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+    <a class="" href="../../../career/高效15法则/">《高效15法则》</a>
                 </li>
     </ul>
 	    </li>
@@ -738,7 +649,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../..">PegasusWang的读书笔记</a>
+        <a href="../../..">PegasusWang的读书笔记</a>
       </nav>
 
       
@@ -746,15 +657,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../..">Docs</a> &raquo;</li>
+    <li><a href="../../..">Docs</a> &raquo;</li>
     
       
-        
-          <li>数据库 &raquo;</li>
-        
-      
     
-    <li>《Redis深度历险核心原理和应用实践》</li>
+    <li>应用1：分布式锁</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -787,46 +694,62 @@ blpop,brpop 阻塞操作，如果list 没有数据就会进入休眠。这里需
 <h1 id="6-">应用6：断尾求生-简单限流</h1>
 <p>思想是使用 zset 记录用户在一个时间窗口之内的操作数量。
 这种方式适合小规模的限流，比如用户发帖等。</p>
-<pre><code class="py">import time
+<pre><code class="py"># coding:utf8
+import time
 import redis
 
-
-client = client.StrictRedis()
+client = redis.StrictRedis()
 
 
 def is_action_allowed(user_id, action_key, period, max_count):
+    &quot;&quot;&quot;
+    # 指定用户 user_id 的某个行为 action_key 在特定的时间内 period 只允许发生一定的次数
+
+    :param user_id:
+    :param action_key: 行为字符串
+    :param period:
+    :param max_count:
+    &quot;&quot;&quot;
     key = &quot;hist:%s:%s&quot; % (user_id, action_key)
     now_ts = int(time.time() * 1000)  # 毫秒时间戳
     with client.pipeline() as pipe:
-        # 记录行为，这里第一个 now_ts 没啥意义，用 uuid 之类的也可以
-        pipe.zadd(key, now_ts, now_ts)
+        # 记录行为，这里第一个 now_ts 没啥意义，用 uuid 之类的也可以。，每一个行为都会作为 zset 中的一个 key 保存下来。同一个用户同一种行为用一个 zset 记录
+        pipe.zadd(key, now_ts, now_ts)  # redis&gt; ZADD myzset 1 &quot;one&quot;
         # 移除时间窗口之前的行为记录，剩下的都是时间窗口之内的
-        pipe.zremrangbyscore(key, 0, now_ts - period * 1000)
+        pipe.zremrangebyscore(key, 0, now_ts - period * 1000)
         # 获取时间窗口内的行为数量
         pipe.zcard(key)
-        pipe.expire(key, perid + 1)  # 设置 zset 过期时间，主要是为了处理冷用户持续占用内存
-        _, _, current_count = pipe.execute()
+        # 设置 zset 过期时间，主要是为了处理冷用户持续占用内存
+        # 过期时间应该等于时间窗口长度，多宽限1s
+        pipe.expire(key, period + 1)
+
+        _, _, current_count, _ = pipe.execute()
     return current_count &lt;= max_count
 
 
 for i in range(20):
-    print(is_action_allowed('laowang', 'reply', 60, 5))
+    time.sleep(0.1)
+    print(
+        is_action_allowed('laowang', 'reply', 60, 5)
+    )
 </code></pre>
 
 <h1 id="7-">应用7：一毛不拔-漏斗限流</h1>
-<pre><code class="py"># 单机漏斗算法
-
+<pre><code class="py"># coding:utf8
+# 单机漏斗算法
 import time
 # 漏斗的剩余空间代表当前行为可以持续进行的数量
 # 漏斗的流水速度代表系统允许该行为的最大频率
-
-
 class Funnel:
+    &quot;&quot;&quot;
+    漏斗的剩余空间就代表着当前行为可以持续进行的数量，漏嘴的流水速率代表着
+    系统允许该行为的最大频率
+    &quot;&quot;&quot;
     def __init__(self, capacity, leaking_rate):
         self.capacity = capacity  # 漏斗容量
         self.leaking_rate = leaking_rate  # 流水速率
         self.left_quota = capacity
-        self.leaking_ts = time.tiem()  # 上一次漏水时间
+        self.leaking_ts = time.time()  # 上一次漏水时间
 
     def make_space(self):
         now_ts = time.time()
@@ -850,6 +773,8 @@ class Funnel:
 funnels = {}  # 所有漏斗
 
 
+# capacity 漏斗容量
+# leaking_rate 漏嘴流水速率 quota/s
 def is_action_allowed(user_id, action_key, capacity, leaking_rate):
     key = '%s:%s' % (user_id, action_key)
     funnel = funnels.get(key)
@@ -857,6 +782,7 @@ def is_action_allowed(user_id, action_key, capacity, leaking_rate):
         funnel = Funnel(capacity, leaking_rate)
         funnels[key] = funnel
     return funnel.watering(1)
+
 
 for i in range(20):
     print(is_action_allowed(&quot;laoqian&quot;, &quot;reply&quot;, 15, 0.5))
@@ -1108,19 +1034,207 @@ print(double_account(client, user_id))
 <p>Wait指令：redis 复制是异步进行的，wait 可以让异步复制变身同步复制，确保强一致性（不严格）</p>
 <p>小结：如果只用来做缓存可以不用复制功能，否则就要保证主从复制。</p>
 <h1 id="1sentinel">集群1：Sentinel</h1>
+<p>Redis Sentinel 集群看成是一个 ZooKeeper 集群，它是集群高可用的心脏， 它一般是由 3~5 个节点组成，这样挂了个别节点集群还可以正常运转。
+ 它负责持续监控主从节点的健康，当主节点挂掉时，自动选择一个最优的从节点切换为 主节点。客户端来连接集群时，会首先连接 sentinel，通过 sentinel 来查询主节点的地址，
+ 然后再去连接主节点进行数据交互。当主节点发生故障时，客户端会重新向 sentinel 要地 址，sentinel 会将最新的主节点地址告诉客户端。如此应用程序将无需重启即可自动完成节 点切换。</p>
+<h1 id="2codis">集群2：分而治之：Codis</h1>
+<p>Codis  使用 go 开发，是一个代理中间件，同样使用 redis 协议对外提供服务，codis 负责将指令
+转发到后边的 redis 实例来执行，并将结果返回客户端。客户端可以使用和 redis 一样的客户端。</p>
+<p>codis 将所有key 默认划分为1024个槽(slot),首次对客户端传过来的 key 进行 crc32计算哈希值，再将
+hash 之后的整数值对1024取模得到一个余数，就是对应 key 的槽位。</p>
+<pre><code>hash = crc32(command.key)
+slot_index = hash % 1024
+redis = slots[slot_index].redis
+redis.do(command)
+</code></pre>
+
+<p>codis 使用 ZooKeeper或者etcd 来持久化槽位关系。codis 增加了 SLOTSSCAN 执行来遍历下slot 下所有槽位。
+官方建议单个集合结构的总字节容量不要超过1M，如果是粉丝列表这种业务，可能要考虑分桶存储，业务上折中。</p>
+<p>对于像是 mget 这种命令，codis 是将 key 按照所分配的示例打散分组，然后依次对每个实例调用 mget，
+最后汇总结果为一个返回给客户端。</p>
+<p>Codis 总是比官方慢半拍，但是提供了更多的 dashboard 工具来竞争。</p>
+<h1 id="3-cluster">集群3：众志成城-Cluster</h1>
+<p>Redis Cluster 把所有数据划分为 16384 的slot，每个节点负责其中一部分槽位。槽位信息存储在每个节点中，
+不像 codis 需要额外的分布式存储来存储节点槽位信息。当 redis cluster 客户端来连接集群时，它也会得到
+一份集群的槽位配置信息。</p>
+<h4 id="_6">槽位定位</h4>
+<p>Cluster 默认对 key 使用 crc32 算法计算 hash 得到一个整数值，然后用这个整数对16384取模得到具体槽位。
+Cluster 还允许用户通过 key 里嵌入 tag 标记，强制 key 所挂在的槽位等于 tag 所在槽位。</p>
+<h4 id="_7">跳转</h4>
+<p>当客户端向一个错误的节点发出了指令，该节点会发现key 并不归自己管理，这时它会向客户端发送一个特殊
+跳转指令携带目标操作的节点地址，告诉客户端去连这个节点去获取数据。</p>
+<pre><code>GET x
+-MOVED 3999 127.0.0.1:6381
+</code></pre>
+
+<h3 id="_8">迁移</h3>
+<p>redis cluster 提供了 redis-trib 可以让运维人员手动调整槽位分布。以 slot 为单位进行迁移。
+应该尽量避免大 key 的产生。</p>
+<h3 id="_9">容错</h3>
+<p>redis clsuter 可以为每个主节点设置若干从节点，单主节点故障时，集群会自动将其中某个节点提升为主节点。</p>
+<h3 id="pfail-possibly-failfail">可能下线(PFail-possibly Fail)与确定下线(Fail)</h3>
+<p>集群通过协商来确定是否需要主从切换， redis 集群节点使用 Gossip 协议广播自己的状态以及自己对整个集群认知的改变。
+如果一个节点收到了某节点失联的数量(PFail count) 达到了集群大多数，就可以标记该节点为确定下线状态(Fail),
+然后向整个集群广播，强迫其他节点也接收该节点已经下线的事实，并立即对该失联节点进行主从切换。</p>
+<p>pip install redis-py-cluster</p>
+<h1 id="1stream">扩展1：Stream</h1>
+<p>Redis 5.0 Stream: 一个新的强大的支持多播的可持久化的消息队列，借鉴了 kafka 设计。</p>
+<p>stream 有一个消费链表，将所有加入的消息都串起来，每个消息都有唯一 ID 和对应的内容。
+每个 stream 都可以挂多个消费組，每个消费组会有个游标 last_deliverd_id 在 Stream 数组之上向前移动，
+表示当前消费组消费到哪条消息了。同一份 Stream 内部的消息会被每个消费组都消费到。</p>
+<p>同一个消费组(consumer group)可以挂接多个消费者(consumer)，这些消费者是竞争关系，任意一个
+消费者读取了消息都会使游标 last_deliverd_id 往前移动。</p>
+<p>Stream 借鉴了 kafka 的消费分组概念，弥补了 Pub/Sub 不能持久化消息的缺陷。
+但是又不像 kafka，消息可以分 partition。如果非要 partion，要再客户端做，提供不同的 Stream 名称，
+对消息进行 hash 取模选择放入哪一个 Stream。</p>
+<h1 id="2-info">扩展2：无所不知 - Info 指令</h1>
+<pre><code># 查看每秒操作数
+redis-cli info stats  | grep ops
+
+# 查看连接多少客户端, connected_clients，如果rejected_connections很大，需要调整macxclients.
+redis-cli info clients
+
+# 查看占用内存，如果单个 redis 内存占用过大，并且在业务上没有大多压缩空间，可以考虑集群化了
+redis-cli info memory | grep used | grep human
+
+# 复制积压缓冲区多大，严重影响主从复制效率。积压缓冲区是环形的
+# 如果从库断开时间太长，或者缓冲区设置太小，从库无法快速恢复中断的主从同步过程，
+# 因为中间的指令被覆盖了。这个时候从库会进行全量同步模式，非常消耗 cpu 和网络资源
+redis-cli info replication | grep backlog
+redis-cli info stats | grep sync # 通过sync_partial_err(主从半同步复制失败的次数) 次数决定是否需要扩大积压缓冲区
+</code></pre>
+
+<h1 id="3_1">扩展3：再谈分布式锁</h1>
+<p>集群环境下，当主从发生 failover 时候，分布式锁是不安全的。
+同一把锁可能会被两个客户端持有。比如一个客户端在主节点持有一把锁，还没同步到从节点，主节点挂掉了。
+一个从节点变成主节点， 然后另一个客户端也去申请锁，这个时候直接就会允许加锁，结果一把锁被两个客户端同时持有。</p>
+<h3 id="redlock">Redlock 算法</h3>
+<p>redis 作者发明了 redlock 算法解决这个问题。 redlock-py</p>
+<h1 id="4">扩展4：过期策略</h1>
+<h3 id="key">过期的 key 集合</h3>
+<p>redis 会将每个设置了过期时间的 key 放到一个单独的字典中，以后会定时遍历这个字典来删除过期 key。
+出了定时遍历，还会使用惰性删除策略来删除过期 key，即访问 key 才对 key 过期时间进行检查，
+如果过期了就立刻删除。</p>
+<p>注意：开发人员要注意避免有大量 key 同时过期，最好设置一个随机范围。否则可能会有卡顿报警现象。</p>
+<h3 id="_10">从库过期策略</h3>
+<p>从库不会进行过期扫描，从库对过期处理是被动的。主库在 key 过期时，会在 AOF 文件增加一条 del 指令，
+同步到所有的从库，从库通过执行 del 来删除过期 key。</p>
+<h1 id="5lru">扩展5：LRU</h1>
+<p>当 redis 内存超过物理限制，内存数据会开始和磁盘产生频繁交换（swap），性能急剧下降，基本不可用。
+一般不允许 redis 出现交换。redis提供了配置参数 maxmemory 来限制内存超出期望大小。</p>
+<ul>
+<li>noeviction。默认淘汰策略。禁止写请求，会导致线上业务不能进行</li>
+<li>volatile-lru。尝试淘汰设置了过期时间的key，最少使用的 key 优先被淘汰</li>
+<li>volatile-ttl: key的剩余寿命ttl越小，越先被淘汰</li>
+<li>volatile-random</li>
+<li>allkeys-lru : 没有设置过期时间的 key 也会被淘汰</li>
+<li>allkeys-random</li>
+</ul>
+<p>volatile-xxx 只会淘汰带过期时间的key。如果只拿 redis 做缓存，应该用 allkeys-xxx，客户端写缓存不用带上过期时间。
+如果同时用 redis 持久化，那就用 volatile-xxx.</p>
+<h3 id="lru">近似 LRU</h3>
+<p>redis 使用的一种近似 LRU，之所以不用 lru，是因为消耗大量额外内存。
+近似 lru 使用随机采样来淘汰元素，能达到和 lru 近似效果。lru 只有惰性处理。</p>
+<h1 id="6">扩展6：懒惰删除</h1>
+<p>如果删除一个 key 是一个大对象，比如一个包含了千万元素的 hash，删除会导致线程卡顿。
+redis4.0 引入了 unlink，能对删除进行惰性处理，丢给后台线程来异步回收内存。</p>
+<p>redis 同样提供了 flushdb async  和 flushall async 来让后台线程处理。</p>
+<h1 id="7-jedis">扩展7：优雅使用 Jedis</h1>
+<p>Java redis client。每次从 JedisPool 获取一个 Jedis 对象独占，使用完归还。</p>
+<h1 id="8-redis">扩展8：居安思危-保护 redis</h1>
+<h3 id="_11">指令安全</h3>
+<ul>
+<li>keys 导致 redis 卡顿</li>
+<li>flushdb/flushall 数据清空</li>
+</ul>
+<p>可以通过 rename-command 指令把一些危险的指令修改成特殊名称</p>
+<h3 id="_12">端口安全</h3>
+<p>运维人员务必在 Redis 配置文件中指定监听的 IP 地址。指定密码</p>
+<h3 id="lua">Lua 脚本安全</h3>
+<p>开发者必须禁止 Lua 脚本由用户输入的内容(UGC)生成，可能被黑客利用植入恶意代码得到 redis 主机权限。</p>
+<p>同时应该让 redis 以普通用户身份启动，即使存在恶意代码黑客也无法获取 root 权限。</p>
+<h3 id="ssl">SSL 代理</h3>
+<p>如果是公网上，可以考虑 ssl 代理。redis 官方推荐 spiped 工具</p>
+<h1 id="9redis">扩展9：redis 安全通信</h1>
+<p>spied 是一款 ssl 代理</p>
+<h1 id="1_1">源码1：字符串内部结构</h1>
+<p>redis 字符串 sds (Simple Dynamic String)，带有长度信息的字节数组。
+redis 字符串在长度特别短时，使用 emb 形式存储(embeded)，长度超过44使用 raw 存储。
+字符串小于 1M 之前，扩容采用加倍策略，长度超过 1M 之后，每次扩容只增加 1M。</p>
+<pre><code class="c">struct SDS&lt;T&gt; {
+    T capacity; //1byte
+    T len; //1byte
+    byte flags;//特殊标识位, 1byte
+    byte[] content; 
+}
+struct RedisObject {
+    int4 type; //4bits
+    int4 encoding; // 4bits
+    int24 lru; //24bits
+    int32 refcount; // 4bytes
+    void *ptr; // 8bytes, 64-bit system
+} robj; // 一个RedisObject 对象头占用16 byte
+</code></pre>
+
+<h1 id="2">源码2：探索字典内部</h1>
+<p>字典使用两个 hashtable，通常只有一个有值，但是当 dict 扩容缩容时，需要分配薪的 hashtable，然后渐进式搬迁，
+这时两个 hashtable 分别存储旧的和新的 hashtable。搬迁结束后，旧的 hashtable 被删除，新的 hashtable 取而代之。</p>
+<p>hashtable 和 java HashMap 类似，通过分桶的方式解决冲突，第一维是数组，第二维是链表。
+数组中存储的是第二维链表的第一个元素的指针。</p>
+<pre><code class="c">struct dictEntry {
+    void *key;
+    void *val;
+    dictEntry *next; // 链接下一个 entry
+}
+
+struct dictht {
+    dictEntry** table;
+    long size; // 第一维数组长度
+    long used; // hash 表中元素个数
+}
+</code></pre>
+
+<h3 id="rehash">渐进式 rehash</h3>
+<p>redis 使用渐进式rehash （直接 rehash 操作O(n)无法接受)，搬迁操作埋伏在当前字典的后续指令中（来自客户端的hset/hdel等),
+但是有可能客户端闲下来了，所以 redis 还会在定时任务中队字典进行主动搬迁。</p>
+<h3 id="_13">查找过程</h3>
+<p>通过 hash 函数找到槽，如果对应的槽没有元素，就遍历它的链表继续找。</p>
+<h3 id="hash">hash 函数</h3>
+<p>最好是 hash 比较均匀，redis 字典默认是 hash 函数是 siphash。
+siphash在输入 key 很小的情况下，也能产生随机性很好的输出。</p>
+<h3 id="hash_1">hash 攻击</h3>
+<p>恶意构造是的 hash 很多元素到个别链表中，查找效率极速下降。</p>
+<h3 id="_14">扩容</h3>
+<p>正常情况下当 hash 表中的元素个数等于第一维数组长度就会扩容到原来的两倍。
+不过 redis 做 bgsave时，为了减少内存页过多分离(Copy On Write)，redis 尽量不去扩容(dict_can_resize)，
+但是如果 hash 表元素个数已经达到了第一纬数组5倍(dict_force_resize_ratio)，会强制扩容。</p>
+<h3 id="_15">缩容</h3>
+<p>元素个数低于数组长度的 10%，缩容不会考虑 redis 是否在做 bgsave.</p>
+<h3 id="set">set 结构</h3>
+<p>也是字典，只不过所有的 value 值时NULL，其他特性和字典一样。</p>
+<h1 id="_16">探索『压缩列表』内部</h1>
+<p>redis 为了节约空间，zset 和 hash 容器对象在元素较少的时候，使用 压缩列表ziplist 存储。</p>
+<p><img alt="ziplist" src="../ziplist.png" /></p>
+<p>ziplist紧凑存储，没有冗余空间，插入一个新的元素需要调用 realloc 扩展内存。
+如果 ziplist 占据内存太大，重新分配内存和拷贝内存就会有很大消耗。所以 ziplist 不适合大型字符串，元素也不宜过多。</p>
+<p>插入操作造成级联更新（修改prevlen字段）</p>
+<h4 id="intset">IntSet</h4>
+<p>当 set 集合容纳的元素都是整数并且元素个数较小时，Redis 会使用 intset 来存储。</p>
+<p>intset 是紧凑数组</p>
+<p><img alt="intset" src="../intset.png" /></p>
+<h1 id="_17">探索『快速列表』内部</h1>
+<p>redis 早期存储 list 使用 ziplist 和 linkedlist，元素少时用 ziplist，元素多了用 linkedlist。
+考虑链表的附加空间太高， prev,next 占用空间，另外每个节点内存单独分配，加重碎片化，影响内存管理效率。</p>
+<p><img alt="quicklist" src="../quicklist.png" />
+<img alt="quicklist" src="../quicklist1.png" /></p>
+<p>每个 ziplist 默认 8k 字节，超过了这个字节数，会新起一个 ziplist。ziplist 长度由 list-max-ziplist-size 决定</p>
+<p>默认 压缩深度0也就是不压缩，由 list-compress-depth 确定。
+为了支持快速 push/pop，quicklist 首尾两个 ziplist 不压缩，此时深度就是1。
+如果深度为2，就表示 quicklist 的首尾第一个 ziplist 和收尾第 2 个都不压缩。</p>
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../redis设计与实现/" class="btn btn-neutral float-right" title="《redis设计与实现》">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../redis实战/" class="btn btn-neutral" title="《Redis实战》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -1144,17 +1258,13 @@ print(double_account(client, user_id))
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../redis实战/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../redis设计与实现/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
-    <script>var base_url = '../..';</script>
-    <script src="../../js/theme.js" defer></script>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js" defer></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
-      <script src="../../search/main.js" defer></script>
+      <script src="../../../search/main.js" defer></script>
 
 </body>
 </html>
