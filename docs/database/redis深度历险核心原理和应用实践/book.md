@@ -777,3 +777,22 @@ listpack 的设计彻底消灭了 ziplist 存在的级联更新行为，元素�
 
 ### 取代 ziplist
 listpack 的设计的目的是用来取代 ziplist，不过当下还没有做好替换 ziplist 的准备，因 为有很多兼容性的问题需要考虑，ziplist 在 Redis 数据结构中使用太广泛了，替换起来复杂 度会非常之高。它目前只使用在了新增加的 Stream 数据结构中。
+
+
+# 探索 基数树 内部
+
+Rax (Radix Tree) 有序字典树，按照 key 的字典序排列，支持快速定位、插入和删除操作。
+
+![](./radix-tree.png)
+
+golang HttpRouter 就是使用的 radix-tree.
+
+Rax 被用在 Redis Stream 结构里面用于存储消息队列，在 Stream 里面消息 ID 的前缀 是时间戳 + 序号，这样的消息可以理解为时间序列消息。使用 Rax 结构进行存储就可以快 速地根据消息 ID 定位到具体的消息，然后继续遍历指定消息之后的所有消息。
+
+
+# 参考：
+
+- https://redis.io/
+- http://antirez.com/latest/0
+- https://redis.io/modules
+- https://pauladamsmith.com/articles/redis-under-the-hood.html
