@@ -1,4 +1,3 @@
-
 # 21. Channels - The Go Way to do concurrency synchronizations
 
 Don't (let computations) communicate by sharing memroy, (let them) share memory by communicating (through channels).
@@ -100,3 +99,218 @@ type assert and type switch
 
 - Values of []t can't be directly converted to []I, even if type T implements interface type I.
 - Each method specified in a interface type corresponds to an implicit function.
+
+
+# 37 Channel Use Cases
+
+## Use channels as Futures/Promises
+
+#### Return receive-only channels as results
+
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func longTimeRequest() <-chan int32 {
+	r := make(chan int32)
+	go func() {
+		// simulate a workload
+		time.Sleep(time.Second * 3)
+		r <- rand.Int31n(100)
+	}()
+	return r
+}
+
+func sumSquares(a, b int32) int32 {
+	return a*a + b*b
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	a, b := longTimeRequest(), longTimeRequest()
+	fmt.Println(sumSquares(<-a, <-b)) // 3s 返回, a,b 并发执行的
+}
+```
+
+#### Pass send-only channels as arguments
+
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func longTiemRequest(r chan<- int32) {
+	// simulate a worklaod
+	time.Sleep(time.Second * 3)
+	r <- rand.Int31n(100)
+}
+
+func sumSquares(a, b int32) int32 {
+	return a*a + b*b
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	ra, rb := make(chan int32), make(chan int32)
+	go longTiemRequest(ra)
+	go longTiemRequest(rb)
+	fmt.Println(sumSquares(<-ra, <-rb))
+}
+```
+
+#### The first response wins
+
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func source(c chan<- int32) {
+	ra, rb := rand.Int31(), rand.Intn(3)+1
+	time.Sleep(time.Duration(rb) * time.Second)
+	c <- ra
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	beg := time.Now()
+	c := make(chan int32, 5) // must bufferd channel
+
+	for i := 0; i < cap(c); i++ {
+		go source(c)
+	}
+	// only frist resposne will be used
+	rnd := <-c
+	fmt.Println(time.Since(beg))
+	fmt.Println(rnd)
+}
+```
+
+## Use Channels for Notifications
+
+Use blank struct{} as element types of the notification channels, size of type struct{} is zero, doesn't consume memory.
+
+#### 1-To-1 notification by sending a value to a channel
+
+
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"os"
+	"sort"
+)
+
+func main() {
+
+	values := make([]byte, 32*1024*1024)
+	if _, err := rand.Read(values); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	done := make(chan struct{})
+	go func() {
+		sort.Slice(values, func(i, j int) bool {
+			return values[i] < values[j]
+		})
+		// notify sorting is done
+		done <- struct{}{}
+	}()
+
+	// do some other things
+	fmt.Println("other thing")
+	fmt.Println(values[0], values[len(values)-1])
+}
+```
+
+#### 1-To-1 notification by receiving a value from a channel
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	done := make(chan struct{})
+	go func() {
+		fmt.Print("hello")
+		time.Sleep(time.Second * 2)
+		<-done
+	}()
+	// blocked here, wait for a notification
+	done <- struct{}{}
+	fmt.Println(" world")
+}
+```
+
+slowers notify the faster waiting for notifications.
+
+#### N-to-1 and 1-to-N notifications
+
+
+```go
+package main
+
+import (
+	"log"
+	"time"
+)
+
+// T type
+type T = struct{}
+
+func worker(id int, ready <-chan T, done chan<- T) {
+	<-ready // block here and wait a notification
+	log.Print("Worker#", id, " starts.")
+	// simulate a workload
+	time.Sleep(time.Second * time.Duration(id+1))
+	log.Print("Worker#", id, " job done.")
+	// notify main goroutine (n-to-1)
+	done <- T{}
+}
+
+func main() {
+	log.SetFlags(0)
+	ready, done := make(chan T), make(chan T)
+	go worker(0, ready, done)
+	go worker(1, ready, done)
+	go worker(2, ready, done)
+
+	// simulate an initialization phase
+	time.Sleep(time.Second * 3 / 2)
+	// 1-to-n notifications
+	ready <- T{}
+	ready <- T{}
+	ready <- T{}
+	// Being N-to-1 notified
+	<-done
+	<-done
+	<-done
+}
+```
+
+更常见的使用 sync.WaitGroup 做 N-to-1，通过 close channels 实现 1-to-N.
+
+#### Broadcast (1-To-N) notifications by closing a channel
+
+上例中的三个发送 ready 可以直接换成一个 close(ready)
+
+#### Timer: scheduled notification
