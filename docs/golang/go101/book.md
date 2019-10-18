@@ -314,3 +314,207 @@ func main() {
 上例中的三个发送 ready 可以直接换成一个 close(ready)
 
 #### Timer: scheduled notification
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func AfterDuration(d time.Duration) <-chan struct{} {
+	c := make(chan struct{}, 1)
+	go func() {
+		time.Sleep(d)
+		c <- struct{}{}
+	}()
+	return c
+}
+
+func main() {
+	fmt.Println("hi")
+	<-AfterDuration(time.Second)
+	fmt.Println("Hello!")
+	<-AfterDuration(time.Second)
+	fmt.Println("bye")
+}
+```
+
+实际中使用 time.After
+
+
+## Use Channels as Mutex Locks
+
+two manners to use one-capacity bufferd channels as mutex locks.
+
+- Lock through a send, unlock through a receive
+- Lock through a receive, unlock through a send
+
+
+```go
+// lock through send
+package main
+
+import "fmt"
+
+func main() {
+	mutex := make(chan struct{}, 1) // capacity must be one
+	counter := 0
+
+	increase := func() {
+		mutex <- struct{}{} // lock
+		counter++
+		<-mutex // unlock
+	}
+
+	const n = 1000
+	increase1000 := func(done chan<- struct{}) {
+		for i := 0; i < n; i++ {
+			increase()
+		}
+		done <- struct{}{}
+	}
+
+	done := make(chan struct{})
+	go increase1000(done)
+	go increase1000(done)
+	<-done
+	<-done
+	fmt.Println(counter) //2000
+}
+```
+
+## Use Channels as Counting Semaphores
+
+Buffered channels can be used as counting semaphores.
+Counting semaphores can be viewed a multi-owner locks, can have most N owners at any time.
+
+- Acquire ownership through a send, release through a receive
+- Acquire ownership through a receive, release through a send
+
+
+```go
+// acquire-through-receiving.go
+package main
+
+import (
+	"log"
+	"math/rand"
+	"time"
+)
+
+type Seat int
+type Bar chan Seat
+
+func (bar Bar) ServeCustomer(c int) {
+	log.Print("costomer#", c, " enters the bar")
+	seat := <-bar // need a seat to drink
+	log.Print("++ customer#", c, " drinks at seat#", seat)
+	time.Sleep(time.Second * time.Duration(2+rand.Intn(6)))
+	log.Print("-- customer#", c, " free seat#", seat)
+	bar <- seat // free seat and leave the bar
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	bar24x7 := make(Bar, 10) // bar24x7 has 10 seat
+	for seatId := 0; seatId < cap(bar24x7); seatId++ {
+		// None of the sends will blocks
+		bar24x7 <- Seat(seatId)
+	}
+
+	for customerId := 0; ; customerId++ {
+		time.Sleep(time.Second)
+		go bar24x7.ServeCustomer(customerId)
+	}
+
+	// sleeping != blocking
+	for {
+		time.Sleep(time.Second)
+	}
+}
+```
+
+
+```go
+// channeltest/go101/acquire-through-sending.go
+package main
+
+import (
+	"log"
+	"math/rand"
+	"time"
+)
+
+type Customer struct{ id int }
+type Bar chan Customer
+
+func (bar Bar) ServeCustomer(c Customer) {
+	log.Print("++ customer#", c.id, " staring drinking")
+	time.Sleep(time.Second * time.Duration(3+rand.Intn(16)))
+	log.Print("-- customer#", c, " leaves the bar")
+	<-bar // leaves the bar and save a space
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	bar24x7 := make(Bar, 10) // bar24x7 has 10 seat
+	for customerId := 0; ; customerId++ {
+		time.Sleep(time.Second * 2)
+		customer := Customer{customerId}
+		bar24x7 <- customer
+		go bar24x7.ServeCustomer(customer)
+	}
+	for {
+		time.Sleep(time.Second)
+	}
+
+}
+```
+
+## Dialogue(Ping-Pong)
+
+
+```go
+// channeltest/go101/two-goroutines-dialogue-through-channel.go
+package main
+
+import (
+	"fmt"
+	"os"
+	"time"
+)
+
+type Ball uint64
+
+func Play(playerName string, table chan Ball) {
+	var lastValue Ball = 1
+	for {
+		ball := <-table //get the ball
+		fmt.Println(playerName, ball)
+		ball += lastValue
+		if ball < lastValue { // overflow
+			os.Exit(0)
+		}
+		lastValue = ball
+		table <- ball
+		time.Sleep(time.Second)
+	}
+}
+
+func main() {
+	table := make(chan Ball)
+	go func() {
+		table <- 1 // throw ball on table,开球
+	}()
+	go Play("A:", table)
+	Play("B", table)
+}
+```
+
+## Channel Encapsulated in Channel
+
+
