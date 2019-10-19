@@ -329,5 +329,35 @@ API Gateway 设计难题：
   - Netflix Zuul(实现边缘路由功能), Spring Cloud Zuul
   - Spring Cloud Gateway
 
-
 使用GraphQL 来实现 API Gateway
+
+
+# 9. 微服务架构中的测试策略(上)
+
+测试用例：用于特定目标的一组测试输入、执行条件和预期结果。
+
+验证被测系统（System under Test, SUT)，一组相关的测试用例集构成一个测试套件（test suite)
+
+
+自动化测试通常包含4个阶段：
+
+- 设置环境
+- 执行测试
+- 验证结果
+- 清理环境
+
+测试金字塔：
+
+- 端到端测试
+- 组件测试
+- 集成测试
+- 单元测试
+
+两种类型的测试替身(test double)： 桩(stub)和模拟(mock)。
+
+- stub: 代替依赖项来向被测系统发送调用的返回值
+- mock: 验证被测系统是否正确调用了依赖项
+
+# 10. 微服务架构中的测试策略(下)
+
+
