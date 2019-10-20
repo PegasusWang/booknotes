@@ -741,3 +741,129 @@ func main() {
 ```
 
 #### Rate Limiting 
+
+use try-send to do rate limiting(with the help of a ticker). 
+
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+// https://github.com/golang/go/wiki/RateLimiting
+
+type Request interface{}
+
+func handle(r Request) { fmt.Println(r.(int)) }
+
+const RateLimitPeriod = time.Minute
+const RateLimit = 200 // 一分钟最多200个请求
+
+func handleRequests(requests <-chan Request) {
+	quotas := make(chan time.Time, RateLimit)
+	go func() {
+		tick := time.NewTicker(RateLimitPeriod / RateLimit)
+		defer tick.Stop()
+		for t := range tick.C {
+			select {
+			case quotas <- t:
+			default:
+			}
+		}
+	}()
+	for r := range requests {
+		<-quotas
+		go handle(r)
+	}
+}
+
+func main() {
+	requests := make(chan Request)
+	go handleRequests(requests)
+	for i := 0; ; i++ {
+		requests <- i
+	}
+}
+```
+
+#### Switches
+
+sending a value to or receiving a value from a nil channel are both blocking operations.
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+	"time"
+)
+
+type Ball uint8
+
+func Play(playerName string, table chan Ball, serve bool) {
+	var receive, send chan Ball
+	if serve {
+		receive, send = nil, table
+	} else {
+		receive, send = table, nil
+	}
+	var lastValue Ball = 1
+	for {
+		select {
+		case send <- lastValue:
+		case value := <-receive:
+			fmt.Println(playerName, value)
+			value += lastValue
+			if value < lastValue {
+				os.Exit(0)
+			}
+			lastValue = value
+		}
+		// switch on/off
+		receive, send = send, receive
+		time.Sleep(time.Second)
+	}
+}
+func main() {
+	table := make(chan Ball)
+	go Play("A:", table, false)
+	Play("B:", table, true)
+}
+```
+
+#### Control code execution possibility weights
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	foo, bar := make(chan struct{}), make(chan struct{})
+	close(foo)
+	close(bar)
+	x, y := 0.0, 0.0
+	f := func() { x++ }
+	g := func() { y++ }
+
+	for i := 0; i < 100000; i++ {
+		select {
+		case <-foo: // foo 这里大概调用次数是 bar 的两倍
+			f()
+		case <-foo:
+			f()
+		case <-bar:
+			g()
+		}
+	}
+	fmt.Println(x / y) // 大概是 2
+}
+```
+
+#### Select from dynamic number cases
+
+reflect also provides TrySend and TryRecv functions to implement one-case-plus-default select blocks.
