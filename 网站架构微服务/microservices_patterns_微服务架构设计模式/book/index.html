@@ -122,7 +122,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../../../database/redis深度历险核心原理和应用实践/book.md">《Redis深度历险核心原理和应用实践》</a>
+    <a class="" href="../../../database/redis深度历险核心原理和应用实践/book/">《Redis深度历险核心原理和应用实践》</a>
                 </li>
                 <li class="">
                     
@@ -502,6 +502,12 @@
     
 
     <li class="toctree-l3"><a href="#8-api">8 外部 API 模式</a></li>
+    
+
+    <li class="toctree-l3"><a href="#9">9. 微服务架构中的测试策略(上)</a></li>
+    
+
+    <li class="toctree-l3"><a href="#10">10. 微服务架构中的测试策略(下)</a></li>
     
 
     </ul>
@@ -1022,6 +1028,29 @@ grpc 不太好处理获取多个资源的情况</p>
 </li>
 </ul>
 <p>使用GraphQL 来实现 API Gateway</p>
+<h1 id="9">9. 微服务架构中的测试策略(上)</h1>
+<p>测试用例：用于特定目标的一组测试输入、执行条件和预期结果。</p>
+<p>验证被测系统（System under Test, SUT)，一组相关的测试用例集构成一个测试套件（test suite)</p>
+<p>自动化测试通常包含4个阶段：</p>
+<ul>
+<li>设置环境</li>
+<li>执行测试</li>
+<li>验证结果</li>
+<li>清理环境</li>
+</ul>
+<p>测试金字塔：</p>
+<ul>
+<li>端到端测试</li>
+<li>组件测试</li>
+<li>集成测试</li>
+<li>单元测试</li>
+</ul>
+<p>两种类型的测试替身(test double)： 桩(stub)和模拟(mock)。</p>
+<ul>
+<li>stub: 代替依赖项来向被测系统发送调用的返回值</li>
+<li>mock: 验证被测系统是否正确调用了依赖项</li>
+</ul>
+<h1 id="10">10. 微服务架构中的测试策略(下)</h1>
               
             </div>
           </div>
