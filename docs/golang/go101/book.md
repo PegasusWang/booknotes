@@ -517,4 +517,227 @@ func main() {
 
 ## Channel Encapsulated in Channel
 
+We can use a channel type as the element of another channel type.
 
+```
+package main
+
+import "fmt"
+
+// 元素类型是一个 send only channel type chan <- int
+var counter = func(n int) chan<- chan<- int {
+	requests := make(chan chan<- int)
+	go func() {
+		for request := range requests {
+			if request == nil {
+				n++
+			} else {
+				request <- n // take out
+			}
+		}
+	}()
+	return requests // implicitly converted to chan<- (chan<- int)
+}(0)
+
+func main() {
+	increase1000 := func(done chan<- struct{}) {
+		for i := 0; i < 1000; i++ {
+			counter <- nil
+		}
+		done <- struct{}{}
+	}
+
+	done := make(chan struct{})
+	go increase1000(done)
+	go increase1000(done)
+	<-done
+	<-done
+
+	request := make(chan int, 1)
+	counter <- request
+	fmt.Println(<-request) //2000
+}
+```
+
+## Check Lengths and Capacities of Channels
+
+```go
+for len(c) > 0 {
+	value := <-c
+	// use value
+}
+
+for len(c) < cap(c) {
+	c <- aValue
+}
+```
+
+## Block the Current Goroutine Forever
+
+We can use a blank select block `select{}` to block the current goroutine for ever.
+Generally, `select{}` is used to prevent the main goroutine from exiting, for if the main goroutine exits, the whole 
+program will also exit.
+
+```go
+package main
+
+import "runtime"
+
+func DoSomething() {
+	for {
+		// do something
+		runtime.Gosched() // avoid being greddy
+	}
+}
+
+func main() {
+	go DoSomething()
+	go DoSomething()
+	select {}
+}
+```
+
+## Try-Send and Try-Receive
+
+A select block with one "default" branch and only one case branch is called a try-send or try-receive channel operation.
+Try-Send and Try-Receive operations never block.
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	type Book struct{ id int }
+	bookshelf := make(chan Book, 3)
+
+	for i := 0; i < cap(bookshelf)*2; i++ {
+		select {
+		case bookshelf <- Book{id: i}:
+			fmt.Println("succeed to put book", i)
+		default:
+			fmt.Println("failed to put book")
+		}
+	}
+
+	for i := 0; i < cap(bookshelf)*2; i++ {
+		select {
+		case book := <-bookshelf:
+			fmt.Println("failed to get book", book.id)
+		default:
+			fmt.Println("failed go get book")
+		}
+	}
+}
+```
+
+#### Check if a channel is closed without blocking the current goroutine
+
+no values were ever(and will be) send to a channel, we can use the following code to 
+(concurrency and safetly) check whether or not the channel is already closed without blocking the current goroutine.
+
+```go
+// T is the element type of the corresponding channel type
+func IsClosed(c chan T) bool {
+	select {
+	case <-c:
+		return true
+	default:
+	}
+	return false
+}
+```
+
+#### Peak/burst limiting
+
+limit number of concurrent request without blocking any requests
+
+#### Another way to implement the first-response-wins use case
+
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func source(c chan<- int32) {
+	ra, rb := rand.Int31(), rand.Intn(3)+1
+	time.Sleep(time.Duration(rb) * time.Second)
+	select {
+	case c <- ra:
+	default:
+	}
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	// capacity should at least 1
+	c := make(chan int32, 1)
+	for i := 0; i < 5; i++ {
+		go source(c)
+	}
+	rnd := <-c //only the first response is used
+	fmt.Println(rnd)
+}
+```
+
+#### Timeout
+
+请求超时返回 error
+
+```go
+func requestWithTimeout(timeout time.Duration) (int, error) {
+	c := make(chan int)
+	// may need a long time to get the response.
+	go doRequest(c)
+
+	select {
+	case data := <-c:
+		return data, nil
+	case <-time.After(timeout):
+		return 0, errors.New("timeout")
+	}
+}
+```
+
+#### Ticker
+
+We can use the try-send mechanism to implement a ticker.
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+// Tick implement, use time.Tick in practice, just show how to implement
+func Tick(d time.Duration) <-chan struct{} {
+	// capacity of c is best set as one
+	c := make(chan struct{}, 1)
+	go func() {
+		for {
+			time.Sleep(d) // 一秒向 c send 一个值
+			select {
+			case c <- struct{}{}:
+			default:
+			}
+		}
+	}()
+	return c
+}
+
+func main() {
+	t := time.Now()
+	// 一秒输出一次
+	for range Tick(time.Second) {
+		fmt.Println(time.Since(t))
+	}
+}
+```
+
+#### Rate Limiting 
