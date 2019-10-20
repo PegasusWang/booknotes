@@ -5,6 +5,9 @@ serve:
 	mkdocs serve
 
 publish:
-	# if conflict, delete gh-pages branch first
+	# if conflict, delete gh-pages branch and site dir
 	git push origin master
 	mkdocs gh-deploy
+
+clean:
+	rm -rf site
