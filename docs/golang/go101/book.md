@@ -575,7 +575,7 @@ for len(c) < cap(c) {
 ## Block the Current Goroutine Forever
 
 We can use a blank select block `select{}` to block the current goroutine for ever.
-Generally, `select{}` is used to prevent the main goroutine from exiting, for if the main goroutine exits, the whole 
+Generally, `select{}` is used to prevent the main goroutine from exiting, for if the main goroutine exits, the whole
 program will also exit.
 
 ```go
@@ -633,7 +633,7 @@ func main() {
 
 #### Check if a channel is closed without blocking the current goroutine
 
-no values were ever(and will be) send to a channel, we can use the following code to 
+no values were ever(and will be) send to a channel, we can use the following code to
 (concurrency and safetly) check whether or not the channel is already closed without blocking the current goroutine.
 
 ```go
@@ -740,9 +740,9 @@ func main() {
 }
 ```
 
-#### Rate Limiting 
+#### Rate Limiting
 
-use try-send to do rate limiting(with the help of a ticker). 
+use try-send to do rate limiting(with the help of a ticker).
 
 
 ```go
