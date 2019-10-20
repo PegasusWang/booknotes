@@ -212,6 +212,12 @@
         
             <li><a class="toctree-l4" href="#channel-encapsulated-in-channel">Channel Encapsulated in Channel</a></li>
         
+            <li><a class="toctree-l4" href="#check-lengths-and-capacities-of-channels">Check Lengths and Capacities of Channels</a></li>
+        
+            <li><a class="toctree-l4" href="#block-the-current-goroutine-forever">Block the Current Goroutine Forever</a></li>
+        
+            <li><a class="toctree-l4" href="#try-send-and-try-receive">Try-Send and Try-Receive</a></li>
+        
         </ul>
     
 
@@ -1178,6 +1184,323 @@ func main() {
 </code></pre>
 
 <h2 id="channel-encapsulated-in-channel">Channel Encapsulated in Channel</h2>
+<p>We can use a channel type as the element of another channel type.</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+// 元素类型是一个 send only channel type chan &lt;- int
+var counter = func(n int) chan&lt;- chan&lt;- int {
+    requests := make(chan chan&lt;- int)
+    go func() {
+        for request := range requests {
+            if request == nil {
+                n++
+            } else {
+                request &lt;- n // take out
+            }
+        }
+    }()
+    return requests // implicitly converted to chan&lt;- (chan&lt;- int)
+}(0)
+
+func main() {
+    increase1000 := func(done chan&lt;- struct{}) {
+        for i := 0; i &lt; 1000; i++ {
+            counter &lt;- nil
+        }
+        done &lt;- struct{}{}
+    }
+
+    done := make(chan struct{})
+    go increase1000(done)
+    go increase1000(done)
+    &lt;-done
+    &lt;-done
+
+    request := make(chan int, 1)
+    counter &lt;- request
+    fmt.Println(&lt;-request) //2000
+}
+</code></pre>
+
+<h2 id="check-lengths-and-capacities-of-channels">Check Lengths and Capacities of Channels</h2>
+<pre><code class="go">for len(c) &gt; 0 {
+    value := &lt;-c
+    // use value
+}
+
+for len(c) &lt; cap(c) {
+    c &lt;- aValue
+}
+</code></pre>
+
+<h2 id="block-the-current-goroutine-forever">Block the Current Goroutine Forever</h2>
+<p>We can use a blank select block <code>select{}</code> to block the current goroutine for ever.
+Generally, <code>select{}</code> is used to prevent the main goroutine from exiting, for if the main goroutine exits, the whole
+program will also exit.</p>
+<pre><code class="go">package main
+
+import &quot;runtime&quot;
+
+func DoSomething() {
+    for {
+        // do something
+        runtime.Gosched() // avoid being greddy
+    }
+}
+
+func main() {
+    go DoSomething()
+    go DoSomething()
+    select {}
+}
+</code></pre>
+
+<h2 id="try-send-and-try-receive">Try-Send and Try-Receive</h2>
+<p>A select block with one "default" branch and only one case branch is called a try-send or try-receive channel operation.
+Try-Send and Try-Receive operations never block.</p>
+<pre><code class="go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+    type Book struct{ id int }
+    bookshelf := make(chan Book, 3)
+
+    for i := 0; i &lt; cap(bookshelf)*2; i++ {
+        select {
+        case bookshelf &lt;- Book{id: i}:
+            fmt.Println(&quot;succeed to put book&quot;, i)
+        default:
+            fmt.Println(&quot;failed to put book&quot;)
+        }
+    }
+
+    for i := 0; i &lt; cap(bookshelf)*2; i++ {
+        select {
+        case book := &lt;-bookshelf:
+            fmt.Println(&quot;failed to get book&quot;, book.id)
+        default:
+            fmt.Println(&quot;failed go get book&quot;)
+        }
+    }
+}
+</code></pre>
+
+<h4 id="check-if-a-channel-is-closed-without-blocking-the-current-goroutine">Check if a channel is closed without blocking the current goroutine</h4>
+<p>no values were ever(and will be) send to a channel, we can use the following code to
+(concurrency and safetly) check whether or not the channel is already closed without blocking the current goroutine.</p>
+<pre><code class="go">// T is the element type of the corresponding channel type
+func IsClosed(c chan T) bool {
+    select {
+    case &lt;-c:
+        return true
+    default:
+    }
+    return false
+}
+</code></pre>
+
+<h4 id="peakburst-limiting">Peak/burst limiting</h4>
+<p>limit number of concurrent request without blocking any requests</p>
+<h4 id="another-way-to-implement-the-first-response-wins-use-case">Another way to implement the first-response-wins use case</h4>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func source(c chan&lt;- int32) {
+    ra, rb := rand.Int31(), rand.Intn(3)+1
+    time.Sleep(time.Duration(rb) * time.Second)
+    select {
+    case c &lt;- ra:
+    default:
+    }
+}
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    // capacity should at least 1
+    c := make(chan int32, 1)
+    for i := 0; i &lt; 5; i++ {
+        go source(c)
+    }
+    rnd := &lt;-c //only the first response is used
+    fmt.Println(rnd)
+}
+</code></pre>
+
+<h4 id="timeout">Timeout</h4>
+<p>请求超时返回 error</p>
+<pre><code class="go">func requestWithTimeout(timeout time.Duration) (int, error) {
+    c := make(chan int)
+    // may need a long time to get the response.
+    go doRequest(c)
+
+    select {
+    case data := &lt;-c:
+        return data, nil
+    case &lt;-time.After(timeout):
+        return 0, errors.New(&quot;timeout&quot;)
+    }
+}
+</code></pre>
+
+<h4 id="ticker">Ticker</h4>
+<p>We can use the try-send mechanism to implement a ticker.</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+// Tick implement, use time.Tick in practice, just show how to implement
+func Tick(d time.Duration) &lt;-chan struct{} {
+    // capacity of c is best set as one
+    c := make(chan struct{}, 1)
+    go func() {
+        for {
+            time.Sleep(d) // 一秒向 c send 一个值
+            select {
+            case c &lt;- struct{}{}:
+            default:
+            }
+        }
+    }()
+    return c
+}
+
+func main() {
+    t := time.Now()
+    // 一秒输出一次
+    for range Tick(time.Second) {
+        fmt.Println(time.Since(t))
+    }
+}
+</code></pre>
+
+<h4 id="rate-limiting">Rate Limiting</h4>
+<p>use try-send to do rate limiting(with the help of a ticker).</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+// https://github.com/golang/go/wiki/RateLimiting
+
+type Request interface{}
+
+func handle(r Request) { fmt.Println(r.(int)) }
+
+const RateLimitPeriod = time.Minute
+const RateLimit = 200 // 一分钟最多200个请求
+
+func handleRequests(requests &lt;-chan Request) {
+    quotas := make(chan time.Time, RateLimit)
+    go func() {
+        tick := time.NewTicker(RateLimitPeriod / RateLimit)
+        defer tick.Stop()
+        for t := range tick.C {
+            select {
+            case quotas &lt;- t:
+            default:
+            }
+        }
+    }()
+    for r := range requests {
+        &lt;-quotas
+        go handle(r)
+    }
+}
+
+func main() {
+    requests := make(chan Request)
+    go handleRequests(requests)
+    for i := 0; ; i++ {
+        requests &lt;- i
+    }
+}
+</code></pre>
+
+<h4 id="switches">Switches</h4>
+<p>sending a value to or receiving a value from a nil channel are both blocking operations.</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;os&quot;
+    &quot;time&quot;
+)
+
+type Ball uint8
+
+func Play(playerName string, table chan Ball, serve bool) {
+    var receive, send chan Ball
+    if serve {
+        receive, send = nil, table
+    } else {
+        receive, send = table, nil
+    }
+    var lastValue Ball = 1
+    for {
+        select {
+        case send &lt;- lastValue:
+        case value := &lt;-receive:
+            fmt.Println(playerName, value)
+            value += lastValue
+            if value &lt; lastValue {
+                os.Exit(0)
+            }
+            lastValue = value
+        }
+        // switch on/off
+        receive, send = send, receive
+        time.Sleep(time.Second)
+    }
+}
+func main() {
+    table := make(chan Ball)
+    go Play(&quot;A:&quot;, table, false)
+    Play(&quot;B:&quot;, table, true)
+}
+</code></pre>
+
+<h4 id="control-code-execution-possibility-weights">Control code execution possibility weights</h4>
+<pre><code class="go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+    foo, bar := make(chan struct{}), make(chan struct{})
+    close(foo)
+    close(bar)
+    x, y := 0.0, 0.0
+    f := func() { x++ }
+    g := func() { y++ }
+
+    for i := 0; i &lt; 100000; i++ {
+        select {
+        case &lt;-foo: // foo 这里大概调用次数是 bar 的两倍
+            f()
+        case &lt;-foo:
+            f()
+        case &lt;-bar:
+            g()
+        }
+    }
+    fmt.Println(x / y) // 大概是 2
+}
+</code></pre>
+
+<h4 id="select-from-dynamic-number-cases">Select from dynamic number cases</h4>
+<p>reflect also provides TrySend and TryRecv functions to implement one-case-plus-default select blocks.</p>
               
             </div>
           </div>
