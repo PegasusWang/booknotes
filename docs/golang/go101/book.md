@@ -867,3 +867,79 @@ func main() {
 #### Select from dynamic number cases
 
 reflect also provides TrySend and TryRecv functions to implement one-case-plus-default select blocks.
+
+## Data Flow Manipulations
+
+#### Data generation/collection/loading
+
+```go
+package main
+
+import (
+	"encoding/binary"
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func RandomGenerator() <-chan uint64 {
+	c := make(chan uint64)
+	go func() {
+		rnds := make([]byte, 8)
+		for {
+			_, err := rand.Read(rnds)
+			if err != nil {
+				close(c)
+			}
+			c <- binary.BigEndian.Uint64(rnds)
+		}
+	}()
+	return c
+}
+func main() {
+	for i := range RandomGenerator() {
+		time.Sleep(time.Second)
+		fmt.Println(i)
+	}
+}
+```
+
+#### Data aggregation
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+// aggregates serveral data streams of the same data tyep into one stream
+func Aggregator(inputs ...<-chan uint64) <-chan uint64 {
+	output := make(chan uint64)
+	var wg sync.WaitGroup
+	for _, in := range intputs {
+		wg.Add(1)
+		in := in // essential
+		go func() {
+			for {
+				x, ok := <-in
+				if ok {
+					output <- x
+				} else {
+					wg.Done()
+				}
+			}
+		}()
+	}
+	go func() {
+		wg.Wait()
+		close(output)
+	}()
+	return output
+}
+
+func main() {
+	fmt.Println("hehe")
+}
+```
