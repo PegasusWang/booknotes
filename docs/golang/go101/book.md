@@ -964,3 +964,82 @@ func Composor(intA, intB <-chan uint64) <-chan uint64 {
 #### Data duplication/proliferation
 
 One piece of data will be duplicated and each of the duplicated data will be sent to different output data streams.
+
+```go
+func Duplicator(in <-chan uint64) (<-chan uint64, <-chan uint64) {
+	outA, outB := make(chan uint64), make(chan uint64)
+	go func() {
+		for {
+			x := <-in
+			outA <- x
+			outB <- x
+		}
+	}()
+	return outA, outB
+}
+```
+
+#### Data calculation/analysis
+
+```go
+func Calculator(in <-chan uint64, out chan uint64) <-chan uint64 {
+	if out == nil {
+		out = make(chan uint64)
+	}
+	go func() {
+		x := <-in
+		out <- ^x
+	}()
+	return out
+}
+```
+
+#### Data validation/filtering
+
+```go
+func Filter(input <-chan uint64, output chan uint64) <-chan uint64 {
+	if output == nil {
+		output = make(chan uint64)
+	}
+	go func() {
+		bigInt := big.NewInt(0)
+		for {
+			x := <-input
+			bigInt.SetUint64(x)
+			if bigInt.ProbablyPrime(1) {
+				output <- x
+			}
+		}
+	}()
+	return output
+}
+```
+
+#### Data serving/saving
+
+```go
+func Printer(input <-chan uint64) {
+	for {
+		x, ok := <-input
+		if ok {
+			fmt.Println(x)
+		} else {
+			return
+		}
+	}
+}
+```
+
+#### Data flow system assembling
+
+```go
+func main() {
+	Printer(
+		Filter(
+			Calculator(
+				RandomGenerator(),
+			),
+		),
+	)
+}
+```
