@@ -943,3 +943,24 @@ func main() {
 	fmt.Println("hehe")
 }
 ```
+
+#### Data composition
+
+A data composition worker merges several pieces of data from different input data streams into one piece of data.
+
+```go
+func Composor(intA, intB <-chan uint64) <-chan uint64 {
+	output := make(chan uint64)
+	go func() {
+		for {
+			a1, b, a2 := <-inA, <-inB, <-inA
+			output <- a1 ^ b&a2
+		}
+	}()
+	return output
+}
+```
+
+#### Data duplication/proliferation
+
+One piece of data will be duplicated and each of the duplicated data will be sent to different output data streams.
