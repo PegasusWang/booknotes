@@ -1043,3 +1043,34 @@ func main() {
 	)
 }
 ```
+
+# How to Gracefully Close Channels
+
+```go
+package main
+
+import "fmt"
+
+type T int
+
+func IsClosed(ch <-chan T) bool {
+	select {
+	case <-ch:
+		return true
+	default:
+	}
+	return false
+}
+
+func main() {
+	c := make(chan T)
+	fmt.Println(IsClosed(c))
+	close(c)
+	fmt.Println(IsClosed(c))
+}
+```
+
+#### Channel Closing Principle 
+
+- don't close a channel from the receiver side and don't close a channel if the channel has multiple concurrent senders.
+- don't close (or send values to) closed channels
