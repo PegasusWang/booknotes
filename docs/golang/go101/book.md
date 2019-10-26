@@ -1380,3 +1380,112 @@ func main() {
 	log.Println("stopped by", stoppedBy)
 }
 ```
+
+# Concurrency Synchronization Techniques Provided in the sync Standard Package
+
+For the specialized circumstances, sync are more efficient and more readable.
+
+NOTE: To avoid abnormal behaviors, it is best not to copy the values of the types int the sync standard package.
+
+### The sync.WaitGroup Type
+
+Each sync.WaitGroup value maintains a counter(init 0) internally.
+
+Used for one goroutine waits until all of several other goroutines finish their respective jobs.
+
+```go
+package main
+
+import (
+	"log"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	const N = 5
+	var values [N]int32
+	var wg sync.WaitGroup
+	wg.Add(N)
+	for i := 0; i < N; i++ {
+		i := i
+		go func() {
+			values[i] = 50 + rand.Int31n(50)
+			log.Println("Done:", i)
+			wg.Done() // <==> wg.Add(-1)
+		}()
+	}
+	wg.Wait()
+	log.Println("values:", values)
+}
+```
+
+### The sync.Once Type
+
+The code in the invoked argument function is guaranteed to be executed before any o.Do method call returns.
+
+### The sync.Mutex and sync.RWMutex Types
+
+Both implements sync.Locker (Lock/Unlock). m.Lock/m.UnLock() are shortands of (&m).Lock() and (&m).Unlock()
+
+A lock doesn't know which goroutine acquired it, and any goroutine can release a lock which in acquired status.
+
+```go 
+package main
+
+import (
+	"fmt"
+	"runtime"
+	"sync"
+)
+
+type Counter struct {
+	m sync.Mutex
+	n uint64
+}
+
+func (c *Counter) Value() uint64 {
+	c.m.Lock()
+	defer c.m.Unlock()
+	return c.n
+}
+
+func (c *Counter) Increase(delta uint64) {
+	c.m.Lock()
+	c.n += delta
+	c.m.Unlock()
+}
+
+func main() {
+	var c Counter
+	for i := 0; i < 100; i++ {
+		go func() {
+			for k := 0; k < 100; k++ {
+				c.Increase(1)
+			}
+		}()
+	}
+	for c.Value() < 10000 {
+		runtime.Gosched()
+	}
+	fmt.Println(c.Value())
+}
+
+// use rwmutex for better performance
+type Counter struct {
+	// m sync.Mutex
+	m sync.RWMutex
+	n uint64
+}
+
+func (c *Counter) Value() uint64 {
+	// c.m.Lock()
+	// defer c.m.Unlock()
+	c.m.RLock()
+	defer c.m.RUnlock()
+	return c.n
+}
+```
