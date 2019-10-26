@@ -1074,3 +1074,309 @@ func main() {
 
 - don't close a channel from the receiver side and don't close a channel if the channel has multiple concurrent senders.
 - don't close (or send values to) closed channels
+
+#### Solutions which Close Channels Rudely 
+
+use recover prevent possible panic.
+
+```go
+package main
+
+type T int
+
+// breaking the channel closing principle
+func SafeClose(ch chan T) (justClosed bool) {
+	defer func() {
+		if recover() != nil {
+			justClosed = false
+		}
+	}()
+	close(ch)
+	return true
+}
+
+func SafeSend(ch chan T, vlue T) (closed bool) {
+	defer func() {
+		if recover() != nil {
+			closed = true
+		}
+	}()
+	ch <- value
+	return false
+}
+```
+
+#### Solutions Which Close Channels Politely
+
+```go
+package main
+
+import "sync"
+
+type T int
+
+// use sync.Once to close channels
+type MyChannelOnce struct {
+	C    chan T
+	once sync.Once
+}
+
+func NewMyChannelOnce() *MyChannelOnce {
+	return &MyChannelOnce{C: make(chan T)}
+}
+
+func (mc *MyChannelOnce) SafeClose() {
+	mc.once.Do(func() {
+		close(mc.c)
+	})
+}
+
+// We can also use sync.Mutex to avoid closing a channel multiple times
+
+type MyChannel struct {
+	C      chan T
+	closed bool
+	mutex  sync.Mutex
+}
+
+func NewMyChannel() *MyChannel {
+	return &MyChannel{C: make(chan T)}
+}
+
+func (mc *MyChannel) SafeClose() {
+	mc.mutex.Lock()
+	defer mc.mutex.Unlock()
+	if !mc.closed {
+		close(mc.C)
+		mc.closed = true
+	}
+}
+
+func (mc *MyChannel) IsClosed() {
+	mc.mutex.Lock()
+	defer mc.mutex.Unlock()
+	return mc.closed
+}
+```
+
+#### Solutions Which Close Channels Gracefully
+
+###### M receivers, one sender, the sender says "no more sends" by closing the data channel
+
+```go
+package main
+
+import (
+	"log"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	log.SetFlags(0)
+
+	//...
+	const Max = 100000
+	const NumReceivers = 100
+	wgReceivers := sync.WaitGroup{}
+	wgReceivers.Add(NumReceivers)
+
+	//...
+	dataCh := make(chan int, 100)
+
+	// the sender
+	go func() {
+		for {
+			if value := rand.Intn(Max); value == 0 {
+				// the only sender can close the channel safely
+				close(dataCh)
+				return
+			} else {
+				dataCh <- value
+			}
+		}
+	}()
+
+	// receivers
+	for i := 0; i < NumReceivers; i++ {
+		go func() {
+			defer wgReceivers.Done()
+			// receive until closed
+			for value := range dataCh {
+				log.Println(value)
+			}
+		}()
+	}
+	wgReceivers.Wait()
+}
+```
+
+#### One receiver, N senders, the only receiver says "please stop sending more" by closing an additional signal channel
+
+```go
+package main
+
+import (
+	"log"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	log.SetFlags(0)
+	//...
+	const Max = 100000
+	const NumSenders = 1000
+
+	wgReceivers := sync.WaitGroup{}
+	wgReceivers.Add(1)
+
+	dataCh := make(chan int, 100)
+	stopCh := make(chan struct{})
+
+	//senders
+	for i := 0; i < NumSenders; i++ {
+		go func() {
+			for {
+				select { // try-receive, try to exit the goroutine as early as possible
+				case <-stopCh:
+					return
+				default:
+				}
+
+			}
+
+			select {
+			case <-stopCh:
+				return
+			case dataCh <- rand.Intn(Max):
+			}
+		}()
+	}
+
+	// the receiver
+	go func() {
+		defer wgReceivers.Done()
+		for value := range dataCh {
+			if value == Max-1 {
+				close(stopCh)
+				return
+			}
+			log.Println(value)
+		}
+	}()
+	wgReceivers.Wait()
+}
+
+// this example dataCh is never closed. A channel will eventually garbage collected if no goroutines reference it any
+// more, whether it is closed or not.
+```
+
+#### M receivers, N senders, any one of them says "let's end the game" by notifying a moderator to close an additional signal channel
+
+
+```go
+package main
+
+import (
+	"log"
+	"math/rand"
+	"strconv"
+	"sync"
+	"time"
+)
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	log.SetFlags(0)
+
+	const Max = 100000
+	const NumReceivers = 10
+	const NumSenders = 1000
+
+	wgReceivers := sync.WaitGroup{}
+	wgReceivers.Add(NumReceivers)
+
+	dataCh := make(chan int, 100)
+	stopCh := make(chan struct{})
+	// toStop is used to notify the moderator to close the additional signal channel(stopCh)
+	// cap is 1, avoid the first notification is missed when it is sent before the moderator goroutine gets ready to
+	// receive notification from toStop
+	toStop := make(chan string, 1)
+	var stoppedBy string
+
+	// moderator
+	go func() {
+		stoppedBy = <-toStop
+		close(stopCh)
+	}()
+	//senders
+	for i := 0; i < NumSenders; i++ {
+		go func(id string) {
+			for {
+				value := rand.Intn(Max)
+				if value == 0 {
+					// try-send operation is to notify the moderator to clsoe signal channel
+					select {
+					case toStop <- "sender#" + id:
+					default:
+					}
+					return
+				}
+				//try-receive here is to try to exit sender goroutine as early as possible.(optimized by go standard cimpiler)
+				select {
+				case <-stopCh:
+					return
+				default:
+				}
+
+				// even if stopCh is closed, the first branch in this select block might be still not selected for some
+				// loops(and for ever in theory) if the send to dataCh is also non-blocking. If this is unacceptable,
+				// then the above try-receive operation is essential.
+				select {
+				case <-stopCh:
+					return
+				case dataCh <- value:
+				}
+
+			}
+		}(strconv.Itoa(i))
+	}
+
+	// receivers
+	for i := 0; i < NumReceivers; i++ {
+		go func(id string) {
+			defer wgReceivers.Done()
+			for {
+				// try-receive try to exit early
+				select {
+				case <-stopCh:
+					return
+				default:
+				}
+			}
+			select {
+			case <-stopCh:
+				retrurn
+			case value := <-dataCh:
+				if value == Max-1 {
+					//notify moderator to close the additional signal channel
+					select {
+					case toStop <= "receiver#"+id:
+					default:
+					}
+					return
+				}
+				log.Pritln(value)
+			}
+		}(strconv.Itoa(i))
+	}
+	//....
+	wgReceivers.Wait()
+	log.Println("stopped by", stoppedBy)
+}
+```
