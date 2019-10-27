@@ -218,6 +218,40 @@
         
             <li><a class="toctree-l4" href="#try-send-and-try-receive">Try-Send and Try-Receive</a></li>
         
+            <li><a class="toctree-l4" href="#data-flow-manipulations">Data Flow Manipulations</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#how-to-gracefully-close-channels">How to Gracefully Close Channels</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#channel-closing-principle">Channel Closing Principle</a></li>
+        
+            <li><a class="toctree-l4" href="#solutions-which-close-channels-rudely">Solutions which Close Channels Rudely</a></li>
+        
+            <li><a class="toctree-l4" href="#solutions-which-close-channels-politely">Solutions Which Close Channels Politely</a></li>
+        
+            <li><a class="toctree-l4" href="#solutions-which-close-channels-gracefully">Solutions Which Close Channels Gracefully</a></li>
+        
+            <li><a class="toctree-l4" href="#one-receiver-n-senders-the-only-receiver-says-please-stop-sending-more-by-closing-an-additional-signal-channel">One receiver, N senders, the only receiver says "please stop sending more" by closing an additional signal channel</a></li>
+        
+            <li><a class="toctree-l4" href="#m-receivers-n-senders-any-one-of-them-says-lets-end-the-game-by-notifying-a-moderator-to-close-an-additional-signal-channel">M receivers, N senders, any one of them says "let's end the game" by notifying a moderator to close an additional signal channel</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#concurrency-synchronization-techniques-provided-in-the-sync-standard-package">Concurrency Synchronization Techniques Provided in the sync Standard Package</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#the-syncwaitgroup-type">The sync.WaitGroup Type</a></li>
+        
+            <li><a class="toctree-l4" href="#the-synconce-type">The sync.Once Type</a></li>
+        
+            <li><a class="toctree-l4" href="#the-syncmutex-and-syncrwmutex-types">The sync.Mutex and sync.RWMutex Types</a></li>
+        
         </ul>
     
 
@@ -1501,6 +1535,580 @@ func main() {
 
 <h4 id="select-from-dynamic-number-cases">Select from dynamic number cases</h4>
 <p>reflect also provides TrySend and TryRecv functions to implement one-case-plus-default select blocks.</p>
+<h2 id="data-flow-manipulations">Data Flow Manipulations</h2>
+<h4 id="data-generationcollectionloading">Data generation/collection/loading</h4>
+<pre><code class="go">package main
+
+import (
+    &quot;encoding/binary&quot;
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func RandomGenerator() &lt;-chan uint64 {
+    c := make(chan uint64)
+    go func() {
+        rnds := make([]byte, 8)
+        for {
+            _, err := rand.Read(rnds)
+            if err != nil {
+                close(c)
+            }
+            c &lt;- binary.BigEndian.Uint64(rnds)
+        }
+    }()
+    return c
+}
+func main() {
+    for i := range RandomGenerator() {
+        time.Sleep(time.Second)
+        fmt.Println(i)
+    }
+}
+</code></pre>
+
+<h4 id="data-aggregation">Data aggregation</h4>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+// aggregates serveral data streams of the same data tyep into one stream
+func Aggregator(inputs ...&lt;-chan uint64) &lt;-chan uint64 {
+    output := make(chan uint64)
+    var wg sync.WaitGroup
+    for _, in := range intputs {
+        wg.Add(1)
+        in := in // essential
+        go func() {
+            for {
+                x, ok := &lt;-in
+                if ok {
+                    output &lt;- x
+                } else {
+                    wg.Done()
+                }
+            }
+        }()
+    }
+    go func() {
+        wg.Wait()
+        close(output)
+    }()
+    return output
+}
+
+func main() {
+    fmt.Println(&quot;hehe&quot;)
+}
+</code></pre>
+
+<h4 id="data-composition">Data composition</h4>
+<p>A data composition worker merges several pieces of data from different input data streams into one piece of data.</p>
+<pre><code class="go">func Composor(intA, intB &lt;-chan uint64) &lt;-chan uint64 {
+    output := make(chan uint64)
+    go func() {
+        for {
+            a1, b, a2 := &lt;-inA, &lt;-inB, &lt;-inA
+            output &lt;- a1 ^ b&amp;a2
+        }
+    }()
+    return output
+}
+</code></pre>
+
+<h4 id="data-duplicationproliferation">Data duplication/proliferation</h4>
+<p>One piece of data will be duplicated and each of the duplicated data will be sent to different output data streams.</p>
+<pre><code class="go">func Duplicator(in &lt;-chan uint64) (&lt;-chan uint64, &lt;-chan uint64) {
+    outA, outB := make(chan uint64), make(chan uint64)
+    go func() {
+        for {
+            x := &lt;-in
+            outA &lt;- x
+            outB &lt;- x
+        }
+    }()
+    return outA, outB
+}
+</code></pre>
+
+<h4 id="data-calculationanalysis">Data calculation/analysis</h4>
+<pre><code class="go">func Calculator(in &lt;-chan uint64, out chan uint64) &lt;-chan uint64 {
+    if out == nil {
+        out = make(chan uint64)
+    }
+    go func() {
+        x := &lt;-in
+        out &lt;- ^x
+    }()
+    return out
+}
+</code></pre>
+
+<h4 id="data-validationfiltering">Data validation/filtering</h4>
+<pre><code class="go">func Filter(input &lt;-chan uint64, output chan uint64) &lt;-chan uint64 {
+    if output == nil {
+        output = make(chan uint64)
+    }
+    go func() {
+        bigInt := big.NewInt(0)
+        for {
+            x := &lt;-input
+            bigInt.SetUint64(x)
+            if bigInt.ProbablyPrime(1) {
+                output &lt;- x
+            }
+        }
+    }()
+    return output
+}
+</code></pre>
+
+<h4 id="data-servingsaving">Data serving/saving</h4>
+<pre><code class="go">func Printer(input &lt;-chan uint64) {
+    for {
+        x, ok := &lt;-input
+        if ok {
+            fmt.Println(x)
+        } else {
+            return
+        }
+    }
+}
+</code></pre>
+
+<h4 id="data-flow-system-assembling">Data flow system assembling</h4>
+<pre><code class="go">func main() {
+    Printer(
+        Filter(
+            Calculator(
+                RandomGenerator(),
+            ),
+        ),
+    )
+}
+</code></pre>
+
+<h1 id="how-to-gracefully-close-channels">How to Gracefully Close Channels</h1>
+<pre><code class="go">package main
+
+import &quot;fmt&quot;
+
+type T int
+
+func IsClosed(ch &lt;-chan T) bool {
+    select {
+    case &lt;-ch:
+        return true
+    default:
+    }
+    return false
+}
+
+func main() {
+    c := make(chan T)
+    fmt.Println(IsClosed(c))
+    close(c)
+    fmt.Println(IsClosed(c))
+}
+</code></pre>
+
+<h4 id="channel-closing-principle">Channel Closing Principle</h4>
+<ul>
+<li>don't close a channel from the receiver side and don't close a channel if the channel has multiple concurrent senders.</li>
+<li>don't close (or send values to) closed channels</li>
+</ul>
+<h4 id="solutions-which-close-channels-rudely">Solutions which Close Channels Rudely</h4>
+<p>use recover prevent possible panic.</p>
+<pre><code class="go">package main
+
+type T int
+
+// breaking the channel closing principle
+func SafeClose(ch chan T) (justClosed bool) {
+    defer func() {
+        if recover() != nil {
+            justClosed = false
+        }
+    }()
+    close(ch)
+    return true
+}
+
+func SafeSend(ch chan T, vlue T) (closed bool) {
+    defer func() {
+        if recover() != nil {
+            closed = true
+        }
+    }()
+    ch &lt;- value
+    return false
+}
+</code></pre>
+
+<h4 id="solutions-which-close-channels-politely">Solutions Which Close Channels Politely</h4>
+<pre><code class="go">package main
+
+import &quot;sync&quot;
+
+type T int
+
+// use sync.Once to close channels
+type MyChannelOnce struct {
+    C    chan T
+    once sync.Once
+}
+
+func NewMyChannelOnce() *MyChannelOnce {
+    return &amp;MyChannelOnce{C: make(chan T)}
+}
+
+func (mc *MyChannelOnce) SafeClose() {
+    mc.once.Do(func() {
+        close(mc.c)
+    })
+}
+
+// We can also use sync.Mutex to avoid closing a channel multiple times
+
+type MyChannel struct {
+    C      chan T
+    closed bool
+    mutex  sync.Mutex
+}
+
+func NewMyChannel() *MyChannel {
+    return &amp;MyChannel{C: make(chan T)}
+}
+
+func (mc *MyChannel) SafeClose() {
+    mc.mutex.Lock()
+    defer mc.mutex.Unlock()
+    if !mc.closed {
+        close(mc.C)
+        mc.closed = true
+    }
+}
+
+func (mc *MyChannel) IsClosed() {
+    mc.mutex.Lock()
+    defer mc.mutex.Unlock()
+    return mc.closed
+}
+</code></pre>
+
+<h4 id="solutions-which-close-channels-gracefully">Solutions Which Close Channels Gracefully</h4>
+<h6 id="m-receivers-one-sender-the-sender-says-no-more-sends-by-closing-the-data-channel">M receivers, one sender, the sender says "no more sends" by closing the data channel</h6>
+<pre><code class="go">package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    log.SetFlags(0)
+
+    //...
+    const Max = 100000
+    const NumReceivers = 100
+    wgReceivers := sync.WaitGroup{}
+    wgReceivers.Add(NumReceivers)
+
+    //...
+    dataCh := make(chan int, 100)
+
+    // the sender
+    go func() {
+        for {
+            if value := rand.Intn(Max); value == 0 {
+                // the only sender can close the channel safely
+                close(dataCh)
+                return
+            } else {
+                dataCh &lt;- value
+            }
+        }
+    }()
+
+    // receivers
+    for i := 0; i &lt; NumReceivers; i++ {
+        go func() {
+            defer wgReceivers.Done()
+            // receive until closed
+            for value := range dataCh {
+                log.Println(value)
+            }
+        }()
+    }
+    wgReceivers.Wait()
+}
+</code></pre>
+
+<h4 id="one-receiver-n-senders-the-only-receiver-says-please-stop-sending-more-by-closing-an-additional-signal-channel">One receiver, N senders, the only receiver says "please stop sending more" by closing an additional signal channel</h4>
+<pre><code class="go">package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    log.SetFlags(0)
+    //...
+    const Max = 100000
+    const NumSenders = 1000
+
+    wgReceivers := sync.WaitGroup{}
+    wgReceivers.Add(1)
+
+    dataCh := make(chan int, 100)
+    stopCh := make(chan struct{})
+
+    //senders
+    for i := 0; i &lt; NumSenders; i++ {
+        go func() {
+            for {
+                select { // try-receive, try to exit the goroutine as early as possible
+                case &lt;-stopCh:
+                    return
+                default:
+                }
+
+            }
+
+            select {
+            case &lt;-stopCh:
+                return
+            case dataCh &lt;- rand.Intn(Max):
+            }
+        }()
+    }
+
+    // the receiver
+    go func() {
+        defer wgReceivers.Done()
+        for value := range dataCh {
+            if value == Max-1 {
+                close(stopCh)
+                return
+            }
+            log.Println(value)
+        }
+    }()
+    wgReceivers.Wait()
+}
+
+// this example dataCh is never closed. A channel will eventually garbage collected if no goroutines reference it any
+// more, whether it is closed or not.
+</code></pre>
+
+<h4 id="m-receivers-n-senders-any-one-of-them-says-lets-end-the-game-by-notifying-a-moderator-to-close-an-additional-signal-channel">M receivers, N senders, any one of them says "let's end the game" by notifying a moderator to close an additional signal channel</h4>
+<pre><code class="go">package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;strconv&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    log.SetFlags(0)
+
+    const Max = 100000
+    const NumReceivers = 10
+    const NumSenders = 1000
+
+    wgReceivers := sync.WaitGroup{}
+    wgReceivers.Add(NumReceivers)
+
+    dataCh := make(chan int, 100)
+    stopCh := make(chan struct{})
+    // toStop is used to notify the moderator to close the additional signal channel(stopCh)
+    // cap is 1, avoid the first notification is missed when it is sent before the moderator goroutine gets ready to
+    // receive notification from toStop
+    toStop := make(chan string, 1)
+    var stoppedBy string
+
+    // moderator
+    go func() {
+        stoppedBy = &lt;-toStop
+        close(stopCh)
+    }()
+    //senders
+    for i := 0; i &lt; NumSenders; i++ {
+        go func(id string) {
+            for {
+                value := rand.Intn(Max)
+                if value == 0 {
+                    // try-send operation is to notify the moderator to clsoe signal channel
+                    select {
+                    case toStop &lt;- &quot;sender#&quot; + id:
+                    default:
+                    }
+                    return
+                }
+                //try-receive here is to try to exit sender goroutine as early as possible.(optimized by go standard cimpiler)
+                select {
+                case &lt;-stopCh:
+                    return
+                default:
+                }
+
+                // even if stopCh is closed, the first branch in this select block might be still not selected for some
+                // loops(and for ever in theory) if the send to dataCh is also non-blocking. If this is unacceptable,
+                // then the above try-receive operation is essential.
+                select {
+                case &lt;-stopCh:
+                    return
+                case dataCh &lt;- value:
+                }
+
+            }
+        }(strconv.Itoa(i))
+    }
+
+    // receivers
+    for i := 0; i &lt; NumReceivers; i++ {
+        go func(id string) {
+            defer wgReceivers.Done()
+            for {
+                // try-receive try to exit early
+                select {
+                case &lt;-stopCh:
+                    return
+                default:
+                }
+            }
+            select {
+            case &lt;-stopCh:
+                retrurn
+            case value := &lt;-dataCh:
+                if value == Max-1 {
+                    //notify moderator to close the additional signal channel
+                    select {
+                    case toStop &lt;= &quot;receiver#&quot;+id:
+                    default:
+                    }
+                    return
+                }
+                log.Pritln(value)
+            }
+        }(strconv.Itoa(i))
+    }
+    //....
+    wgReceivers.Wait()
+    log.Println(&quot;stopped by&quot;, stoppedBy)
+}
+</code></pre>
+
+<h1 id="concurrency-synchronization-techniques-provided-in-the-sync-standard-package">Concurrency Synchronization Techniques Provided in the sync Standard Package</h1>
+<p>For the specialized circumstances, sync are more efficient and more readable.</p>
+<p>NOTE: To avoid abnormal behaviors, it is best not to copy the values of the types int the sync standard package.</p>
+<h3 id="the-syncwaitgroup-type">The sync.WaitGroup Type</h3>
+<p>Each sync.WaitGroup value maintains a counter(init 0) internally.</p>
+<p>Used for one goroutine waits until all of several other goroutines finish their respective jobs.</p>
+<pre><code class="go">package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+
+    const N = 5
+    var values [N]int32
+    var wg sync.WaitGroup
+    wg.Add(N)
+    for i := 0; i &lt; N; i++ {
+        i := i
+        go func() {
+            values[i] = 50 + rand.Int31n(50)
+            log.Println(&quot;Done:&quot;, i)
+            wg.Done() // &lt;==&gt; wg.Add(-1)
+        }()
+    }
+    wg.Wait()
+    log.Println(&quot;values:&quot;, values)
+}
+</code></pre>
+
+<h3 id="the-synconce-type">The sync.Once Type</h3>
+<p>The code in the invoked argument function is guaranteed to be executed before any o.Do method call returns.</p>
+<h3 id="the-syncmutex-and-syncrwmutex-types">The sync.Mutex and sync.RWMutex Types</h3>
+<p>Both implements sync.Locker (Lock/Unlock). m.Lock/m.UnLock() are shortands of (&amp;m).Lock() and (&amp;m).Unlock()</p>
+<p>A lock doesn't know which goroutine acquired it, and any goroutine can release a lock which in acquired status.</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+    &quot;sync&quot;
+)
+
+type Counter struct {
+    m sync.Mutex
+    n uint64
+}
+
+func (c *Counter) Value() uint64 {
+    c.m.Lock()
+    defer c.m.Unlock()
+    return c.n
+}
+
+func (c *Counter) Increase(delta uint64) {
+    c.m.Lock()
+    c.n += delta
+    c.m.Unlock()
+}
+
+func main() {
+    var c Counter
+    for i := 0; i &lt; 100; i++ {
+        go func() {
+            for k := 0; k &lt; 100; k++ {
+                c.Increase(1)
+            }
+        }()
+    }
+    for c.Value() &lt; 10000 {
+        runtime.Gosched()
+    }
+    fmt.Println(c.Value())
+}
+
+// use rwmutex for better performance
+type Counter struct {
+    // m sync.Mutex
+    m sync.RWMutex
+    n uint64
+}
+
+func (c *Counter) Value() uint64 {
+    // c.m.Lock()
+    // defer c.m.Unlock()
+    c.m.RLock()
+    defer c.m.RUnlock()
+    return c.n
+}
+</code></pre>
               
             </div>
           </div>
