@@ -1620,3 +1620,11 @@ func main() {
 	// v.Store("hello")
 }
 ```
+
+
+# Memory Order Guarantees in Go
+
+很多编译器和 cpu 经常会对指令顺序做一些优化，导致和原始的代码可能不同。Instruction ordering is also often called memory
+ordering.
+
+`go build -race` to check data races in the program.
