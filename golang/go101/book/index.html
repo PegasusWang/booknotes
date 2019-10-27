@@ -252,7 +252,27 @@
         
             <li><a class="toctree-l4" href="#the-syncmutex-and-syncrwmutex-types">The sync.Mutex and sync.RWMutex Types</a></li>
         
+            <li><a class="toctree-l4" href="#type-synccond-type">Type sync.Cond Type</a></li>
+        
         </ul>
+    
+
+    <li class="toctree-l3"><a href="#atomic-operations-provided-in-the-syncatomic-standard-package">Atomic Operations Provided in The sync/atomic Standard Package</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#overview-of-atomic-opeartions-provided-in-go">Overview of Atomic Opeartions Provided in Go</a></li>
+        
+            <li><a class="toctree-l4" href="#atomic-opeartions-for-integers">Atomic Opeartions for Integers</a></li>
+        
+            <li><a class="toctree-l4" href="#atomic-operations-for-pointers">Atomic Operations for Pointers</a></li>
+        
+            <li><a class="toctree-l4" href="#atomic-operations-for-values-of-arbitrary-types">Atomic Operations for Values of Arbitrary Types</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#memory-order-guarantees-in-go">Memory Order Guarantees in Go</a></li>
     
 
     </ul>
@@ -2109,6 +2129,126 @@ func (c *Counter) Value() uint64 {
     return c.n
 }
 </code></pre>
+
+<h3 id="type-synccond-type">Type sync.Cond Type</h3>
+<p>Notifications among goroutines. Wait(), Signal(), Broadcast()</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    const N = 10
+    var values [N]string
+    cond := sync.NewCond(&amp;sync.Mutex{})
+    cond.L.Lock()
+    for i := 0; i &lt; N; i++ {
+        d := time.Second * time.Duration(rand.Intn(10))
+        go func(i int) {
+            time.Sleep(d)
+            cond.L.Lock()
+            values[i] = string('a' + i)
+            // notify when cond.L lock is released
+            cond.Broadcast()
+            cond.L.Unlock()
+        }(i)
+    }
+
+    // must be called when cond.L is locked
+    checkCondition := func() bool {
+        fmt.Println(values)
+        for i := 0; i &lt; N; i++ {
+            if values[i] == &quot;&quot; {
+                return false
+            }
+        }
+        return true
+    }
+    for !checkCondition() {
+        // must be called wen cond.L is locked
+        cond.Wait()
+    }
+    cond.L.Unlock()
+}
+</code></pre>
+
+<h1 id="atomic-operations-provided-in-the-syncatomic-standard-package">Atomic Operations Provided in The sync/atomic Standard Package</h1>
+<h3 id="overview-of-atomic-opeartions-provided-in-go">Overview of Atomic Opeartions Provided in Go</h3>
+<p>AddT/LoadT/StoreT/SwapT/CompareAndSwapT, T must be any of int32,int64,uin32,uint64 and uintptr.</p>
+<p>Value.Load, Value.Store.</p>
+<h3 id="atomic-opeartions-for-integers">Atomic Opeartions for Integers</h3>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+    &quot;sync/atomic&quot;
+)
+
+func main() {
+    var n int32
+    var wg sync.WaitGroup
+    // 1000 个 gouroutine 同时进行 +1 操作
+    for i := 0; i &lt; 1000; i++ {
+        wg.Add(1)
+        go func() {
+            atomic.AddInt32(&amp;n, 1)
+            wg.Done()
+        }()
+    }
+    wg.Wait()
+    fmt.Println(atomic.LoadInt32(&amp;n))
+}
+</code></pre>
+
+<p>StoreT and LoadT atomic functions are often used to implement the setter/getter methods of a type if the values of the
+type need to be used concurrently.</p>
+<pre><code class="go">type Page struct {
+    views uint32
+}
+
+func (page *Page) SetViews(n uint32) {
+    atomic.StoreUint32(&amp;page.views, n)
+}
+
+func (page *Page) Views() uint32 {
+    return atomic.LoadUint32(&amp;page.views)
+}
+</code></pre>
+
+<h3 id="atomic-operations-for-pointers">Atomic Operations for Pointers</h3>
+<h3 id="atomic-operations-for-values-of-arbitrary-types">Atomic Operations for Values of Arbitrary Types</h3>
+<p>The Value type provided in the sync/atomic standard pacakge can be used to atomically load and store values of any type.</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync/atomic&quot;
+)
+
+func main() {
+    type T struct{ a, b, c int }
+    var ta = T{1, 2, 3}
+    var v atomic.Value
+    v.Store(ta)
+    var tb = v.Load().(T)
+    fmt.Println(tb)       //{1,2,3}
+    fmt.Println(ta == tb) //true
+
+    // panic, store的后续调用需要和之前类型保持一致
+    // v.Store(&quot;hello&quot;)
+}
+</code></pre>
+
+<h1 id="memory-order-guarantees-in-go">Memory Order Guarantees in Go</h1>
+<p>很多编译器和 cpu 经常会对指令顺序做一些优化，导致和原始的代码可能不同。Instruction ordering is also often called memory
+ordering.</p>
+<p><code>go build -race</code> to check data races in the program.</p>
               
             </div>
           </div>
