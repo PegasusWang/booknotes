@@ -1070,12 +1070,12 @@ func main() {
 }
 ```
 
-#### Channel Closing Principle 
+#### Channel Closing Principle
 
 - don't close a channel from the receiver side and don't close a channel if the channel has multiple concurrent senders.
 - don't close (or send values to) closed channels
 
-#### Solutions which Close Channels Rudely 
+#### Solutions which Close Channels Rudely
 
 use recover prevent possible panic.
 
@@ -1433,7 +1433,7 @@ Both implements sync.Locker (Lock/Unlock). m.Lock/m.UnLock() are shortands of (&
 
 A lock doesn't know which goroutine acquired it, and any goroutine can release a lock which in acquired status.
 
-```go 
+```go
 package main
 
 import (
@@ -1487,5 +1487,136 @@ func (c *Counter) Value() uint64 {
 	c.m.RLock()
 	defer c.m.RUnlock()
 	return c.n
+}
+```
+
+### Type sync.Cond Type
+
+Notifications among goroutines. Wait(), Signal(), Broadcast()
+
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	const N = 10
+	var values [N]string
+	cond := sync.NewCond(&sync.Mutex{})
+	cond.L.Lock()
+	for i := 0; i < N; i++ {
+		d := time.Second * time.Duration(rand.Intn(10))
+		go func(i int) {
+			time.Sleep(d)
+			cond.L.Lock()
+			values[i] = string('a' + i)
+			// notify when cond.L lock is released
+			cond.Broadcast()
+			cond.L.Unlock()
+		}(i)
+	}
+
+	// must be called when cond.L is locked
+	checkCondition := func() bool {
+		fmt.Println(values)
+		for i := 0; i < N; i++ {
+			if values[i] == "" {
+				return false
+			}
+		}
+		return true
+	}
+	for !checkCondition() {
+		// must be called wen cond.L is locked
+		cond.Wait()
+	}
+	cond.L.Unlock()
+}
+```
+
+
+# Atomic Operations Provided in The sync/atomic Standard Package
+
+### Overview of Atomic Opeartions Provided in Go 
+
+AddT/LoadT/StoreT/SwapT/CompareAndSwapT, T must be any of int32,int64,uin32,uint64 and uintptr.
+
+Value.Load, Value.Store.
+
+### Atomic Opeartions for Integers
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"sync/atomic"
+)
+
+func main() {
+	var n int32
+	var wg sync.WaitGroup
+	// 1000 个 gouroutine 同时进行 +1 操作
+	for i := 0; i < 1000; i++ {
+		wg.Add(1)
+		go func() {
+			atomic.AddInt32(&n, 1)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	fmt.Println(atomic.LoadInt32(&n))
+}
+```
+
+StoreT and LoadT atomic functions are often used to implement the setter/getter methods of a type if the values of the
+type need to be used concurrently.
+
+```go
+type Page struct {
+	views uint32
+}
+
+func (page *Page) SetViews(n uint32) {
+	atomic.StoreUint32(&page.views, n)
+}
+
+func (page *Page) Views() uint32 {
+	return atomic.LoadUint32(&page.views)
+}
+```
+
+### Atomic Operations for Pointers
+
+### Atomic Operations for Values of Arbitrary Types
+
+The Value type provided in the sync/atomic standard pacakge can be used to atomically load and store values of any type.
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync/atomic"
+)
+
+func main() {
+	type T struct{ a, b, c int }
+	var ta = T{1, 2, 3}
+	var v atomic.Value
+	v.Store(ta)
+	var tb = v.Load().(T)
+	fmt.Println(tb)       //{1,2,3}
+	fmt.Println(ta == tb) //true
+
+	// panic, store的后续调用需要和之前类型保持一致
+	// v.Store("hello")
 }
 ```
