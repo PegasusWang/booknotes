@@ -1651,7 +1651,7 @@ func f1() {
 }
 ```
 
-#### Channel operations related order guranteees
+#### Channel operations related order guarantees
 
 - The nth successful send to a channel happens before the nth successful receive from that channel completes(no matter
 	buffered or not)
@@ -1680,3 +1680,21 @@ func f3() {
 	}()
 }
 ```
+
+#### Mutex related order guarantees
+
+- For an addressable value m of type Mutex/RWMutex in the sync, the nth successful m.Unlock() call happens before n+1th m.Lock() returns
+- For an addressable value m of type RWMutex, if its nth rw.Lock() method call has returned, the its successful nth
+	rw.Unlock() method call happens before the return of any rw.RLock() method call which is guaranteed to happen after
+	the nth rw.Lock() method call returns.
+- For an addressable value m of type RWMutex, if its rw.RLock() method call has returned, then its mth successful
+	rw.RUnlock() method call, where `m<=n`, happens before the return of any rw.Lock() method call which is guaranteed to
+	happen after the nth rw.RLock() method call returns.
+
+#### Order guarantees made by sync.WaitGroup values
+before wg.Wait method call returns
+
+#### Order guarantees made by sync.Once values
+
+#### Atomic opeartions related order guarantees
+Don't rely on atomic to guarantee ordering in general Go programming.
