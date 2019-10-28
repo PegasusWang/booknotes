@@ -1698,3 +1698,58 @@ before wg.Wait method call returns
 
 #### Atomic opeartions related order guarantees
 Don't rely on atomic to guarantee ordering in general Go programming.
+
+
+# Common Concurrent Programming Mistakes
+
+### No Synchronizations When Synchronizations Are Needed
+
+```go
+package main
+
+import (
+	"runtime"
+	"time"
+)
+
+func testMightPanic() {
+	var a []int // nil
+	var b bool  //false
+
+	go func() {
+		a = make([]int, 3)
+		b = true
+	}()
+
+	for !b {
+		time.Sleep(time.Second)
+		runtime.Gosched()
+	}
+	a[0], a[1], a[2] = 0, 1, 2 // might panic
+}
+func main() {
+	var a []int = nil
+	c := make(chan struct{})
+	go func() {
+		a = make([]int, 3)
+		c <- struct{}{}
+	}()
+	<-c
+	// will not panic for sure
+	a[0], a[1], a[2] = 0, 1, 2
+}
+```
+
+### Use time.Sleep Calls to Do Synchronizations
+
+We should never use time.Sleep calls to do synchronizations in formal projects.
+
+### Leave Goroutines Hanging
+
+Hanging goroutines are the goroutines staying in blocking state for ever.
+Go runtime will never release the resources consumed by a hanging goroutine.
+
+比如：永远接收不到值;值永远不会被接收;自己死锁;一组goroutines互相死锁;没有 default 的 select 并且所有 case
+语句永远阻塞。
+
+#### Copy Values of the Types in the sync Standard Package
