@@ -1628,3 +1628,55 @@ func main() {
 ordering.
 
 `go build -race` to check data races in the program.
+
+### Go Memory Model 
+
+#### The creation of a gouroutine happens before the execution of the goroutine
+
+```go
+package main
+
+import "fmt"
+
+var x, y int
+
+func f1() {
+	x, y = 123, 789 // 先于 fmt.Println(x) 执行
+	go func() {
+		fmt.Println(x) // 先于 fmt.Println(y) 执行
+		go func() {
+			fmt.Println(y)
+		}()
+	}()
+}
+```
+
+#### Channel operations related order guranteees
+
+- The nth successful send to a channel happens before the nth successful receive from that channel completes(no matter
+	buffered or not)
+- The nth successful receive from a channel with capacity m happens before the (n+m)th successful send to that channel
+	completes.
+- The closing of a channel happens before a receive completes if the receive returns a zero value because the channel is
+	closed.
+
+```go
+func f3() {
+	var a, b int
+	var c = make(chan bool)
+	go func() {
+		a = 1
+		c <- true
+		if b != 1 {
+			panic("b!=1") // will never happen
+		}
+	}()
+	go func() {
+		b = 1
+		<-c
+		if a != 1 {
+			panic("a!=1") // will never happen
+		}
+	}()
+}
+```
