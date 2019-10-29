@@ -281,6 +281,33 @@
         </ul>
     
 
+    <li class="toctree-l3"><a href="#common-concurrent-programming-mistakes">Common Concurrent Programming Mistakes</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#no-synchronizations-when-synchronizations-are-needed">No Synchronizations When Synchronizations Are Needed</a></li>
+        
+            <li><a class="toctree-l4" href="#use-timesleep-calls-to-do-synchronizations">Use time.Sleep Calls to Do Synchronizations</a></li>
+        
+            <li><a class="toctree-l4" href="#leave-goroutines-hanging">Leave Goroutines Hanging</a></li>
+        
+            <li><a class="toctree-l4" href="#copy-values-of-the-types-in-the-sync-standard-package">Copy Values of the Types in the sync Standard Package</a></li>
+        
+            <li><a class="toctree-l4" href="#call-the-syncwaitgroupadd-method-at-wrong-places">Call the sync.WaitGroup.Add Method at Wrong Places</a></li>
+        
+            <li><a class="toctree-l4" href="#use-channels-as-futurespromises-improperly">Use Channels as Futures/Promises Improperly</a></li>
+        
+            <li><a class="toctree-l4" href="#close-channels-not-from-the-last-active-sender-goroutine">Close Channels Not From the Last Active Sender Goroutine</a></li>
+        
+            <li><a class="toctree-l4" href="#do-64-bit-atomic-operations-on-values-which-are-not-guaranteed-to-be-8-byte-aligned">Do 64-bit Atomic Operations on Values Which are Not Guaranteed to Be 8-byte Aligned</a></li>
+        
+            <li><a class="toctree-l4" href="#not-pay-attention-to-too-many-resources-are-consumed-by-calls-to-the-timeafter-function">Not Pay Attention to Too Many Resources Are Consumed by Calls to the time.After Function</a></li>
+        
+            <li><a class="toctree-l4" href="#use-timetimer-values-incorrectly">Use time.Timer Values Incorrectly</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -2274,7 +2301,7 @@ func f1() {
 }
 </code></pre>
 
-<h4 id="channel-operations-related-order-guranteees">Channel operations related order guranteees</h4>
+<h4 id="channel-operations-related-order-guarantees">Channel operations related order guarantees</h4>
 <ul>
 <li>The nth successful send to a channel happens before the nth successful receive from that channel completes(no matter
     buffered or not)</li>
@@ -2300,6 +2327,204 @@ func f1() {
             panic(&quot;a!=1&quot;) // will never happen
         }
     }()
+}
+</code></pre>
+
+<h4 id="mutex-related-order-guarantees">Mutex related order guarantees</h4>
+<ul>
+<li>For an addressable value m of type Mutex/RWMutex in the sync, the nth successful m.Unlock() call happens before n+1th m.Lock() returns</li>
+<li>For an addressable value m of type RWMutex, if its nth rw.Lock() method call has returned, the its successful nth
+    rw.Unlock() method call happens before the return of any rw.RLock() method call which is guaranteed to happen after
+    the nth rw.Lock() method call returns.</li>
+<li>For an addressable value m of type RWMutex, if its rw.RLock() method call has returned, then its mth successful
+    rw.RUnlock() method call, where <code>m&lt;=n</code>, happens before the return of any rw.Lock() method call which is guaranteed to
+    happen after the nth rw.RLock() method call returns.</li>
+</ul>
+<h4 id="order-guarantees-made-by-syncwaitgroup-values">Order guarantees made by sync.WaitGroup values</h4>
+<p>before wg.Wait method call returns</p>
+<h4 id="order-guarantees-made-by-synconce-values">Order guarantees made by sync.Once values</h4>
+<h4 id="atomic-opeartions-related-order-guarantees">Atomic opeartions related order guarantees</h4>
+<p>Don't rely on atomic to guarantee ordering in general Go programming.</p>
+<h1 id="common-concurrent-programming-mistakes">Common Concurrent Programming Mistakes</h1>
+<h3 id="no-synchronizations-when-synchronizations-are-needed">No Synchronizations When Synchronizations Are Needed</h3>
+<pre><code class="go">package main
+
+import (
+    &quot;runtime&quot;
+    &quot;time&quot;
+)
+
+func testMightPanic() {
+    var a []int // nil
+    var b bool  //false
+
+    go func() {
+        a = make([]int, 3)
+        b = true
+    }()
+
+    for !b {
+        time.Sleep(time.Second)
+        runtime.Gosched()
+    }
+    a[0], a[1], a[2] = 0, 1, 2 // might panic
+}
+func main() {
+    var a []int = nil
+    c := make(chan struct{})
+    go func() {
+        a = make([]int, 3)
+        c &lt;- struct{}{}
+    }()
+    &lt;-c
+    // will not panic for sure
+    a[0], a[1], a[2] = 0, 1, 2
+}
+</code></pre>
+
+<h3 id="use-timesleep-calls-to-do-synchronizations">Use time.Sleep Calls to Do Synchronizations</h3>
+<p>We should never use time.Sleep calls to do synchronizations in formal projects.</p>
+<h3 id="leave-goroutines-hanging">Leave Goroutines Hanging</h3>
+<p>Hanging goroutines are the goroutines staying in blocking state for ever.
+Go runtime will never release the resources consumed by a hanging goroutine.</p>
+<p>比如：永远接收不到值;值永远不会被接收;自己死锁;一组goroutines互相死锁;没有 default 的 select 并且所有 case
+语句永远阻塞。</p>
+<h3 id="copy-values-of-the-types-in-the-sync-standard-package">Copy Values of the Types in the sync Standard Package</h3>
+<p>Values of types(except the Locker interface values) in the sync standard package should never be copied.
+We should only copy pointers of such values.</p>
+<pre><code class="go">package main
+
+import &quot;sync&quot;
+
+type Counter struct {
+    sync.Mutex
+    n int64
+}
+
+// this method is okay
+func (c *Counter) Increase(d int64) (r int64) {
+    c.Lock()
+    c.n += d
+    r = c.n
+    c.Unlock()
+    return
+}
+
+// bad, counter receiver value will be copied
+func (c Counter) Value() (r int64) {
+    c.Lock()
+    r = c.n
+    c.Unlock()
+    return
+}
+</code></pre>
+
+<h3 id="call-the-syncwaitgroupadd-method-at-wrong-places">Call the sync.WaitGroup.Add Method at Wrong Places</h3>
+<p>Each sync.WaitGroup value maintains a counter internally, a call to wait blocks until counter value becomes 0.</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+    &quot;sync/atomic&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    var wg sync.WaitGroup
+    var x int32 = 0
+    for i := 0; i &lt; 100; i++ {
+        // wg.Add(1) // 正确的方式
+        go func() {
+            // none of Add calls are guaranteeed to happend before Wait()
+            wg.Add(1) // ERROR: 错误的调用地点
+            time.Sleep(time.Second)
+            atomic.AddInt32(&amp;x, 1)
+            wg.Done()
+        }()
+    }
+    fmt.Println(&quot;Wait ....&quot;)
+    wg.Wait()
+    fmt.Println(atomic.LoadInt32(&amp;x)) // not always 100
+}
+</code></pre>
+
+<h3 id="use-channels-as-futurespromises-improperly">Use Channels as Futures/Promises Improperly</h3>
+<pre><code class="go">// ERROR: two channel receive are processed sequentially, instead of concurrently
+DoSomethingWithFutureArguments(&lt;-fa(), &lt;-fb())
+
+// concurrently
+ca, cb := fa(), fb()
+DoSomethingWithFutureArguments(&lt;-ca, &lt;-cb)
+</code></pre>
+
+<h3 id="close-channels-not-from-the-last-active-sender-goroutine">Close Channels Not From the Last Active Sender Goroutine</h3>
+<h3 id="do-64-bit-atomic-operations-on-values-which-are-not-guaranteed-to-be-8-byte-aligned">Do 64-bit Atomic Operations on Values Which are Not Guaranteed to Be 8-byte Aligned</h3>
+<h3 id="not-pay-attention-to-too-many-resources-are-consumed-by-calls-to-the-timeafter-function">Not Pay Attention to Too Many Resources Are Consumed by Calls to the time.After Function</h3>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func longRunning(messages &lt;-chan string) {
+    for {
+        select {
+        //bad way: each call will creat a new value of the time.Timer
+        case &lt;-time.After(time.Minute):
+            return
+        case msg := &lt;-messages:
+            fmt.Println(msg)
+        }
+    }
+}
+
+func LongRunning(messages &lt;-chan string) {
+    // reuse a single timer value to the same job
+    timer := time.NewTimer(time.Minute)
+    defer time.Stop()
+
+    for {
+        select {
+        case &lt;-time.C: // expires(timeout)
+            return
+        case msg := &lt;-messages:
+            fmt.Println(msg)
+            // discard/drain a possible timer notification which is sent in the small period when executing the second
+            // branch code block
+            if !timer.Stop() {
+                &lt;-timer.C
+            }
+        }
+        // reset to reuse
+        timer.Reset(time.Minute)
+    }
+}
+</code></pre>
+
+<h3 id="use-timetimer-values-incorrectly">Use time.Timer Values Incorrectly</h3>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+
+    start := time.Now()
+    timer := time.NewTimer(time.Second / 2)
+    select {
+    case &lt;-timer.C:
+    default:
+        // most likely go here
+        time.Sleep(time.Second)
+    }
+    // Potential dat race in the next line
+    timer.Reset(time.Second * 10)
+    &lt;-timer.C
+    fmt.Println(time.Since(start)) //about 1 s
 }
 </code></pre>
               
