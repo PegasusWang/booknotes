@@ -1752,4 +1752,153 @@ Go runtime will never release the resources consumed by a hanging goroutine.
 比如：永远接收不到值;值永远不会被接收;自己死锁;一组goroutines互相死锁;没有 default 的 select 并且所有 case
 语句永远阻塞。
 
-#### Copy Values of the Types in the sync Standard Package
+### Copy Values of the Types in the sync Standard Package
+
+Values of types(except the Locker interface values) in the sync standard package should never be copied.
+We should only copy pointers of such values.
+
+```go
+package main
+
+import "sync"
+
+type Counter struct {
+	sync.Mutex
+	n int64
+}
+
+// this method is okay
+func (c *Counter) Increase(d int64) (r int64) {
+	c.Lock()
+	c.n += d
+	r = c.n
+	c.Unlock()
+	return
+}
+
+// bad, counter receiver value will be copied
+func (c Counter) Value() (r int64) {
+	c.Lock()
+	r = c.n
+	c.Unlock()
+	return
+}
+```
+
+### Call the sync.WaitGroup.Add Method at Wrong Places
+
+Each sync.WaitGroup value maintains a counter internally, a call to wait blocks until counter value becomes 0.
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"sync/atomic"
+	"time"
+)
+
+func main() {
+	var wg sync.WaitGroup
+	var x int32 = 0
+	for i := 0; i < 100; i++ {
+		// wg.Add(1) // 正确的方式
+		go func() {
+			// none of Add calls are guaranteeed to happend before Wait()
+			wg.Add(1) // ERROR: 错误的调用地点
+			time.Sleep(time.Second)
+			atomic.AddInt32(&x, 1)
+			wg.Done()
+		}()
+	}
+	fmt.Println("Wait ....")
+	wg.Wait()
+	fmt.Println(atomic.LoadInt32(&x)) // not always 100
+}
+```
+
+### Use Channels as Futures/Promises Improperly
+
+```go
+// ERROR: two channel receive are processed sequentially, instead of concurrently
+DoSomethingWithFutureArguments(<-fa(), <-fb())
+
+// concurrently
+ca, cb := fa(), fb()
+DoSomethingWithFutureArguments(<-ca, <-cb)
+```
+
+### Close Channels Not From the Last Active Sender Goroutine
+### Do 64-bit Atomic Operations on Values Which are Not Guaranteed to Be 8-byte Aligned
+### Not Pay Attention to Too Many Resources Are Consumed by Calls to the time.After Function
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func longRunning(messages <-chan string) {
+	for {
+		select {
+		//bad way: each call will creat a new value of the time.Timer
+		case <-time.After(time.Minute):
+			return
+		case msg := <-messages:
+			fmt.Println(msg)
+		}
+	}
+}
+
+func LongRunning(messages <-chan string) {
+	// reuse a single timer value to the same job
+	timer := time.NewTimer(time.Minute)
+	defer time.Stop()
+
+	for {
+		select {
+		case <-time.C: // expires(timeout)
+			return
+		case msg := <-messages:
+			fmt.Println(msg)
+			// discard/drain a possible timer notification which is sent in the small period when executing the second
+			// branch code block
+			if !timer.Stop() {
+				<-timer.C
+			}
+		}
+		// reset to reuse
+		timer.Reset(time.Minute)
+	}
+}
+```
+
+### Use time.Timer Values Incorrectly
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+
+	start := time.Now()
+	timer := time.NewTimer(time.Second / 2)
+	select {
+	case <-timer.C:
+	default:
+		// most likely go here
+		time.Sleep(time.Second)
+	}
+	// Potential dat race in the next line
+	timer.Reset(time.Second * 10)
+	<-timer.C
+	fmt.Println(time.Since(start)) //about 1 s
+}
+```
