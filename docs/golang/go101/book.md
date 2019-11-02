@@ -1543,13 +1543,13 @@ func main() {
 
 # Atomic Operations Provided in The sync/atomic Standard Package
 
-### Overview of Atomic Opeartions Provided in Go 
+### Overview of Atomic Operations Provided in Go
 
 AddT/LoadT/StoreT/SwapT/CompareAndSwapT, T must be any of int32,int64,uin32,uint64 and uintptr.
 
 Value.Load, Value.Store.
 
-### Atomic Opeartions for Integers
+### Atomic Operations for Integers
 
 ```go
 package main
@@ -1629,7 +1629,7 @@ ordering.
 
 `go build -race` to check data races in the program.
 
-### Go Memory Model 
+### Go Memory Model
 
 #### The creation of a gouroutine happens before the execution of the goroutine
 
@@ -1902,3 +1902,78 @@ func main() {
 	fmt.Println(time.Since(start)) //about 1 s
 }
 ```
+
+
+# Memory Blocks
+
+### Memory Blocks
+A meomory block is a continuous memory segment to host value parts at run time..
+For any value part, it never crosses memory blocks.
+
+Why One memory block may host host multiple value parts.
+
+- a struct value often have several fields.
+- an array values often have many elements
+- the underlying element sequences of two slices may be hosted on the same memory block
+
+### A Value References the Memory Blocks Which Host Its Value Parts
+
+### When will Memory Blocks Be Allocated ?
+
+### Where Will Memory Blocks Be Allocated On?
+
+### Where Will Memory Blocks Be Allocated On?
+
+- allocating memory blocks on stacks is much faster than on heap
+- memory blocks allocated on a stack don't need to be garbage collected
+- stack memory blocks are more CPU cache friendly than heap ones.
+
+If some value parts of a local variable declared in a function is allocated on heap, we can say the value parts(and the
+variable) escape(逃逸) to heap.
+We can use `go build -gcflags -m` to check which local values will escape to heap at run time.(不是完全精确)
+
+A memory block created by calling `new` function may be allocated on heap or stacks, different to cpp.
+
+### When Can a Memory Block Be Collected?
+
+Memory blocks allocated for direct parts of package-level variables will never be collected.
+The stack of a goroutine will be collected as a whole when the goroutine exits.
+So there is no need to collect the memory blocks allocated on stacks one by one, stacks are not collected by gc.
+
+Unused memory blocks on heap will be collected by the garbage collector.
+
+### How are Unused Memory Blocks Detected?
+
+The current Go compiler(1.12) uses a concurrent, tri-color, mark-sweep garbage collector.
+
+### When Will an Unused Memory Block Be Collected?
+Unused heap memory. Concurrently(go1.12), the threshold is controlled by GOGC environment variable.
+Default GOGC=100, set GOGC=off disable the garbage collector entirely.
+
+runtime.SetGCPercent.
+
+A garbage collection can also be started manually by calling the runtime.GC function.
+
+
+# Memory Layouts
+
+### Type Alignment Guarantees in GO(value address alignment guarantees)
+
+The address of addressable values of type T are guaranteed to be N-byte aligned.
+
+- unsafe.Alignof(t): get its general alignment guarantee
+- unsafe.Alignof(x.t): get field alignment guarantee
+
+unsafe are always evaluated at compile time. At runtime call reflect.TypeOf(t).Align() and
+reflect.TypeOf(t).FieldAlign()。
+
+一般只有为了优化或者编写一些可移植代码(使用了sync/atomic 64-bit functions) 才会在意地址对齐。
+
+### Type Sizes and Structure Padding
+
+内存对齐，对于 struct 一些位数小的会进行填充操作。(类似 c 的)
+
+### The Alignment Requirement for 64-bit Word Atomic Operations
+
+64-bit int64 or uint64. On very old cpu architecture, 64-bit atomic functions are not supported.
+
