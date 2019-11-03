@@ -261,9 +261,9 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#overview-of-atomic-opeartions-provided-in-go">Overview of Atomic Opeartions Provided in Go</a></li>
+            <li><a class="toctree-l4" href="#overview-of-atomic-operations-provided-in-go">Overview of Atomic Operations Provided in Go</a></li>
         
-            <li><a class="toctree-l4" href="#atomic-opeartions-for-integers">Atomic Opeartions for Integers</a></li>
+            <li><a class="toctree-l4" href="#atomic-operations-for-integers">Atomic Operations for Integers</a></li>
         
             <li><a class="toctree-l4" href="#atomic-operations-for-pointers">Atomic Operations for Pointers</a></li>
         
@@ -304,6 +304,42 @@
             <li><a class="toctree-l4" href="#not-pay-attention-to-too-many-resources-are-consumed-by-calls-to-the-timeafter-function">Not Pay Attention to Too Many Resources Are Consumed by Calls to the time.After Function</a></li>
         
             <li><a class="toctree-l4" href="#use-timetimer-values-incorrectly">Use time.Timer Values Incorrectly</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#memory-blocks">Memory Blocks</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#memory-blocks_1">Memory Blocks</a></li>
+        
+            <li><a class="toctree-l4" href="#a-value-references-the-memory-blocks-which-host-its-value-parts">A Value References the Memory Blocks Which Host Its Value Parts</a></li>
+        
+            <li><a class="toctree-l4" href="#when-will-memory-blocks-be-allocated">When will Memory Blocks Be Allocated ?</a></li>
+        
+            <li><a class="toctree-l4" href="#where-will-memory-blocks-be-allocated-on">Where Will Memory Blocks Be Allocated On?</a></li>
+        
+            <li><a class="toctree-l4" href="#where-will-memory-blocks-be-allocated-on_1">Where Will Memory Blocks Be Allocated On?</a></li>
+        
+            <li><a class="toctree-l4" href="#when-can-a-memory-block-be-collected">When Can a Memory Block Be Collected?</a></li>
+        
+            <li><a class="toctree-l4" href="#how-are-unused-memory-blocks-detected">How are Unused Memory Blocks Detected?</a></li>
+        
+            <li><a class="toctree-l4" href="#when-will-an-unused-memory-block-be-collected">When Will an Unused Memory Block Be Collected?</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#memory-layouts">Memory Layouts</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#type-alignment-guarantees-in-govalue-address-alignment-guarantees">Type Alignment Guarantees in GO(value address alignment guarantees)</a></li>
+        
+            <li><a class="toctree-l4" href="#type-sizes-and-structure-padding">Type Sizes and Structure Padding</a></li>
+        
+            <li><a class="toctree-l4" href="#the-alignment-requirement-for-64-bit-word-atomic-operations">The Alignment Requirement for 64-bit Word Atomic Operations</a></li>
         
         </ul>
     
@@ -2211,10 +2247,10 @@ func main() {
 </code></pre>
 
 <h1 id="atomic-operations-provided-in-the-syncatomic-standard-package">Atomic Operations Provided in The sync/atomic Standard Package</h1>
-<h3 id="overview-of-atomic-opeartions-provided-in-go">Overview of Atomic Opeartions Provided in Go</h3>
+<h3 id="overview-of-atomic-operations-provided-in-go">Overview of Atomic Operations Provided in Go</h3>
 <p>AddT/LoadT/StoreT/SwapT/CompareAndSwapT, T must be any of int32,int64,uin32,uint64 and uintptr.</p>
 <p>Value.Load, Value.Store.</p>
-<h3 id="atomic-opeartions-for-integers">Atomic Opeartions for Integers</h3>
+<h3 id="atomic-operations-for-integers">Atomic Operations for Integers</h3>
 <pre><code class="go">package main
 
 import (
@@ -2527,6 +2563,56 @@ func main() {
     fmt.Println(time.Since(start)) //about 1 s
 }
 </code></pre>
+
+<h1 id="memory-blocks">Memory Blocks</h1>
+<h3 id="memory-blocks_1">Memory Blocks</h3>
+<p>A meomory block is a continuous memory segment to host value parts at run time..
+For any value part, it never crosses memory blocks.</p>
+<p>Why One memory block may host host multiple value parts.</p>
+<ul>
+<li>a struct value often have several fields.</li>
+<li>an array values often have many elements</li>
+<li>the underlying element sequences of two slices may be hosted on the same memory block</li>
+</ul>
+<h3 id="a-value-references-the-memory-blocks-which-host-its-value-parts">A Value References the Memory Blocks Which Host Its Value Parts</h3>
+<h3 id="when-will-memory-blocks-be-allocated">When will Memory Blocks Be Allocated ?</h3>
+<h3 id="where-will-memory-blocks-be-allocated-on">Where Will Memory Blocks Be Allocated On?</h3>
+<h3 id="where-will-memory-blocks-be-allocated-on_1">Where Will Memory Blocks Be Allocated On?</h3>
+<ul>
+<li>allocating memory blocks on stacks is much faster than on heap</li>
+<li>memory blocks allocated on a stack don't need to be garbage collected</li>
+<li>stack memory blocks are more CPU cache friendly than heap ones.</li>
+</ul>
+<p>If some value parts of a local variable declared in a function is allocated on heap, we can say the value parts(and the
+variable) escape(逃逸) to heap.
+We can use <code>go build -gcflags -m</code> to check which local values will escape to heap at run time.(不是完全精确)</p>
+<p>A memory block created by calling <code>new</code> function may be allocated on heap or stacks, different to cpp.</p>
+<h3 id="when-can-a-memory-block-be-collected">When Can a Memory Block Be Collected?</h3>
+<p>Memory blocks allocated for direct parts of package-level variables will never be collected.
+The stack of a goroutine will be collected as a whole when the goroutine exits.
+So there is no need to collect the memory blocks allocated on stacks one by one, stacks are not collected by gc.</p>
+<p>Unused memory blocks on heap will be collected by the garbage collector.</p>
+<h3 id="how-are-unused-memory-blocks-detected">How are Unused Memory Blocks Detected?</h3>
+<p>The current Go compiler(1.12) uses a concurrent, tri-color, mark-sweep garbage collector.</p>
+<h3 id="when-will-an-unused-memory-block-be-collected">When Will an Unused Memory Block Be Collected?</h3>
+<p>Unused heap memory. Concurrently(go1.12), the threshold is controlled by GOGC environment variable.
+Default GOGC=100, set GOGC=off disable the garbage collector entirely.</p>
+<p>runtime.SetGCPercent.</p>
+<p>A garbage collection can also be started manually by calling the runtime.GC function.</p>
+<h1 id="memory-layouts">Memory Layouts</h1>
+<h3 id="type-alignment-guarantees-in-govalue-address-alignment-guarantees">Type Alignment Guarantees in GO(value address alignment guarantees)</h3>
+<p>The address of addressable values of type T are guaranteed to be N-byte aligned.</p>
+<ul>
+<li>unsafe.Alignof(t): get its general alignment guarantee</li>
+<li>unsafe.Alignof(x.t): get field alignment guarantee</li>
+</ul>
+<p>unsafe are always evaluated at compile time. At runtime call reflect.TypeOf(t).Align() and
+reflect.TypeOf(t).FieldAlign()。</p>
+<p>一般只有为了优化或者编写一些可移植代码(使用了sync/atomic 64-bit functions) 才会在意地址对齐。</p>
+<h3 id="type-sizes-and-structure-padding">Type Sizes and Structure Padding</h3>
+<p>内存对齐，对于 struct 一些位数小的会进行填充操作。(类似 c 的)</p>
+<h3 id="the-alignment-requirement-for-64-bit-word-atomic-operations">The Alignment Requirement for 64-bit Word Atomic Operations</h3>
+<p>64-bit int64 or uint64. On very old cpu architecture, 64-bit atomic functions are not supported.</p>
               
             </div>
           </div>
