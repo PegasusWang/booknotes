@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>3. 启动 docker - PegasusWang的读书笔记</title>
+  <title>《高效清单工作法》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "3. \u542f\u52a8 docker";
-    var mkdocs_page_input_path = "devops/\u7b2c\u4e00\u672cdocker\u4e66.md";
+    var mkdocs_page_name = "\u300a\u9ad8\u6548\u6e05\u5355\u5de5\u4f5c\u6cd5\u300b";
+    var mkdocs_page_input_path = "career/\u9ad8\u6548\u6e05\u5355\u5de5\u4f5c\u6cd5.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -578,67 +578,76 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../career/give_and_take/">《give and take》</a>
+    <a class="" href="../give_and_take/">《give and take》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+    <a class="" href="../the_effective_engineer/">《the_effective_engineer》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/光速成长/">《光速成长》</a>
+    <a class="" href="../光速成长/">《光速成长》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/向上管理/">《向上管理》</a>
+    <a class="" href="../向上管理/">《向上管理》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/成功动机与目标/">《成功动机与目标》</a>
+    <a class="" href="../成功动机与目标/">《成功动机与目标》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+    <a class="" href="../番茄工作法/">《番茄工作法》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+    <a class="" href="../聆听沟通学/">《聆听沟通学》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+    <a class="" href="../知乎职人觉醒/">《知乎职人觉醒》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/知识变现/">《知识变现》</a>
+    <a class="" href="../知识变现/">《知识变现》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+    <a class="" href="../聆听沟通学/">《聆听沟通学》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+    <a class="" href="../职场动物进化手册/">《职场动物进化手册》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+    <a class="" href="../职场解释系/">《职场解释系》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+    <a class="" href="../请停止无效努力/">《请停止无效努力》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/软技能/">《软技能》</a>
+    <a class="" href="../软技能/">《软技能》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+    <a class="" href="../高效15法则/">《高效15法则》</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../career/高效清单工作法/">《高效清单工作法》</a>
+    <a class="current" href="./">《高效清单工作法》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#_1">如何创建待办事项清单</a></li>
+    
+
+    <li class="toctree-l3"><a href="#_2">如何维护待办事项清单系统</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -664,8 +673,12 @@
     <li><a href="../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>职场 &raquo;</li>
+        
+      
     
-    <li>3. 启动 docker</li>
+    <li>《高效清单工作法》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -675,67 +688,44 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="3-docker">3. 启动 docker</h1>
-<p>docker run --name daemon_dave -d ubuntu /bin/sh -c "while true; do echo hello world; sleep 1; done"</p>
-<h1 id="4-docker">4. 使用 docker 镜像和仓库</h1>
-<p>构建 docker image。docker build 方式。</p>
-<pre><code># 当前的文件夹叫做 build context，docker 在构建镜像时将构建上下文和上下文中的文件和目录上传到 Docker 守护进程
-mkdir static_web
-cd static_web
-touch Dockerfile
-
-
-# Veersion: 0.0.1 
-FROM ubuntu:14.04
-MAINTAINER WNN 'pegasuswang@qq.com'
-RUN apt-get update &amp;&amp; apt-get install -y nginx 
-RUN echo 'Hi, I am your container' \
-&gt; /usr/share/nginx/html/index.html
-EXPOSE 80
-</code></pre>
-<p>每条指令都会创建一个新的镜像层并对镜像进行提交，中间如果某条指令失败了，也能得到一个镜像，可以用来调试。</p>
-<pre><code># cd static_web
-docker build -t="wnn/static_web" .
-docker build --no-cache -t="wnn/static_web" .
-docker run -d -p 80 --name static_web wnn/static_web nginx -g "daemon off;"
-docker run -d -p 8000:80 --name static_web wnn/static_web nginx -g "daemon off;"
-</code></pre>
-<p>常用 dockerfile 命令：</p>
-<p>EXPOSE, ENTRYPOINT, ADD, COPY, VOLUME, WORKDIR, USER, ONBUILD, LABEL, STOPSIGNAL, ARG
-ENV</p>
-<p>CMD: 指定容器启动时要运行的命令，RUN 是指定构建时要运行的命令。CMD ["bin/true"]
-命令行中指定的命令会覆盖掉 Dockerfile 中的 CMD。 只能制定一个，多个只会执行最后一个。</p>
-<p>ENTRYPOINT: 类似CMD，但是不容易 在容器启动时被覆盖。实际上 docker run命令行中指定的任何参数都会被当做参数
-再次传递给ENTRYPOINT指令中指定的命令。 ENTRYPOINT ["/usr/sbin/nginx"]</p>
-<p>WORKDIR: 从镜像创建新 容器时，在容器内部设置一个工作目录，ENTRYPOINT/CMD 指定的程序会在这个目录下运行。WORKDIR
-/opt/webapp</p>
-<p>ENV: 在镜像构建过程中 设置环境变量。 ENV RVM_PATH /home/rvm/ ,之后的 RUN 命令都可以使用这个环境变量。</p>
-<p>USER: 指定该镜像会以什么样的用户运行。  默认 root
-  - USER user
-  - USER user:group
-  - USER uid
-  - USER uid:gid</p>
-<p>VOLUME: 基于镜像创建的容器添加卷。一个卷可以存在于一个或者多个容器内特定的目录，这个目录可以绕过联合文件系统，
-提供如下共享数据或者对数据进行持久化的功能。允许多个容器共享这些内容，及时删除了最后一个使用卷的容器，卷中数据也会持久保存。
-VOLUME ["opt/project"]  这条命令将会基于此镜像创建的任何容器创建一个名为 /opt/project 的挂载点。</p>
-<p>ADD: 用来将构建环境下的文件和目录复制到镜像中。会自动解开归档文件(gzip,bzip2,xz)
-ADD会是的构建缓存变得无效，  使得后续指令无法继续使用之前的构建缓存。</p>
-<p>COPY: 类似 COPY，只关心在构建上线文中复制本地文件，不会做文件提取和解压工作。 COPY conf.d /etc/apache2/</p>
-<p>LABEL: 为 docker 镜像添加元数据，键值对形式。LABEL version="1.0"  通过docker inspect 查看</p>
-<p>STOPSIGNAL: 停止容器的时候发送什么信号给容器，必须是内核中合法信号名称或者数字</p>
-<p>ARG:  docker build 命令运行时传递给构建运行时的变量。通过 docker build --build-arg build=1234 这种形式传递进去
-有一些预定义变量等。
-  - HTTP_PROXY
-  - NO_PROXy</p>
-<p>ONBUILD: 为镜像添加触发器，当一个镜像被用作其他镜像的基础镜像，该镜像中的触发器将会被执行。</p>
-<p>从容器运行registry: docker run -p 5000:5000 registry:2</p>
-<h1 id="5-docker">5 在测试中使用 docker</h1>
-<p>重点是 docker 网络连接的几种方式: Docker Networking, Docker链接</p>
-<h1 id="6-docker">6 使用 docker 构建服务</h1>
+                <h1 id="_1">如何创建待办事项清单</h1>
+<p>(发现和我自己探索出来的比较类似😄，个人一直用的teambition)</p>
+<ul>
+<li>从任务中分离出当前任务</li>
+<li>根据期望的结果确定任务（写出来某件事的原因）</li>
+<li>将项目分解成单个任务(分而治之)</li>
+<li>设定每个任务截止时间（deadline 可以提升表现，集中在重要任务上）</li>
+<li>当前任务的数量限制为7个</li>
+<li>按照项目、类型和地点组织任务</li>
+<li>修剪多余的任务清单(愿望，含义不明确的任务，琐碎的任务，承诺和决心)</li>
+<li>估算完成每项任务所需要的时间（我们倾向于乐观估计）</li>
+<li>使用主动动词引导每项任务,正确的动词激励你行动，而如探索，计划和了解这类动词就不如具体的动词有效。</li>
+<li>注意那些任务会受到他人影响</li>
+</ul>
+<h1 id="_2">如何维护待办事项清单系统</h1>
+<ul>
+<li>建立微任务批处理清单。把一堆可以几分钟完成的琐事，集中起来批处理</li>
+<li>保持警觉，不被任务压垮</li>
+<li>按照场景定义待办事项清单</li>
+<li>每周回顾。评估进度，审视优先级</li>
+<li>更新目标清单。写下来的目标更有可能坚持，具体的目标是可以追踪的</li>
+<li>避免在方法论上犹豫不决（番茄工作法，时间盒，GTD 等）</li>
+<li>构建适合你的系统(依照你的工作流程和环境）基本要素：截止日期，优先级，细节信息，任务分离</li>
+<li>保持一致</li>
+</ul>
+<p>使用清单目的不是确保你完成了所有工作，而是确保你将有限的精力和时间集中在最重要的工作上。</p>
+<p>提高工作效率不是为了让自己忙碌，而是根据短期目标和长期目标做去做该做的事情。</p>
               
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../高效15法则/" class="btn btn-neutral" title="《高效15法则》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -758,6 +748,8 @@ ADD会是的构建缓存变得无效，  使得后续指令无法继续使用之
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
+      
+        <span><a href="../高效15法则/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
     </span>
