@@ -1977,3 +1977,103 @@ reflect.TypeOf(t).FieldAlign()。
 
 64-bit int64 or uint64. On very old cpu architecture, 64-bit atomic functions are not supported.
 
+
+# Go Memory Leaking Scenarios
+
+### Kind-of Memory Leaking Caused by Substrings
+
+Go substring expression result string and base string share same underlying memory block.
+
+```go
+package main
+
+var s0 string //package level variable
+
+func f(s1 string) {
+	s0 = s1[:50]
+	//s0 share same memory block with s1
+}
+
+func main() {
+	s := createStringWithLengthOnHeap(1 << 20) // 1Mbytes
+	f(s)
+}
+```
+
+解决方式：
+
+```go
+func f(s1 string) {
+	s0 = string([]byte(s1[:50]))
+}
+
+func f(s1 string) {
+	s0 = (" " + s1[:50])[1:]
+}
+
+func f(s1 string) {
+	var b strings.Builder
+	b.Grow(50)
+	b.WriteString(s1[:50])
+	s0 = b.String()
+	// or call strings.Repeat
+}
+```
+
+### Kind-of Memory Leaking Caused by subslices
+
+```go
+func s0 []int
+func g(s1 []int) {
+	// assume length of s1 is much larger than 30
+	s0=s1[len(s1)-30:]
+}
+
+func g(s1 []int) {
+	s0 = append([]int(nil), s1[len(s1-30:]...)
+}
+```
+
+### Kind-of Memory Leaking Caused by Not resetting Pointers in Lost Slice Elements
+
+```go
+func h() []*int {
+	s := []*int{new(int), new(int), new(int), new(int)}
+	// do with s 
+	return s[1:3:3]
+}
+
+func h() []*int {
+	s := []*int{new(int), new(int), new(int), new(int)}
+	// do with s 
+
+	// reset pointer values 
+	s[0], s[len(s)-1] = nil, nil
+	return s[1:3:3]
+}
+```
+
+### Kind-of Memory Leaking Caused by Hanging Goroutines
+
+### Real Memory Leaking Caused by Not Stopping time.Ticker Values Which Are Not Used Anymore
+
+### Real Memory Leaking Caused by Using Finalizers Improperly
+
+```go
+func memoryLeaking() {
+	type T struct {
+		v [1<<20]int
+		t * T
+	}
+	var finalizer  = func(t *T) {
+		fmt.Println("finalizer called")
+	}
+	var x,y T
+	// the setfinalizer call makes x escape to heap
+	runtime.SetFinalizer(&x, finalizer)
+	//cyclic reference, x and y are not collectable
+	x.t, y.t = &y, &x  // y also escape to heap
+}
+```
+
+### Kind-of Resources Leaking by Deferring Function Calls
