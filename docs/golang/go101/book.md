@@ -2077,3 +2077,136 @@ func memoryLeaking() {
 ```
 
 ### Kind-of Resources Leaking by Deferring Function Calls
+
+
+# nils in Go
+
+nil can Represent Zero Values of Many Types:
+
+- pointer types ( including type-unsafe ones)
+- map types 
+- slice types
+- function types
+- channel types
+- interface types
+
+### Two nil Values May Be Not Equal 
+
+`fmt.Println( (interface{})(nil) == (*int)(nil))  // false`
+
+### Retrieving Elements From Nil Maps Will Not Panic
+
+will always return zero value.
+
+```go
+(map[string]int)(nil)["key"]  // 0
+(map[int]bool)(nil)[123]  // false
+(map[int]*int64)(nil)[123]  // nil
+```
+
+### It is Legal to Range Over Nil Channels, Maps, Slices and Array Pointers
+
+```go
+func main() {
+	// following code will print 0,1,2,3 and 4, then block for ever
+	for range []int(nil) {
+		fmt.Println("Hello") // never print
+	}
+	for range map[string]string(nil) {
+		fmt.Println("world") // never print
+	}
+	for i := range (*[5]int)(nil) {
+		fmt.Println(i) // never print
+	}
+	for range chan bool(nil) { // block here
+		fmt.Println("Bye")
+	}
+}
+
+```
+
+# Value Conversion, Assignment and Comparison Rules In Go
+
+### Value Conversion Rules
+
+1. the apparent conversion rule: 
+
+values of type byte/uint8, rune/int32, []byte/[]uint8 can be converted to each other
+
+2. underlying type related conversion rules
+
+Giving a non-interface value x and a non-interface type T, assume the type of x is Tx
+
+- if Tx and T share the same underlying type (ignoring struct tags), the x can be explicitly converted to T.
+- if either Tx or T is a non-defined type and their underlying types are identical(considering struct tags), then x can be implicitly converted to T.
+- if Tx and T have different underlying types, but both Tx and T are non-defined pointer types and there base types
+	share the same underlying type(ignoring struct tags), then x can (and must) be explicitly converted to T.
+
+啥子是 non-defined type: https://keyla.vip/golang/type/introduction/
+
+类型分为已定义类型（defined type）和未定义类型（non-defined type）。 类型定义的规则如下：
+
+- A defined type is a type defined in a type declaration or an alias of another defined type.
+- All basic types are defined.
+- A non-defined type must be a composite type.
+
+```go
+type A []string     # 依据规则1，A是defined type
+type B = A          # 依据规则1，B是defined type
+type C = []string   # 依据规则2，[]string是non-defined types，所以C是non-defined types
+你可以使用类型声明的语法，定义一个新的类型（也属于defined type）；当你使用类型别名声明时，未必会定义一个新的类型。
+```
+
+3. channel specific conversion rule
+
+Assume Tx is a bidirectional channel type, T is also a channel type(bidirectional or not), if Tx and T have the
+identical element type, and either Tx or T is a non-defined type, then x can be implicitly converted to T.
+
+4. interface implementation related conversion rules
+
+x can be implicitly converted to type T if type(or default type) of x is Tx and Tx implements T.
+
+5. untyped value conversion rule
+
+An untyped value can be implicitly converted to type T, if the untyped value can represent as values of type T.
+
+6. constants conversion rule
+
+Given a constant value x and a type T, if x is represent as a value of type T, then x can be explicitly converted to T.
+In particular if x is an untyped value, then x can be implicitly converted to T.
+
+7. non-constant number conversion rules
+Non-constant floating-point and integer values can be explicitly converted to any floating-point and integer types.
+Non-constant complex values can be explicitly converted to any complex types.
+
+注意浮点数到整数的截断问题(the fraction is discarded, truncation towards zero)。
+
+8. string related conversion rules
+
+If the type(or default type) of a value is an integer type, then the value can be explicitly converted to string types.
+
+9. unsafe pointers related conversion rules
+A pointer value of any type can be explicitly converted to a type whose underlying type is unsafe.Pointer, and vice versa.
+
+An uintptr value can be explicitly converted to a type whose underlying type is unsafe.Pointer, and vice versa.
+
+
+### Value Assignment Rules
+
+Assignments can be views as implicit conversions. The destination values in assignment must be addressable values,
+map index expressions , or the blank identifier.
+
+In an assignment, the source value is *copied* to the destination value. Precisely speaking, the direct part of the
+source value is copied to the destination value. 
+
+Note, parameter passing and result returning are both value assignments actually.
+
+### Value Comparison Rules
+
+In any comparison, the first operand must be assignable to the type of the second operand, or vice versa.
+
+Note, although value of slice/map/function types don't support comparisons, they can be compared with untyped nil values.
+
+Note, an untyped nil value can't be compared with another untyped nil value.
+
+Any comparison results an untyped boolean value.
