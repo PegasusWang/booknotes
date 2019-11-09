@@ -365,6 +365,32 @@
         </ul>
     
 
+    <li class="toctree-l3"><a href="#nils-in-go">nils in Go</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#two-nil-values-may-be-not-equal">Two nil Values May Be Not Equal</a></li>
+        
+            <li><a class="toctree-l4" href="#retrieving-elements-from-nil-maps-will-not-panic">Retrieving Elements From Nil Maps Will Not Panic</a></li>
+        
+            <li><a class="toctree-l4" href="#it-is-legal-to-range-over-nil-channels-maps-slices-and-array-pointers">It is Legal to Range Over Nil Channels, Maps, Slices and Array Pointers</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#value-conversion-assignment-and-comparison-rules-in-go">Value Conversion, Assignment and Comparison Rules In Go</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#value-conversion-rules">Value Conversion Rules</a></li>
+        
+            <li><a class="toctree-l4" href="#value-assignment-rules">Value Assignment Rules</a></li>
+        
+            <li><a class="toctree-l4" href="#value-comparison-rules">Value Comparison Rules</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -2723,6 +2749,117 @@ func h() []*int {
 </code></pre>
 
 <h3 id="kind-of-resources-leaking-by-deferring-function-calls">Kind-of Resources Leaking by Deferring Function Calls</h3>
+<h1 id="nils-in-go">nils in Go</h1>
+<p>nil can Represent Zero Values of Many Types:</p>
+<ul>
+<li>pointer types ( including type-unsafe ones)</li>
+<li>map types </li>
+<li>slice types</li>
+<li>function types</li>
+<li>channel types</li>
+<li>interface types</li>
+</ul>
+<h3 id="two-nil-values-may-be-not-equal">Two nil Values May Be Not Equal</h3>
+<p><code>fmt.Println( (interface{})(nil) == (*int)(nil))  // false</code></p>
+<h3 id="retrieving-elements-from-nil-maps-will-not-panic">Retrieving Elements From Nil Maps Will Not Panic</h3>
+<p>will always return zero value.</p>
+<pre><code class="go">(map[string]int)(nil)[&quot;key&quot;]  // 0
+(map[int]bool)(nil)[123]  // false
+(map[int]*int64)(nil)[123]  // nil
+</code></pre>
+
+<h3 id="it-is-legal-to-range-over-nil-channels-maps-slices-and-array-pointers">It is Legal to Range Over Nil Channels, Maps, Slices and Array Pointers</h3>
+<pre><code class="go">func main() {
+    // following code will print 0,1,2,3 and 4, then block for ever
+    for range []int(nil) {
+        fmt.Println(&quot;Hello&quot;) // never print
+    }
+    for range map[string]string(nil) {
+        fmt.Println(&quot;world&quot;) // never print
+    }
+    for i := range (*[5]int)(nil) {
+        fmt.Println(i) // never print
+    }
+    for range chan bool(nil) { // block here
+        fmt.Println(&quot;Bye&quot;)
+    }
+}
+
+</code></pre>
+
+<h1 id="value-conversion-assignment-and-comparison-rules-in-go">Value Conversion, Assignment and Comparison Rules In Go</h1>
+<h3 id="value-conversion-rules">Value Conversion Rules</h3>
+<ol>
+<li>the apparent conversion rule: </li>
+</ol>
+<p>values of type byte/uint8, rune/int32, []byte/[]uint8 can be converted to each other</p>
+<ol>
+<li>underlying type related conversion rules</li>
+</ol>
+<p>Giving a non-interface value x and a non-interface type T, assume the type of x is Tx</p>
+<ul>
+<li>if Tx and T share the same underlying type (ignoring struct tags), the x can be explicitly converted to T.</li>
+<li>if either Tx or T is a non-defined type and their underlying types are identical(considering struct tags), then x can be implicitly converted to T.</li>
+<li>if Tx and T have different underlying types, but both Tx and T are non-defined pointer types and there base types
+    share the same underlying type(ignoring struct tags), then x can (and must) be explicitly converted to T.</li>
+</ul>
+<p>啥子是 non-defined type: https://keyla.vip/golang/type/introduction/</p>
+<p>类型分为已定义类型（defined type）和未定义类型（non-defined type）。 类型定义的规则如下：</p>
+<ul>
+<li>A defined type is a type defined in a type declaration or an alias of another defined type.</li>
+<li>All basic types are defined.</li>
+<li>A non-defined type must be a composite type.</li>
+</ul>
+<pre><code class="go">type A []string     # 依据规则1，A是defined type
+type B = A          # 依据规则1，B是defined type
+type C = []string   # 依据规则2，[]string是non-defined types，所以C是non-defined types
+你可以使用类型声明的语法，定义一个新的类型（也属于defined type）；当你使用类型别名声明时，未必会定义一个新的类型。
+</code></pre>
+
+<ol>
+<li>channel specific conversion rule</li>
+</ol>
+<p>Assume Tx is a bidirectional channel type, T is also a channel type(bidirectional or not), if Tx and T have the
+identical element type, and either Tx or T is a non-defined type, then x can be implicitly converted to T.</p>
+<ol>
+<li>interface implementation related conversion rules</li>
+</ol>
+<p>x can be implicitly converted to type T if type(or default type) of x is Tx and Tx implements T.</p>
+<ol>
+<li>untyped value conversion rule</li>
+</ol>
+<p>An untyped value can be implicitly converted to type T, if the untyped value can represent as values of type T.</p>
+<ol>
+<li>constants conversion rule</li>
+</ol>
+<p>Given a constant value x and a type T, if x is represent as a value of type T, then x can be explicitly converted to T.
+In particular if x is an untyped value, then x can be implicitly converted to T.</p>
+<ol>
+<li>non-constant number conversion rules
+Non-constant floating-point and integer values can be explicitly converted to any floating-point and integer types.
+Non-constant complex values can be explicitly converted to any complex types.</li>
+</ol>
+<p>注意浮点数到整数的截断问题(the fraction is discarded, truncation towards zero)。</p>
+<ol>
+<li>string related conversion rules</li>
+</ol>
+<p>If the type(or default type) of a value is an integer type, then the value can be explicitly converted to string types.</p>
+<ol>
+<li>unsafe pointers related conversion rules
+A pointer value of any type can be explicitly converted to a type whose underlying type is unsafe.Pointer, and vice versa.</li>
+</ol>
+<p>An uintptr value can be explicitly converted to a type whose underlying type is unsafe.Pointer, and vice versa.</p>
+<h3 id="value-assignment-rules">Value Assignment Rules</h3>
+<p>Assignments can be views as implicit conversions. The destination values in assignment must be addressable values,
+map index expressions , or the blank identifier.</p>
+<p>In an assignment, the source value is <em>copied</em> to the destination value. Precisely speaking, the direct part of the
+source value is copied to the destination value. </p>
+<p>Note, parameter passing and result returning are both value assignments actually.</p>
+<h3 id="value-comparison-rules">Value Comparison Rules</h3>
+<p>In any comparison, the first operand must be assignable to the type of the second operand, or vice versa.</p>
+<p>Note, although value of slice/map/function types don't support comparisons, they can be compared with untyped nil values.</p>
+<p>Note, an untyped nil value can't be compared with another untyped nil value.</p>
+<p>Any comparison results an untyped boolean value.</p>
               
             </div>
           </div>
