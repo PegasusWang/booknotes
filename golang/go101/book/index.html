@@ -391,6 +391,55 @@
         </ul>
     
 
+    <li class="toctree-l3"><a href="#syntaxsemantics-exception-in-go">Syntax/Semantics Exception in Go</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#nested-function-calls">Nested function calls</a></li>
+        
+            <li><a class="toctree-l4" href="#select-struct-fields">Select struct fields</a></li>
+        
+            <li><a class="toctree-l4" href="#receiver-arguments-of-method-calls">Receiver arguments of method calls</a></li>
+        
+            <li><a class="toctree-l4" href="#take-address-of-composite-literal-values">Take address of composite literal values</a></li>
+        
+            <li><a class="toctree-l4" href="#selectors-on-defined-one-level-pointers">Selectors on defined one-Level pointers</a></li>
+        
+            <li><a class="toctree-l4" href="#the-addressability-of-a-container-and-its-elements">The addressability of a container and its elements</a></li>
+        
+            <li><a class="toctree-l4" href="#modify-unaddressable-values">Modify unaddressable values</a></li>
+        
+            <li><a class="toctree-l4" href="#generic">Generic</a></li>
+        
+            <li><a class="toctree-l4" href="#function-names-in-one-package">Function names in one package</a></li>
+        
+            <li><a class="toctree-l4" href="#function-calls">Function calls</a></li>
+        
+            <li><a class="toctree-l4" href="#functions-being-used-as-values">Functions being used as values</a></li>
+        
+            <li><a class="toctree-l4" href="#discard-return-values-of-function-calls">Discard return values of function calls</a></li>
+        
+            <li><a class="toctree-l4" href="#declared-variables">Declared variables</a></li>
+        
+            <li><a class="toctree-l4" href="#argument-passing">Argument passing</a></li>
+        
+            <li><a class="toctree-l4" href="#comparisons">Comparisons</a></li>
+        
+            <li><a class="toctree-l4" href="#blank-composite-literals">Blank composite literals</a></li>
+        
+            <li><a class="toctree-l4" href="#container-element-iterations">Container element iterations</a></li>
+        
+            <li><a class="toctree-l4" href="#methods-of-built-in-types">Methods of built-in types</a></li>
+        
+            <li><a class="toctree-l4" href="#types-of-values">Types of values</a></li>
+        
+            <li><a class="toctree-l4" href="#constant-values">Constant values</a></li>
+        
+            <li><a class="toctree-l4" href="#behavior-change-caused-by-discarding-the-optional-evaluation-results-of-expressions">Behavior change caused by discarding the optional evaluation results of expressions.</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -2715,15 +2764,15 @@ func g(s1 []int) {
 <h3 id="kind-of-memory-leaking-caused-by-not-resetting-pointers-in-lost-slice-elements">Kind-of Memory Leaking Caused by Not resetting Pointers in Lost Slice Elements</h3>
 <pre><code class="go">func h() []*int {
     s := []*int{new(int), new(int), new(int), new(int)}
-    // do with s 
+    // do with s
     return s[1:3:3]
 }
 
 func h() []*int {
     s := []*int{new(int), new(int), new(int), new(int)}
-    // do with s 
+    // do with s
 
-    // reset pointer values 
+    // reset pointer values
     s[0], s[len(s)-1] = nil, nil
     return s[1:3:3]
 }
@@ -2753,7 +2802,7 @@ func h() []*int {
 <p>nil can Represent Zero Values of Many Types:</p>
 <ul>
 <li>pointer types ( including type-unsafe ones)</li>
-<li>map types </li>
+<li>map types</li>
 <li>slice types</li>
 <li>function types</li>
 <li>channel types</li>
@@ -2790,7 +2839,7 @@ func h() []*int {
 <h1 id="value-conversion-assignment-and-comparison-rules-in-go">Value Conversion, Assignment and Comparison Rules In Go</h1>
 <h3 id="value-conversion-rules">Value Conversion Rules</h3>
 <ol>
-<li>the apparent conversion rule: </li>
+<li>the apparent conversion rule:</li>
 </ol>
 <p>values of type byte/uint8, rune/int32, []byte/[]uint8 can be converted to each other</p>
 <ol>
@@ -2853,13 +2902,130 @@ A pointer value of any type can be explicitly converted to a type whose underlyi
 <p>Assignments can be views as implicit conversions. The destination values in assignment must be addressable values,
 map index expressions , or the blank identifier.</p>
 <p>In an assignment, the source value is <em>copied</em> to the destination value. Precisely speaking, the direct part of the
-source value is copied to the destination value. </p>
+source value is copied to the destination value.</p>
 <p>Note, parameter passing and result returning are both value assignments actually.</p>
 <h3 id="value-comparison-rules">Value Comparison Rules</h3>
 <p>In any comparison, the first operand must be assignable to the type of the second operand, or vice versa.</p>
 <p>Note, although value of slice/map/function types don't support comparisons, they can be compared with untyped nil values.</p>
 <p>Note, an untyped nil value can't be compared with another untyped nil value.</p>
 <p>Any comparison results an untyped boolean value.</p>
+<h1 id="syntaxsemantics-exception-in-go">Syntax/Semantics Exception in Go</h1>
+<h3 id="nested-function-calls">Nested function calls</h3>
+<p>return results can be used as the whole arguments of another function call</p>
+<h3 id="select-struct-fields">Select struct fields</h3>
+<ul>
+<li>basic: Pointer values have no fields</li>
+<li>sugar: we can select the fields of a struct through pointers of the struct value</li>
+</ul>
+<pre><code class="go">var t T
+var p = &amp;t
+p.x *= 2 // sugar of the following code: (*p).x *= 2
+</code></pre>
+
+<h3 id="receiver-arguments-of-method-calls">Receiver arguments of method calls</h3>
+<p>Although the methods explicitly defined on type <code>*T</code> are not methods of type T, addressable values of type T can be
+used as the receiver arguments of calls to these methods.</p>
+<h3 id="take-address-of-composite-literal-values">Take address of composite literal values</h3>
+<h3 id="selectors-on-defined-one-level-pointers">Selectors on defined one-Level pointers</h3>
+<h3 id="the-addressability-of-a-container-and-its-elements">The addressability of a container and its elements</h3>
+<ul>
+<li>basic rule: If a container is addressable, then its elements are also addressable.</li>
+<li>exception: Elements of a map are always unaddressable, even if the map itself is addressable.</li>
+<li>sugar: Elements of a slice are always addressable, even if the slice itself is not addressable.</li>
+</ul>
+<h3 id="modify-unaddressable-values">Modify unaddressable values</h3>
+<p>如果一个 map 的值是结构体，你可以整个替换这个值，但是无法直接修改值里的 field。</p>
+<h3 id="generic">Generic</h3>
+<p>Go doesn't support generic. Most built-in and unsafe packages support generic.
+Any type compositions with all kinds of composite types in Go is kinda of generic.</p>
+<h3 id="function-names-in-one-package">Function names in one package</h3>
+<ul>
+<li>basic rule: names of declared functions can't be duplicated in one package</li>
+<li>Excpetion: there can be multiple functions declared with names as init( with prototype func())</li>
+</ul>
+<h3 id="function-calls">Function calls</h3>
+<ul>
+<li>Function whose name are not blank identifier can be called in user code</li>
+<li>init functions can't be called in user code</li>
+</ul>
+<h3 id="functions-being-used-as-values">Functions being used as values</h3>
+<ul>
+<li>Declared functions can be used as function values</li>
+<li>build-in, unsafe, init can not be used as function values</li>
+</ul>
+<pre><code class="go">var _ = panic
+var _ = unsafe.Sizeof
+var _ = init
+</code></pre>
+
+<h3 id="discard-return-values-of-function-calls">Discard return values of function calls</h3>
+<ul>
+<li>basic rule: return values of a function call can be discarded all together</li>
+<li>builtin, unsafe (except copy and recover) can't be discarded</li>
+</ul>
+<h3 id="declared-variables">Declared variables</h3>
+<ul>
+<li>basic rule: Declared variable are always addressable</li>
+<li>predeclared nil variable is not addressable(so nil is immutable variable)</li>
+</ul>
+<h3 id="argument-passing">Argument passing</h3>
+<ul>
+<li>can pass only if assignable to the corresponding function parameter type</li>
+<li>sugar: copy and append if first is a byte slice, second argument can be a string</li>
+</ul>
+<h3 id="comparisons">Comparisons</h3>
+<ul>
+<li>basic: Map/slice/function types don't support comparison</li>
+<li>can be compared to the predeclared untyped nil identifier</li>
+</ul>
+<h3 id="blank-composite-literals">Blank composite literals</h3>
+<ul>
+<li>basic: if the values of a type T can be represented with composite literal, the <code>t{}</code> is its zero value.</li>
+<li>exception: for a map or a slice type T, <code>T{}</code> isn't its zero value. Its zero value is represented with nil.</li>
+</ul>
+<pre><code class="go">    type T0 struct {
+        x int
+    }
+    fmt.Println(T0{} == *new(T0)) //true
+    type T1 [5]int
+    fmt.Println(T1{} == *new(T1)) //true
+
+    type T2 []int
+    fmt.Println(T2{} == nil) //false
+    type T3 map[int]int
+    fmt.Println(T3{} == nil) // false
+</code></pre>
+
+<h3 id="container-element-iterations">Container element iterations</h3>
+<ul>
+<li>the iterated values are runes if the ranged containers are strings, instead of the byte elements of strings</li>
+<li>the element index(order) will not be returned alongside of each iterated element when iterating channels</li>
+<li>array pointers can also be ranged to iterate array elements, though pointers are not containers</li>
+</ul>
+<h3 id="methods-of-built-in-types">Methods of built-in types</h3>
+<ul>
+<li>built-in types have no methods</li>
+<li>exception: error type has a Errro() string method</li>
+</ul>
+<h3 id="types-of-values">Types of values</h3>
+<ul>
+<li>Each value has either a type or a default type</li>
+<li>exception: untyped nil has neither a type nor a default type</li>
+</ul>
+<h3 id="constant-values">Constant values</h3>
+<ul>
+<li>Constant values never change, can be assigned to variables</li>
+<li>exception: iota is a built-in constant which is bound with 0, but its value is not constant</li>
+</ul>
+<h3 id="behavior-change-caused-by-discarding-the-optional-evaluation-results-of-expressions">Behavior change caused by discarding the optional evaluation results of expressions.</h3>
+<ul>
+<li>whether or not the optional evaluation result of an expression is present will not affect program behavior.</li>
+<li>exception: missing the optional result value in a type assertion will make current goroutine panic if type assertion fails</li>
+</ul>
+<pre><code class="go">var v interface{} = &quot;abc&quot;
+_, ok = v.(int) // will not panic
+_ = v.(int) // will panic!!!
+</code></pre>
               
             </div>
           </div>
