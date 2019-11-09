@@ -2039,15 +2039,15 @@ func g(s1 []int) {
 ```go
 func h() []*int {
 	s := []*int{new(int), new(int), new(int), new(int)}
-	// do with s 
+	// do with s
 	return s[1:3:3]
 }
 
 func h() []*int {
 	s := []*int{new(int), new(int), new(int), new(int)}
-	// do with s 
+	// do with s
 
-	// reset pointer values 
+	// reset pointer values
 	s[0], s[len(s)-1] = nil, nil
 	return s[1:3:3]
 }
@@ -2084,13 +2084,13 @@ func memoryLeaking() {
 nil can Represent Zero Values of Many Types:
 
 - pointer types ( including type-unsafe ones)
-- map types 
+- map types
 - slice types
 - function types
 - channel types
 - interface types
 
-### Two nil Values May Be Not Equal 
+### Two nil Values May Be Not Equal
 
 `fmt.Println( (interface{})(nil) == (*int)(nil))  // false`
 
@@ -2129,7 +2129,7 @@ func main() {
 
 ### Value Conversion Rules
 
-1. the apparent conversion rule: 
+1. the apparent conversion rule:
 
 values of type byte/uint8, rune/int32, []byte/[]uint8 can be converted to each other
 
@@ -2197,7 +2197,7 @@ Assignments can be views as implicit conversions. The destination values in assi
 map index expressions , or the blank identifier.
 
 In an assignment, the source value is *copied* to the destination value. Precisely speaking, the direct part of the
-source value is copied to the destination value. 
+source value is copied to the destination value.
 
 Note, parameter passing and result returning are both value assignments actually.
 
@@ -2210,3 +2210,137 @@ Note, although value of slice/map/function types don't support comparisons, they
 Note, an untyped nil value can't be compared with another untyped nil value.
 
 Any comparison results an untyped boolean value.
+
+
+# Syntax/Semantics Exception in Go
+
+### Nested function calls
+
+return results can be used as the whole arguments of another function call
+
+### Select struct fields
+
+- basic: Pointer values have no fields
+- sugar: we can select the fields of a struct through pointers of the struct value
+
+```go
+var t T
+var p = &t
+p.x *= 2 // sugar of the following code: (*p).x *= 2
+```
+
+### Receiver arguments of method calls
+
+Although the methods explicitly defined on type `*T` are not methods of type T, addressable values of type T can be
+used as the receiver arguments of calls to these methods.
+
+### Take address of composite literal values
+
+### Selectors on defined one-Level pointers
+
+### The addressability of a container and its elements
+
+- basic rule: If a container is addressable, then its elements are also addressable.
+- exception: Elements of a map are always unaddressable, even if the map itself is addressable.
+- sugar: Elements of a slice are always addressable, even if the slice itself is not addressable.
+
+### Modify unaddressable values
+
+如果一个 map 的值是结构体，你可以整个替换这个值，但是无法直接修改值里的 field。
+
+### Generic
+
+Go doesn't support generic. Most built-in and unsafe packages support generic.
+Any type compositions with all kinds of composite types in Go is kinda of generic.
+
+### Function names in one package
+
+- basic rule: names of declared functions can't be duplicated in one package
+- Excpetion: there can be multiple functions declared with names as init( with prototype func())
+
+### Function calls
+
+- Function whose name are not blank identifier can be called in user code
+- init functions can't be called in user code
+
+### Functions being used as values
+
+- Declared functions can be used as function values
+- build-in, unsafe, init can not be used as function values
+
+```go
+var _ = panic
+var _ = unsafe.Sizeof
+var _ = init
+```
+
+### Discard return values of function calls
+
+- basic rule: return values of a function call can be discarded all together
+- builtin, unsafe (except copy and recover) can't be discarded
+
+### Declared variables
+
+- basic rule: Declared variable are always addressable
+- predeclared nil variable is not addressable(so nil is immutable variable)
+
+### Argument passing
+
+- can pass only if assignable to the corresponding function parameter type
+- sugar: copy and append if first is a byte slice, second argument can be a string
+
+### Comparisons
+
+- basic: Map/slice/function types don't support comparison
+- can be compared to the predeclared untyped nil identifier
+
+### Blank composite literals
+
+- basic: if the values of a type T can be represented with composite literal, the `t{}` is its zero value.
+- exception: for a map or a slice type T, `T{}` isn't its zero value. Its zero value is represented with nil.
+
+```go
+	type T0 struct {
+		x int
+	}
+	fmt.Println(T0{} == *new(T0)) //true
+	type T1 [5]int
+	fmt.Println(T1{} == *new(T1)) //true
+
+	type T2 []int
+	fmt.Println(T2{} == nil) //false
+	type T3 map[int]int
+	fmt.Println(T3{} == nil) // false
+```
+
+### Container element iterations
+
+- the iterated values are runes if the ranged containers are strings, instead of the byte elements of strings
+- the element index(order) will not be returned alongside of each iterated element when iterating channels
+- array pointers can also be ranged to iterate array elements, though pointers are not containers
+
+### Methods of built-in types
+
+- built-in types have no methods
+- exception: error type has a Errro() string method
+
+### Types of values
+
+- Each value has either a type or a default type
+- exception: untyped nil has neither a type nor a default type
+
+### Constant values
+
+- Constant values never change, can be assigned to variables
+- exception: iota is a built-in constant which is bound with 0, but its value is not constant
+
+### Behavior change caused by discarding the optional evaluation results of expressions.
+
+- whether or not the optional evaluation result of an expression is present will not affect program behavior.
+- exception: missing the optional result value in a type assertion will make current goroutine panic if type assertion fails
+
+```go
+var v interface{} = "abc"
+_, ok = v.(int) // will not panic
+_ = v.(int) // will panic!!!
+```
