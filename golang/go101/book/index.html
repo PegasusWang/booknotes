@@ -344,6 +344,27 @@
         </ul>
     
 
+    <li class="toctree-l3"><a href="#go-memory-leaking-scenarios">Go Memory Leaking Scenarios</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#kind-of-memory-leaking-caused-by-substrings">Kind-of Memory Leaking Caused by Substrings</a></li>
+        
+            <li><a class="toctree-l4" href="#kind-of-memory-leaking-caused-by-subslices">Kind-of Memory Leaking Caused by subslices</a></li>
+        
+            <li><a class="toctree-l4" href="#kind-of-memory-leaking-caused-by-not-resetting-pointers-in-lost-slice-elements">Kind-of Memory Leaking Caused by Not resetting Pointers in Lost Slice Elements</a></li>
+        
+            <li><a class="toctree-l4" href="#kind-of-memory-leaking-caused-by-hanging-goroutines">Kind-of Memory Leaking Caused by Hanging Goroutines</a></li>
+        
+            <li><a class="toctree-l4" href="#real-memory-leaking-caused-by-not-stopping-timeticker-values-which-are-not-used-anymore">Real Memory Leaking Caused by Not Stopping time.Ticker Values Which Are Not Used Anymore</a></li>
+        
+            <li><a class="toctree-l4" href="#real-memory-leaking-caused-by-using-finalizers-improperly">Real Memory Leaking Caused by Using Finalizers Improperly</a></li>
+        
+            <li><a class="toctree-l4" href="#kind-of-resources-leaking-by-deferring-function-calls">Kind-of Resources Leaking by Deferring Function Calls</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -2617,6 +2638,91 @@ reflect.TypeOf(t).FieldAlign()。</p>
 <p>内存对齐，对于 struct 一些位数小的会进行填充操作。(类似 c 的)</p>
 <h3 id="the-alignment-requirement-for-64-bit-word-atomic-operations">The Alignment Requirement for 64-bit Word Atomic Operations</h3>
 <p>64-bit int64 or uint64. On very old cpu architecture, 64-bit atomic functions are not supported.</p>
+<h1 id="go-memory-leaking-scenarios">Go Memory Leaking Scenarios</h1>
+<h3 id="kind-of-memory-leaking-caused-by-substrings">Kind-of Memory Leaking Caused by Substrings</h3>
+<p>Go substring expression result string and base string share same underlying memory block.</p>
+<pre><code class="go">package main
+
+var s0 string //package level variable
+
+func f(s1 string) {
+    s0 = s1[:50]
+    //s0 share same memory block with s1
+}
+
+func main() {
+    s := createStringWithLengthOnHeap(1 &lt;&lt; 20) // 1Mbytes
+    f(s)
+}
+</code></pre>
+
+<p>解决方式：</p>
+<pre><code class="go">func f(s1 string) {
+    s0 = string([]byte(s1[:50]))
+}
+
+func f(s1 string) {
+    s0 = (&quot; &quot; + s1[:50])[1:]
+}
+
+func f(s1 string) {
+    var b strings.Builder
+    b.Grow(50)
+    b.WriteString(s1[:50])
+    s0 = b.String()
+    // or call strings.Repeat
+}
+</code></pre>
+
+<h3 id="kind-of-memory-leaking-caused-by-subslices">Kind-of Memory Leaking Caused by subslices</h3>
+<pre><code class="go">func s0 []int
+func g(s1 []int) {
+    // assume length of s1 is much larger than 30
+    s0=s1[len(s1)-30:]
+}
+
+func g(s1 []int) {
+    s0 = append([]int(nil), s1[len(s1-30:]...)
+}
+</code></pre>
+
+<h3 id="kind-of-memory-leaking-caused-by-not-resetting-pointers-in-lost-slice-elements">Kind-of Memory Leaking Caused by Not resetting Pointers in Lost Slice Elements</h3>
+<pre><code class="go">func h() []*int {
+    s := []*int{new(int), new(int), new(int), new(int)}
+    // do with s 
+    return s[1:3:3]
+}
+
+func h() []*int {
+    s := []*int{new(int), new(int), new(int), new(int)}
+    // do with s 
+
+    // reset pointer values 
+    s[0], s[len(s)-1] = nil, nil
+    return s[1:3:3]
+}
+</code></pre>
+
+<h3 id="kind-of-memory-leaking-caused-by-hanging-goroutines">Kind-of Memory Leaking Caused by Hanging Goroutines</h3>
+<h3 id="real-memory-leaking-caused-by-not-stopping-timeticker-values-which-are-not-used-anymore">Real Memory Leaking Caused by Not Stopping time.Ticker Values Which Are Not Used Anymore</h3>
+<h3 id="real-memory-leaking-caused-by-using-finalizers-improperly">Real Memory Leaking Caused by Using Finalizers Improperly</h3>
+<pre><code class="go">func memoryLeaking() {
+    type T struct {
+        v [1&lt;&lt;20]int
+        t * T
+    }
+    var finalizer  = func(t *T) {
+        fmt.Println(&quot;finalizer called&quot;)
+    }
+    var x,y T
+    // the setfinalizer call makes x escape to heap
+    runtime.SetFinalizer(&amp;x, finalizer)
+    //cyclic reference, x and y are not collectable
+    x.t, y.t = &amp;y, &amp;x  // y also escape to heap
+}
+</code></pre>
+
+<h3 id="kind-of-resources-leaking-by-deferring-function-calls">Kind-of Resources Leaking by Deferring Function Calls</h3>
               
             </div>
           </div>
