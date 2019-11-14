@@ -201,7 +201,7 @@ redis 使用52位的整数进行编码，放到 zset 里边，value 是元素 ke
 redis keys 简单粗暴列出所有 满足特定正则的key.  `keys codehole*`
 缺点：
 - 没有 limit， offet，刷屏
-- O(n)，千外级别以上的 key导致 redis 卡顿
+- O(n)，千万级别以上的 key导致 redis 卡顿
 
 redis2.8 加入了 scan 用来大海捞针
 
