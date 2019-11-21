@@ -707,6 +707,36 @@
 <p>文档: 自包含，层次型，结构灵活，无模式。</p>
 <p>类型：是文档的逻辑容器。不同类型最好放入不同结构的文档 。每个类型中字段的定义称为映射。</p>
 <p>索引：是映射类型的容器。索引由一个或多个称为分片的数据块组成</p>
+<h1 id="3">3. 索引，更新和删除数据</h1>
+<p>核心类型：字符串；数值；日期(默认解析ISO 8601)；布尔</p>
+<p>字符串如果索引类型是 analyzed，会转化为小写并且分词。</p>
+<h3 id="35">3.5 更新数据</h3>
+<p>更新文档包括:</p>
+<ul>
+<li>检索现有文档。必须打开 <code>_source</code></li>
+<li>进行指定的修改</li>
+<li>删除旧的文档，在其原有位置索引新的文档</li>
+</ul>
+<p>使用更新 API:</p>
+<ul>
+<li>发送部分文档</li>
+</ul>
+<pre><code class="sh">curl -XPOST 'localhost:9200/get-together/group/2/_update' -d '{
+　&quot;doc&quot;: {
+　　&quot;organizer&quot;: &quot;Roy&quot;
+　}
+}'
+</code></pre>
+
+<ul>
+<li>使用 upsert 创建不存在的文档。默认脚本语言是 Groovy</li>
+</ul>
+<p>ES 通过 version 乐观锁来进行并发更新的控制：</p>
+<ul>
+<li>冲突发生的时候可以使用重试操作。retry_on_conflict 参数可以让 es 自动重试</li>
+<li>索引文档的时候使用版本号</li>
+</ul>
+<h3 id="36">3.6 删除数据</h3>
               
             </div>
           </div>

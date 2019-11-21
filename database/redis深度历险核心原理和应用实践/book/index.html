@@ -1081,7 +1081,7 @@ cl.throttle user_id:reply 15 30 60 1
 redis keys 简单粗暴列出所有 满足特定正则的key.  <code>keys codehole*</code>
 缺点：
 - 没有 limit， offet，刷屏
-- O(n)，千外级别以上的 key导致 redis 卡顿</p>
+- O(n)，千万级别以上的 key导致 redis 卡顿</p>
 <p>redis2.8 加入了 scan 用来大海捞针</p>
 <ul>
 <li>复杂度虽然也是O(n)，但是通过游标分布进行，不会阻塞线程</li>
