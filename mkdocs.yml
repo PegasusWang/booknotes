@@ -20,6 +20,8 @@ pages:
       - 《编写可读代码的艺术》: 'code/编写可读代码的艺术.md'
       - 《编程匠艺》: 'code/编程匠艺.md'
       - 《领域驱动设计》: 'code/领域驱动设计.md'
+    - 调试技术:
+      - 《软件调试修炼之道》: 'debug/软件调试修炼之道/book.md'
     - 数据库:
       - 《Getting started with impala》: 'database/getting_started_with_impala.md'
       - 《mysql必知必会》: 'database/mysql必知必会.md'
