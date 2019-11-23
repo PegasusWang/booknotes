@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../../img/favicon.ico">
-  <title>1. Elasticsearch 介绍 - PegasusWang的读书笔记</title>
+  <title>《软件调试修炼之道》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "1. Elasticsearch \u4ecb\u7ecd";
-    var mkdocs_page_input_path = "\u641c\u7d22\u5f15\u64ce/Elasticsearch\u5b9e\u6218/book.md";
+    var mkdocs_page_name = "\u300a\u8f6f\u4ef6\u8c03\u8bd5\u4fee\u70bc\u4e4b\u9053\u300b";
+    var mkdocs_page_input_path = "debug/\u8f6f\u4ef6\u8c03\u8bd5\u4fee\u70bc\u4e4b\u9053/book.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -100,9 +100,179 @@
 		
     <span class="caption-text">调试技术</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../../debug/软件调试修炼之道/book/">《软件调试修炼之道》</a>
+    <a class="current" href="./">《软件调试修炼之道》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1">1. 山重复疑无路</a></li>
+    
+
+    <li class="toctree-l3"><a href="#2">2  重现问题</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#21">2.1 重现第一，提问第二</a></li>
+        
+            <li><a class="toctree-l4" href="#22">2.2 控制软件</a></li>
+        
+            <li><a class="toctree-l4" href="#23">2.3 控制环境</a></li>
+        
+            <li><a class="toctree-l4" href="#24">2.4 控制输入</a></li>
+        
+            <li><a class="toctree-l4" href="#25">2.5 改进问题重现</a></li>
+        
+            <li><a class="toctree-l4" href="#26">2.6 无法重现怎么办</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#3">3 诊断</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#31">3.1 不要急于动手，试试科学方法</a></li>
+        
+            <li><a class="toctree-l4" href="#32">3.2 相关策略</a></li>
+        
+            <li><a class="toctree-l4" href="#33">3.3 调试器</a></li>
+        
+            <li><a class="toctree-l4" href="#34">3.4 陷阱</a></li>
+        
+            <li><a class="toctree-l4" href="#35">3.5 思维游戏</a></li>
+        
+            <li><a class="toctree-l4" href="#36">3.6 验证诊断</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#4">4 修复缺陷</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#41">4.1 清楚障碍</a></li>
+        
+            <li><a class="toctree-l4" href="#42">4.2 测试</a></li>
+        
+            <li><a class="toctree-l4" href="#43">4.3 修复原因而非修复现象</a></li>
+        
+            <li><a class="toctree-l4" href="#44">4.4 重构</a></li>
+        
+            <li><a class="toctree-l4" href="#45">4.5 签入</a></li>
+        
+            <li><a class="toctree-l4" href="#46">4.6 审查代码</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#5">5. 反思</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#51">5.1 这到底是怎么搞的</a></li>
+        
+            <li><a class="toctree-l4" href="#52">5.2 哪里除出了问题？</a></li>
+        
+            <li><a class="toctree-l4" href="#53">5.3 它不会再发生了</a></li>
+        
+            <li><a class="toctree-l4" href="#54">5.4 关闭循环</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#6">6. 发现代码存在问题</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#61">6.1 缺陷追踪</a></li>
+        
+            <li><a class="toctree-l4" href="#62">6.2 与用户合作</a></li>
+        
+            <li><a class="toctree-l4" href="#63">6.3 与支持人员协同工作</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#7">7. 务实的零容忍策略</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#71">7.1 缺陷优先</a></li>
+        
+            <li><a class="toctree-l4" href="#72">7.2 调试的思维模式</a></li>
+        
+            <li><a class="toctree-l4" href="#73">7.3 自己来解决质量问题</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#8">8 特殊案例</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#81">8.1 修复已经发布软件</a></li>
+        
+            <li><a class="toctree-l4" href="#82">8.2 向后兼容</a></li>
+        
+            <li><a class="toctree-l4" href="#83">8.3 并发</a></li>
+        
+            <li><a class="toctree-l4" href="#84">8.4 海森堡缺陷</a></li>
+        
+            <li><a class="toctree-l4" href="#85">8.5 性能缺陷</a></li>
+        
+            <li><a class="toctree-l4" href="#86">8.6 嵌入式软件</a></li>
+        
+            <li><a class="toctree-l4" href="#87">8.7 第三方软件缺陷</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#9">9. 理想的调试环境</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#91">9.1 自动化测试</a></li>
+        
+            <li><a class="toctree-l4" href="#92">9.2 源程序控制</a></li>
+        
+            <li><a class="toctree-l4" href="#93">9.3 自动构建</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#10">10. 让软件学会自己寻找缺陷</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#101">10.1 假设和断言</a></li>
+        
+            <li><a class="toctree-l4" href="#102">10.2 调试版本</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#11">11. 反模式</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#111">11.1 夸大优先级</a></li>
+        
+            <li><a class="toctree-l4" href="#112">11.2 超级巨星</a></li>
+        
+            <li><a class="toctree-l4" href="#113">11.3 维护团队</a></li>
+        
+            <li><a class="toctree-l4" href="#114">11.4 救火模式</a></li>
+        
+            <li><a class="toctree-l4" href="#115">11.5 重写</a></li>
+        
+            <li><a class="toctree-l4" href="#116">11.6 没有代码所有权</a></li>
+        
+            <li><a class="toctree-l4" href="#117">11.7 魔法</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -679,8 +849,12 @@
     <li><a href="../../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>调试技术 &raquo;</li>
+        
+      
     
-    <li>1. Elasticsearch 介绍</li>
+    <li>《软件调试修炼之道》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -690,68 +864,369 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="1-elasticsearch">1. Elasticsearch 介绍</h1>
-<h3 id="_1">解决搜索问题</h3>
-<p>Elasticsearch 建立在 Apache Lucene 之上的开源分布式搜索引擎。
-计算文档相关性使用的是 TF-IDF(term frequency-inverse document frequency)</p>
+                <h1 id="1">1. 山重复疑无路</h1>
+<p>有效的调试步骤：</p>
 <ul>
-<li>词频</li>
-<li>逆文档词频: 如果某个单词在所有文档中比较少见，该词权重越高</li>
+<li>弄清楚为什么运行异常</li>
+<li>修复问题</li>
+<li>避免破坏其他部分</li>
+<li>保持或者提高代码总体质量（可读性，架构，测试覆盖，性能等）</li>
+<li>确保同样问题不要再次发生</li>
 </ul>
-<h3 id="_2">使用案例</h3>
+<p>实证方法：构建实验，观察结果</p>
+<p>核心调试过程：</p>
 <ul>
-<li>作为主要的后端系统。不支持事务</li>
-<li>添加到现有系统。保持数据同步</li>
-<li>和现有工具一同使用。ELK</li>
+<li>问题重现</li>
+<li>问题诊断</li>
+<li>缺陷修复</li>
+<li>反思，吸取教训</li>
 </ul>
-<h3 id="_3">组织数据</h3>
-<p>Elasticsearch 以文档方式存储数据</p>
-<h3 id="_4">安装</h3>
-<p>安装完成之后 打开 http://localhost:9200</p>
-<h1 id="2">2. 深入功能</h1>
+<p>澄清问题：</p>
 <ul>
-<li>逻辑设计</li>
-<li>物理设计。配置决定了集群的性能、可扩展性和可用性</li>
+<li>发生了什么，应该发生什么</li>
+<li>一次一个问题</li>
+<li>先检查简单的事情</li>
 </ul>
-<h3 id="_5">文档、类型和索引</h3>
-<p>索引-类型-ID 的组合唯一确定了某篇文档</p>
-<p>文档: 自包含，层次型，结构灵活，无模式。</p>
-<p>类型：是文档的逻辑容器。不同类型最好放入不同结构的文档 。每个类型中字段的定义称为映射。</p>
-<p>索引：是映射类型的容器。索引由一个或多个称为分片的数据块组成</p>
-<h1 id="3">3. 索引，更新和删除数据</h1>
-<p>核心类型：字符串；数值；日期(默认解析ISO 8601)；布尔</p>
-<p>字符串如果索引类型是 analyzed，会转化为小写并且分词。</p>
-<h3 id="35">3.5 更新数据</h3>
-<p>更新文档包括:</p>
+<h1 id="2">2  重现问题</h1>
+<h3 id="21">2.1 重现第一，提问第二</h3>
+<p>如何重现：</p>
 <ul>
-<li>检索现有文档。必须打开 <code>_source</code></li>
-<li>进行指定的修改</li>
-<li>删除旧的文档，在其原有位置索引新的文档</li>
+<li>明确开始要做得事情（比如缺陷报告的步骤）</li>
+<li>抓住重点</li>
 </ul>
-<p>使用更新 API:</p>
+<p>控制因素：</p>
 <ul>
-<li>发送部分文档</li>
+<li>软件本身</li>
+<li>运行环境</li>
+<li>提供的输入</li>
 </ul>
-<pre><code class="sh">curl -XPOST 'localhost:9200/get-together/group/2/_update' -d '{
-　&quot;doc&quot;: {
-　　&quot;organizer&quot;: &quot;Roy&quot;
-　}
-}'
-</code></pre>
-
+<h3 id="22">2.2 控制软件</h3>
+<h3 id="23">2.3 控制环境</h3>
+<p>可能包含所有环境</p>
+<h3 id="24">2.4 控制输入</h3>
+<p>推测可能输入:</p>
 <ul>
-<li>使用 upsert 创建不存在的文档。默认脚本语言是 Groovy</li>
+<li>回溯工作</li>
+<li>探测可能输入值<ul>
+<li>边界分析</li>
+<li>分之覆盖</li>
+<li>利用错误条件</li>
+<li>引入随机性：模糊测试；生成模糊器；变异模糊器</li>
 </ul>
-<p>ES 通过 version 乐观锁来进行并发更新的控制：</p>
+</li>
+<li>记录输入值<ul>
+<li>日志框架。可以开启 or 关闭；日志级别；上下文（代码行数等）；分析工具（ELK）</li>
+<li>外部日志。代理服务器等</li>
+</ul>
+</li>
+<li>负载和压力。有些缺陷只有在某种压力才表现出来（高负载网络流量，有限的可用内存）</li>
+</ul>
+<h3 id="25">2.5 改进问题重现</h3>
+<h5 id="251-">2.5.1 最小化反馈周期。编辑-编辑-执行-重新问题时间最短</h5>
 <ul>
-<li>冲突发生的时候可以使用重试操作。retry_on_conflict 参数可以让 es 自动重试</li>
-<li>索引文档的时候使用版本号</li>
+<li>尽可能简单，通过二分法快速定位</li>
+<li>自动化最小输入</li>
+<li>最大限度减少所需时间，比如营造资源耗尽的局面。</li>
 </ul>
-<h3 id="36">3.6 删除数据</h3>
+<h5 id="252">2.5.2 不确定缺陷变为确定</h5>
+<p>软件之美在于确定性，但是不确定性从哪里来？</p>
+<ul>
+<li>开始于不可预知的初始状态。从未经初始化的内存读取数据(强制初始化，或者内存完整性检测软件)</li>
+<li>与外部系统交互: 精确控制从外部系统接收了什么</li>
+<li>故意使用随机性: 伪随机数</li>
+<li>多线程: 通过 sleep 等增加出现竞争的可能性</li>
+</ul>
+<h5 id="253">2.5.3 自动化</h5>
+<ul>
+<li>自动化测试</li>
+<li>重放日志</li>
+</ul>
+<h3 id="26">2.6 无法重现怎么办</h3>
+<ul>
+<li>缺陷真的存在么？</li>
+<li>在相同区域解决不同问题</li>
+<li>让其他人参与其中。不同人的视角</li>
+<li>充分利用用户群体</li>
+<li>推测法：逻辑推理，想象出错的可能性</li>
+</ul>
+<h1 id="3">3 诊断</h1>
+<h3 id="31">3.1 不要急于动手，试试科学方法</h3>
+<ul>
+<li>调试方法：<ul>
+<li>根据你对软件运行情况的理解，提出一个可以导致这种情况的假设</li>
+<li>设计一个实验，证明假设是否正确</li>
+<li>如果无法证明你的假设，重新设计然后再次实验</li>
+<li>如果实验支持你的假设，继续证明，知道能够证明或者证伪</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>实验必须起到验证的作用。(与他人争辩试图推翻你的假设)</li>
+</ul>
+<ul>
+<li>每次只做一个修改。多处修改可能导致错误的结论。</li>
+</ul>
+<ul>
+<li>记录你做的调试。定期回顾你已经尝试过的实验和学到的东西，使用日记簿或者电子笔记。</li>
+</ul>
+<ul>
+<li>不要忽略任何细节。凡是你不明白的都是潜在的缺陷。(Anything that you don't understand is potentially a bug)<ul>
+<li>写出假设。曾经做过的假设写到纸上</li>
+<li>可以跟踪详细信息</li>
+<li>确保不会忘记需要做的事情</li>
+<li>短暂休息，可以尝试头脑风暴</li>
+</ul>
+</li>
+</ul>
+<h3 id="32">3.2 相关策略</h3>
+<h5 id="321">3.2.1 插桩</h5>
+<p>使用日志，但是不要引入额外的副作用影响了原始代码逻辑</p>
+<h5 id="322">3.2.2 分而治之</h5>
+<p>二分法，排除一部分模块或者代码的问题。</p>
+<h5 id="323">3.2.3 源码控制工具</h5>
+<p>git 找出历史提交，分析引入缺陷的提交</p>
+<h5 id="324">3.2.4 聚焦差异</h5>
+<p>找到特殊用例，缺陷的边界</p>
+<h5 id="325">3.2.5 向他人学习</h5>
+<p>网络搜索，同事求助</p>
+<h5 id="326">3.2.6 奥卡姆剃刀</h5>
+<p>其他条件相同情况下，最简单的解释是最好的。</p>
+<h3 id="33">3.3 调试器</h3>
+<p>代码检查，断点，单步调试，检查运行状态</p>
+<ul>
+<li>开发初期调试器非常有用</li>
+<li>让代码以特定方式运行</li>
+<li>探究看不懂的代码</li>
+</ul>
+<p>随着经验增加和TDD 思想出现，调试器使用会变少</p>
+<h3 id="34">3.4 陷阱</h3>
+<ul>
+<li>你做的修改是正确的么？如果没有，说明你没修改到点子上。尝试引入明显的失败比如断言让其暴露出来</li>
+<li>验证假设。思维定势造成的先验假设可能会让你得不到结果</li>
+<li>多重原因。问题有时候是复杂的，<ul>
+<li>对问题进行隔离，找到一个方法重现缺陷。</li>
+<li>先找同一个区域内其他较明显的缺陷，扫清障碍，让缺陷更加明显</li>
+</ul>
+</li>
+<li>查出变化并且控制它。第三方系统或者数据库。</li>
+</ul>
+<h3 id="35">3.5 思维游戏</h3>
+<ul>
+<li>旁观调试法（小黄鸭）。求助其他人。倾听；提问；留意没有探究过的地方；了解接下来将会发生什么。解释问题会帮你理清思路</li>
+<li>角色扮演</li>
+<li>换换脑筋。潜意识帮助你</li>
+<li>做些改变，什么改变都行</li>
+<li>福尔摩斯原则：当你排除了一切不可能之后，无论它多么不可思议，它也一定是真相</li>
+</ul>
+<h3 id="36">3.6 验证诊断</h3>
+<ul>
+<li>向其他人解释你的诊断</li>
+<li>检查源代码原始副本</li>
+<li>多和其他人讨论，并假设你是错的</li>
+</ul>
+<h1 id="4">4 修复缺陷</h1>
+<h3 id="41">4.1 清楚障碍</h3>
+<p>从一个干净的代码树开始修改。</p>
+<h3 id="42">4.2 测试</h3>
+<ul>
+<li>保证现有测试都可以通过</li>
+<li>添加一个或者多个新的测试程序</li>
+<li>修复 bug</li>
+<li>证明修复起了作用</li>
+<li>证明回归测试没有失败</li>
+</ul>
+<h3 id="43">4.3 修复原因而非修复现象</h3>
+<p>理解问题的症结所在</p>
+<h3 id="44">4.4 重构</h3>
+<p>重构：改善代码设计而不改变其行为的过程。</p>
+<ul>
+<li>重构应该在有全面单测套件的安全网中才可以安全修改既有代码</li>
+<li>重构或者修改功能，不能同时进行。 重构的同时决不能修改代码功能，同样也不能修复有缺陷的代码。</li>
+</ul>
+<h3 id="45">4.5 签入</h3>
+<p>一次逻辑修改只做一次签入。</p>
+<h3 id="46">4.6 审查代码</h3>
+<h1 id="5">5. 反思</h1>
+<h3 id="51">5.1 这到底是怎么搞的</h3>
+<ul>
+<li>如果缺陷仅仅发生在少数用户身上，你就要反思是否还有其他问题？</li>
+<li>一个你以为会失败的 case，结果却成功了</li>
+</ul>
+<h3 id="52">5.2 哪里除出了问题？</h3>
+<p>五个为什么？</p>
+<ul>
+<li>我们已经做到了么？</li>
+<li>根本原因分析。责备没有用<ul>
+<li>需求是否正确，是否是模糊的，误解了</li>
+<li>架构或者设计。有没有正确按照设计来做</li>
+<li>测试。测试覆盖率足够么？</li>
+<li>构造</li>
+</ul>
+</li>
+</ul>
+<h3 id="53">5.3 它不会再发生了</h3>
+<ul>
+<li>自动验证，检查是否存在问题</li>
+<li>和同事交流</li>
+<li>重构代码避免被不正确使用</li>
+<li>过程。检查工作过程</li>
+</ul>
+<h3 id="54">5.4 关闭循环</h3>
+<p>编码规范；测试规范；文档规范；报告/跟踪过程；设计指南；性能需求</p>
+<h1 id="6">6. 发现代码存在问题</h1>
+<h3 id="61">6.1 缺陷追踪</h3>
+<ul>
+<li>使用缺陷追踪系统。</li>
+<li>缺陷报告。具体，明确，详细的。</li>
+<li>环境和配置报告。自动收集环境和配置信息，不要指望用户</li>
+</ul>
+<h3 id="62">6.2 与用户合作</h3>
+<ul>
+<li>简化流程</li>
+<li>自动化</li>
+<li>提供多种选择</li>
+<li>尽量简单</li>
+<li>模板不要死板</li>
+<li>尊重用户隐私</li>
+</ul>
+<p>有效的沟通：</p>
+<ul>
+<li>心智模式。从用户角度设想一下</li>
+<li>和非技术人员沟通</li>
+<li>发布缺陷数据库</li>
+<li>隐私问题；提供反馈；拜访用户</li>
+</ul>
+<h3 id="63">6.3 与支持人员协同工作</h3>
+<p>学会沟通；和 QA 搞好关系，以便在修复缺陷的过程中得到帮助。</p>
+<h1 id="7">7. 务实的零容忍策略</h1>
+<h3 id="71">7.1 缺陷优先</h3>
+<p>早期修复缺陷是一个好的策略：</p>
+<ul>
+<li>可能发现缺陷的过程（比如测试、代码审查、用户使用等）要连续贯穿整个开发过程</li>
+<li>缺陷修复优先于其他任何事情</li>
+</ul>
+<ul>
+<li>质量底下具有传染性。</li>
+<li>破窗理论。发现缺陷就立马解决，不要留破窗户</li>
+</ul>
+<h3 id="72">7.2 调试的思维模式</h3>
+<p>既要完美，又要实用。接近零容忍，但是用务实的心态去实现。</p>
+<h3 id="73">7.3 自己来解决质量问题</h3>
+<p>面对大量bug 如何摆脱困境？</p>
+<ul>
+<li>没有灵丹妙药。</li>
+<li>停止开发有缺陷的程序。阻止事情恶化。</li>
+<li>从不干净的代码中分离干净代码</li>
+<li>缺陷分类</li>
+<li>缺陷闪电战。集中较短时间专门修复缺陷</li>
+</ul>
+<h1 id="8">8 特殊案例</h1>
+<h3 id="81">8.1 修复已经发布软件</h3>
+<p>集中精力减少风险。</p>
+<h3 id="82">8.2 向后兼容</h3>
+<p>将确定兼容问题加入到你的缺陷修复检查列表中</p>
+<ul>
+<li>提供迁移方法</li>
+<li>实现一个兼容模式。比如 word 就是这么做的</li>
+<li>提供预警。java api 升级</li>
+<li>不修复。极少数情况是一个务实的方案</li>
+</ul>
+<h3 id="83">8.3 并发</h3>
+<p>简单和控制</p>
+<p>让并发软件中问题更少地发生不是一个可取修复办法。
+修复并发缺陷时，避免实用 sleep 方法。</p>
+<h3 id="84">8.4 海森堡缺陷</h3>
+<p>观察者效应。尽量减少收集信息带来的副作用</p>
+<h3 id="85">8.5 性能缺陷</h3>
+<ul>
+<li>寻找瓶颈。性能分析器。通过检查代码有时候预测瓶颈是不可靠的。</li>
+<li>没有瓶颈呢？是否是资源耗尽；垃圾收集；缓存丢失等</li>
+</ul>
+<h3 id="86">8.6 嵌入式软件</h3>
+<p>仿真器；硬件还是软件问题；</p>
+<h3 id="87">8.7 第三方软件缺陷</h3>
+<ul>
+<li>不要太快去指责。<strong>首先怀疑你自己的代码</strong></li>
+<li>报告别人代码中的缺陷。慎重自己直接修复</li>
+<li>linux法则：眼睛足够多，bug 无处藏</li>
+<li>报告问题：检查文档；尽可能给出足够信息</li>
+</ul>
+<h1 id="9">9. 理想的调试环境</h1>
+<h3 id="91">9.1 自动化测试</h3>
+<ul>
+<li>结果明确，通过还是失败</li>
+<li>环境独立</li>
+<li>所有测试可以独立运行</li>
+<li>全面覆盖</li>
+</ul>
+<h3 id="92">9.2 源程序控制</h3>
+<ul>
+<li>合理使用代码分支</li>
+<li>坚持分之单一层级</li>
+<li>设计 CI 构建所有正在活跃的分之</li>
+<li>小的修改更加容易理解，合并和撤销</li>
+<li>不要一次合并多个分之</li>
+</ul>
+<h3 id="93">9.3 自动构建</h3>
+<ul>
+<li>自动化构建整个过程，从开始到完成。</li>
+<li>持续集成</li>
+<li>静态分析(lint工具)。不要依赖未定义行为；谨慎对待编辑器警告。不要依赖未定义行为；谨慎对待编辑器警告</li>
+</ul>
+<h1 id="10">10. 让软件学会自己寻找缺陷</h1>
+<h3 id="101">10.1 假设和断言</h3>
+<p>fail early，使用断言保护代码。</p>
+<p>契约式编程：</p>
+<ul>
+<li>先决条件。不如参数不能是空</li>
+<li>后置条件。调用之后保持的条件，比如一个 http addHeader() 方法调用之后 headers map 比原来多一个</li>
+<li>不变量。方法调用之前它的先决条件被满足就始终为真的数据。</li>
+</ul>
+<p>支持开启和关闭断言功能。</p>
+<p>软件在产品阶段应该是鲁棒的，在调试阶段应该是脆弱的。
+断言是一个缺陷检测机制，不是一个错误处理机制。</p>
+<h3 id="102">10.2 调试版本</h3>
+<p>不要等待资源泄露表现出来，主动今早地检测它们。</p>
+<h1 id="11">11. 反模式</h1>
+<h3 id="111">11.1 夸大优先级</h3>
+<p>质量差才是导致大量缺陷的原因。</p>
+<ul>
+<li>定期清理缺陷</li>
+<li>控制优先级</li>
+<li>不要使用数字表示优先级</li>
+</ul>
+<h3 id="112">11.2 超级巨星</h3>
+<p>巨星效应会破坏团队。一开始匆忙实现看似非常高效率(所以被称为"巨星"），但是遗留了一堆棘手的烂摊子。</p>
+<ul>
+<li>确保完成就是完成，需要功能被测试过了，检查过了，记录文档了。</li>
+<li>任务分解为小任务</li>
+<li>自负自责。谁搞得 bug 谁负责修理它。（有时候你可能要考虑拍屁股走人了，比如一堆 c 艹的烂摊子？？？）</li>
+</ul>
+<h3 id="113">11.3 维护团队</h3>
+<p>最终开发和维护都要由一个团队来完成，保持连续性。不要区分开发和维护团队。</p>
+<h3 id="114">11.4 救火模式</h3>
+<p>退一步，找出根本原因，再去解决问题</p>
+<p>救火模式永远也不会修复任何质量问题。</p>
+<h3 id="115">11.5 重写</h3>
+<p>从心理学角度来看，开发新代码比重写旧的代码让人更加舒服。天生乐观会让我们低估了复制旧功能要付出的精力和时间。
+避免彻头彻尾重写，增量式重写代码。</p>
+<h3 id="116">11.6 没有代码所有权</h3>
+<p>集体代码所有权（极限编程）</p>
+<h3 id="117">11.7 魔法</h3>
+<p>任何你不理解的事情都可能隐藏有缺陷。唯一的方法就是纪律，把你不理解的事务都当成缺陷。</p>
               
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../database/getting_started_with_impala/" class="btn btn-neutral float-right" title="《Getting started with impala》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../../code/领域驱动设计/" class="btn btn-neutral" title="《领域驱动设计》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -775,6 +1250,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="../../../code/领域驱动设计/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../../database/getting_started_with_impala/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
