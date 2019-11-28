@@ -83,3 +83,29 @@ ES 通过 version 乐观锁来进行并发更新的控制：
 删除索引。
 
 除了删除索引还可以关闭。 `curl -XPOST 'localhost:9200/online-shop/_close'`
+
+
+# 4 搜索数据
+
+确定搜索范围，尽量限制在最小范围和类型，增加响应速度。
+
+请求搜索的基本模块：
+
+- query。使用查询 DSL和过滤 DSL 配置
+- size: 返回文档数量
+- from：分页
+- _source: 指定_source 字段如何返回
+- sort: 默认排序基于文档得分。sort 可以额外控制
+
+```sh
+curl 'localhost:9200/get-together/group/_search' -d '
+{
+  "query": {
+    "match_all": {}
+  },
+  "from" 0,
+  "size": 10,
+  "_source": ["name", "organizer"],
+  "sort": ["created_on": "desc"]
+}'
+```
