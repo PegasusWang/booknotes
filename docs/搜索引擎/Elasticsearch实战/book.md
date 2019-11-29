@@ -146,3 +146,37 @@ curl 'localhost:9200/get-together/_search' -d '
 ### 4.3 组合查询或者复合查询
 
 - bool 查询:允许在单独的查询组合任意数量的查询，指定的查询子句表名哪些部分是 must/should/must_not
+
+### 4.4 超越 match 和过滤器查询
+
+范围查询：
+
+```sh
+curl 'localhost:9200/get-together/_search' -d '
+{
+  "query": {
+    "range": {
+      "created_on": {
+        "gt": "2011-06-01",
+        "lt": "2012-06-01"
+      }
+    }
+  }
+}'
+```
+
+前缀查询：
+
+```sh
+curl 'localhost:9200/get-together/_search' -d '
+{
+  "query": {
+    "range": {
+      "created_on": {
+        "gt": "2011-06-01",
+        "lt": "2012-06-01"
+      }
+    }
+  }
+}'
+```
