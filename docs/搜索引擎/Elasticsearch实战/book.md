@@ -109,3 +109,40 @@ curl 'localhost:9200/get-together/group/_search' -d '
   "sort": ["created_on": "desc"]
 }'
 ```
+
+### 4.2 查询和过滤 DSL
+
+由于不计算得分，过滤器处理更少，并且可以被缓存。
+
+```sh
+curl 'localhost:9200/get-together/_search' -d '
+{
+  "query": {
+    "filtered": {
+      "query" {
+        "match": {
+          "title": "hadoop"
+        }
+      }
+    }
+  },
+  "filter": {
+    "term": {
+      "host": "andy"
+    }
+  }
+}'
+```
+
+- match_all 查询
+- query_string 查询
+- term 查询和 term 过滤器
+- terms 查询，搜索某个文档那个字段中的多个词条
+- match 查询和 term 过滤器
+- phrase_prefix 查询，词组中最后一个词条进行前缀匹配。对于提供搜索框里的自动完成功能很有用，输入词条就可以提示。最好用
+  max_expansions 限制最大的前缀扩展数量
+  - multiple_match: 可以搜索多个字段中的值
+
+### 4.3 组合查询或者复合查询
+
+- bool 查询:允许在单独的查询组合任意数量的查询，指定的查询子句表名哪些部分是 must/should/must_not
