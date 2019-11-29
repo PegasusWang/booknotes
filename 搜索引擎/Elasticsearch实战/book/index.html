@@ -767,6 +767,65 @@
 </ul>
 <p>删除索引。</p>
 <p>除了删除索引还可以关闭。 <code>curl -XPOST 'localhost:9200/online-shop/_close'</code></p>
+<h1 id="4">4 搜索数据</h1>
+<p>确定搜索范围，尽量限制在最小范围和类型，增加响应速度。</p>
+<p>请求搜索的基本模块：</p>
+<ul>
+<li>query。使用查询 DSL和过滤 DSL 配置</li>
+<li>size: 返回文档数量</li>
+<li>from：分页</li>
+<li>_source: 指定_source 字段如何返回</li>
+<li>sort: 默认排序基于文档得分。sort 可以额外控制</li>
+</ul>
+<pre><code class="sh">curl 'localhost:9200/get-together/group/_search' -d '
+{
+  &quot;query&quot;: {
+    &quot;match_all&quot;: {}
+  },
+  &quot;from&quot; 0,
+  &quot;size&quot;: 10,
+  &quot;_source&quot;: [&quot;name&quot;, &quot;organizer&quot;],
+  &quot;sort&quot;: [&quot;created_on&quot;: &quot;desc&quot;]
+}'
+</code></pre>
+
+<h3 id="42-dsl">4.2 查询和过滤 DSL</h3>
+<p>由于不计算得分，过滤器处理更少，并且可以被缓存。</p>
+<pre><code class="sh">curl 'localhost:9200/get-together/_search' -d '
+{
+  &quot;query&quot;: {
+    &quot;filtered&quot;: {
+      &quot;query&quot; {
+        &quot;match&quot;: {
+          &quot;title&quot;: &quot;hadoop&quot;
+        }
+      }
+    }
+  },
+  &quot;filter&quot;: {
+    &quot;term&quot;: {
+      &quot;host&quot;: &quot;andy&quot;
+    }
+  }
+}'
+</code></pre>
+
+<ul>
+<li>match_all 查询</li>
+<li>query_string 查询</li>
+<li>term 查询和 term 过滤器</li>
+<li>terms 查询，搜索某个文档那个字段中的多个词条</li>
+<li>match 查询和 term 过滤器</li>
+<li>phrase_prefix 查询，词组中最后一个词条进行前缀匹配。对于提供搜索框里的自动完成功能很有用，输入词条就可以提示。最好用
+  max_expansions 限制最大的前缀扩展数量<ul>
+<li>multiple_match: 可以搜索多个字段中的值</li>
+</ul>
+</li>
+</ul>
+<h3 id="43">4.3 组合查询或者复合查询</h3>
+<ul>
+<li>bool 查询:允许在单独的查询组合任意数量的查询，指定的查询子句表名哪些部分是 must/should/must_not</li>
+</ul>
               
             </div>
           </div>
