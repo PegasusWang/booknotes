@@ -382,6 +382,9 @@
     <a class="current" href="./">《Elasticsearch实战》</a>
     <ul class="subnav">
             
+    <li class="toctree-l3"><a href="#todo">TODO</a></li>
+    
+
     <li class="toctree-l3"><a href="#1-elasticsearch">1. Elasticsearch 介绍</a></li>
     
         <ul>
@@ -445,6 +448,42 @@
             <li><a class="toctree-l4" href="#55-n-n">5.5 N 元语侧边 N 元语法和滑动窗口</a></li>
         
             <li><a class="toctree-l4" href="#56">5.6 提取词干</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#6">6 使用相关性进行搜索</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#61">6.1 文档打分如何运作</a></li>
+        
+            <li><a class="toctree-l4" href="#62">6.2 其他打分方法</a></li>
+        
+            <li><a class="toctree-l4" href="#63-boosting">6.3 boosting</a></li>
+        
+            <li><a class="toctree-l4" href="#64-explain">6.4 使用 explain 理解文档是被如何评分的</a></li>
+        
+            <li><a class="toctree-l4" href="#65">6.5 使用查询打分来减小评分操作的性能影响</a></li>
+        
+            <li><a class="toctree-l4" href="#66-function_score">6.6 使用 function_score 定制得分</a></li>
+        
+            <li><a class="toctree-l4" href="#68">6.8 使用脚本排序</a></li>
+        
+            <li><a class="toctree-l4" href="#69">6.9 字段数据</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#7-aggregation">7. 使用聚集(aggregation)来探索数据</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#71">7.1 理解聚集的结构</a></li>
+        
+            <li><a class="toctree-l4" href="#72">7.2 度量聚集</a></li>
+        
+            <li><a class="toctree-l4" href="#73">7.3 多桶型聚集</a></li>
         
         </ul>
     
@@ -786,7 +825,9 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="1-elasticsearch">1. Elasticsearch 介绍</h1>
+                <h1 id="todo">TODO</h1>
+<p>构造数据自己实践一下 es 查询。</p>
+<h1 id="1-elasticsearch">1. Elasticsearch 介绍</h1>
 <h3 id="_1">解决搜索问题</h3>
 <p>Elasticsearch 建立在 Apache Lucene 之上的开源分布式搜索引擎。
 计算文档相关性使用的是 TF-IDF(term frequency-inverse document frequency)</p>
@@ -973,6 +1014,90 @@
 <p>n 元语法：将一个单词切分多个子单词</p>
 <p>侧边：每个分词都从最前端开始构建</p>
 <h3 id="56">5.6 提取词干</h3>
+<p>单词缩减到基本或者词根。</p>
+<h1 id="6">6 使用相关性进行搜索</h1>
+<h3 id="61">6.1 文档打分如何运作</h3>
+<p>Lucene 的打分机制是一个公式，将考量的文档作为输入，使用不同的因素来确定该文档得分(score)。
+词频(Term-frequency), 逆文档词频(IDF，次数越多越不重要）</p>
+<p>TF-IDF 公式计算得分</p>
+<h3 id="62">6.2 其他打分方法</h3>
+<ul>
+<li>Okapi BM25;</li>
+<li>DFR 相似度</li>
+<li>IB(Information based)相似度</li>
+<li>LM Dirichlet 相似度</li>
+<li>LM Jelinek Mercer 相似度</li>
+</ul>
+<p>需要一个良好的测试框架评估算法的变化。</p>
+<h3 id="63-boosting">6.3 boosting</h3>
+<p>boosting 是一个可以用来修改文档相关性的程序，可以在查询或者索引期间修改(不推荐)。
+考虑 boost 的相对值， name boost 3 倍意味着 name 字段的重要性大概是其他字段 3 倍。</p>
+<h3 id="64-explain">6.4 使用 explain 理解文档是被如何评分的</h3>
+<p>explain=true。可以查看为什么一个文档和某个查询没有被匹配，有性能开销，不要在生产环境使用。</p>
+<pre><code class="sh">curl -XPOST 'localhost:9200/get-together/_search?pretty' -d '{
+　&quot;query&quot;: {
+　　&quot;match&quot;: {
+      &quot;description&quot;: &quot;elasticsearch&quot;
+    }
+　},
+  &quot;explain&quot;: true
+}
+</code></pre>
+
+<h3 id="65">6.5 使用查询打分来减小评分操作的性能影响</h3>
+<p>下列情况可能导致打分变成资源密集操作：</p>
+<ul>
+<li>使用脚本的评分
+= 进行 phrase 词组陈哈训，搜索一定距离出现的词，使用很大的 slop 值</li>
+</ul>
+<p>可以使用再打分(rescoring)针对返回结果进行第二轮得分计算。</p>
+<h3 id="66-function_score">6.6 使用 function_score 定制得分</h3>
+<p>function_score 允许用户指定任何数量的任意函数，让它们作用于匹配了初始查询的文档，
+修改其得分，从而到达精细化控制结果相关性的目的。</p>
+<ul>
+<li>weight 函数：得分乘以一个常数</li>
+</ul>
+<h3 id="68">6.8 使用脚本排序</h3>
+<p>es 还允许使用脚本在文档返回前对其进行排序，当用户需要在某个不存在的文档字段上排序时非常有用。</p>
+<h3 id="69">6.9 字段数据</h3>
+<p>需要在某个字段上进行排序或返回一些聚集时，es 需要快速决定，对于每个匹配的文档而言，哪些词条是用于排序或者聚集的。</p>
+<h1 id="7-aggregation">7. 使用聚集(aggregation)来探索数据</h1>
+<p>获取文档的统计数据。</p>
+<ul>
+<li>度量型(metrics): 一组文档的统计分析，可以得到诸如最小值，最大值，标准差等度量值。</li>
+<li>桶(bucket):将匹配的文档切分为一个或多个容器（桶），然后告诉你每个桶里的文档数量</li>
+</ul>
+<h3 id="71">7.1 理解聚集的结构</h3>
+<h3 id="72">7.2 度量聚集</h3>
+<p>单独统计：</p>
+<pre><code class="sh">URI = localhost:9200/get-together/event/_search
+curl &quot;$URI?pretty&amp;search_type=count&quot; -d '
+{
+    &quot;aggregations&quot;: {
+        &quot;attendees_avg&quot;: {
+            &quot;avg&quot;: {
+                &quot;script&quot;: &quot;doc['&quot;'attendees'&quot;'].values.length&quot;
+            }
+        }
+    }
+}'
+</code></pre>
+
+<p>高级统计：extended_stats，获取平方值、方差和标准差。根据文档统计的，具有 100% 准确性
+(注意你的需求是精确统计还是近似统计，近似统计可以限制内存和 cpu 使用。)</p>
+<p>近似统计：</p>
+<ul>
+<li>百分位。可以发现所有值中的 x% 比这个值低。比如看看大多数购物车在哪个价格区间</li>
+<li>基数(cardinality)：某个字段中唯一值的数量。比如获取访问某站点的唯一 IP 地址数量</li>
+</ul>
+<h3 id="73">7.3 多桶型聚集</h3>
+<ul>
+<li>词条聚集(terms aggregation): 文档中某个词条频率。发现搜索场景中有意义的词</li>
+<li>范围聚集：根据文档落入哪些数值、日期、或者 ip 地址范围创建不同的桶。分析固定期望数据</li>
+<li>直方图聚集：定义间距值</li>
+<li>嵌套聚集、反嵌套聚集、子聚集：针对文档关系执行聚集</li>
+<li>地理距离聚集和地理散列格聚集：根据地理位置创建桶</li>
+</ul>
               
             </div>
           </div>
