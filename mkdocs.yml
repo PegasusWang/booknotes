@@ -47,7 +47,7 @@ pages:
       - 《Building Microservices With Go》: 'golang/building-microservices-with-go/book.md'
       - 《Building Restful Web Services with Go》: 'golang/building_restful_web_services_with_go/book.md'
       - 《Concurrency In Go》: 'golang/concurrency-in-go/concurrency_in_go.md'
-      - 《Go In Action》: 'golang/go_in_action(go语言实战).md'
+      - 《Go In Action(Go 实战)》: 'golang/go_in_action(go语言实战).md'
       - 《Go学习笔记语言详解》: 'golang/go语言学习笔记语言详解.md'
       - 《Go学习笔记源码剖析》: 'golang/go语言学习笔记源码剖析.md'
     - java:

@@ -105,7 +105,7 @@ c := [...]int{1,2,3}  //自动计算个数
 doubleArray := [2][4]int{[4]int{1,2,3,4}, [4]int{5,6,7,8}}
 
 
-// slice 动态『数组』，引用类型，指向一个底层 array。
+// slice 动态『数组』，引用类型，指向一个底层 array。实际场景中使用 slice 要比 array 多
 var fslice []int  //声明同数组，只是没有长度
 slice := []byte {'a','b'}
 a := [10]int{1,2,3,4,5,6,7,8,9,10}
@@ -145,7 +145,7 @@ make 只能用于 内建类型(map/slice/chanell)的内存分配, new 用于各�
 make 返回初始化后的（非零）值。
 
 
-零值: 变量未填充之前的默认值，通常是 0
+零值(zero value): 变量未填充之前的默认值，通常是 0
 
 ```
 int,int8,int32,int64 0
@@ -456,7 +456,7 @@ method 重写：和匿名字段冲突一样的道理，重写就实现了隐藏�
 
 ### 2.6 接口 interface
 interface 是一组 method 签名的组合，通过 interface 来定义对象的一组行为，通过 interface 定义对象的一组行为。
-interface 类型定义了一组方法，如果某个对象实现了某个接口的**所有**方法，则此对象实现了这个接口。
+interface 类型定义了一组方法，如果某个对象实现了某个接口的**所有**方法，则此对象实现了这个接口(隐式)。
 
 ```
 package main
