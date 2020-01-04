@@ -21,7 +21,7 @@ redigo 源码阅读和仿写。redigo 和 go-redis 实现差异还蛮大
 
 预备知识：
 
-- redis resp 协议，如何解析和包装
+- redis resp 协议，如何解析和包装。redis 自己定义的格式协议，直接看官方文档即可
 - net, net/url 内置 package 使用方式，socket 编程
 
 redis 协议官方描述：
@@ -42,7 +42,8 @@ A Redis server replies to clients sending any valid RESP data type as reply.
 
 
 Pipeline:
-A Request/Response server can be implemented so that it is able to process new requests even if the client didn't already read the old responses. This way it is possible to send multiple commands to the server without waiting for the replies at all, and finally read the replies in a single step.
+A Request/Response server can be implemented so that it is able to process new requests even if the client didn't already read the old responses.
+This way it is possible to send multiple commands to the server without waiting for the replies at all, and finally read the replies in a single step.
 This is called pipelining.
 
 
@@ -97,7 +98,7 @@ server 端需要占用内存让命令入队，所以不要一次性发太多命�
 
 实现重点/疑问：
 - 连接池如何实现，如何获取和关闭(归还)连接? Pool
-- Conn 如何实现，怎么和 redis-server 交互的？ Conn
+- Conn 如何实现，怎么和 redis-server 交互的？ Conn。看下 内置的 conn
 - 如何发送和解析 redis resp 协议？ Send/Receive
 
 阅读成果：自己实现（哪怕抄过来）一个最小可用实现
@@ -116,7 +117,7 @@ type Conn interface {
 	Close() error
 	// Err returns a non-nil value when the connection is not usable.
 	Err() error
-	// Do sends a command to the server and returns the received reply.
+	// Do sends a command to the server and returns the received reply., do 算是 send/flush 的简化
 	Do(commandName string, args ...interface{}) (reply interface{}, err error)
 	// Send writes the command to the client's output buffer.
 	Send(commandName string, args ...interface{}) error
@@ -149,7 +150,7 @@ type Argument interface {
 //
 // Use the DoWithTimeout and ReceiveWithTimeout helper functions to simplify
 // use of this interface.
-type ConnWithTimeout interface { //增加了超时时间
+type ConnWithTimeout interface { //增加了超时时间。使用 redio-go 记得设置超时
 	Conn
 	// Do sends a command to the server and returns the received reply.
 	// The timeout overrides the read timeout set when dialing the
@@ -210,7 +211,7 @@ type conn struct {
 	bw           *bufio.Writer
 	// Scratch space for formatting argument length.
 	// '*' or '$', length, "\r\n"
-	lenScratch [32]byte
+	lenScratch [32]byte // NOTE: 干啥用的
 	// Scratch space for formatting integers and floats.
 	numScratch [40]byte
 }
@@ -315,6 +316,7 @@ func NewConn(netConn net.Conn, readTimeout, writeTimeout time.Duration) Conn {
 	}
 }
 
+// 注意以下几个函数的操作都需要加锁
 func (c *conn) Close() error { // 被 ConnPoll 调用
 	c.mu.Lock()
 	err := c.err
@@ -497,7 +499,7 @@ func (c *conn) ReceiveWithTimeout(timeout time.Duration) (reply interface{}, err
 	// The pending field is decremented after the reply is read to handle the
 	// case where Receive is called before Send.
 	c.mu.Lock()
-	if c.pending > 0 { // NOTE: 注意 send 的时候增加1，这里减去1
+	if c.pending > 0 { // NOTE: 注意 send 的时候增加1，这里减去1。pending 记录有多少还没有返回数据
 		c.pending--
 	}
 	c.mu.Unlock()
@@ -520,7 +522,7 @@ func (pe protocolError) Error() string {
 }
 
 func (c *conn) readReply() (interface{}, error) {
-	line, err := c.readLine() // 一会再去看下 readline 方法
+	line, err := c.readLine() // 一会再去看下 readline 方法 []byte
 	if err != nil {
 		return nil, err
 	}
@@ -596,7 +598,7 @@ func (c *conn) readLine() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	i := len(p) - 2
+	i := len(p) - 2            // \r\n   倒数第二个是 \r
 	if i < 0 || p[i] != '\r' { // 不合法的 redis 协议
 		return nil, protocolError("bad response line terminator")
 	}
@@ -643,7 +645,7 @@ func parseInt(p []byte) (interface{}, error) {
 	}
 
 	var n int64
-	for _, b := range p {
+	for _, b := range p { // 问题：为啥不用内置函数？ 方便这里判断合法么？
 		n *= 10
 		if b < '0' || b > '9' {
 			return 0, protocolError("illegal bytes in length")
@@ -661,7 +663,7 @@ func parseInt(p []byte) (interface{}, error) {
 到这里流程就清楚了：
 
 client.Send() 写入缓冲区，按照resp格式编码
-client.Flush() 才写入到socket，这个时候真正发送给客户端
+client.Flush() 才写入到socket，这个时候真正发送给服务端
 client.Receive() 接受并且解析客户端命令，主要是resp 5种协议格式解析，或者对应的数据
 
 这里需要注意：如果多次 Send 了 Receive 的次数要和 Send 次数对应
@@ -671,13 +673,13 @@ client.Receive() 接受并且解析客户端命令，主要是resp 5种协议格
 NOTE：注意 go 的方法都提供了 DoWithTimeout 类似的方法，默认的socket没有设置超时线上可能有问题，实际使用必须设置超时毫秒数
 *******/
 
-func (c *conn) Do(cmd string, args ...interface{}) (interface{}, error) {
+func (c *conn) Do(cmd string, args ...interface{}) (interface{}, error) { // cmd 是 redis 命令，后边是参数
 	return c.DoWithTimeout(c.readTimeout, cmd, args...)
 }
 
 func (c *conn) DoWithTimeout(readTimeout time.Duration, cmd string, args ...interface{}) (interface{}, error) {
 	c.mu.Lock()
-	pending := c.pending
+	pending := c.pending // 每一次调用 send 都会增加 pending（加锁了），这里 pending 数字就是 send 次数
 	c.pending = 0
 	c.mu.Unlock()
 
@@ -686,39 +688,42 @@ func (c *conn) DoWithTimeout(readTimeout time.Duration, cmd string, args ...inte
 	}
 
 	if c.writeTimeout != 0 {
-		c.conn.SetWriteDeadline(time.Now().Add(c.writeTimeout))
+		c.conn.SetWriteDeadline(time.Now().Add(c.writeTimeout)) // 设置超时时间
 	}
 
 	if cmd != "" {
-		if err := c.writeCommand(cmd, args); err != nil {
+		if err := c.writeCommand(cmd, args); err != nil { // 把发送数据写到发送 buffer
 			return nil, c.fatal(err)
 		}
 	}
 
-	if err := c.bw.Flush(); err != nil {
+	if err := c.bw.Flush(); err != nil { // (bw: bufio.NewWriter(netConn)) 写到 socket 发送数据
 		return nil, c.fatal(err)
 	}
 
+	// 发送完成之后开始读取
 	var deadline time.Time
 	if readTimeout != 0 {
 		deadline = time.Now().Add(readTimeout)
 	}
 	c.conn.SetReadDeadline(deadline)
 
-	if cmd == "" {
+	if cmd == "" { // NOTE: 什么情况下为空？
 		reply := make([]interface{}, pending)
 		for i := range reply {
-			r, e := c.readReply()
+			r, e := c.readReply() // readReply 每次读取根据 \n 分割的数据
 			if e != nil {
 				return nil, c.fatal(e)
 			}
-			reply[i] = r
+			reply[i] = r // 注意修改一般用下标， 使用 for i, v 里边的 v 是值拷贝
 		}
 		return reply, nil
 	}
 
 	var err error
 	var reply interface{}
+	// WHY: pending+1 次？如果只调用了 do，没有 send 操作 pending 其实是0（😄，应该是这个原因)
+	// pending+1 : send 的 自增次数+ do 的1次
 	for i := 0; i <= pending; i++ {
 		var e error
 		if reply, e = c.readReply(); e != nil {
@@ -762,7 +767,7 @@ func testRedigoConn() {
 /******
 上边看完了一个 tcp conn 如何和 redis server 交互的，如何解析协议的。之后看下如何实现一个 连接池(socket conn pool)
 pool 的主要作用是减少频繁的 tcp 创建和开销，实现 tcp socket 被不同客户端复用，从而提升redis 交互效率
-pool 的实现一般是使用队列/链表等
+pool 的实现一般是使用双端队列/链表等
 ******/
 
 // Pool 先来看下 redigo Pool 的实现定义，redigo 使用的是双链表来实现的。这里是个 struct 而不是接口

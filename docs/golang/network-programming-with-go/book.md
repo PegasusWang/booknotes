@@ -1,4 +1,4 @@
-《Network Programming With Go》比较浅显，例子都使 hello world 级别的 demo。不太推荐看。两星都不给
+《Network Programming With Go》不是很深入。
 
 
 # 3. Socket level Programming

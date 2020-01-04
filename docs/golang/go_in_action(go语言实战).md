@@ -38,7 +38,7 @@ fmt.Println(arr)
 
 // for 遍历
 for idx, val := range slice {
-    // NOTE: val 这里是元素的拷贝，而不是直接引用的切片元素
+    // NOTE: val 这里是元素的拷贝，而不是直接引用的切片元素。
     fmt.Println(val)
 }
 ```
