@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>《Go In Action》 - PegasusWang的读书笔记</title>
+  <title>《Go In Action(Go 实战)》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u300aGo In Action\u300b";
+    var mkdocs_page_name = "\u300aGo In Action(Go \u5b9e\u6218)\u300b";
     var mkdocs_page_input_path = "golang/go_in_action(go\u8bed\u8a00\u5b9e\u6218).md";
     var mkdocs_page_url = null;
   </script>
@@ -215,7 +215,7 @@
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">《Go In Action》</a>
+    <a class="current" href="./">《Go In Action(Go 实战)》</a>
     <ul class="subnav">
             
     <li class="toctree-l3"><a href="#4">4 数组，切片和映射</a></li>
@@ -779,7 +779,7 @@
         
       
     
-    <li>《Go In Action》</li>
+    <li>《Go In Action(Go 实战)》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -793,7 +793,7 @@
 <h1 id="4">4 数组，切片和映射</h1>
 <h3 id="_1">数组</h3>
 <p>数组类型包括元素类型和长度，只有长度和类型一致才能互相赋值。
-注意在函数之间传递数组变量可能有性能问题(copy 数组值)，使用切片更好。</p>
+注意在函数之间传递数组变量可能有性能问题(copy 数组值)，使用切片(slice)更好。</p>
 <h3 id="_2">切片</h3>
 <p>实现：指向底层数组的指针，元素个数，容量</p>
 <p>区分 nil和空切片：</p>
@@ -821,7 +821,7 @@ fmt.Println(arr)
 
 // for 遍历
 for idx, val := range slice {
-    // NOTE: val 这里是元素的拷贝，而不是直接引用的切片元素
+    // NOTE: val 这里是元素的拷贝，而不是直接引用的切片元素。
     fmt.Println(val)
 }
 </code></pre>
