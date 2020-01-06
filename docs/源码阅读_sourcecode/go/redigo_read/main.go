@@ -756,7 +756,6 @@ func testRedigoConn() {
 	fmt.Println(res, err)
 	res, err = redisConn.Receive()
 	fmt.Println(string(res.([]byte)), err)
-
 	// ^_^: 测试可以用（废话，都是copy 的代码)
 }
 
@@ -812,7 +811,7 @@ type Pool struct {
 	closed bool          // set to true when the pool is closed.
 	active int           // the number of open connections in the pool
 	ch     chan struct{} // limits open connections when p.Wait is true。用 bufferd channel 来限制连接数的
-	idle   idleList      // idle connections
+	idle   idleList      // idle connections。闲置的链接，用来分配链接
 }
 
 // 代码给了一个示例来演示 Pool 的用法， 初始化函数不推荐使用了，直接用 struct 构造
@@ -925,7 +924,7 @@ func (ec errorConn) ReceiveWithTimeout(time.Duration) (interface{}, error) { ret
 type activeConn struct {
 	p     *Pool // 活动连接所在的 Pool
 	pc    *poolConn
-	state int // 参考下边的 state 定义, 表示现在的链接使用哪个
+	state int // 参考 文件 commandinfo.go 的 state 定义, 表示现在的链接使用哪个
 }
 
 var (
