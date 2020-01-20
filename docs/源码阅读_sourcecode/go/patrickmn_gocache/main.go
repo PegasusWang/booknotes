@@ -109,7 +109,7 @@ func (c *cache) get(k string) (interface{}, bool) {
 			return nil, false // timeout
 		}
 	}
-	return item.Object, nil
+	return item.Object, true
 }
 
 // 如果存在就替换
@@ -215,7 +215,7 @@ func (c *cache) OnEvicted(f func(string, interface{})) {
 }
 
 // Items 复制所有没有超时的 kv 到一个新的 map
-func (c *cache) Items() map[string]Items {
+func (c *cache) Items() map[string]Item {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
@@ -305,4 +305,13 @@ func newCacheWithJanitor(de time.Duration, ci time.Duration, m map[string]Item) 
 func New(defaultExpiration, cleanupInterval time.Duration) *Cache {
 	items := make(map[string]Item)
 	return newCacheWithJanitor(defaultExpiration, cleanupInterval, items)
+}
+
+func main() {
+	c := New(time.Minute, time.Minute*2)
+	c.Set("k", 123, time.Minute)
+	val, ok := c.Get("k")
+	if ok {
+		fmt.Println(val.(int))
+	}
 }
