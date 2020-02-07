@@ -14,6 +14,8 @@ go get github.com/patrickmn/go-cache
 不用请求了，同时将压力分散到多个服务上，缓解缓存服务器压力。这个是一个很典型的使用场景(需要保证一致性，一般是先从 redis
 拉过来再缓存到进程内存）。
 
+注意：该场景下不同机器的缓存不一致的问题。
+
 # go-cache
 
 star 数量较高，也比较稳定了。实现了 goroutine 安全的 map[string]interface{}，包含超时。支持序列化到文件并且重新加载

@@ -14,14 +14,14 @@ go-cache 源码阅读和仿写
 使用锁的注意事项：
 
 1.如果对性能要求很高，可能需要放弃使用 defer ，直接在需要 unlock 的地方调用 unlock
-2.如果没有使用 defer，临界区的 lock 一定不要忘记 unlock，防止死锁
+2.如果没有使用 defer，临界区的 lock 一定不要忘记 unlock，防止死锁(数一下看看是否 unlock 和return 个数一样)
 3 对于读多写少场景，使用 Rlock/RUnlock 性能更好
 */
 
 // 首先是定一个 cache 的 item 对象
 type Item struct {
 	Object     interface{} // 支持保存不同类型
-	Expiration int64       // 判断是否过期用
+	Expiration int64       // 判断是否过期用, 毫秒时间戳
 }
 
 // 项目是否超时
@@ -66,6 +66,7 @@ func (c *cache) Set(k string, x interface{}, d time.Duration) {
 	}
 	c.mu.Unlock() // 这里没用 defer，go defer 有一定的性能消耗
 }
+
 func (c *cache) set(k string, x interface{}, d time.Duration) {
 	var e int64
 	if d == DefaultExpiration {
@@ -74,6 +75,7 @@ func (c *cache) set(k string, x interface{}, d time.Duration) {
 	if d > 0 { // 有超时，加上超时时间。注意用内置的 Add 方法
 		e = time.Now().Add(d).UnixNano()
 	}
+	// 无锁保护，调用方加锁
 	c.items[k] = Item{
 		Object:     x,
 		Expiration: e,
@@ -103,7 +105,7 @@ func (c *cache) get(k string) (interface{}, bool) {
 	if !found {
 		return nil, false
 	}
-	// 找到还需要判断下是否超时
+	// 找到还需要判断下是否超时。类似 memcache 的惰性策略
 	if item.Expiration > 0 {
 		if time.Now().UnixNano() > item.Expiration {
 			return nil, false // timeout
@@ -130,7 +132,7 @@ func (c *cache) Get(k string) (interface{}, bool) {
 	c.mu.RLock()
 	item, found := c.items[k]
 	if !found {
-		c.mu.Unlock()
+		c.mu.RUnlock()
 		return nil, false
 	}
 	if item.Expiration > 0 {
@@ -194,7 +196,7 @@ func (c *cache) DeleteExpired() {
 	now := time.Now().UnixNano()
 	c.mu.Lock()
 	for k, v := range c.items {
-		if v.Expiration > 0 && now > v.Expiration {
+		if v.Expiration > 0 && now > v.Expiration { // 有过期时间，并且已经过期
 			ov, evicted := c.delete(k)
 			if evicted {
 				evictedItems = append(evictedItems, keyAndValue{k, ov})
@@ -223,7 +225,7 @@ func (c *cache) Items() map[string]Item {
 	m := make(map[string]Item, len(c.items))
 	for k, v := range c.items {
 		if v.Expiration > 0 {
-			if now > v.Expiration {
+			if now > v.Expiration { // 过期的跳过
 				continue
 			}
 		}
@@ -232,7 +234,7 @@ func (c *cache) Items() map[string]Item {
 	return m
 }
 
-// 返回元素个数，可能包含过期的元素
+// 返回元素个数，可能包含过期的元素(所以值是不太可靠的，如果不想计算进去超时的）
 func (c *cache) ItemCount() int {
 	c.mu.RLock()
 	n := len(c.items)
@@ -297,7 +299,7 @@ func newCacheWithJanitor(de time.Duration, ci time.Duration, m map[string]Item) 
 		runJanitor(c, ci) // 每间隔 ci 秒清理过期数据
 		// https://zhuanlan.zhihu.com/p/76504936
 		runtime.SetFinalizer(C, stopJanitor)
-		// 终止 后台 goroutine，最终被 gc 回收
+		// NOTE: 终止 后台 goroutine，最终被 gc 回收
 	}
 	return C
 }
