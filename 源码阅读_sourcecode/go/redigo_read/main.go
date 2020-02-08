@@ -756,7 +756,6 @@ func testRedigoConn() {
 	fmt.Println(res, err)
 	res, err = redisConn.Receive()
 	fmt.Println(string(res.([]byte)), err)
-
 	// ^_^: 测试可以用（废话，都是copy 的代码)
 }
 
@@ -812,7 +811,7 @@ type Pool struct {
 	closed bool          // set to true when the pool is closed.
 	active int           // the number of open connections in the pool
 	ch     chan struct{} // limits open connections when p.Wait is true。用 bufferd channel 来限制连接数的
-	idle   idleList      // idle connections
+	idle   idleList      // idle connections。闲置的链接，用来分配链接
 }
 
 // 代码给了一个示例来演示 Pool 的用法， 初始化函数不推荐使用了，直接用 struct 构造
@@ -925,7 +924,7 @@ func (ec errorConn) ReceiveWithTimeout(time.Duration) (interface{}, error) { ret
 type activeConn struct {
 	p     *Pool // 活动连接所在的 Pool
 	pc    *poolConn
-	state int // 参考下边的 state 定义, 表示现在的链接使用哪个
+	state int // 参考 文件 commandinfo.go 的 state 定义, 表示现在的链接使用哪个
 }
 
 var (
@@ -953,6 +952,18 @@ func initSentinel() {
 
 // 看下 activeConn 的几个方法
 // Close 这个方法用来放回连接池，根据状态先向 redis 发送中断命令，然后放回到连接池，注意并不会关闭 socket
+/*
+
+go 位运算：https://learnku.com/go/t/23460/bit-operation-of-go
+后续代码用到了很多位运算，可以参考上述文章。着重介绍一下 与非(&^) 操作符
+
+Given operands a, b: AND_NOT(a, b) = AND(a, NOT(b))
+如果第二个操作数是 1， 那么它具有清除第一个操作数中位的特性：
+
+AND_NOT(a, 1) = 0; clears a
+AND_NOT(a, 0) = a;
+
+*/
 func (ac *activeConn) Close() error {
 	pc := ac.pc
 	if pc == nil {
@@ -987,10 +998,12 @@ func (ac *activeConn) Close() error {
 		}
 	}
 	pc.c.Do("")
+	// 注意 put 方法的实现
 	ac.p.put(pc, ac.state != 0 || pc.c.Err() != nil) //NOTE: 这一步又重新放回连接池
 	return nil
 }
 
+// 之后是几个代理方法，请求处理转发到 ac.pc 上，注意判断 ac.pc 是否为 nil
 func (ac *activeConn) Err() error {
 	pc := ac.pc
 	if pc == nil {
@@ -1005,7 +1018,7 @@ func (ac *activeConn) Do(commandName string, args ...interface{}) (reply interfa
 		return nil, errConnClosed
 	}
 	ci := lookupCommandInfo(commandName)
-	ac.state = (ac.state | ci.Set) &^ ci.Clear
+	ac.state = (ac.state | ci.Set) &^ ci.Clear // WHY?
 	return pc.c.Do(commandName, args...)
 }
 
@@ -1090,12 +1103,13 @@ func (p *Pool) get(ctx interface { // 类似匿名结构体那种定义方式,�
 
 	// Prune stale connections at the back of the idle list. 清理长期不用的闲置连接，根据 IdleTimeout 判断
 	if p.IdleTimeout > 0 {
-		n := p.idle.count // 连接池连接数量。之后遍历n 次，从最后删除。链表尾部的 最后使用时间 t 小，闲置越久
+		n := p.idle.count
+		// 连接池连接数量。之后遍历n 次，从最后删除。链表尾部的 最后使用时间 t 越小，闲置越久
 		for i := 0; i < n && p.idle.back != nil && p.idle.back.t.Add(p.IdleTimeout).Before(nowFunc()); i++ {
 			pc := p.idle.back
 			p.idle.popBack()
 			p.mu.Unlock()
-			pc.c.Close()
+			pc.c.Close() // 关闭最后一个清理掉的 conn
 			p.mu.Lock()
 			p.active--
 		}
@@ -1108,7 +1122,7 @@ func (p *Pool) get(ctx interface { // 类似匿名结构体那种定义方式,�
 		p.mu.Unlock()
 		if (p.TestOnBorrow == nil || p.TestOnBorrow(pc.c, pc.t) == nil) &&
 			(p.MaxConnLifetime == 0 || nowFunc().Sub(pc.created) < p.MaxConnLifetime) {
-			return pc, nil
+			return pc, nil // 如果可以取到直接返回了
 		}
 		pc.c.Close()
 		p.mu.Lock()
@@ -1140,13 +1154,13 @@ func (p *Pool) get(ctx interface { // 类似匿名结构体那种定义方式,�
 		p.mu.Unlock()
 	}
 	fmt.Println("After GET count is", p.idle.Count(), p.active)
-	return &poolConn{c: c, created: nowFunc()}, err
+	return &poolConn{c: c, created: nowFunc()}, err // 说明上边链表没有取到，重新创建了一个
 }
 
 // get 用到这个方法，主要作用是往 p.ch 中塞入 MaxActive 个 struct{}{}
 func (p *Pool) lazyInit() {
 	// Fast path.
-	if atomic.LoadUint32(&p.chInitialized) == 1 {
+	if atomic.LoadUint32(&p.chInitialized) == 1 { // 根据原子变量标志位判断是否已经初始化了
 		return
 	}
 	// Slow path.
@@ -1166,20 +1180,22 @@ func (p *Pool) lazyInit() {
 }
 
 // 看完 get 一个 conn的，再来看下放回一个 conn的。注意这个是私有方法，不对外暴露。看下一个 Close 如何调用 put
+// NOTE: 如何确定的 lock/unlock 位置
 func (p *Pool) put(pc *poolConn, forceClose bool) error {
 	p.mu.Lock()
 	if !p.closed && !forceClose {
 		pc.t = nowFunc()
-		p.idle.pushFront(pc) // 注意每次是放入头(get也是从头部获取)，更新 tc.t。所有 from -> back ，头部到尾部 t 依次减小
+		// 注意每次是放入头(get也是从头部获取)，更新 tc.t。所有 front -> back ，头部到尾部 t 依次减小
+		p.idle.pushFront(pc)
 		if p.idle.count > p.MaxIdle {
 			pc = p.idle.back
-			p.idle.popBack() // 如果超过了最大闲置数量，就从尾部踢出一个最久没用过的
+			p.idle.popBack() // 如果超过了最大闲置数量，就从尾部剔除一个最久没用过的(链表尾部的是最久没有用过的链接)
 		} else {
 			pc = nil //没有满
 		}
 	}
 
-	if pc != nil { // 关闭被踢出的连接
+	if pc != nil { // 关闭被踢出的连接，注意上边把 pc = p.idle.back，没有剔除则是 nil
 		p.mu.Unlock()
 		pc.c.Close()
 		p.mu.Lock()
@@ -1187,7 +1203,7 @@ func (p *Pool) put(pc *poolConn, forceClose bool) error {
 	}
 
 	if p.ch != nil && !p.closed {
-		p.ch <- struct{}{}
+		p.ch <- struct{}{} // 限制连接数的，移出一个之后可以增加一个
 	}
 	p.mu.Unlock()
 	fmt.Println("After PUT count is", p.idle.Count(), p.active)
@@ -1195,13 +1211,13 @@ func (p *Pool) put(pc *poolConn, forceClose bool) error {
 }
 
 // Close releases the resources used by the pool.  TODO(wnn) 如何放回连接池的？-> 看 activeConn.Close
-func (p *Pool) Close() error { // 清理链表；关闭连接
+func (p *Pool) Close() error { // 这是 Pool 的 close方法，会清理链表；关闭所有连接
 	p.mu.Lock()
 	if p.closed {
 		p.mu.Unlock()
 		return nil
 	}
-	p.closed = true
+	p.closed = true // 注意所有 pool 成员变量是如何置位的
 	p.active -= p.idle.count
 	pc := p.idle.front
 	p.idle.count = 0

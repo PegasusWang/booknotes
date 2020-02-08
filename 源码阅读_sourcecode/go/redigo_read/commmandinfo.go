@@ -29,7 +29,7 @@ var commandInfos = map[string]commandInfo{
 
 func init() {
 	for n, ci := range commandInfos {
-		commandInfos[strings.ToLower(n)] = ci
+		commandInfos[strings.ToLower(n)] = ci // 保留一份小写命令的映射
 	}
 }
 
