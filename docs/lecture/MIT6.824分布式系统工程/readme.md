@@ -6,6 +6,10 @@
 - https://pdos.csail.mit.edu/6.824/index.html
 - https://github.com/ty4z2008/Qix/blob/master/ds.md#
 - https://github.com/chaozh/MIT-6.824
+
+# 视频
+
+- https://www.youtube.com/watch?v=cQP8WApzIQQ&list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB
 - https://www.bilibili.com/video/av87684880/ 2020 年最新官方视频
 
 # 1. Introduction
