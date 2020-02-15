@@ -101,3 +101,28 @@ Thread challenges:
 - race (use lock) `mu.Lock(); n++; mu.UnLock()`
 - coordination: channels, sync.Cond, waitGroup
 - deadlock
+
+# 3. GFS(Google File System)
+
+Big Storage. Why Hard
+
+- Performance -> Sharding
+- Faults -> Tolerance
+- Tolerance -> Replication
+- Replication -> Inconsistency
+- Consistency -> Low performance
+
+Strong Consistency
+
+Bad Replication Design
+
+
+GFS:
+Big, Fat
+Global
+Sharding
+Automatic recovery
+
+Single data center
+Internal use
+Big sequential access
