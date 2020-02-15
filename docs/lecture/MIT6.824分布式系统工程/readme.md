@@ -1,4 +1,10 @@
-# 分布式系统工程
+# MIT 6.824 分布式系统工程
+
+- http://nil.csail.mit.edu/6.824/2020/schedule.html 课程表，课程表包含 youbute 视频链接，讲义和论文地址，可以自行下载
+- https://www.youtube.com/watch?v=cQP8WApzIQQ&list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB
+- https://www.bilibili.com/video/av87684880/ 2020 年最新官方视频
+
+# 其他资料
 
 - https://zhuanlan.zhihu.com/p/34680235
 - https://www.zhihu.com/question/29597104
@@ -6,11 +12,8 @@
 - https://pdos.csail.mit.edu/6.824/index.html
 - https://github.com/ty4z2008/Qix/blob/master/ds.md#
 - https://github.com/chaozh/MIT-6.824
+- https://www.v2ex.com/t/574537
 
-# 视频
-
-- https://www.youtube.com/watch?v=cQP8WApzIQQ&list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB
-- https://www.bilibili.com/video/av87684880/ 2020 年最新官方视频
 
 # 1. Introduction
 
@@ -104,6 +107,8 @@ Thread challenges:
 
 # 3. GFS(Google File System)
 
+paper link: https://pdos.csail.mit.edu/6.824/papers/gfs.pdf
+
 Big Storage. Why Hard
 
 - Performance -> Sharding
@@ -126,3 +131,5 @@ Automatic recovery
 Single data center
 Internal use
 Big sequential access
+
+![](./3_gfs.png)
