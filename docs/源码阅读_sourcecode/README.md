@@ -75,3 +75,39 @@
 - 流程图(一个调用流程)
 - UML/思维导图等，画出各个部分如何交互的（包含关系，继承关系，调用关系，树状还是网状）
 - 纸笔依然是你整理思路的好工具
+
+
+### 看不懂的怎么办
+
+有时候发现有些代码片段看不懂，我的经验是写一些简单的测试用例，一般来说搞懂了输入和输出至少你知道代码是做啥的。
+比如我一开始看到 go http server.go这一句代码的时候`packedState := uint64(now<<8) | uint64(state)` 比较懵逼，
+为啥这么写？后来写几个测试例子你就发现了，一个 uint64 数字同时包含进去了时间戳和状态信息。
+
+```go
+type ConnState int // 连接状态
+const (
+	StateNew      ConnState = iota // is expected to send a request immediately
+	StateActive                    // read 1 or more bytes
+	StateIdle                      // 处理完了一个状态并且处于 keep-alive 状态
+	StateHijacked                  // 被劫持的连接(一种终态)
+	StateClosed                    // 已经关闭的连接（一种终态)
+)
+
+func testState() {
+	// /usr/local/Cellar/go/1.12.7/libexec/src/net/http/server.go
+	// server.go 里边这个代码看着有点蒙
+	state := StateActive
+	now := time.Now().Unix()
+	fmt.Printf("now: %d\n", now)
+	packedState := uint64(now<<8) | uint64(state) // 把两个数存到了一个数字里，同时包含了时间和状态信息
+	fmt.Printf("packedState %d\n", packedState)
+	fmt.Println(packedState&0xff, int64(packedState>>8))
+}
+
+func main() {
+	testState()
+}
+```
+
+- 看不懂的代码片段尝试编写几个简单的测试用例
+- 复杂的逻辑比如状态机，可以画图辅助理解
