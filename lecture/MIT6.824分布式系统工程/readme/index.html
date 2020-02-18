@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../../img/favicon.ico">
-  <title>分布式系统工程 - PegasusWang的读书笔记</title>
+  <title>MIT 6.824 分布式系统工程 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "\u5206\u5e03\u5f0f\u7cfb\u7edf\u5de5\u7a0b";
+    var mkdocs_page_name = "MIT 6.824 \u5206\u5e03\u5f0f\u7cfb\u7edf\u5de5\u7a0b";
     var mkdocs_page_input_path = "lecture/MIT6.824\u5206\u5e03\u5f0f\u7cfb\u7edf\u5de5\u7a0b/readme.md";
     var mkdocs_page_url = null;
   </script>
@@ -441,6 +441,10 @@
                 </li>
                 <li class="">
                     
+    <a class="" href="../../../思维认知/学习力/">《学习力》</a>
+                </li>
+                <li class="">
+                    
     <a class="" href="../../../思维认知/批判性思维工具/">《批判性思维工具》</a>
                 </li>
                 <li class="">
@@ -710,7 +714,7 @@
     
       
     
-    <li>分布式系统工程</li>
+    <li>MIT 6.824 分布式系统工程</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -720,7 +724,13 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="_1">分布式系统工程</h1>
+                <h1 id="mit-6824">MIT 6.824 分布式系统工程</h1>
+<ul>
+<li>http://nil.csail.mit.edu/6.824/2020/schedule.html 课程表，课程表包含 youbute 视频链接，讲义和论文地址，可以自行下载</li>
+<li>https://www.youtube.com/watch?v=cQP8WApzIQQ&amp;list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB</li>
+<li>https://www.bilibili.com/video/av87684880/ 2020 年最新官方视频</li>
+</ul>
+<h1 id="_1">其他资料</h1>
 <ul>
 <li>https://zhuanlan.zhihu.com/p/34680235</li>
 <li>https://www.zhihu.com/question/29597104</li>
@@ -728,11 +738,7 @@
 <li>https://pdos.csail.mit.edu/6.824/index.html</li>
 <li>https://github.com/ty4z2008/Qix/blob/master/ds.md#</li>
 <li>https://github.com/chaozh/MIT-6.824</li>
-</ul>
-<h1 id="_2">视频</h1>
-<ul>
-<li>https://www.youtube.com/watch?v=cQP8WApzIQQ&amp;list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB</li>
-<li>https://www.bilibili.com/video/av87684880/ 2020 年最新官方视频</li>
+<li>https://www.v2ex.com/t/574537</li>
 </ul>
 <h1 id="1-introduction">1. Introduction</h1>
 <p>why?</p>
@@ -820,6 +826,27 @@ Reduce(k, v):
 <li>coordination: channels, sync.Cond, waitGroup</li>
 <li>deadlock</li>
 </ul>
+<h1 id="3-gfsgoogle-file-system">3. GFS(Google File System)</h1>
+<p>paper link: https://pdos.csail.mit.edu/6.824/papers/gfs.pdf</p>
+<p>Big Storage. Why Hard</p>
+<ul>
+<li>Performance -&gt; Sharding</li>
+<li>Faults -&gt; Tolerance</li>
+<li>Tolerance -&gt; Replication</li>
+<li>Replication -&gt; Inconsistency</li>
+<li>Consistency -&gt; Low performance</li>
+</ul>
+<p>Strong Consistency</p>
+<p>Bad Replication Design</p>
+<p>GFS:
+Big, Fat
+Global
+Sharding
+Automatic recovery</p>
+<p>Single data center
+Internal use
+Big sequential access</p>
+<p><img alt="" src="../3_gfs.png" /></p>
               
             </div>
           </div>
