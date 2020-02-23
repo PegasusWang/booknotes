@@ -133,3 +133,9 @@ Internal use
 Big sequential access
 
 ![](./3_gfs.png)
+
+
+# 4. Primary-Backup Replication
+
+![](./4-0.jpeg)
+![](./4-1.jpeg)
