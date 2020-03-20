@@ -24,3 +24,28 @@ noremap <leader>n :NERDTreeToggle<cr>
 # 5. 构建、测试和运行
 
 - tpope/vim-fugitive
+
+使用 vimdiff 进行代码冲突合并。
+
+```
+<<<<<<<< [LOCAL commit/branch]
+[LOCAL change]
+||||||| merged commong ancestors
+[BASE - closest common ancestor]
+========
+[REMOTE change]
+>>>>>>>> [REMOTE commit/branch]
+```
+
+- vim-tmux-navigator
+- vim-test 执行单测。 :TestNearest :TestFile :TestSuite :TestLast
+
+# 6. 用正则表达式和宏重构代码
+
+介绍了使用正则和 宏录制来进行重构
+
+# 7. 定制自己的 vim
+
+- airline 状态栏
+
+vimrc 中手动折叠记号 `{{{` 。使用 zM 关闭所有折叠。
