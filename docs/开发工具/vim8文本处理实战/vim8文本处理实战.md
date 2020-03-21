@@ -425,3 +425,21 @@ nnoremap <leader>a = :let name= AskAnimalName()<cr>:echo name<cr>
 编程风格参考：《google vimscript style guide》
 
 ### 编写一个插件
+
+一般的 vim 插件目录结构
+
+- autoload/ 保存插件延迟加载内容
+- colors/目录用于保存配色。
+- compiler/目录用于保存编译器相关的功能（针对不同语言）。
+- doc/为文档目录。
+- ftdetect/目录用于保存（针对不同文件类型的）文件类型检测设置。
+- ftplugin/目录用于保存（针对不同文件类型的）文件类型相关的代码。
+- indent/目录用于保存（针对不同文件类型的）缩进相关的设置。
+- plugin/目录用于保存插件的核心功能。
+- syntax/目录用于保存（针对不同语言的）语言语法分组。
+
+用一个 vim-commenter 示例如何编写 vim plugin。
+
+使用 helptags 可以生成帮助文档索引。
+
+发布插件到 github 上之后就可以使用插件管理器安装了。
