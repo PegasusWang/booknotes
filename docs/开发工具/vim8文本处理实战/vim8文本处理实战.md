@@ -439,7 +439,9 @@ nnoremap <leader>a = :let name= AskAnimalName()<cr>:echo name<cr>
 - syntax/目录用于保存（针对不同语言的）语言语法分组。
 
 用一个 vim-commenter 示例如何编写 vim plugin。
-
 使用 helptags 可以生成帮助文档索引。
-
 发布插件到 github 上之后就可以使用插件管理器安装了。
+
+# 9. Neovim
+
+
