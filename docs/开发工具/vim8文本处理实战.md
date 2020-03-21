@@ -49,3 +49,15 @@ noremap <leader>n :NERDTreeToggle<cr>
 - airline 状态栏
 
 vimrc 中手动折叠记号 `{{{` 。使用 zM 关闭所有折叠。
+
+# 8. Vimscript
+
+```
+" 使用 set 为内部选项赋值
+set background=dark
+" 非内部变量使用 let
+let animal_name = 'Miss'
+let is_cat = 1 " bool 使用1/0
+"vim 中变量和作用域是通过前缀实现的
+let g:animal_name = 'miss'
+```
