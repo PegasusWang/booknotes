@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>《Effective Debugging》 - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300aEffective Debugging\u300b";
+    var mkdocs_page_input_path = "debug/Effective_Debugging.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">调试技术</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../软件调试修炼之道/book/">《软件调试修炼之道》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《Effective Debugging》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1">1 章 宏观策略</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1_1">1条：通过事务追踪系统处理所有问题</a></li>
+        
+            <li><a class="toctree-l4" href="#2">2条：在网上确切地查询你遇到的问题，以寻求解决灵感</a></li>
+        
+            <li><a class="toctree-l4" href="#3">3条：确保前置条件和后置条件都满足</a></li>
+        
+            <li><a class="toctree-l4" href="#4-bug-bug">4条：从具体问题入手向上追查 bug，或从高层程序入手向下追查 bug</a></li>
+        
+            <li><a class="toctree-l4" href="#5">5条：在正常运作的系统和发生故障的系统之间寻找差别</a></li>
+        
+            <li><a class="toctree-l4" href="#6">6条：使用软件自身调试机制</a></li>
+        
+            <li><a class="toctree-l4" href="#7">7条：试着多种工具构建软件，并放在不同环境执行</a></li>
+        
+            <li><a class="toctree-l4" href="#8">8条：工作焦点放在最重要问题上</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#2_1">2 章 通用的方法与做法</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#9">9 条：相信自己能把问题调试好</a></li>
+        
+            <li><a class="toctree-l4" href="#10">10 条：高效地重建程序中的问题</a></li>
+        
+            <li><a class="toctree-l4" href="#11">11 条：修改完代码后，要能尽快看到结果</a></li>
+        
+            <li><a class="toctree-l4" href="#12">12 条：将复杂的测试场景自动化</a></li>
+        
+            <li><a class="toctree-l4" href="#13">13 条：使自己尽可能多地观察到与调试有关的数据</a></li>
+        
+            <li><a class="toctree-l4" href="#14">14 条：考虑对软件进行更新</a></li>
+        
+            <li><a class="toctree-l4" href="#15">15 条：查看第三方组件源代码，了解其用法</a></li>
+        
+            <li><a class="toctree-l4" href="#16">16 条：使用专门的监测和测试设备</a></li>
+        
+            <li><a class="toctree-l4" href="#17">17 条：使故障更加突出</a></li>
+        
+            <li><a class="toctree-l4" href="#18">18 条：从自己的桌面计算机上调试那些不太好用的系统</a></li>
+        
+            <li><a class="toctree-l4" href="#19">19 条：使调试任务自动化</a></li>
+        
+            <li><a class="toctree-l4" href="#20">20 条：开始调试之前与调试完毕之后把程序清理干净</a></li>
+        
+            <li><a class="toctree-l4" href="#21">21 条：把属于同一个类型的所有问题全部都修复好</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#3_1">3章：通用的技术和工具</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#22-unix">22 条：用 unix 命令行工具对调试数据进行分析</a></li>
+        
+            <li><a class="toctree-l4" href="#23">23 条：掌握命令行工具的各种选项和习惯用法</a></li>
+        
+            <li><a class="toctree-l4" href="#24">24 条：用编辑器对调试程序时所需的数据进行浏览</a></li>
+        
+            <li><a class="toctree-l4" href="#25">25 条：优化工作环境</a></li>
+        
+            <li><a class="toctree-l4" href="#26-bug">26 条：用版本控制寻找 bug 发生的原因和经过</a></li>
+        
+            <li><a class="toctree-l4" href="#27">27 条：用工具监测多个独立程序构成的系统</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#4">4章：调试器的使用技巧</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#28">28 条：编译代码时把符号信息包含进来，以便于调试</a></li>
+        
+            <li><a class="toctree-l4" href="#29">29 条：对代码进行单步调试</a></li>
+        
+            <li><a class="toctree-l4" href="#30">30 条：设置代码断点和数据断点</a></li>
+        
+            <li><a class="toctree-l4" href="#31">31 条：了解反向调试功能</a></li>
+        
+            <li><a class="toctree-l4" href="#32">32 条：查看例程之间的相互调用情况</a></li>
+        
+            <li><a class="toctree-l4" href="#33">33 条：查看变量和表达式的值，以寻找错误</a></li>
+        
+            <li><a class="toctree-l4" href="#34">34 条：了解如何把调试器连接到正在运行的进程</a></li>
+        
+            <li><a class="toctree-l4" href="#35-core-dump">35 条：了解 core dump 信息进行调试</a></li>
+        
+            <li><a class="toctree-l4" href="#36">36 条：把调试工具设置好</a></li>
+        
+            <li><a class="toctree-l4" href="#37">37 条：学会查看汇编代码和原始内存</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#5_1">5章：编程技术</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#38">38 条：对可疑代码进行评审，并手工演练这些代码</a></li>
+        
+            <li><a class="toctree-l4" href="#39">39 条：审读代码和同事讨论</a></li>
+        
+            <li><a class="toctree-l4" href="#40">40 条：给软件增加调试机制</a></li>
+        
+            <li><a class="toctree-l4" href="#41-log">41 条：添加日志(log)语句</a></li>
+        
+            <li><a class="toctree-l4" href="#42">42 条：对软件进行单元测试</a></li>
+        
+            <li><a class="toctree-l4" href="#43">43 条：用断言进行调试</a></li>
+        
+            <li><a class="toctree-l4" href="#44">44 条：改动受测程序，验证推想</a></li>
+        
+            <li><a class="toctree-l4" href="#45">45 条：尽量缩小正确范例与错误代码之间的差距</a></li>
+        
+            <li><a class="toctree-l4" href="#46">46 条：简化可疑代码</a></li>
+        
+            <li><a class="toctree-l4" href="#47">47 条：将可疑代码替换成另一种编程语言编写</a></li>
+        
+            <li><a class="toctree-l4" href="#48">48 条：改善可疑代码的可读性与结构</a></li>
+        
+            <li><a class="toctree-l4" href="#49-bug">49 条：清除 bug 根源，而不是仅仅消除症状</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#6_1">6.章 编译时的调试技术</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#50">50 条：对生成的代码进行检视</a></li>
+        
+            <li><a class="toctree-l4" href="#51">51 条：使用静态程序分析工具</a></li>
+        
+            <li><a class="toctree-l4" href="#52">52 条：对项目进行配置，让程序以固定方式构建和运行</a></li>
+        
+            <li><a class="toctree-l4" href="#53">53 条：对调试所用的程序库和构建代码执行环境进行配置</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#7_1">7章：运行时调试技术</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#54">54 条：通过构建测试用例寻找错误</a></li>
+        
+            <li><a class="toctree-l4" href="#55">55 条：让软件遇到问题时及早退出</a></li>
+        
+            <li><a class="toctree-l4" href="#56">56 条：检查日志文件</a></li>
+        
+            <li><a class="toctree-l4" href="#57">57 条：对系统和进程所执行的操作进行性能评测</a></li>
+        
+            <li><a class="toctree-l4" href="#58">58 条：追踪程序的执行情况</a></li>
+        
+            <li><a class="toctree-l4" href="#59">59 条：使用动态程序分析工具</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#8_1">8章：调试多线程代码</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#60">60 条：通过事后调试分析死锁问题</a></li>
+        
+            <li><a class="toctree-l4" href="#61">61 条：捕获并且重放</a></li>
+        
+            <li><a class="toctree-l4" href="#62">62 条：用专门的工具探查死锁和竞争条件问题</a></li>
+        
+            <li><a class="toctree-l4" href="#63">63 条：把不确定因素隔离出来，或将其移除</a></li>
+        
+            <li><a class="toctree-l4" href="#64">64 条：检查资源争用情况，以解决伸缩性问题</a></li>
+        
+            <li><a class="toctree-l4" href="#65">65 条：用性能计数器寻找伪共享问题</a></li>
+        
+            <li><a class="toctree-l4" href="#66">66 条：考虑用高级的抽象机制重写代码</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis深度历险核心原理和应用实践/book/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go101/book/">《Go101》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/network-programming-with-go/book/">《Network Programming with go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go_in_action(go语言实战)/">《Go In Action(Go 实战)》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/自控力/">《自控力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/自控力-和压力做朋友/">《自控力:和压力做朋友》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">搜索引擎</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../搜索引擎/Elasticsearch实战/book/">《Elasticsearch实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/vim8文本处理实战/vim8文本处理实战/">《Vim8文本处理实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/学习力/">《学习力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融理财/定投十年/">《定投十年》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">写作</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../写作/刷屏文案写作技巧/">《刷屏文案写作技巧》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效清单工作法/">《高效清单工作法》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>调试技术 &raquo;</li>
+        
+      
+    
+    <li>《Effective Debugging》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>《Effective Debugging：软件和系统个调试的 66 个有效方法》</p>
+<h1 id="1">1 章 宏观策略</h1>
+<h3 id="1_1">1条：通过事务追踪系统处理所有问题</h3>
+<p>开源的有 Bugzilla/Launch-pad/OTRS/Redmine/Trace 等，或者 JIRA 这种专有系统。</p>
+<h3 id="2">2条：在网上确切地查询你遇到的问题，以寻求解决灵感</h3>
+<p>简单、自足而且正确的范例（SSCCE）。搜索的时候用双引号可以更加精确搜索。搜不到可以去 stackoverflow 提问。</p>
+<h3 id="3">3条：确保前置条件和后置条件都满足</h3>
+<ul>
+<li>不应该为 null，却为 null 的值</li>
+<li>数学函数的参数保证在定义域之内</li>
+<li>对象， 结构体和数组内部细节</li>
+<li>变量是否在范围之内</li>
+<li>传递的数据结构是否正确，map 有没有包含预期的 key/val，链表是否可以正常遍历</li>
+</ul>
+<h3 id="4-bug-bug">4条：从具体问题入手向上追查 bug，或从高层程序入手向下追查 bug</h3>
+<ul>
+<li>程序崩溃。通常null/未初始化的值容易引发崩溃</li>
+<li>程序冻结(freeze)：找出循环的终止条件和没有满足的原因</li>
+<li>错误消息：grep 找到错误消息位置</li>
+</ul>
+<h3 id="5">5条：在正常运作的系统和发生故障的系统之间寻找差别</h3>
+<p>影响因素：代码、输入、参数、环境变量、动态链接库</p>
+<ul>
+<li>二分搜索</li>
+<li>日志对比，grep/diff/comm</li>
+</ul>
+<h3 id="6">6条：使用软件自身调试机制</h3>
+<ul>
+<li>很多命令有 debug 选项。比如 sh -x， mysql explain</li>
+</ul>
+<h3 id="7">7条：试着多种工具构建软件，并放在不同环境执行</h3>
+<ul>
+<li>用多种编译工具构建软件，不同平台执行</li>
+<li>考虑用更高级的语言重新实现</li>
+</ul>
+<h3 id="8">8条：工作焦点放在最重要问题上</h3>
+<p>高优先级的 bug：</p>
+<ul>
+<li>数据丢失</li>
+<li>数据安全</li>
+<li>服务可用性降低</li>
+<li>使用安全</li>
+<li>程序崩溃或者冻结(freeze)</li>
+<li>代码质量</li>
+</ul>
+<p>低优先级：</p>
+<ul>
+<li>支持遗留系统</li>
+<li>向后兼容</li>
+<li>有临时解决方案的问题</li>
+<li>很少用的特性</li>
+</ul>
+<h1 id="2_1">2 章 通用的方法与做法</h1>
+<h3 id="9">9 条：相信自己能把问题调试好</h3>
+<ul>
+<li>确信问题是可以排查的</li>
+<li>流出足够的调试时间</li>
+<li>安排好环境不受干扰。进入心流</li>
+<li>睡一觉</li>
+<li>
+<p>学习环境和工具想关知识</p>
+<ul>
+<li>准备好健壮的最小测试用例</li>
+<li>bug 重现自动化</li>
+<li>脚本分析日志文件</li>
+<li>了解 API 或语言特性的运作方式</li>
+</ul>
+</li>
+</ul>
+<h3 id="10">10 条：高效地重建程序中的问题</h3>
+<p>sscce: 短小的(short)，自足的(self-contained)，正确的(correct)，范例(example)</p>
+<ul>
+<li>准确重现</li>
+<li>短小正确的范例</li>
+<li>创建执行环境</li>
+<li>用版本管理打上标记</li>
+</ul>
+<h3 id="11">11 条：修改完代码后，要能尽快看到结果</h3>
+<h3 id="12">12 条：将复杂的测试场景自动化</h3>
+<p>通过脚本语言执行复杂的测试用例</p>
+<h3 id="13">13 条：使自己尽可能多地观察到与调试有关的数据</h3>
+<ul>
+<li>扩大日志显示区域</li>
+</ul>
+<h3 id="14">14 条：考虑对软件进行更新</h3>
+<ul>
+<li>更新后重新尝试你的代码，是否还会出错？</li>
+<li>谨慎考虑第三方出问题的可能，你自己出问题的几率更高</li>
+</ul>
+<h3 id="15">15 条：查看第三方组件源代码，了解其用法</h3>
+<h3 id="16">16 条：使用专门的监测和测试设备</h3>
+<p>协议分析工具，比如 wireshark, tcpdump 等监测网络数据包</p>
+<h3 id="17">17 条：使故障更加突出</h3>
+<ul>
+<li>迫使软件去执行可疑路径</li>
+<li>提升某些效果的幅度，令其更加突出，以便于研究</li>
+<li>对软件加压，暴露出负载下的状态</li>
+<li>所有修改都要在版本管理下做</li>
+</ul>
+<h3 id="18">18 条：从自己的桌面计算机上调试那些不太好用的系统</h3>
+<h3 id="19">19 条：使调试任务自动化</h3>
+<h3 id="20">20 条：开始调试之前与调试完毕之后把程序清理干净</h3>
+<ul>
+<li>确保调试之前代码整洁</li>
+<li>调试完毕，把临时改动还原回去，只把有用的代码提交上去（考虑单独用一个分支）</li>
+</ul>
+<h3 id="21">21 条：把属于同一个类型的所有问题全部都修复好</h3>
+<ul>
+<li>修复一个错误之后，搜索代码类似的地方是否有一样的问题需要修改</li>
+</ul>
+<h1 id="3_1">3章：通用的技术和工具</h1>
+<h3 id="22-unix">22 条：用 unix 命令行工具对调试数据进行分析</h3>
+<p>获取--筛选--处理--汇总</p>
+<ul>
+<li>nm 查看目标文件，获取哪些文件调用了 exit 函数。 <code>nm -A *.o  | grep 'U exit$'</code></li>
+<li>tar/jar/ar 查看压缩包内容</li>
+<li>cut 裁剪，sed 正则提取</li>
+<li>大量文本使用 more/less</li>
+<li>xargs 命令输入端</li>
+</ul>
+<h3 id="23">23 条：掌握命令行工具的各种选项和习惯用法</h3>
+<ul>
+<li><code>fgrep -lr 'Missing foo'</code> 搜索所有包含错误消息的文件</li>
+<li>对标准错误重定向以便于分析 ( 2&gt;&amp;1 )</li>
+<li><code>tail -f</code> 监控持续增加的日志文件</li>
+</ul>
+<h3 id="24">24 条：用编辑器对调试程序时所需的数据进行浏览</h3>
+<ul>
+<li>使用编辑器搜索来查找拼写有误的单词</li>
+<li>编辑文本突出不同点</li>
+<li>编辑日志让其更加易读</li>
+</ul>
+<h3 id="25">25 条：优化工作环境</h3>
+<ul>
+<li>配置工具以提升效率。  alias/editor</li>
+<li>通过版本控制共享 配置文件 (dotfiles)</li>
+</ul>
+<h3 id="26-bug">26 条：用版本控制寻找 bug 发生的原因和经过</h3>
+<p>每一次修改都应该单独提交，而且要写上有意义的提交信息，如果有可能，还应该链接到对应的事务(比如 jira)上。</p>
+<ul>
+<li><code>git log somefile</code> 查看某个文件变化</li>
+<li><code>git blame file</code></li>
+<li><code>git rev-list --all | xargs git grep extinctMethodName</code> 在过去的版本中搜索指定字符串</li>
+<li><code>git log v1.2.3..</code> 只看某一个版本后开始发生的变化</li>
+<li><code>git rev-list -n 1 --before=2015-08-01 master</code> 获取该日期之前最后一次提交所对应的 SHA hash</li>
+<li><code>git log --all --grep='Issue #1234'</code> 搜索与某个事务有关的提交</li>
+<li><code>git show lcb634f6</code> 指定展示某个 hash 的有关修改</li>
+<li><code>git diff v1.2.3..v1.3.2</code> 显示两个版本之间的变化</li>
+<li><code>git checkout v1.1.0</code> 回退到某个版本</li>
+</ul>
+<p>二分查找并且锁定测试没有通过的版本</p>
+<pre><code>git bisect start V1.1.0 V1.2.3
+git bisect run test.sh
+git reset
+</code></pre>
+
+<p>如果正在做某一件事情，然后突然要去解决另外一件事，可以把当前的变更先隐藏，处理完别的事情之后再恢复。</p>
+<pre><code>git stash save interrupted-to-work-on-V1234
+git stash pop
+</code></pre>
+
+<ul>
+<li>用 git 查看文件的修改记录，确定 bug 何时以何种方式引入</li>
+<li>用 git 查看正在运行的版本和故障版本之间的区别</li>
+</ul>
+<h3 id="27">27 条：用工具监测多个独立程序构成的系统</h3>
+<ul>
+<li>
+<p>主机健康。</p>
+<ul>
+<li>cpu 内存 网络可达性 进程数量 登录用户数量 可以更新的软件 剩余磁盘容量 打开的文件描述符 网络和磁盘带宽 系统日志
+安全性 远程访问</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>服务健康。<ul>
+<li>数据库 邮件服务器 应用程序服务器 缓存 网络连接 备份 队列 消息传递 软件授权过期 web 服务器和目录</li>
+</ul>
+</li>
+</ul>
+<p>最好可以监测到：</p>
+<ul>
+<li>能否正确处理整个流程</li>
+<li>应用程序各个部分是否正常</li>
+<li>某些关键指标是否正常。响应延迟，队列堆积，活跃用户数，失败交易，发生的错误和异常报告</li>
+</ul>
+<p>Nagios 系统可以用来检测。</p>
+<p>要点：</p>
+<ul>
+<li>基础设施检查机制，各个部分是否正常</li>
+<li>使自己可以在故障发生的时候迅速得到通知</li>
+<li>查阅故障记录，发现规律或许可以帮你找出问题原因</li>
+</ul>
+<h1 id="4">4章：调试器的使用技巧</h1>
+<h3 id="28">28 条：编译代码时把符号信息包含进来，以便于调试</h3>
+<p>发布的时候记得删掉这些信息。</p>
+<ul>
+<li>大多数 unix 编译器支持用 -g 选项加入调试信息</li>
+<li>调整，禁用优化选项</li>
+</ul>
+<h3 id="29">29 条：对代码进行单步调试</h3>
+<ul>
+<li>通过单步调试查看语句执行顺序和状态</li>
+<li>跳过和 bug 无关部分</li>
+<li>设置断点缩小范围</li>
+</ul>
+<h3 id="30">30 条：设置代码断点和数据断点</h3>
+<ul>
+<li>通过断点缩减范围</li>
+<li>先在上游设置断点，然后再给需要的代码设置断点</li>
+<li>针对异常或者程序退出的子程序设置断点</li>
+<li>可以在调试器里终止没有响应的程序</li>
+<li>数据断点锁定意外值导致的 bug</li>
+</ul>
+<h3 id="31">31 条：了解反向调试功能</h3>
+<ul>
+<li>gdb 提供了 record reverse-next reverse-step</li>
+<li>反向调试对性能影响很大</li>
+</ul>
+<h3 id="32">32 条：查看例程之间的相互调用情况</h3>
+<ul>
+<li>gbd frame n 切换第 n 帧，up 和 down 上下移动</li>
+<li>如果栈信息比较乱，代码可能写得有问题</li>
+</ul>
+<h3 id="33">33 条：查看变量和表达式的值，以寻找错误</h3>
+<ul>
+<li>gdb 中叫做 pretty-printer</li>
+<li>python ，引入 pprint 模块</li>
+<li>python tutor 可视化执行过程</li>
+</ul>
+<h3 id="34">34 条：了解如何把调试器连接到正在运行的进程</h3>
+<pre><code># 先查找进程 pid
+ps -u apache
+gdb -p pid
+</code></pre>
+
+<p>链接到正在运行的进程之后可以打断其执行过程 (gdb:break)，还可以设置断点</p>
+<h3 id="35-core-dump">35 条：了解 core dump 信息进行调试</h3>
+<p>unix 可以通过 kill-ABRT pid 发送 SIGABRT 信号，迫使其生成转储文件。终端里可以用 <code>ctrl-\</code> 组合键发送这个信号。</p>
+<h3 id="36">36 条：把调试工具设置好</h3>
+<ul>
+<li>cgdb/ddd 图形界面调试工具。</li>
+<li>gdbinit 文件</li>
+<li>gdb 可以运行 make 命令</li>
+</ul>
+<h3 id="37">37 条：学会查看汇编代码和原始内存</h3>
+<p>查看机器码错误</p>
+<ul>
+<li>不必要的类型转换</li>
+<li>误解了操作符优先级</li>
+<li>无意中使用重载之后的操作符</li>
+<li>没有配对的括号</li>
+<li>错误的数值类型</li>
+<li>不当的多态例程</li>
+</ul>
+<p>gdb 执行 <code>display/i$pc</code> 显示反汇编之后的指令，然后可以用 stepi, nexti 单步调试。
+info registers 查看寄存器的值， 通过 <code>display$r0</code> 或者 <code>display$eas</code> 持续显示某个寄存器。
+使用 <code>x/10xb&amp;a</code> 字节为单位，用十六进制显示 a 中的 10 个元素。</p>
+<ul>
+<li>小端序(little-endian)，先保存最低有效位字节</li>
+<li>大端序(big-endian，大端在前，也称为网络序)</li>
+</ul>
+<h1 id="5_1">5章：编程技术</h1>
+<h3 id="38">38 条：对可疑代码进行评审，并手工演练这些代码</h3>
+<p>遵守约定，比如用括号理清楚运算符优先级。使用静态检查工具</p>
+<p>需要关注的错误:</p>
+<ul>
+<li>操作符优先级是否有误（尤其是位操作）</li>
+<li>缺少必要的括号和 break 语句</li>
+<li>多谢了分号</li>
+<li>比较操作误写为赋值 (== vs  =)</li>
+<li>变量没有初始化，或是初始化为错误的值</li>
+<li>循环中缺少必要语句</li>
+<li>off-by-one 错误</li>
+<li>类型转化错误</li>
+<li>拼写错误</li>
+<li>缺少必要方法</li>
+<li>特定编程语言陷阱</li>
+</ul>
+<p>重点：</p>
+<ul>
+<li>检查代码常见错误</li>
+<li>用铅笔手工执行代码，验证是否正确</li>
+<li>通过画图解析复杂的数据结构</li>
+</ul>
+<h3 id="39">39 条：审读代码和同事讨论</h3>
+<p>橡皮鸭技术(rubber duck technique)。
+专业和礼貌的方式评审。</p>
+<h3 id="40">40 条：给软件增加调试机制</h3>
+<ul>
+<li>根据变异选项是否进入调试模式</li>
+<li>通过命令行选项决定是否进入调试模式</li>
+<li>发送 signal</li>
+<li>通过命令行打开调试模式</li>
+</ul>
+<h3 id="41-log">41 条：添加日志(log)语句</h3>
+<p>关键例程的入口和出口、重要数据结构内容、状态的变化和用户操作的回应等，注意不要在生产环境启用</p>
+<h3 id="42">42 条：对软件进行单元测试</h3>
+<ul>
+<li>通过单测检查可疑例程，发现其中错误</li>
+<li>使用合适的单测框架</li>
+</ul>
+<h3 id="43">43 条：用断言进行调试</h3>
+<p>从前置条件、不变条件、后置条件思考，设置断言验证</p>
+<ul>
+<li>开头断言，验证 cpu 架构属性</li>
+<li>例程入口断言，验证参数类型，是否有效(null)而且合理</li>
+<li>例程出口验证是否正确</li>
+<li>复杂的方法设置断言，验证状态</li>
+<li>断言不会出错的 api</li>
+<li>验证资源是否正确加在</li>
+<li>验证复杂表达式的值</li>
+<li>switch 断言分支处理</li>
+<li>断言数据结构的初始化是否正确</li>
+</ul>
+<h3 id="44">44 条：改动受测程序，验证推想</h3>
+<ul>
+<li>手工设定代码中的某些值，验证哪些取值是正确的，那些错误的</li>
+<li>试着用其他的方式 替换 当前实现</li>
+</ul>
+<h3 id="45">45 条：尽量缩小正确范例与错误代码之间的差距</h3>
+<ul>
+<li>缩减你的代码使其与范例代码相符，或者逐渐修改范例代码，使其与你的代码相符，有利于找到错误原因</li>
+</ul>
+<h3 id="46">46 条：简化可疑代码</h3>
+<ul>
+<li>复杂的代码会增加调试工作量，可以临时简化，删除不必要的代码，使错误更加突出</li>
+<li>大函数拆分成小部分，单独测试一部分</li>
+<li>弃用某些复杂的算法、数据结构、程序逻辑。 精巧但是很复杂的代码，容易出 bug，对性能没有那么高要求的地方可以替换成简单的实现版本</li>
+</ul>
+<h3 id="47">47 条：将可疑代码替换成另一种编程语言编写</h3>
+<ul>
+<li>使用表达能力更强的语言改写难以修复的代码，减少可能出错的语句数量</li>
+<li>移植代码到更好的编程环境，用更强大的调试工具解决</li>
+<li>参照新代码修正旧代码</li>
+</ul>
+<h3 id="48">48 条：改善可疑代码的可读性与结构</h3>
+<p>混乱糟糕的代码容易滋生 bug。</p>
+<p>装饰性的调整，代码重构，bug 修复工作要分开，并且要分别提交。</p>
+<p>《重构》</p>
+<h3 id="49-bug">49 条：清除 bug 根源，而不是仅仅消除症状</h3>
+<ul>
+<li>不要采用临时代码绕开程序表面症状，而是要查找 bug 深层原因并且修复</li>
+<li>尽可能采用通用方式处理复杂情况，而不要只修复某些特例</li>
+</ul>
+<h1 id="6_1">6.章 编译时的调试技术</h1>
+<h3 id="50">50 条：对生成的代码进行检视</h3>
+<ul>
+<li>查看自动生成的代码（字节码，汇编等），理解编译时和运行时问题</li>
+<li>通过工具展示成容易阅读的形式</li>
+</ul>
+<h3 id="51">51 条：使用静态程序分析工具</h3>
+<p>lint 工具。最好加入到构建流程中</p>
+<ul>
+<li>null 进行解引用</li>
+<li>并发错误和竞争条件</li>
+<li>拼写有误的变量名</li>
+<li>下标越界</li>
+<li>错误的条件、循环、case，还有不会执行到的代码</li>
+<li>未处理异常</li>
+<li>没有用到的变量和例程</li>
+<li>数学错误</li>
+<li>代码重复</li>
+<li>未实现接口</li>
+<li>资源泄露</li>
+<li>安全漏洞</li>
+<li>特定编程语言问题</li>
+</ul>
+<p><code>gcc -Wall</code></p>
+<h3 id="52">52 条：对项目进行配置，让程序以固定方式构建和运行</h3>
+<ul>
+<li>gcc 随机选取符号名称</li>
+<li>输入给编译器的文件顺序可能不同</li>
+<li>软件中构建表示的时间戳会发生变化</li>
+<li>哈希表或map 遍历后顺序不同。防止算法复杂度攻击</li>
+<li>加密盐</li>
+</ul>
+<h3 id="53">53 条：对调试所用的程序库和构建代码执行环境进行配置</h3>
+<ul>
+<li>启用编译器所支持的运行时调试功能</li>
+<li>构建过程中引入一些第三方库检查代码</li>
+</ul>
+<h1 id="7_1">7章：运行时调试技术</h1>
+<h3 id="54">54 条：通过构建测试用例寻找错误</h3>
+<ul>
+<li>创建一个可靠并且最简单的测试用例</li>
+<li>加入到回归测试防止重复犯错</li>
+</ul>
+<h3 id="55">55 条：让软件遇到问题时及早退出</h3>
+<p>测试环境中，及早退出有利于发现问题</p>
+<ul>
+<li>添加并启动断言</li>
+<li>配置程序库进行严格检查</li>
+<li>unix shell 开启 -e 选项，让 shell 在错误时候(return !=0)终止</li>
+</ul>
+<h3 id="56">56 条：检查日志文件</h3>
+<p>分析日志：</p>
+<ul>
+<li>gui 事件查看器</li>
+<li>文本编辑器。比如 vim 可以用<code>g/regular-ex-pression/d</code> 删除无关的日志</li>
+<li>unix 工具过滤、汇总、筛选</li>
+<li>ELK、Logstash、loggly、Splunk</li>
+</ul>
+<h3 id="57">57 条：对系统和进程所执行的操作进行性能评测</h3>
+<ul>
+<li>(unix)对于 cpu 来说，负载是否高于核心数量</li>
+<li>内存，虚拟内存页面写入到磁盘的频率</li>
+<li>网络 IO，丢包和重传。 iostat, netstat, nfsstat, vmstat 等工具</li>
+<li>虚拟设备 IO，请求队列长度和操作延迟</li>
+</ul>
+<h3 id="58">58 条：追踪程序的执行情况</h3>
+<p>ltrace(追踪对程序库调用)，strace, ktrace, truss 追踪对操作系统调用</p>
+<p>Dtrace。<code>dtrace -n 'syscall:::entry'</code></p>
+<h3 id="59">59 条：使用动态程序分析工具</h3>
+<p>Valgrind 内存检查</p>
+<h1 id="8_1">8章：调试多线程代码</h1>
+<h3 id="60">60 条：通过事后调试分析死锁问题</h3>
+<ul>
+<li>gdb</li>
+</ul>
+<pre><code># get pid
+ps
+# kill pid
+kill -QUIT pid
+# gdb deadlock core
+&gt;(gdb) info threads
+&gt;(gdb) thread 2
+&gt;(gdb) backtrace
+</code></pre>
+
+<ul>
+<li>jdk jstack 排查 java 死锁</li>
+</ul>
+<h3 id="61">61 条：捕获并且重放</h3>
+<ul>
+<li>开启记录功能，反复运行直到重现</li>
+<li>分析记录结果</li>
+<li>程序放在调试器中运行，重放 bug</li>
+<li>对程序该点的状态分析，找到错误原因</li>
+</ul>
+<pre><code># 程序名 race
+gdb_record race
+(gdb) break main
+(gdb) continue
+(gdb) pin record on
+(gdb) continue
+(gdb) quit
+</code></pre>
+
+<p>可以用 replay 命令重放，程序按照和当初相同的顺序操作内存，也会表现出同样的错误行为。</p>
+<pre><code>replay pinball/log_0
+
+gdb_replay pinball/log_0 ./race
+</code></pre>
+
+<h3 id="62">62 条：用专门的工具探查死锁和竞争条件问题</h3>
+<ul>
+<li>FindBugs: <code>java -jar findbugs.jar -textui Counter.class</code></li>
+<li>Intel Inspector</li>
+<li><code>valgrind --tool=helgrind deadlock</code></li>
+</ul>
+<h3 id="63">63 条：把不确定因素隔离出来，或将其移除</h3>
+<ul>
+<li>行为不确定的代码和其他代码隔开</li>
+<li>对这些代码适当的实现和配置，然行为变确定</li>
+<li>移除法：用可以预测的实体替换掉难以预测的部分</li>
+<li>创建 mock 对象</li>
+</ul>
+<h3 id="64">64 条：检查资源争用情况，以解决伸缩性问题</h3>
+<p>用 profiling 工具探查引发竞争现象的原因，以解决多线程代码中与可伸缩性有关的问题。</p>
+<ul>
+<li>Oracle Java Flight Recorder</li>
+<li>Inter VTune Amplifier</li>
+</ul>
+<h3 id="65">65 条：用性能计数器寻找伪共享问题</h3>
+<p>伪共享(false sharing)问题。cpu 核心的同步协议（缓存一致性协议），保证各线程总是可以看到一致的内存数据。
+每个线程最好操作不同的内存区域(栈变量)，不要干涉其他线程所操作的内存数据</p>
+<p>cpu 性能计数器。</p>
+<p>用 perf 统计程序的末级缓存(last-level cache，简称 LLC)未命中次数。如果对缓存一致性协议的触发次数比较多，
+LLC-loads 就会随之增大。</p>
+<p><code>per stat --event=LLC-loads ./sum-seq</code></p>
+<h3 id="66">66 条：考虑用高级的抽象机制重写代码</h3>
+<p>GNU parallel</p>
+<p>使用更加高级的并发原语、编程语言、工具、框架等重新实现有 bug 的并发代码。</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../database/getting_started_with_impala/" class="btn btn-neutral float-right" title="《Getting started with impala》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../软件调试修炼之道/book/" class="btn btn-neutral" title="《软件调试修炼之道》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../软件调试修炼之道/book/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../database/getting_started_with_impala/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
