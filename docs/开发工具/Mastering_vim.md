@@ -16,6 +16,8 @@ Ctrl+w+o (or :only or :on command) will close all windows except for the current
 
 ### Fold
 
+set foldmethod=indent
+
 - zo: open current fold
 - zc: close the fold
 - zR/zM: open and close all folds
@@ -38,3 +40,46 @@ word: 字母数字下划线。 WORD: 除了空白符（空格，tab，换行）
 
 
 # 3. Follow the Leader - Plugin Management
+
+### vim-plug 
+可以懒加载:
+
+```vim
+" 使用 NERDTreeToggle 命令时候加载插件：
+Plug 'scrooloose/nerdtreee', { 'on': 'NERDTreeToggle' }
+" 指定文件类型加载
+Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
+```
+
+### Profiling
+
+Profiling slow plugins : `vim --startuptime startuptime.log`
+
+Profiling spedific actions:
+
+```
+:profile start profile.log
+:profile func *
+:profile file *
+```
+
+### Mode
+
+在visual 模式下，可以用 o 从选择的开始和结束跳转
+
+可以用 term 模式运行一个命令输出到 buffer
+
+`:term python3 animal.py cat dog`
+
+### Remapping commands
+
+- `:map` for recursive mapping, `:unmap`
+- `:noremap` for non-recursive mapping
+- `:map g` will display every mapping starting with g
+
+特殊键位映射：
+
+- `<c-_>` ctrl + 字母（下划线这里指的是字母)
+- `<a-_>` or `<m-_>` 表示 Alt
+- `<s-_>` 表示 Shift
+- `<cr>` Enter
