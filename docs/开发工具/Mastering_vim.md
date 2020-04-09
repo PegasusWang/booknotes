@@ -1,5 +1,7 @@
 # 1. Getting Started
 
+https://github.com/PacktPublishing/Mastering-Vim
+
 Type `:h` search (don't hit Enter yet) followed by Ctrl+D. This will give you a list of help tags containing the
 substring search.
 
@@ -102,3 +104,31 @@ The leader key is essentially a namespace for a user or plugin defined shortcuts
 " Map the leader key to a comma.
 let mapleader = ','
 let mapleader = "\<space>"
+```
+
+
+# 4. Understanding the Text
+
+### Code autocomplete
+
+YouCompleteMe
+
+### Navigating the code base with tags
+
+Exuberant Ctags
+
+```
+$ ctags -R .
+" vimrc
+set tags=tags;
+
+" regerate tags when saving python file
+autocmd BufWritePost *.py silent! !ctags -R &
+```
+
+- ctrl+] ctrl+t jump and to back in the tag stack
+- :tn :tp  next tag and previous tag
+- :ts tag select
+- g]  select tag menu instead jump to the tag under the cursor
+
+### Undo tree and Gundo
