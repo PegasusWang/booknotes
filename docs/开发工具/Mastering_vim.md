@@ -192,3 +192,27 @@ when you are done, use :wqa quit and git commit your merge results.
 tmux use tpm plugin manager install
 
 ### Building and testing
+
+quickfix: copen/cn/cp
+
+location list: :lopen/lclose/lnext/lprevious/lwindow
+
+`tpope/vim-dispatch`
+
+- :Make
+- :Dispatch can also just run arbitrary
+
+`janko-m/vim-test`
+
+- :TestNearest runs the test nearest to the cursor
+- :TestFile runs the tests in the current file
+- :TestSuite runs the entire test suite
+- :TestLast runs the last test
+
+### Syntax checking code with linters
+
+"vim-syntasitic/syntastic"
+"w0rp/ale"
+
+
+# 6. Refactoring Code with Regex and Macros
