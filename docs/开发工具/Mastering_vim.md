@@ -132,3 +132,63 @@ autocmd BufWritePost *.py silent! !ctags -R &
 - g]  select tag menu instead jump to the tag under the cursor
 
 ### Undo tree and Gundo
+
+
+# 5. Build, Test and Execute
+
+### Integrating Git with Vim (vim-fugitive)
+
+'tpope/vim-fugitive'
+
+- Gstatus
+- Glog. :copen :cprevious
+- Gblame
+- Gread checks out the file straight into a buffer for a preview
+- Ggrep wraps around git grep
+- Gmove moves the files
+- Gdelete wraps git remove commands
+
+### Resolving conflicts with vimdiff
+
+`vimdiff a.py b.py`
+
+- `]c [c` move forward and backward
+- do or :diffget (do stands for diff obtain) move the change to the active window
+- dp or :diffput (stands for diff put) will push the change from the active window
+
+```
+git config --global merge.tool vimdiff
+git config --global merge.conflictstyle diff3
+git config --global mergetool.promptt false
+```
+
+git mergetool 进入合并页面。
+
+- LOCAL: current branch
+- BASE: common ancestor
+- REMOTE: remote branch
+- MERGED: merge result
+
+```
+<<<<<<< [LOCAL commit/branch]
+[LOCAL change]
+|||||||| merged common ancestors
+[BASE - clostest common ancestor]
+========
+[REMOTE change]
+>>>>>>> [REMOTE commit/branch]
+```
+
+- Get a REMOTE change using :diffg R
+- Get a BASE change using :diffg B
+- Get a LOCAL change using :diffg L
+
+when you are done, use :wqa quit and git commit your merge results.
+
+### Tmux, screen and vim terminal mode
+
+'christoomey/vim-tmux-navigator'
+
+tmux use tpm plugin manager install
+
+### Building and testing
