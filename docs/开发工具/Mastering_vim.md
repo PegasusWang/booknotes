@@ -83,3 +83,22 @@ Profiling spedific actions:
 - `<a-_>` or `<m-_>` 表示 Alt
 - `<s-_>` 表示 Shift
 - `<cr>` Enter
+
+### Mode - aware remapping
+
+- :nmap and :nnoremap : Normal mode
+- :vmap and :vnoremap : Visual and select modes
+- :xmap and :xnoremap : Visual mode
+- :smap and :snoremap : Select mode
+- :omap and :onoremap : Operator-pending mode
+- :map! and :noremap! : Insert and Command-line mode
+- :cmap and :cnoremap: Command-line mode
+
+### The leader key
+
+The leader key is essentially a namespace for a user or plugin defined shortcuts.
+
+```
+" Map the leader key to a comma.
+let mapleader = ','
+let mapleader = "\<space>"
