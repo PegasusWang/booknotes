@@ -216,3 +216,78 @@ location list: :lopen/lclose/lnext/lprevious/lwindow
 
 
 # 6. Refactoring Code with Regex and Macros
+
+### Search and replace
+
+`:s/<find-this>/<replace-with-this>/<flags>` , flags:
+
+- g: global
+- c: confirm each substitution
+- e: do not show errors if no matches are found
+- i: ignore case
+- I: case-sensitive
+
+match whole words : `/\<animals\>`
+
+### Operations across files using arglist
+
+- :arg defines the arglist
+- :argdo allows you to execute a command on all the files in the arglist
+- :args displays the list of files in the arglist
+
+
+```
+:arg **/*.py
+:argdo %s/\<animal\>/creature/ge | update
+```
+
+### Regex Expression
+
+- magic mode: `\m`
+- no magic: `\M`
+- very magic: `\v` , `:s/\v(cat) hunting (mic)/\2 hunting \1`
+
+### Applying the knowledge in practice
+
+- Renaming a variable, a method, or a class
+- Reordering function arguments
+
+### Recording and playing macros
+
+```
+:arg **.*.yp
+:argdo execute ":normal @a" | update
+```
+
+### Using plugins to do the job
+
+
+# Making Vim Your Own
+
+### Playing with the Vim UI
+
+- :colorscheme 
+
+`falzz/vim-colorschemes`
+
+### The status line
+
+```
+set laststatus=2
+set showcmd
+```
+
+### Keeping track of configuration files
+
+使用 dotfiles 一定要注意别加上敏感信息
+
+### Healthy vim customization habits
+
+- 及时清理不用配置
+- 映射快捷键方便操作
+- 保持 .vimrc 有组织
+
+
+# 8. Transcending the Mundane with Vimscript
+
+
