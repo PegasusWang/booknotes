@@ -80,6 +80,7 @@ producer = new KafkaProducer<String, String>(kafkaProps);
 ```
 
 发送方式：
+
 - 发送并忘记(fire-and-forget)
 - 同步发送 (send发送返回一个 Future 对象，调用 get()方法等待，就知道是否发送成功)
 - 异步发送(send()并且指定一个回调函数，服务器在返回响应时调用该函数)
