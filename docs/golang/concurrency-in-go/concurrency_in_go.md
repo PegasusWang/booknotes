@@ -40,7 +40,7 @@ func CalculatePi(begin,end int64) <-chan uint
 
 Concurrency is a property of the code; parallelism is a property of the runnning programm.
 
-### What Is CAP?
+### What Is CSP?
 
 ### Go's Philosophy on Concurrency
 
@@ -309,7 +309,7 @@ When working with sync.Pool:
 
 ### Channels
 
-Go weill implicitly convert bidirectional channels to unidirectional channels when needed.
+Go will implicitly convert bidirectional channels to unidirectional channels when needed.
 
 ```
 var receiveChan <- chan interface{}
@@ -399,7 +399,8 @@ func main() {
 ```
 
 - What happens when multiple channels have something to read?
-	- random select, each has an equal  chance of being selected as all the others
+
+  - random select, each has an equal  chance of being selected as all the others
 
 
 ```
@@ -422,7 +423,8 @@ func main() {
 ```
 
 - What if there are never any channels that become ready?
-	- you may want to timeout
+
+  - you may want to timeout
 
 ```
 func main() {
@@ -436,8 +438,9 @@ func main() {
 ```
 
 - what if we want to do something but no channels are currently ready?
-	- use default
-	- this allows a goroutine to make progress on work while waiting for another goroutine to report a result
+
+  - use default
+  - this allows a goroutine to make progress on work while waiting for another goroutine to report a result
 
 ```
 func main() {
