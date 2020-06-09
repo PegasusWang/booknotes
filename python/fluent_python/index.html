@@ -7,14 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   
-  
   <link rel="shortcut icon" href="../../img/favicon.ico">
   <title>《Fluent Python》 - PegasusWang的读书笔记</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
-  <link rel="stylesheet" href="../../css/theme.css" />
-  <link rel="stylesheet" href="../../css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
@@ -25,7 +24,7 @@
   
   <script src="../../js/jquery-2.1.1.min.js" defer></script>
   <script src="../../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
@@ -36,7 +35,6 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
         <a href="../.." class="icon icon-home"> PegasusWang的读书笔记</a>
         <div role="search">
@@ -47,327 +45,925 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../..">简介</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">代码</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../code/%E4%BB%A3%E7%A0%81%E5%A4%A7%E5%85%A8/">《代码大全》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../code/%E4%BB%A3%E7%A0%81%E7%9A%84%E6%9C%AA%E6%9D%A5/">《代码的未来》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../code/%E5%9F%BA%E6%9C%AC%E5%8A%9F/">《基本功》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../code/%E6%95%8F%E6%8D%B7%E6%8A%80%E8%83%BD%E4%BF%AE%E7%82%BC/">《敏捷技能修炼》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../code/%E7%A8%8B%E5%BA%8F%E5%91%98%E5%BA%94%E8%AF%A5%E7%9F%A5%E9%81%93%E7%9A%8497%E4%BB%B6%E4%BA%8B/">《程序员应该知道的97件事》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../code/%E7%BC%96%E5%86%99%E5%8F%AF%E8%AF%BB%E4%BB%A3%E7%A0%81%E7%9A%84%E8%89%BA%E6%9C%AF/">《编写可读代码的艺术》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../code/%E7%BC%96%E7%A8%8B%E5%8C%A0%E8%89%BA/">《编程匠艺》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../code/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1/">《领域驱动设计》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">调试技术</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../debug/%E8%BD%AF%E4%BB%B6%E8%B0%83%E8%AF%95%E4%BF%AE%E7%82%BC%E4%B9%8B%E9%81%93/book/">《软件调试修炼之道》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../debug/Effective_Debugging/">《Effective Debugging》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">数据库</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/mysql%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/">《mysql必知必会》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/mysql%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E4%B8%8E%E6%9E%B6%E6%9E%84%E5%AE%9E%E8%B7%B5/">《mysql性能调优与架构实践》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/Mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95InnoDB%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/">《Mysql技术内幕InnoDB存储引擎》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/redis%E5%AE%9E%E6%88%98/">《Redis实战》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/redis%E6%B7%B1%E5%BA%A6%E5%8E%86%E9%99%A9%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E5%92%8C%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/book/">《Redis深度历险核心原理和应用实践》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/">《redis设计与实现》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/%E4%B8%83%E5%91%A8%E4%B8%83%E6%95%B0%E6%8D%AE%E5%BA%93/">《七周七数据库》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BAmysql/">《深入浅出mysql》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../database/%E9%AB%98%E6%80%A7%E8%83%BDmysql%E7%AC%AC%E4%B8%89%E7%89%88/">《高性能mysql第三版》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">前端</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../frontend/reactjs_%E5%B0%8F%E4%B9%A6/">《reactjs小书》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../frontend/es6%E6%A0%87%E5%87%86%E5%85%A5%E9%97%A8/">《ES6标准入门》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">golang</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/go101/book/">《Go101》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/network-programming-with-go/book/">《Network Programming with go》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/go_in_action%28go%E8%AF%AD%E8%A8%80%E5%AE%9E%E6%88%98%29/">《Go In Action(Go 实战)》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/go%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E8%AF%AD%E8%A8%80%E8%AF%A6%E8%A7%A3/">《Go学习笔记语言详解》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../golang/go%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/">《Go学习笔记源码剖析》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">java</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../java/java-basic-introduction/">《java basic introduction》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">网络</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../network/tcp_ip%E8%AF%A6%E8%A7%A3%E5%8D%B7%E4%B8%80/tcp_ip%E8%AF%A6%E8%A7%A3%E5%8D%B7%E4%B8%80/">《TCP IP详解卷一》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">心理学</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E4%B8%80%E5%88%87%E9%83%BD%E6%98%AF%E7%AB%A5%E5%B9%B4%E7%9A%84%E9%94%99%E5%90%97/">《一切都是童年的错吗》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E4%BA%B2%E5%AF%86%E5%85%B3%E7%B3%BB/">《亲密关系》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E6%83%85%E5%95%86/">《情商》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E6%8B%96%E5%BB%B6%E5%BF%83%E7%90%86%E5%AD%A6/">《拖延心理学》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E7%A7%AF%E6%9E%81%E5%BF%83%E7%90%86%E5%AD%A6/">《积极心理学》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E8%87%AA%E6%8E%A7%E5%8A%9B/">《自控力》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E8%87%AA%E6%8E%A7%E5%8A%9B-%E5%92%8C%E5%8E%8B%E5%8A%9B%E5%81%9A%E6%9C%8B%E5%8F%8B/">《自控力:和压力做朋友》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E6%B4%BB%E5%87%BA%E6%9C%80%E4%B9%90%E8%A7%82%E7%9A%84%E8%87%AA%E5%B7%B1/">《活出最乐观的自己》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E6%94%B9%E5%8F%98%E5%BF%83%E7%90%86%E5%AD%A6%E7%9A%8440%E9%A1%B9%E7%A0%94%E7%A9%B6/">《改变心理学的40项研究》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E8%B6%85%E8%B6%8A%E8%87%AA%E5%8D%91/">《超越自卑》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../psychology/%E5%8F%8D%E8%84%86%E5%BC%B1/">《反脆弱》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">python</span></p>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">《Fluent Python》</a>
-    <ul class="current">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
     </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../Python_Microservices_Development/">《Python Microservices Development》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../high_performance_python/">《High Performance Python》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../python_%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">《Python网络编程》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">创业</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../startup/hello_startup/">《Hello Startup》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../startup/%E6%96%AF%E5%9D%A6%E7%A6%8F%E5%85%AC%E5%BC%80%E8%AF%BE-%E5%A6%82%E4%BD%95%E5%88%9B%E4%B8%9A/">《斯坦福公开课如何创业》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../startup/%E8%BF%90%E8%90%A5%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/">《运营其实很简单》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">unix/linux</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../unix_linux/Linux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/Linux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/">《Linux高性能服务器编程》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../unix_linux/unix%E7%BC%96%E7%A8%8B%E8%89%BA%E6%9C%AF/">《unix编程艺术》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">分布式</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%88%86%E5%B8%83%E5%BC%8F/Kafka%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/">《Kafka 权威指南》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E6%A1%86%E6%9E%B6%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/">《分布式框架原理与应用》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%88%86%E5%B8%83%E5%BC%8F/%E5%A4%A7%E8%A7%84%E6%A8%A1%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/">《大规模分布式存储系统》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%88%86%E5%B8%83%E5%BC%8F/%E6%B7%B1%E5%85%A5%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%B0%E5%AE%9E%E8%B7%B5/">《深入分布式缓存从原理到实践》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">搜索引擎</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/Elasticsearch%E5%AE%9E%E6%88%98/book/">《Elasticsearch实战》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">开发工具</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/practical_vim/practical_vim/">《Practical Vim》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/vim8%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%E5%AE%9E%E6%88%98/vim8%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%E5%AE%9E%E6%88%98/">《Vim8文本处理实战》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/pro_git/">《Pro Git》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="" href="../../开发工具/mastering_vim.md">《Mastering Vim》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">思维</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E4%B8%93%E6%B3%A8%E5%8A%9B_%E5%8C%96%E7%B9%81%E4%B8%BA%E7%AE%80%E7%9A%84%E6%83%8A%E4%BA%BA%E5%8A%9B%E9%87%8F/">《专注力》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E4%B8%BA%E4%BB%80%E4%B9%88%E7%B2%BE%E8%8B%B1%E8%BF%99%E6%A0%B7%E7%94%A8%E8%84%91%E4%B8%8D%E4%BC%9A%E7%B4%AF/">《为什么精英这样用脑不会累》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E5%88%BB%E6%84%8F%E7%BB%83%E4%B9%A0/">《刻意练习》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E5%A6%82%E4%BD%95%E6%83%B3%E5%88%B0%E5%8F%88%E5%81%9A%E5%88%B0/">《如何想到又做到》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%81%93/">《学习之道》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E5%AD%A6%E4%B9%A0%E5%8A%9B/">《学习力》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E6%89%B9%E5%88%A4%E6%80%A7%E6%80%9D%E7%BB%B4%E5%B7%A5%E5%85%B7/">《批判性思维工具》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E6%80%9D%E7%BB%B4%E4%BF%AE%E7%82%BC%28%E5%BC%80%E5%8F%91%E8%AE%A4%E7%9F%A5%E6%BD%9C%E8%83%BD%E7%9A%84%E4%B9%9D%E5%A0%82%E8%AF%BE%29/">《程序员的思维修炼》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E8%AE%A4%E7%9F%A5%E5%A4%A9%E6%80%A7/">《认知天性》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E8%B6%85%E6%95%88%E7%8E%87%E6%89%8B%E5%86%8C/">《超效率手册》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%80%9D%E7%BB%B4%E8%AE%A4%E7%9F%A5/%E9%AB%98%E6%95%88%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%8445%E4%B8%AA%E4%B9%A0%E6%83%AF/">《高效程序员的45个习惯》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">源码</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB_sourcecode/">《源码阅读》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">网站架构微服务</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E5%BE%AE%E6%9C%8D%E5%8A%A1/microservices_patterns_%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/book/">《微服务架构设计模式》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E5%AD%A6%E6%9E%B6%E6%9E%84/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E5%AD%A6%E6%9E%B6%E6%9E%84/">《从0开始学架构》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E5%BE%AE%E6%9C%8D%E5%8A%A1/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E5%BE%AE%E6%9C%8D%E5%8A%A1/design_data_instensive_application/">《design_data_instensive_application》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E5%BE%AE%E6%9C%8D%E5%8A%A1/clean_architecture/">《clean_architecture》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1/">《微服务设计》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">软件工程/项目管理</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B_%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/%E4%BA%BA%E6%9C%88%E7%A5%9E%E8%AF%9D/">《人月神话》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B_%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/%E4%BB%A3%E7%A0%81%E4%B9%8B%E6%AE%87/">《代码之殇》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B_%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/%E8%A7%A3%E6%9E%90%E6%9E%81%E9%99%90%E7%BC%96%E7%A8%8B-%E6%8B%A5%E6%8A%B1%E5%8F%98%E5%8C%96/">《解析极限编程》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B_%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/%E6%9E%84%E5%BB%BA%E4%B9%8B%E6%B3%95%3A%E7%8E%B0%E4%BB%A3%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/">《构建之法:现代软件工程》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B_%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E4%BF%AE%E7%82%BC%E4%B9%8B%E9%81%93/">《项目管理修炼之道》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">运维</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%90%E7%BB%B4/linux%E9%9B%86%E7%BE%A4%E5%92%8C%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/">《linux集群和自动化运维》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%90%E7%BB%B4/python%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/">《python自动化运维》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">金融理财</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E9%87%91%E8%9E%8D%E7%90%86%E8%B4%A2/%E5%AE%9A%E6%8A%95%E5%8D%81%E5%B9%B4/">《定投十年》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E9%87%91%E8%9E%8D%E7%90%86%E8%B4%A2/%E7%A9%B7%E6%9F%A5%E7%90%86%E5%AE%9D%E5%85%B8/">《穷查理宝典》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">写作</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%86%99%E4%BD%9C/%E5%88%B7%E5%B1%8F%E6%96%87%E6%A1%88%E5%86%99%E4%BD%9C%E6%8A%80%E5%B7%A7/">《刷屏文案写作技巧》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">互联网</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E4%BA%92%E8%81%94%E7%BD%91/%E6%88%91%E7%9A%84%E4%BA%92%E8%81%94%E7%BD%91%E6%96%B9%E6%B3%95%E8%AE%BA-%E5%91%A8%E9%B8%BF%E7%A5%8E/">《我的互联网方法论-周鸿祎》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E4%BA%92%E8%81%94%E7%BD%91/%E7%94%A8%E6%88%B7%E6%80%9D%E7%BB%B4/">《用户思维》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">区块链</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E6%8C%87%E5%8D%97%28blockchain_guide%29/">《区块链技术指南》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">技术演讲</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../lecture/Gopher/%E5%93%94%E5%93%A9%E5%93%94%E5%93%A9%E7%9A%84go%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98/note/">《哔哩哔哩的go微服务实战》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../lecture/Gopher/Go_Error/go%E4%B8%9A%E5%8A%A1%E5%9F%BA%E7%A1%80%E5%BA%93%E4%B9%8BError%26Context/">《go业务基础库之Error&Context》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../lecture/Gopher/Go%E5%90%8C%E6%AD%A5%E5%92%8C%E5%B9%B6%E5%8F%91%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/note/">《Go同步和并发设计模式》</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">职场</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/give_and_take/">《give and take》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E5%85%89%E9%80%9F%E6%88%90%E9%95%BF/">《光速成长》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E5%90%91%E4%B8%8A%E7%AE%A1%E7%90%86/">《向上管理》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E6%88%90%E5%8A%9F%E5%8A%A8%E6%9C%BA%E4%B8%8E%E7%9B%AE%E6%A0%87/">《成功动机与目标》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E7%95%AA%E8%8C%84%E5%B7%A5%E4%BD%9C%E6%B3%95/">《番茄工作法》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E8%81%86%E5%90%AC%E6%B2%9F%E9%80%9A%E5%AD%A6/">《聆听沟通学》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E7%9F%A5%E4%B9%8E%E8%81%8C%E4%BA%BA%E8%A7%89%E9%86%92/">《知乎职人觉醒》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E7%9F%A5%E8%AF%86%E5%8F%98%E7%8E%B0/">《知识变现》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E8%81%86%E5%90%AC%E6%B2%9F%E9%80%9A%E5%AD%A6/">《聆听沟通学》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E8%81%8C%E5%9C%BA%E5%8A%A8%E7%89%A9%E8%BF%9B%E5%8C%96%E6%89%8B%E5%86%8C/">《职场动物进化手册》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E8%81%8C%E5%9C%BA%E8%A7%A3%E9%87%8A%E7%B3%BB/">《职场解释系》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E8%AF%B7%E5%81%9C%E6%AD%A2%E6%97%A0%E6%95%88%E5%8A%AA%E5%8A%9B/">《请停止无效努力》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E8%BD%AF%E6%8A%80%E8%83%BD/">《软技能》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E9%AB%98%E6%95%8815%E6%B3%95%E5%88%99/">《高效15法则》</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../career/%E9%AB%98%E6%95%88%E6%B8%85%E5%8D%95%E5%B7%A5%E4%BD%9C%E6%B3%95/">《高效清单工作法》</a>
-                    </li>
-                </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">调试技术</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../debug/软件调试修炼之道/book/">《软件调试修炼之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../debug/Effective_Debugging/">《Effective Debugging》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis深度历险核心原理和应用实践/book/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go101/book/">《Go101》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/network-programming-with-go/book/">《Network Programming with go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go_in_action(go语言实战)/">《Go In Action(Go 实战)》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/自控力/">《自控力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/自控力-和压力做朋友/">《自控力:和压力做朋友》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">《Fluent Python》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1python">1.Python 数据模型</a></li>
+    
+
+    <li class="toctree-l3"><a href="#2">2. 序列构成的数组</a></li>
+    
+
+    <li class="toctree-l3"><a href="#3">3 字典和集合</a></li>
+    
+
+    <li class="toctree-l3"><a href="#4">4 文本和字节序列</a></li>
+    
+
+    <li class="toctree-l3"><a href="#5">5 一等函数</a></li>
+    
+
+    <li class="toctree-l3"><a href="#6">6 使用一等函数实现设计模式</a></li>
+    
+
+    <li class="toctree-l3"><a href="#7">7 函数装饰器和闭包</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_1">装饰器：可调用的对象，其参数是另一个函数。（说白了就是以函数作为参数的函数）两个特性：</a></li>
+        
+            <li><a class="toctree-l4" href="#_2">闭包:闭包指延伸了作用域的函数，其中包含函数定义体中引用、但是不在定义体中定义的非全局变量。比如被装饰的函数能访问装饰器函数中定义的变量（非全局的）</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">自由变量：</a></li>
+        
+            <li><a class="toctree-l4" href="#nonlocal">nonlocal 声明：先来看个例子：</a></li>
+        
+            <li><a class="toctree-l4" href="#functoolswraps">functools.wraps 装饰器：把相关属性从被装饰函数复制到装饰器函数中</a></li>
+        
+            <li><a class="toctree-l4" href="#propertyclassmethodstaticmehtodfunctoolslru_cachefunctoolssingledispatch">标准库中的装饰器：property、classmethod、staticmehtod、functools.lru_cache、functools.singledispatch</a></li>
+        
+            <li><a class="toctree-l4" href="#_4">叠放装饰器:</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">参数化装饰器: 创建一个装饰器工厂函数，把参数传给它，返回一个装饰器，然后再把它应用到要装饰的函数上。</a></li>
+        
+            <li><a class="toctree-l4" href="#class-class-__call__">使用 class 实现装饰器：看上边多重嵌套的装饰器是不是有点不太优雅， 其实复杂的装饰器笔者更喜欢用 class 实现。还记得 __call__ 方法吗，改写下上边这个例子</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#8">8 对象引用、可变性和垃圾回收</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_6">变量：我们可以把变量理解为对象的标注（便利贴），多个标注就是别名。变量保存的是对象的引用。</a></li>
+        
+            <li><a class="toctree-l4" href="#idobj1-idobj2-obj1-is-obj2-obj1-obj2-obj1eqobj2-some_obj-is-none-none-none">比较对象： 判断是同一个对象: id(obj1) == id(obj2)  或者 obj1 is obj2。比较两个对象的值用 obj1 == obj2 (obj1.eq(obj2))。你会发现一般我们用 some_obj is None 来判断一个对象是否是 None，说明 None 是个单例对象。</a></li>
+        
+            <li><a class="toctree-l4" href="#tupletuple-list-list">元组(tuple)的相对不可变性：元祖的不可变指的是保存的引用不可变(tuple中不可变的是元素的标识)，与引用的对象无关。比如如果元祖的元素是个 list，我们是可以修改这个 list 的。这也会导致有些元祖无法散列</a></li>
+        
+            <li><a class="toctree-l4" href="#httpwwwpythontutorcom">默认做浅复制：构造函数或者 [:] 方法默认是浅复制。如果元素都是不可变的，浅复制没有问题。 http://www.pythontutor.com</a></li>
+        
+            <li><a class="toctree-l4" href="#copydeepcopy-copycopy-__copy__-__deepcopy__">深拷贝: copy.deepcopy 和 copy.copy 能为任意对象做深复制(副本不共享内部对象的引用)和浅复制。我们可以自定义 __copy__() 和 __deepcopy__() 控制拷贝行为</a></li>
+        
+            <li><a class="toctree-l4" href="#python-call-by-sharingpython">函数的参数作为引用时：python 唯一支持的传参模式是共享传参（call by sharing），指函数的各个形式参数获得实参中各个引用的副本。也就是说，函数内部的形参是实参的别名。这个方案的结果就是，函数可能会修改作为参数传入的可变对象，但是无法修改那些对象的标识（即不能把一个对象替换成另一个对象）。（笔者觉得这章解释非常好，之前网上一大堆讨论python究竟是值传递还是引用传递的都是不准确的）</a></li>
+        
+            <li><a class="toctree-l4" href="#py-none">不要使用可变类型作为参数的默认值：这个坑写 py 写多的人应该都碰到过。函数默认值在定义函数时计算（通常是加载模块时），因此默认值变成了函数对象的属性。如果默认值是可变对象，而且修改了它的值，后续的函数调用就会受影响。一般我们用 None 作为占位符。</a></li>
+        
+            <li><a class="toctree-l4" href="#del-del-cpython-__del__">del 和 垃圾回收: del 语句删除名称，而不是对象(删除引用而不是对象）。只有对象变量保存的是对象的最后一个引用的时候，才会被回收。Cpython 中垃圾回收主要使用的是引用计数。不要轻易自定义 __del__ 方法，很难用对。</a></li>
+        
+            <li><a class="toctree-l4" href="#weakref">弱引用(weakref)：有时候需要引用对象，而又不让对象存在的时间超过所需时间，经常用在缓存中。弱引用不会增加对象的引用数量，不会妨碍所指的对象被当做垃圾回收</a></li>
+        
+            <li><a class="toctree-l4" href="#python-cpython">Python 对不可变类型施加的把戏（CPython 实现细节）</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#9-python">9 符合 Python 风格的对象</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#repr-str">对象的表示形式: repr() 让开发者理解的方式返回对象的字符串表示。str() 用户理解的方式返回对象的字符串表示</a></li>
+        
+            <li><a class="toctree-l4" href="#classmethod-staticmehtod-classmethod-clsstaticmehtod">classmethod 和 staticmehtod: classmethod 定义操作类而不是操作实例的方法，第一个参数是类本身，最常见的用途是定义定义备选构造方法(返回 cls(*))。staticmehtod 方法就是普通函数，只是碰巧在类的定义体中。</a></li>
+        
+            <li><a class="toctree-l4" href="#pythonpython-private-__attr-python-name-mangling">Python的私有属性和『受保护』属性：python没有 private修饰符，可以通过双下划线  __attr 的形式定义，python 的子类会在存储属性名的时候在前面加上一个下划线和类名。这个语言特性成为名称改写（name mangling）。通常受保护的属性使用一个下划线作为前缀，算是一种命名约定，调用者不应该在类外部访问这种属性。</a></li>
+        
+            <li><a class="toctree-l4" href="#__slots__python__dict____slots__">使用__slots__类属性节省空间：默认情况下，python在各个中名为__dict__的字典存储实力属性，当生成大量对象时字典会消耗大量内存（底层是稀疏数组），通过__slots__类属性，让解释器在元祖而不是字典中存储实例属性，能大大节省内存。(不支持继承)</a></li>
+        
+            <li><a class="toctree-l4" href="#python">覆盖类属性：python有个独特的特性，类属性可以为实例属性提供默认值</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#10">10 序列的修改、散列和切片</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#python_1">协议和鸭子类型: python中我们刻意创建序列类型而无需使用继承，只需实现符合序列协议的方法。</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#11">11 接口：从协议到抽象基类</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_7">使用猴子补丁在运行时实现协议：</a></li>
+        
+            <li><a class="toctree-l4" href="#collectionsabc">抽象基类：collections.abc 模块</a></li>
+        
+            <li><a class="toctree-l4" href="#_8">定义并使用抽象基类</a></li>
+        
+            <li><a class="toctree-l4" href="#register">使用 register 方法注册虚拟子类:</a></li>
+        
+            <li><a class="toctree-l4" href="#__subclasshook__-__subclasshook__-abcsized">__subclasshook__ : 即使不注册，抽象基类也能把一个类识别为虚拟子类。定义 __subclasshook__ 方法动态识别子类。参考 abc.Sized 源码</a></li>
+        
+            <li><a class="toctree-l4" href="#_9">强类型和弱类型：</a></li>
+        
+            <li><a class="toctree-l4" href="#_10">静态和动态类型：</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#12">12 继承的优缺点</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_11">子类化内置类型：</a></li>
+        
+            <li><a class="toctree-l4" href="#_12">多重继承和方法解析顺序</a></li>
+        
+            <li><a class="toctree-l4" href="#_13">处理多重继承</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#13">13  正确重载运算符</a></li>
+    
+
+    <li class="toctree-l3"><a href="#14">14 可迭代对象、迭代器和生成器</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_14">可迭代对象:</a></li>
+        
+            <li><a class="toctree-l4" href="#_15">标准迭代器接口有两个方法：</a></li>
+        
+            <li><a class="toctree-l4" href="#_16">迭代器:</a></li>
+        
+            <li><a class="toctree-l4" href="#_17">二者区别：</a></li>
+        
+            <li><a class="toctree-l4" href="#_18">生成器函数</a></li>
+        
+            <li><a class="toctree-l4" href="#_19">标准库的中生成器函数</a></li>
+        
+            <li><a class="toctree-l4" href="#_20">可迭代的规约函数</a></li>
+        
+            <li><a class="toctree-l4" href="#_21">把生成器当协程</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#15-else">15 上下文管理器和 else 块</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#eafp-vs-lbyl">EAFP vs LBYL</a></li>
+        
+            <li><a class="toctree-l4" href="#with">上下文管理器和 with 块</a></li>
+        
+            <li><a class="toctree-l4" href="#contextlib">contextlib 模块中的实用工具</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#16">16 协程</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_22">生成器如何进化成协程</a></li>
+        
+            <li><a class="toctree-l4" href="#prime">预激（prime）协程的装饰器</a></li>
+        
+            <li><a class="toctree-l4" href="#_23">终止协程和异常处理</a></li>
+        
+            <li><a class="toctree-l4" href="#_24">让协程返回值</a></li>
+        
+            <li><a class="toctree-l4" href="#yield-frompython3">yield from(python3)</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#17-concurrentfutures">17 使用 concurrent.futures 处理并发</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#future">Future(期物)(中文版翻译感觉这个名字怪怪的)</a></li>
+        
+            <li><a class="toctree-l4" href="#io-gil">阻塞型 IO 和 GIL</a></li>
+        
+            <li><a class="toctree-l4" href="#concurrentfuturesprocesspoolexecutor-gil">concurrent.futures.ProcessPoolExecutor 绕开 GIL</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#18-asyncio">18 使用 asyncio 处理并发</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#asyncio">asyncio 使用事件循环驱动的协程实现并发</a></li>
+        
+            <li><a class="toctree-l4" href="#_25">避免阻塞型调用</a></li>
+        
+            <li><a class="toctree-l4" href="#futures">从回调到 Futures 和 协程</a></li>
+        
+            <li><a class="toctree-l4" href="#asyncio_1">使用 asyncio 包编写服务器</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#19-attributeproperty">19 动态属性(attribute)和特性(property)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_26">使用动态属性转换数据</a></li>
+        
+            <li><a class="toctree-l4" href="#_29">使用特性验证属性</a></li>
+        
+            <li><a class="toctree-l4" href="#property">解析 property</a></li>
+        
+            <li><a class="toctree-l4" href="#_30">定义一个特性工厂函数</a></li>
+        
+            <li><a class="toctree-l4" href="#_31">处理属性删除操作</a></li>
+        
+            <li><a class="toctree-l4" href="#_32">处理属性的重要属性和函数</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#21">21 类元编程</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_37">导入时和运行时比较</a></li>
+        
+            <li><a class="toctree-l4" href="#_38">元类基础</a></li>
+        
+            <li><a class="toctree-l4" href="#__prepare__">元类的特殊方法 __prepare__</a></li>
+        
+            <li><a class="toctree-l4" href="#_39">元类使用场景</a></li>
+        
+            <li><a class="toctree-l4" href="#_40">类作为对象</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">搜索引擎</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../搜索引擎/Elasticsearch实战/book/">《Elasticsearch实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/vim8文本处理实战/vim8文本处理实战/">《Vim8文本处理实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/mastering_vim.md">《Mastering Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/学习力/">《学习力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/微服务实战/">《微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融理财/定投十年/">《定投十年》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">写作</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../写作/刷屏文案写作技巧/">《刷屏文案写作技巧》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效清单工作法/">《高效清单工作法》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
       </div>
-    </div>
+      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -396,7 +992,6 @@
       
     </li>
   </ul>
-  
   <hr/>
 </div>
           <div role="main">
@@ -1318,7 +1913,7 @@ class Entity(metaclass=EntityMeta):
         <a href="../Python_Microservices_Development/" class="btn btn-neutral float-right" title="《Python Microservices Development》">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../psychology/%E5%8F%8D%E8%84%86%E5%BC%B1/" class="btn btn-neutral" title="《反脆弱》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../psychology/反脆弱/" class="btn btn-neutral" title="《反脆弱》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -1330,7 +1925,7 @@ class Entity(metaclass=EntityMeta):
     
   </div>
 
-  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
       
         </div>
@@ -1340,11 +1935,11 @@ class Entity(metaclass=EntityMeta):
 
   </div>
 
-  <div class="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../psychology/%E5%8F%8D%E8%84%86%E5%BC%B1/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../psychology/反脆弱/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../Python_Microservices_Development/" style="color: #fcfcfc">Next &raquo;</a></span>
@@ -1355,11 +1950,6 @@ class Entity(metaclass=EntityMeta):
     <script src="../../js/theme.js" defer></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
       <script src="../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
-            SphinxRtdTheme.Navigation.enable(true);
-        };
-    </script>
 
 </body>
 </html>
