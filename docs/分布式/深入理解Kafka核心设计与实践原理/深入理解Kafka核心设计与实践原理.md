@@ -364,3 +364,19 @@ kafka集群中会有一个或者多个 broker，其中一个 broker 会被选举
 合理关闭： kafka-server-stop.sh 修改脚本
 
 ### 6.5 参数解密
+
+
+# 7. 深入客户端
+
+### 7.1 分区分配策略
+
+partition.assignment.strategy 设置消费者和订阅主题之间的分区分配策略:
+
+- RangeAssignor: 按照消费者总数和分区总数进行整除运算来获得一个跨度，然后将分区按照跨度平均分配
+- RoundRobinAssignor: 将消费组内所有消费者和消费者订阅的所有主题的分区按照字典序排序，轮询将分区依次分配给每个消费者
+- StickyAssignor: 目的分区尽可能均匀；尽可能和上次分配一致
+
+### 7.2 消费者协调器和组协调器
+
+GroupCoordinator 是 kafka 服务端用于管理消费组的组件，消费者客户端中的 ConsumerCoordinator 组件负责和 GroupCoordinator 交互。
+如果消费者发生变化触发再均衡操作。
