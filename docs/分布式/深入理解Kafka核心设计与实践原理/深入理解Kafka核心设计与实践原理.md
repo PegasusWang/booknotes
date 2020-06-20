@@ -380,3 +380,28 @@ partition.assignment.strategy 设置消费者和订阅主题之间的分区分�
 
 GroupCoordinator 是 kafka 服务端用于管理消费组的组件，消费者客户端中的 ConsumerCoordinator 组件负责和 GroupCoordinator 交互。
 如果消费者发生变化触发再均衡操作。
+
+### 7.3 __consumer_offsets 剖析
+
+位移提交最终会保存到 kafka 内部主题 __consumer_offsets 中。
+使用 kafka-console-consumer.sh 查看  __consumer_offsets 中的内容。
+
+### 7.4 事务
+
+消息传输保障有 3 个层级：
+
+- at most once(至多一次)：消息可能丢失，但是绝对不会重复传输
+- at least once(最少一次)：消息绝不会丢失，但是可能重复传输
+- exactly once(恰好一次)：每条消息肯定会被传输一次且仅传输一次
+
+kafka 从0.11.0.0 版本引入了幂等和事务这两个特性，一次实现 EOS(exactly once semantics)。
+
+幂等：多次调用的结果和调用一次一致。只需要设置客户端参数 `properties.put("enable.idempotence", true);`
+kafka 为了实现生产者幂等，引入了 producer id 和序列号 sequence number 两个概念。
+broker 会在内存中为每一对 <PID, 分区> 维护一个序列号，只有消息序列号的值(SN_new)比 broker 中维护的 SN_old 大 1，
+broker 才会接受。(SN_new=SN_old+1)。
+
+kafka 幂等只能保证单个生产者会话 (session) 中单分区的幂等。
+
+事务可以保证多个分区写入操作的原子性。通过客户端参数显示设置 `properties.put("transactional.id", "transactionId")`，
+同时也要打开幂等特性。
