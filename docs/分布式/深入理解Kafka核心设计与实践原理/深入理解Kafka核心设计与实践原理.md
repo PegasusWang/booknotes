@@ -6,6 +6,10 @@
 
 本书代码：https://github.com/hiddenzzh/kafka_book_demo
 
+- 1. leader会维护一个与其基本保持同步的Replica列表，该列表称为ISR(in-sync Replica)，每个Partition都会有一个ISR，而且是由leader动态维护
+- 2. 如果一个follower比一个leader落后太多，或者超过一定时间未发起数据复制请求，则leader将其重ISR中移除
+- 3. 当ISR中所有Replica都向Leader发送ACK时，leader才commit，这时候producer才能认为一个请求中的消息都commit了。
+
 ### 1.1 基本概念
 
 Producer, Broker, Consumer。通过 ZooKeeper 管理元数据、控制器的选举等操作。一个或者多个 Broker 组成了一个kafka集群。
@@ -321,3 +325,42 @@ kafka 实现的压缩方式是将多条一起压缩，在 broker 也是保持压
 
 - 偏移量索引文件用来建立消息偏移量（offset）到物理地址之间的映射关系，方便快速定位消息所在的物理文件位置；
 - 时间戳索引文件则根据指定的时间戳（timestamp）来查找对应的偏移量信息。
+
+### 5.4 日志清理
+
+kafka 提供了两种日志清理策略：
+
+- 日志删除(log retention): 删除不符合条件的日志分段
+- 日志压缩(log compaction): 针对每个消息的 key 进行整合，对于相同 key 的不同 value 值，只保留最后一个版本
+
+### 5.5 磁盘存储
+
+顺序写磁盘速度很快，甚至比 随机 写内存快。kafka 使用顺序追加、页缓存、零拷贝等技术提升性能。
+
+- 页缓存：磁盘中的数据缓存到内存中。kafka 中大量使用页缓存是其实现高吞吐的重要因素之一
+- 磁盘 IO。linux 磁盘 io 策略
+- 零拷贝(zero-copy)。将数据直接从磁盘文件复制到网卡设备中，减少内核和用户模式之间的上下文切换。依赖 linux sendfile()。
+zero-copy 通过 DMA(Direct Memroy Access)技术将文件内容复制到内核模式下的 read buffer 中。
+
+
+# 6. 深入服务端
+
+### 6.1 协议设计
+kafka 自定义了一组基于 tcp 的二进制协议，遵守协议就可以发消息给 kafka。每种协议类型由对应的请求和响应。
+Request 包含请求头和请求体。
+
+### 6.2 时间轮
+
+基于时间轮自定义实现了一个用于延时功能的定时器(SystemTimer)，插入和删除O(1)。
+Kafka 中的时间轮(TimingWheel)是一个存储定时任务的环形队列，底层采用数组实现，数组中的每个元素可以存放一个
+定时任务列表(TimerTaskList)，TimerTaskList是一个环形的双向链表，链表每一项都是定时任务项(TimerTaskEntry)，
+其中封装了真正的定时任务（TimerTask)。
+
+### 6.3 延时操作
+
+### 6.4 控制器
+kafka集群中会有一个或者多个 broker，其中一个 broker 会被选举为控制器(kafka controller)，负责管理整个集群中所有分区和副本的状态。
+
+合理关闭： kafka-server-stop.sh 修改脚本
+
+### 6.5 参数解密
