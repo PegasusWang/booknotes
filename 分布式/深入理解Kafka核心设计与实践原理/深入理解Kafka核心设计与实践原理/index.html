@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>《深入理解Kafka核心技术与实践原理》 - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300a\u6df1\u5165\u7406\u89e3Kafka\u6838\u5fc3\u6280\u672f\u4e0e\u5b9e\u8df5\u539f\u7406\u300b";
+    var mkdocs_page_input_path = "\u5206\u5e03\u5f0f/\u6df1\u5165\u7406\u89e3Kafka\u6838\u5fc3\u8bbe\u8ba1\u4e0e\u5b9e\u8df5\u539f\u7406/\u6df1\u5165\u7406\u89e3Kafka\u6838\u5fc3\u8bbe\u8ba1\u4e0e\u5b9e\u8df5\u539f\u7406.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">调试技术</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../debug/软件调试修炼之道/book/">《软件调试修炼之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../debug/Effective_Debugging/">《Effective Debugging》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis深度历险核心原理和应用实践/book/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go101/book/">《Go101》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/network-programming-with-go/book/">《Network Programming with go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go_in_action(go语言实战)/">《Go In Action(Go 实战)》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/自控力/">《自控力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/自控力-和压力做朋友/">《自控力:和压力做朋友》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../Kafka权威指南/">《Kafka 权威指南》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《深入理解Kafka核心技术与实践原理》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#1-kafka">1. 初识 Kafka</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#11">1.1 基本概念</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#2">2. 生产者</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#21">2.1 客户端开发</a></li>
+        
+            <li><a class="toctree-l4" href="#22">2.2 原理分析</a></li>
+        
+            <li><a class="toctree-l4" href="#23">2.3 重要生产者参数</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#3">3. 消费者</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#31">3.1 消费者和消费者组</a></li>
+        
+            <li><a class="toctree-l4" href="#32">3.2 客户端开发</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#4">4. 主题和分区</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#41">4.1 主题管理</a></li>
+        
+            <li><a class="toctree-l4" href="#kafkaadminclient">KafkaAdminClient</a></li>
+        
+            <li><a class="toctree-l4" href="#43">4.3 分区的管理</a></li>
+        
+            <li><a class="toctree-l4" href="#44">4.4 选择合适分区数</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#5">5. 日志存储</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#51">5.1 文件目录布局</a></li>
+        
+            <li><a class="toctree-l4" href="#52">5.2 日志格式演变</a></li>
+        
+            <li><a class="toctree-l4" href="#53">5.3 日志索引</a></li>
+        
+            <li><a class="toctree-l4" href="#54">5.4 日志清理</a></li>
+        
+            <li><a class="toctree-l4" href="#55">5.5 磁盘存储</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#6">6. 深入服务端</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#61">6.1 协议设计</a></li>
+        
+            <li><a class="toctree-l4" href="#62">6.2 时间轮</a></li>
+        
+            <li><a class="toctree-l4" href="#63">6.3 延时操作</a></li>
+        
+            <li><a class="toctree-l4" href="#64">6.4 控制器</a></li>
+        
+            <li><a class="toctree-l4" href="#65">6.5 参数解密</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#7">7. 深入客户端</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#71">7.1 分区分配策略</a></li>
+        
+            <li><a class="toctree-l4" href="#72">7.2 消费者协调器和组协调器</a></li>
+        
+            <li><a class="toctree-l4" href="#73-__consumer_offsets">7.3 __consumer_offsets 剖析</a></li>
+        
+            <li><a class="toctree-l4" href="#74">7.4 事务</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">搜索引擎</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../搜索引擎/Elasticsearch实战/book/">《Elasticsearch实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/vim8文本处理实战/vim8文本处理实战/">《Vim8文本处理实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/Mastering_vim/">《Mastering Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习力/">《学习力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/微服务实战/">《微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/迈出投资第一步/迈出投资第一步/">《迈出投资第一步》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/定投十年/">《定投十年》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/指数基金投资日志/">《指数基金投资日志》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/聪明的定投/">《聪明的定投》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">写作</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../写作/刷屏文案写作技巧/">《刷屏文案写作技巧》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效15法则/">《高效15法则》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效清单工作法/">《高效清单工作法》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>分布式 &raquo;</li>
+        
+      
+    
+    <li>《深入理解Kafka核心技术与实践原理》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="1-kafka">1. 初识 Kafka</h1>
+<ul>
+<li>消息系统: 还提供了顺序性保证和回溯消费的功能。</li>
+<li>存储系统：持久化和多副本</li>
+<li>流式处理平台：提供了完整的流式处理类库</li>
+</ul>
+<p>本书代码：https://github.com/hiddenzzh/kafka_book_demo</p>
+<ul>
+<li>
+<ol>
+<li>leader会维护一个与其基本保持同步的Replica列表，该列表称为ISR(in-sync Replica)，每个Partition都会有一个ISR，而且是由leader动态维护</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>如果一个follower比一个leader落后太多，或者超过一定时间未发起数据复制请求，则leader将其重ISR中移除</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>当ISR中所有Replica都向Leader发送ACK时，leader才commit，这时候producer才能认为一个请求中的消息都commit了。</li>
+</ol>
+</li>
+</ul>
+<h3 id="11">1.1 基本概念</h3>
+<p>Producer, Broker, Consumer。通过 ZooKeeper 管理元数据、控制器的选举等操作。一个或者多个 Broker 组成了一个kafka集群。</p>
+<ul>
+<li>主题(topic): 消息以主题为单位进行归纳，生产者发送消息到特定主题，消费者订阅主题并且消费</li>
+<li>分区(partition): 一个主题只属于单个分区，同一个主题下的不同分区包含消息是不同的，在存储层可以看作一个可追加的日志文件。
+消息追加的时候都会分配一个偏移量(offset)。offset是消息在分区中的唯一标识，通过它保证分区内的有序性。修改分区数量水平扩展。
+分区有多副本机制(replica)，副本之间是一主多从关系，leader 负责写请求，follower同步消息。</li>
+</ul>
+<h1 id="2">2. 生产者</h1>
+<h3 id="21">2.1 客户端开发</h3>
+<p>一个正常的生产逻辑需要具备以下几个步骤：</p>
+<ul>
+<li>（1）配置生产者客户端参数及创建相应的生产者实例。</li>
+<li>（2）构建待发送的消息。</li>
+<li>（3）发送消息。</li>
+<li>（4）关闭生产者实例。</li>
+</ul>
+<p>发送消息主要有三种模式：发后即忘（fire-and-forget）、同步（sync）及异步（async）。</p>
+<ul>
+<li>fire-and-forget: 直接调用 send()</li>
+<li>sync: 调用 send 之后调用 get() 等待</li>
+<li>async: 传入回调 callback</li>
+</ul>
+<pre><code class="java">package chapter2;
+
+import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+public class KafkaProducerAnalysis {
+    public static final String brokerList = &quot;localhost:9092&quot;;
+    public static final String topic = &quot;topic-demo&quot;;
+
+    public static Properties initConfig() {
+        Properties props = new Properties();
+        props.put(&quot;bootstrap.servers&quot;, brokerList);
+        props.put(&quot;key.serializer&quot;,
+                &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+        props.put(&quot;value.serializer&quot;,
+                &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+        props.put(&quot;client.id&quot;, &quot;producer.client.id.demo&quot;);
+        return props;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        Properties props = initConfig();
+        KafkaProducer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);
+
+        ProducerRecord&lt;String, String&gt; record = new ProducerRecord&lt;&gt;(topic, &quot;hello, Kafka!&quot;);
+        try {
+            producer.send(record);
+//            producer.send(record, new Callback() {
+//                @Override
+//                public void onCompletion(RecordMetadata metadata, Exception exception) {
+//                        System.out.println(metadata.partition() + &quot;:&quot; + metadata.offset());
+//                    if (exception == null) {
+//                    }
+//                }
+//            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        TimeUnit.SECONDS.sleep(5);
+    }
+}
+</code></pre>
+
+<p>自定义分区器的实现：</p>
+<pre><code class="java">package chapter2;
+
+import org.apache.kafka.clients.producer.Partitioner;
+import org.apache.kafka.common.Cluster;
+import org.apache.kafka.common.PartitionInfo;
+import org.apache.kafka.common.utils.Utils;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+/*
+ * 自定义分区器
+ * props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, DemoPartitioner.class.getName());
+
+*/
+public class DemoPartitioner implements Partitioner {
+    private final AtomicInteger counter = new AtomicInteger(0);
+
+    @Override
+    public int partition(String topic, Object key, byte[] keyBytes,
+                         Object value, byte[] valueBytes, Cluster cluster) {
+        List&lt;PartitionInfo&gt; partitions = cluster.partitionsForTopic(topic);
+        int numPartitions = partitions.size();
+        if (null == keyBytes) {
+            return counter.getAndIncrement() % numPartitions;
+        } else
+            return Utils.toPositive(Utils.murmur2(keyBytes)) % numPartitions;
+    }
+
+    @Override
+    public void close() {
+    }
+
+    @Override
+    public void configure(Map&lt;String, ?&gt; configs) {
+    }
+}
+</code></pre>
+
+<h3 id="22">2.2 原理分析</h3>
+<p><img alt="" src="../producer.png" /></p>
+<h3 id="23">2.3 重要生产者参数</h3>
+<ul>
+<li>acks: 指定分区中必须要有多少个副本接受这条消息，生产者才被认为写成功</li>
+<li>max.request.size: 限制生产者客户端能发送的消息的最大值。默认 1M</li>
+<li>retries, retry.backoff.ms: 生产者重试次数和间隔</li>
+<li>compression.type: 指定消息压缩方式，默认 "none"，还可以配置为 "gzip", "snappy", "lz4"</li>
+<li>connections.max.idle.ms: 多久关闭闲置的连接</li>
+<li>linger.ms: 指定生产者发送 ProducerBatch 之前等待更多消息 (ProducerRecord) 加入 ProducerBatch 的时间</li>
+<li>receive.buffer.bytes: socket 接受消息缓冲区(SO_RECBUF) 大小，默认 32kb</li>
+<li>send.buffer.bytes: 设置socket发送消息缓冲区(SO_SNDBUF) 大小，默认 128kb</li>
+<li>request.timeout.ms</li>
+</ul>
+<h1 id="3">3. 消费者</h1>
+<h3 id="31">3.1 消费者和消费者组</h3>
+<p>每个消费者都有一个对应的消费者组(逻辑概念)，消息发布到topic 后，只会投递给订阅它的每个消费组中的一个消费者。</p>
+<p><img alt="" src="../消费者与消费组.png" /></p>
+<h3 id="32">3.2 客户端开发</h3>
+<p>一个正常的消费逻辑需要具备以下几个步骤：</p>
+<ul>
+<li>（1）配置消费者客户端参数及创建相应的消费者实例。</li>
+<li>（2）订阅主题。</li>
+<li>（3）拉取消息并消费。</li>
+<li>（4）提交消费位移。</li>
+<li>（5）关闭消费者实例。</li>
+</ul>
+<pre><code class="java">package chapter3;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/**
+ * 代码清单3-1
+ * Created by 朱小厮 on 2018/7/22.
+ */
+@Slf4j
+public class KafkaConsumerAnalysis {
+    public static final String brokerList = &quot;localhost:9092&quot;;
+    public static final String topic = &quot;topic-demo&quot;;
+    public static final String groupId = &quot;group.demo&quot;;
+    public static final AtomicBoolean isRunning = new AtomicBoolean(true);
+
+    public static Properties initConfig() {
+        Properties props = new Properties();
+        props.put(&quot;key.deserializer&quot;,
+                &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+        props.put(&quot;value.deserializer&quot;,
+                &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+        props.put(&quot;bootstrap.servers&quot;, brokerList);
+        props.put(&quot;group.id&quot;, groupId); // 消费者组名称，设置成有业务意义的名字
+        props.put(&quot;client.id&quot;, &quot;consumer.client.id.demo&quot;);
+        return props;
+    }
+
+    public static void main(String[] args) {
+        Properties props = initConfig();
+        KafkaConsumer&lt;String, String&gt; consumer = new KafkaConsumer&lt;&gt;(props);
+        consumer.subscribe(Arrays.asList(topic)); // 订阅topic主题
+
+        try {
+            while (isRunning.get()) {
+                ConsumerRecords&lt;String, String&gt; records =
+                        consumer.poll(Duration.ofMillis(1000)); // 拉模式
+                for (ConsumerRecord&lt;String, String&gt; record : records) {
+                    System.out.println(&quot;topic = &quot; + record.topic()
+                            + &quot;, partition = &quot; + record.partition()
+                            + &quot;, offset = &quot; + record.offset());
+                    System.out.println(&quot;key = &quot; + record.key()
+                            + &quot;, value = &quot; + record.value());
+                    //do something to process record.
+                }
+            }
+        } catch (Exception e) {
+            log.error(&quot;occur exception &quot;, e);
+        } finally {
+            consumer.close();
+        }
+    }
+}
+</code></pre>
+
+<p>消费者使用 offset 表示消费者消费到分区中某个消息所在的位置。消费者在消费完消息之后需要执行消费位移的提交。
+默认有自动位移提交 enable.auto.commit 为 true。如果设置为 false 可以手动提交。</p>
+<ul>
+<li>commitSync</li>
+<li>commitAsync</li>
+</ul>
+<p>seek 方法可以从特定位置读取消息。</p>
+<p>Producer 是非线程安全的。多线程消费，分区是消费线程的最小化分单位</p>
+<h1 id="4">4. 主题和分区</h1>
+<h3 id="41">4.1 主题管理</h3>
+<pre><code>kafka-topics.sh --zookeeper localhost:2181/kafka--create --topic topic-create --partitions 4 --replication-factor 2
+</code></pre>
+
+<h3 id="kafkaadminclient">KafkaAdminClient</h3>
+<pre><code class="java">package chapter4;
+
+import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.config.ConfigResource;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+
+public class KafkaAdminConfigOperation {
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        describeTopicConfig();
+    }
+
+    //Config(entries=[ConfigEntry(name=compression.type, value=producer, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=leader.replication.throttled.replicas, value=, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=message.downconversion.enable, value=true, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=min.insync.replicas, value=1, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=segment.jitter.ms, value=0, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=cleanup.policy, value=delete, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=flush.ms, value=9223372036854775807, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=follower.replication.throttled.replicas, value=, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=segment.bytes, value=1073741824, source=STATIC_BROKER_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=retention.ms, value=604800000, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=flush.messages, value=9223372036854775807, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=message.format.version, value=2.0-IV1, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=file.delete.delay.ms, value=60000, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=max.message.bytes, value=1000012, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=min.compaction.lag.ms, value=0, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=message.timestamp.type, value=CreateTime, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=preallocate, value=false, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=min.cleanable.dirty.ratio, value=0.5, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=index.interval.bytes, value=4096, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=unclean.leader.election.enable, value=false, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=retention.bytes, value=-1, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=delete.retention.ms, value=86400000, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=segment.ms, value=604800000, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=message.timestamp.difference.max.ms, value=9223372036854775807, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[]), ConfigEntry(name=segment.index.bytes, value=10485760, source=DEFAULT_CONFIG, isSensitive=false, isReadOnly=false, synonyms=[])])
+    public static void describeTopicConfig() throws ExecutionException,
+            InterruptedException {
+        String brokerList =  &quot;localhost:9092&quot;;
+        String topic = &quot;topic-admin&quot;;
+
+        Properties props = new Properties();
+        props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList);
+        props.put(AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
+        AdminClient client = AdminClient.create(props);
+
+        ConfigResource resource =
+                new ConfigResource(ConfigResource.Type.TOPIC, topic);
+        DescribeConfigsResult result =
+                client.describeConfigs(Collections.singleton(resource));
+        Config config = result.all().get().get(resource);
+        System.out.println(config);
+        client.close();
+    }
+}
+</code></pre>
+
+<h3 id="43">4.3 分区的管理</h3>
+<p>只有 leader 副本对外提供读写服务，flollwer 副本只负责内部进行消息的同步。</p>
+<h3 id="44">4.4 选择合适分区数</h3>
+<ul>
+<li>kafka-producer-perf-test.sh</li>
+<li>kafka-consumer-perf-test.sh</li>
+</ul>
+<p>分区越多吞吐越高么？一旦分区数目超过某个阈值之后，相应的吞吐量也会下降。
+建议用同样的机器配置做一个吞吐量测试。
+一般情况下，根据预估的吞吐量及是否与key相关的规则来设定分区数即可，后期可以通过增加分区数、增加broker或分区重分配等手段来进行改进。如果一定要给一个准则，则建议将分区数设定为集群中broker的倍数，即假定集群中有3个broker节点，可以设定分区数为3、6、9等，至于倍数的选定可以参考预估的吞吐量。</p>
+<h1 id="5">5. 日志存储</h1>
+<h3 id="51">5.1 文件目录布局</h3>
+<p><img alt="" src="../5-1日志关系.png" /></p>
+<h3 id="52">5.2 日志格式演变</h3>
+<p><img alt="" src="../5-3日志v0版本.png" /></p>
+<p>v1 就比 v0 多了时间戳</p>
+<p><img alt="" src="../5-4日志v1版本.png" /></p>
+<p>kafka 实现的压缩方式是将多条一起压缩，在 broker 也是保持压缩状态，在端到端之间做压缩和解压。
+配置 compression.type 配置压缩方式或者不压缩。</p>
+<p>1<a href="../5-7消息v2.png"></a></p>
+<h3 id="53">5.3 日志索引</h3>
+<ul>
+<li>偏移量索引文件用来建立消息偏移量（offset）到物理地址之间的映射关系，方便快速定位消息所在的物理文件位置；</li>
+<li>时间戳索引文件则根据指定的时间戳（timestamp）来查找对应的偏移量信息。</li>
+</ul>
+<h3 id="54">5.4 日志清理</h3>
+<p>kafka 提供了两种日志清理策略：</p>
+<ul>
+<li>日志删除(log retention): 删除不符合条件的日志分段</li>
+<li>日志压缩(log compaction): 针对每个消息的 key 进行整合，对于相同 key 的不同 value 值，只保留最后一个版本</li>
+</ul>
+<h3 id="55">5.5 磁盘存储</h3>
+<p>顺序写磁盘速度很快，甚至比 随机 写内存快。kafka 使用顺序追加、页缓存、零拷贝等技术提升性能。</p>
+<ul>
+<li>页缓存：磁盘中的数据缓存到内存中。kafka 中大量使用页缓存是其实现高吞吐的重要因素之一</li>
+<li>磁盘 IO。linux 磁盘 io 策略</li>
+<li>零拷贝(zero-copy)。将数据直接从磁盘文件复制到网卡设备中，减少内核和用户模式之间的上下文切换。依赖 linux sendfile()。
+zero-copy 通过 DMA(Direct Memroy Access)技术将文件内容复制到内核模式下的 read buffer 中。</li>
+</ul>
+<h1 id="6">6. 深入服务端</h1>
+<h3 id="61">6.1 协议设计</h3>
+<p>kafka 自定义了一组基于 tcp 的二进制协议，遵守协议就可以发消息给 kafka。每种协议类型由对应的请求和响应。
+Request 包含请求头和请求体。</p>
+<h3 id="62">6.2 时间轮</h3>
+<p>基于时间轮自定义实现了一个用于延时功能的定时器(SystemTimer)，插入和删除O(1)。
+Kafka 中的时间轮(TimingWheel)是一个存储定时任务的环形队列，底层采用数组实现，数组中的每个元素可以存放一个
+定时任务列表(TimerTaskList)，TimerTaskList是一个环形的双向链表，链表每一项都是定时任务项(TimerTaskEntry)，
+其中封装了真正的定时任务（TimerTask)。</p>
+<h3 id="63">6.3 延时操作</h3>
+<h3 id="64">6.4 控制器</h3>
+<p>kafka集群中会有一个或者多个 broker，其中一个 broker 会被选举为控制器(kafka controller)，负责管理整个集群中所有分区和副本的状态。</p>
+<p>合理关闭： kafka-server-stop.sh 修改脚本</p>
+<h3 id="65">6.5 参数解密</h3>
+<h1 id="7">7. 深入客户端</h1>
+<h3 id="71">7.1 分区分配策略</h3>
+<p>partition.assignment.strategy 设置消费者和订阅主题之间的分区分配策略:</p>
+<ul>
+<li>RangeAssignor: 按照消费者总数和分区总数进行整除运算来获得一个跨度，然后将分区按照跨度平均分配</li>
+<li>RoundRobinAssignor: 将消费组内所有消费者和消费者订阅的所有主题的分区按照字典序排序，轮询将分区依次分配给每个消费者</li>
+<li>StickyAssignor: 目的分区尽可能均匀；尽可能和上次分配一致</li>
+</ul>
+<h3 id="72">7.2 消费者协调器和组协调器</h3>
+<p>GroupCoordinator 是 kafka 服务端用于管理消费组的组件，消费者客户端中的 ConsumerCoordinator 组件负责和 GroupCoordinator 交互。
+如果消费者发生变化触发再均衡操作。</p>
+<h3 id="73-__consumer_offsets">7.3 __consumer_offsets 剖析</h3>
+<p>位移提交最终会保存到 kafka 内部主题 __consumer_offsets 中。
+使用 kafka-console-consumer.sh 查看  __consumer_offsets 中的内容。</p>
+<h3 id="74">7.4 事务</h3>
+<p>消息传输保障有 3 个层级：</p>
+<ul>
+<li>at most once(至多一次)：消息可能丢失，但是绝对不会重复传输</li>
+<li>at least once(最少一次)：消息绝不会丢失，但是可能重复传输</li>
+<li>exactly once(恰好一次)：每条消息肯定会被传输一次且仅传输一次</li>
+</ul>
+<p>kafka 从0.11.0.0 版本引入了幂等和事务这两个特性，一次实现 EOS(exactly once semantics)。</p>
+<p>幂等：多次调用的结果和调用一次一致。只需要设置客户端参数 <code>properties.put("enable.idempotence", true);</code>
+kafka 为了实现生产者幂等，引入了 producer id 和序列号 sequence number 两个概念。
+broker 会在内存中为每一对 <PID, 分区> 维护一个序列号，只有消息序列号的值(SN_new)比 broker 中维护的 SN_old 大 1，
+broker 才会接受。(SN_new=SN_old+1)。</p>
+<p>kafka 幂等只能保证单个生产者会话 (session) 中单分区的幂等。</p>
+<p>事务可以保证多个分区写入操作的原子性。通过客户端参数显示设置 <code>properties.put("transactional.id", "transactionId")</code>，
+同时也要打开幂等特性。</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../搜索引擎/Elasticsearch实战/book/" class="btn btn-neutral float-right" title="《Elasticsearch实战》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../深入分布式缓存从原理到实践/" class="btn btn-neutral" title="《深入分布式缓存从原理到实践》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../深入分布式缓存从原理到实践/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../../搜索引擎/Elasticsearch实战/book/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../../search/main.js" defer></script>
+
+</body>
+</html>
