@@ -405,3 +405,10 @@ kafka 幂等只能保证单个生产者会话 (session) 中单分区的幂等。
 
 事务可以保证多个分区写入操作的原子性。通过客户端参数显示设置 `properties.put("transactional.id", "transactionId")`，
 同时也要打开幂等特性。
+
+
+# 8. 可靠性探究
+
+### 8.1 副本剖析
+
+当 ISR 集合中的一个 follower 副本滞后 leader 副本的时间超过 replica.lag.time.max.ms 指定的值判定为同步失败。
