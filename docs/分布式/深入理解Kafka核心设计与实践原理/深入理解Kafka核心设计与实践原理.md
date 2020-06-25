@@ -412,3 +412,66 @@ kafka 幂等只能保证单个生产者会话 (session) 中单分区的幂等。
 ### 8.1 副本剖析
 
 当 ISR 集合中的一个 follower 副本滞后 leader 副本的时间超过 replica.lag.time.max.ms 指定的值判定为同步失败。
+
+### 8.2 日志同步机制
+
+kafka 使用的更像是微软的 PacificA 算法。
+
+### 8.3 可靠性分析
+
+- 副本数：一般设置副本数为 3 可以满足大部分场景对可靠性的要求，国内部分银行会设置副本数为 5 提升可靠性。
+- 客户端 acks 设置。如果 acks=-1 leader 副本在写入本地日志之后还要等待 ISR 中的 follower 副本全部同步完成才告知生产者成功提交
+- 设置同步刷盘策略（一般应该由多副本保证），broker 参数 log.flush.interval.messages 和 log.flush.interval.ms
+  调整同步刷盘策略，不过会比较损耗性能。
+- 开启 enable.auto.commit 自动位移提交功能可能导致 重复消费和消息丢失的问题。
+
+
+# 9. Kafka 应用
+
+### 9.1 命令行工具
+
+位于 $KAFKA_HOME/bin 目录下的命令行工具
+
+- kafka.consumer-groups.sh 查看或者变更消费组信息
+- kafka-consumer.groups.sh 重置消费者组内消费位移
+- kafka-delete-records.sh 删除指定位置前的消息
+
+### 9.2 Kafka Connect
+
+Kafka Connect 为在 kafka 和外部数据库存储系统之间移动数据提供了一种可靠的可伸缩的实现方式。
+包含两个核心概念：Source 负责导入数据到 kafka，Sink 负责从 kafka 导出数据。
+
+connect-standalone.sh 实现独立模式运行 kafka connect。
+
+### 9.3 Kafka Mirror Maker
+
+用于两个集群之间同步数据的一个工具。kafka-mirror-maker.sh
+
+### 9.4 Kafka Streams
+
+高吞吐、高可用、低延时让 kafka 成为流式处理系统中完美的数据来源。
+Kafka Streams 是一个用于处理和分析数据的客户端库。它先把存储在 kafka 中的数据进行处理和分析，然后将最终所得到的的数据
+结果回写到 kafka 或发送到外部系统。
+
+
+# 10. Kafka 监控
+
+监控维度：集群信息、broker 信息、主题信息和消费组信息。一般还好配置告警模块
+
+### 10.1 监控数据来源
+
+集群层面的指标可以用 JMX (Java Managment Extension， Java 管理扩展)来获取。
+
+### 10.2 消费滞后
+
+消息中间件中留存的消息与消费的消息之间的差值就是消息堆积量，也成为消费之后（Lag）量。
+
+### 10.3 同步失效分区
+
+处于同步失效或功能失效的副本统称为失效副本，包含它的分区就是同步失效分区。
+
+### 10.4 监控指标说明
+
+### 10.5 监控模块
+
+监控架构主要分为数据采集、数据存储、数据展示三个部分。
