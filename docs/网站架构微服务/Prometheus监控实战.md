@@ -9,3 +9,22 @@
 - 直方图(histogram): 对观察点进行采样
 
 百分位数: 度量的是占总数特定百分比的观察点的值。比如50百分位数（或p50）。对于中间数（已排好序的数据）来说，50%的值低于它，50%高于它。
+
+监控方法论：
+
+- USE: 使用率(Utilization), 饱和度(Saturation)，错误(Error)
+- google的4 个黄金指标：延迟、流量(qps等)、错误、饱和度
+
+
+# 2. Prometheus 简介
+
+Prometheus称其可以抓取的指标来源为端点（endpoint）。端点通常对应单个进程、主机、服务或应用程序。为了抓取端点数据，Prometheus定义了名为目标（target）的配置
+
+# 3. 安装和启动 Prometheus
+
+`brew install prometheus`
+
+
+# 4. 监控主机和容器
+
+
