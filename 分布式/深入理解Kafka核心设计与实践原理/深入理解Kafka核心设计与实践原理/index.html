@@ -484,6 +484,77 @@
         </ul>
     
 
+    <li class="toctree-l3"><a href="#8">8. 可靠性探究</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#81">8.1 副本剖析</a></li>
+        
+            <li><a class="toctree-l4" href="#82">8.2 日志同步机制</a></li>
+        
+            <li><a class="toctree-l4" href="#83">8.3 可靠性分析</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#9-kafka">9. Kafka 应用</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#91">9.1 命令行工具</a></li>
+        
+            <li><a class="toctree-l4" href="#92-kafka-connect">9.2 Kafka Connect</a></li>
+        
+            <li><a class="toctree-l4" href="#93-kafka-mirror-maker">9.3 Kafka Mirror Maker</a></li>
+        
+            <li><a class="toctree-l4" href="#94-kafka-streams">9.4 Kafka Streams</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#10-kafka">10. Kafka 监控</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#101">10.1 监控数据来源</a></li>
+        
+            <li><a class="toctree-l4" href="#102">10.2 消费滞后</a></li>
+        
+            <li><a class="toctree-l4" href="#103">10.3 同步失效分区</a></li>
+        
+            <li><a class="toctree-l4" href="#104">10.4 监控指标说明</a></li>
+        
+            <li><a class="toctree-l4" href="#105">10.5 监控模块</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#11_1">11. 高级应用</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#111-ttl">11.1 过期时间（TTL)</a></li>
+        
+            <li><a class="toctree-l4" href="#112">11.2 延时队列</a></li>
+        
+            <li><a class="toctree-l4" href="#113">11.3 死信队列和重试队列</a></li>
+        
+            <li><a class="toctree-l4" href="#114">11.4 消息路由</a></li>
+        
+            <li><a class="toctree-l4" href="#115">11.5 消息轨迹</a></li>
+        
+            <li><a class="toctree-l4" href="#116">11.6 消息审计</a></li>
+        
+            <li><a class="toctree-l4" href="#117">11.7 消息代理</a></li>
+        
+            <li><a class="toctree-l4" href="#118">11.8 消息中间件选型</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#12-kafka-spark">12. Kafka 和 Spark 集成</a></li>
+    
+
     </ul>
                 </li>
     </ul>
@@ -1218,6 +1289,104 @@ broker 才会接受。(SN_new=SN_old+1)。</p>
 <p>kafka 幂等只能保证单个生产者会话 (session) 中单分区的幂等。</p>
 <p>事务可以保证多个分区写入操作的原子性。通过客户端参数显示设置 <code>properties.put("transactional.id", "transactionId")</code>，
 同时也要打开幂等特性。</p>
+<h1 id="8">8. 可靠性探究</h1>
+<h3 id="81">8.1 副本剖析</h3>
+<p>当 ISR 集合中的一个 follower 副本滞后 leader 副本的时间超过 replica.lag.time.max.ms 指定的值判定为同步失败。</p>
+<h3 id="82">8.2 日志同步机制</h3>
+<p>kafka 使用的更像是微软的 PacificA 算法。</p>
+<h3 id="83">8.3 可靠性分析</h3>
+<ul>
+<li>副本数：一般设置副本数为 3 可以满足大部分场景对可靠性的要求，国内部分银行会设置副本数为 5 提升可靠性。</li>
+<li>客户端 acks 设置。如果 acks=-1 leader 副本在写入本地日志之后还要等待 ISR 中的 follower 副本全部同步完成才告知生产者成功提交</li>
+<li>设置同步刷盘策略（一般应该由多副本保证），broker 参数 log.flush.interval.messages 和 log.flush.interval.ms
+  调整同步刷盘策略，不过会比较损耗性能。</li>
+<li>开启 enable.auto.commit 自动位移提交功能可能导致 重复消费和消息丢失的问题。</li>
+</ul>
+<h1 id="9-kafka">9. Kafka 应用</h1>
+<h3 id="91">9.1 命令行工具</h3>
+<p>位于 $KAFKA_HOME/bin 目录下的命令行工具</p>
+<ul>
+<li>kafka.consumer-groups.sh 查看或者变更消费组信息</li>
+<li>kafka-consumer.groups.sh 重置消费者组内消费位移</li>
+<li>kafka-delete-records.sh 删除指定位置前的消息</li>
+</ul>
+<h3 id="92-kafka-connect">9.2 Kafka Connect</h3>
+<p>Kafka Connect 为在 kafka 和外部数据库存储系统之间移动数据提供了一种可靠的可伸缩的实现方式。
+包含两个核心概念：Source 负责导入数据到 kafka，Sink 负责从 kafka 导出数据。</p>
+<p>connect-standalone.sh 实现独立模式运行 kafka connect。</p>
+<h3 id="93-kafka-mirror-maker">9.3 Kafka Mirror Maker</h3>
+<p>用于两个集群之间同步数据的一个工具。kafka-mirror-maker.sh</p>
+<h3 id="94-kafka-streams">9.4 Kafka Streams</h3>
+<p>高吞吐、高可用、低延时让 kafka 成为流式处理系统中完美的数据来源。
+Kafka Streams 是一个用于处理和分析数据的客户端库。它先把存储在 kafka 中的数据进行处理和分析，然后将最终所得到的的数据
+结果回写到 kafka 或发送到外部系统。</p>
+<h1 id="10-kafka">10. Kafka 监控</h1>
+<p>监控维度：集群信息、broker 信息、主题信息和消费组信息。一般还好配置告警模块</p>
+<h3 id="101">10.1 监控数据来源</h3>
+<p>集群层面的指标可以用 JMX (Java Managment Extension， Java 管理扩展)来获取。</p>
+<h3 id="102">10.2 消费滞后</h3>
+<p>消息中间件中留存的消息与消费的消息之间的差值就是消息堆积量，也成为消费之后（Lag）量。</p>
+<h3 id="103">10.3 同步失效分区</h3>
+<p>处于同步失效或功能失效的副本统称为失效副本，包含它的分区就是同步失效分区。</p>
+<h3 id="104">10.4 监控指标说明</h3>
+<h3 id="105">10.5 监控模块</h3>
+<p>监控架构主要分为数据采集、数据存储、数据展示三个部分。</p>
+<h1 id="11_1">11. 高级应用</h1>
+<h3 id="111-ttl">11.1 过期时间（TTL)</h3>
+<p>TTL(Time To Live，过期时间)。通过在消费者客户端拦截器实现</p>
+<h3 id="112">11.2 延时队列</h3>
+<p>延时消息是消费者等待特定时间之后，才能获取这个消息进行消费。如下场景：</p>
+<ul>
+<li>订单系统，客户下单之后有 30 分钟进行支付，如果没有成功支付，对这个订单进行异常处理，就可以用延时队列处理这些订单</li>
+<li>订单完成之后 1 小时通知用户进行评价</li>
+<li>遥控智能设备，指定时间之后执行操作</li>
+</ul>
+<p>可行的方案：发送延时消息的时候先投递到一个 kafka 内部主题(比如delay_topic)中，然后通过一个自定义的服务拉取这些内部主题
+中的消息，并将满足条件的消息投递到真实的主题中，消费者订阅的还是真实的主题。</p>
+<h3 id="113">11.3 死信队列和重试队列</h3>
+<p>由于某些原因消息无法被正确投递，为了确保消息不会无故丢弃，一般放到一个特殊的队列称为死信队列。
+后续可以通过消费这个死信队列中的内容来分析当时遇到的异常情况，改善和优化系统。</p>
+<h3 id="114">11.4 消息路由</h3>
+<p>kafka 默认用主题进行路由，但是如果还想进一步消息路由，需要自己实现。
+可以在消息headers中加入一个键为 "routingkey"、值为特定业务表示的 Header，然后消费端中使用拦截器挑选特定业务标识的消息。</p>
+<h3 id="115">11.5 消息轨迹</h3>
+<p>通过封装客户端，保证正常生产消费的同时添加相应的轨迹信息埋点逻辑。</p>
+<h3 id="116">11.6 消息审计</h3>
+<p>消息生产、存储和消费的整个过程之间对消息个数和延迟的审计，以此检测是否有消息丢失、是否数据重复、端到端延迟等内容。</p>
+<h3 id="117">11.7 消息代理</h3>
+<p>Kafka Rest Proxy 可以不用客户端的情况下实现发送消息、消费消息、查看集群状态、执行管理操作等功能。</p>
+<h3 id="118">11.8 消息中间件选型</h3>
+<p>RabbitMQ/Kafka/RocketMQ</p>
+<p>选型维度：</p>
+<ul>
+<li>功能维度<ul>
+<li>优先级队列</li>
+<li>延时队列</li>
+<li>重试队列</li>
+<li>死信队列</li>
+<li>消费模式: push/pull</li>
+<li>广播消费: 点对点(p2p)，还是发布订阅(Pub/Sub)</li>
+<li>回溯消费</li>
+<li>消息堆积+持久化</li>
+<li>消息轨迹</li>
+<li>消息审计</li>
+<li>消息过滤</li>
+<li>多租户。</li>
+<li>多协议支持</li>
+<li>跨语言支持</li>
+<li>流量控制：调整发送速度。通常的流控方法有 stop-and-wait，滑动窗口、令牌桶等</li>
+<li>消息顺序性</li>
+<li>安全机制</li>
+<li>消息幂等性。消息语义：至多一次；至少一次；精确一次</li>
+<li>事务性消息：要么发送成功，要么失败</li>
+</ul>
+</li>
+<li>性能维度</li>
+<li>可靠性和可用性。金融支付领域 RabbitMQ 多，日志处理、大数据 kafka 多。</li>
+<li>运维管理。申请、审核、监控、告警、管理、容灾、部署等</li>
+<li>社区和生态</li>
+</ul>
+<h1 id="12-kafka-spark">12. Kafka 和 Spark 集成</h1>
               
             </div>
           </div>
