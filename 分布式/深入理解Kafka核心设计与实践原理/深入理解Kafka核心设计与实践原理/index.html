@@ -938,23 +938,11 @@
 <li>流式处理平台：提供了完整的流式处理类库</li>
 </ul>
 <p>本书代码：https://github.com/hiddenzzh/kafka_book_demo</p>
-<ul>
-<li>
 <ol>
 <li>leader会维护一个与其基本保持同步的Replica列表，该列表称为ISR(in-sync Replica)，每个Partition都会有一个ISR，而且是由leader动态维护</li>
-</ol>
-</li>
-<li>
-<ol>
-<li>如果一个follower比一个leader落后太多，或者超过一定时间未发起数据复制请求，则leader将其重ISR中移除</li>
-</ol>
-</li>
-<li>
-<ol>
+<li>如果一个follower比一个leader落后太多，或者超过一定时间未发起数据复制请求，则leader将其从ISR中移除</li>
 <li>当ISR中所有Replica都向Leader发送ACK时，leader才commit，这时候producer才能认为一个请求中的消息都commit了。</li>
 </ol>
-</li>
-</ul>
 <h3 id="11">1.1 基本概念</h3>
 <p>Producer, Broker, Consumer。通过 ZooKeeper 管理元数据、控制器的选举等操作。一个或者多个 Broker 组成了一个kafka集群。</p>
 <ul>
