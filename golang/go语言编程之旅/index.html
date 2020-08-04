@@ -240,6 +240,14 @@
             
     <li class="toctree-l3"><a href="#1">1. 命令行应用</a></li>
     
+        <ul>
+        
+            <li><a class="toctree-l4" href="#11">1.1 子命令的使用</a></li>
+        
+            <li><a class="toctree-l4" href="#12">1.2</a></li>
+        
+        </ul>
+    
 
     </ul>
                 </li>
@@ -775,7 +783,7 @@
             <div class="section">
               
                 <h1 id="1">1. 命令行应用</h1>
-<p>子命令的使用</p>
+<h3 id="11">1.1 子命令的使用</h3>
 <pre><code class="go">package main
 
 import (
@@ -802,6 +810,72 @@ func main() {
         _ = phpCmd.Parse(args[1:])
     }
     log.Printf(&quot;name: %s&quot;, name)
+}
+</code></pre>
+
+<h3 id="12">1.2</h3>
+<p>使用 cobra 构建命令行 app： https://github.com/spf13/cobra</p>
+<pre><code class="go">// 使用 cobra 完成单词转换程序
+package main
+
+import (
+    &quot;log&quot;
+    &quot;strings&quot;
+
+    &quot;github.com/spf13/cobra&quot;
+)
+
+const (
+    MODE_UPPER = iota + 1
+    MODE_LOWER
+)
+
+var wordCmd = &amp;cobra.Command{
+    Use:   &quot;word&quot;,
+    Short: &quot;单词格式转换&quot;,
+    Long:  &quot;支持多种格式转换&quot;,
+    Run: func(cmd *cobra.Command, args []string) {
+        var content string
+        switch mode {
+        case MODE_UPPER:
+            content = ToUpper(str)
+        case MODE_LOWER:
+            content = ToLower(str)
+        default:
+            log.Fatalf(&quot;暂不支持格式&quot;)
+        }
+        log.Printf(&quot;输出结果: %s&quot;, content)
+    },
+}
+
+func ToUpper(s string) string {
+    return strings.ToUpper(s)
+}
+
+func ToLower(s string) string {
+    return strings.ToLower(s)
+}
+
+var desc = strings.Join([]string{
+    &quot;该命令支持单词转换，格式如下:&quot;,
+    &quot;1: 大写&quot;,
+    &quot;2: 小写&quot;,
+}, &quot;\n&quot;)
+
+var str string // 输入
+var mode int8
+
+func init() {
+    wordCmd.Flags().StringVarP(&amp;str, &quot;str&quot;, &quot;s&quot;, &quot;&quot;, &quot;请输入单词内容&quot;)
+    wordCmd.Flags().Int8VarP(&amp;mode, &quot;mode&quot;, &quot;m&quot;, 0, &quot;请输入单词转换模式&quot;)
+}
+
+// go run main.go word -s=laowang -m=1
+func main() {
+    err := wordCmd.Execute()
+    if err != nil {
+        log.Fatal(err)
+    }
 }
 </code></pre>
               
