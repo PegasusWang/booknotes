@@ -246,7 +246,14 @@
         
             <li><a class="toctree-l4" href="#12">1.2</a></li>
         
+            <li><a class="toctree-l4" href="#13">1.3 时间工具</a></li>
+        
+            <li><a class="toctree-l4" href="#14-sql">1.4 SQL 语句到结构体转换</a></li>
+        
         </ul>
+    
+
+    <li class="toctree-l3"><a href="#2-http">2. HTTP 应用</a></li>
     
 
     </ul>
@@ -878,6 +885,13 @@ func main() {
     }
 }
 </code></pre>
+
+<h3 id="13">1.3 时间工具</h3>
+<p>Local表示当前系统本地时区；UTC表示通用协调时间，也就是零时区。标准库time默认使用的是UTC时区。
+2006-01-02 15：04：05是一个参考时间的格式，如同其他语言中的Y-m-d H：i：s格式，其功能是用于格式化处理时间。</p>
+<h3 id="14-sql">1.4 SQL 语句到结构体转换</h3>
+<p>访问了MySQL数据库中的information_schema数据库，读取了COLUMNS表中对应的所需表的列信息，并基于标准库database/sql和text/template实现了表列信息到Go语言结构体的转换。</p>
+<h1 id="2-http">2. HTTP 应用</h1>
               
             </div>
           </div>
