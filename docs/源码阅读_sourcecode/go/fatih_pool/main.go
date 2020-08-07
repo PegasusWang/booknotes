@@ -49,7 +49,7 @@ func NewChannelPool(initialCap, maxCap int, factory Factory) (Pool, error) {
 		return nil, errors.New("invalid capacity")
 	}
 	c := &channelPool{
-		conns:   make(chan net.Conn, maxCap),
+		conns:   make(chan net.Conn, maxCap), //  容量就是 maxCap
 		factory: factory,
 	}
 	// 创建 initialCap 个连接，如果出错，直接 close
@@ -71,13 +71,14 @@ func (c *channelPool) getConnsAndFactory() (chan net.Conn, Factory) {
 	c.mu.RUnlock()
 	return conns, factory
 }
+
 func (c *channelPool) Get() (net.Conn, error) {
 	conns, factory := c.getConnsAndFactory()
 	if conns == nil {
 		return nil, ErrClosed
 	}
 	select {
-	case conn := <-conns:
+	case conn := <-conns: // get one conn
 		if conn == nil {
 			return nil, ErrClosed
 		}
@@ -91,6 +92,7 @@ func (c *channelPool) Get() (net.Conn, error) {
 	}
 }
 
+// 放回 conns chan
 func (c *channelPool) put(conn net.Conn) error {
 	if conn == nil {
 		return errors.New("connection is nil. rejecting")
@@ -126,7 +128,7 @@ func (c *channelPool) Close() {
 }
 
 func (c *channelPool) Len() int {
-	conns, _ := c.getConnsAndFactory() // 可以直接返回 len(c.conns) 么?
+	conns, _ := c.getConnsAndFactory() // 可以直接返回 len(c.conns) 么? 需要加 rlock
 	return len(conns)
 }
 
@@ -143,7 +145,7 @@ func (p *PoolConn) Close() error {
 	fmt.Println("close===========")
 	p.mu.RLock()
 	defer p.mu.RUnlock()
-	if p.unusable {
+	if p.unusable { // 不再使用的，关闭
 		if p.Conn != nil {
 			return p.Conn.Close()
 		}
