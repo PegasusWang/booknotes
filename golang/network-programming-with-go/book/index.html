@@ -206,9 +206,14 @@
     <a class="current" href="./">《Network Programming with go》</a>
     <ul class="subnav">
             
+    <li class="toctree-l3"><a href="#1-architecture">1. Architecture</a></li>
+    
+
     <li class="toctree-l3"><a href="#3-socket-level-programming">3. Socket level Programming</a></li>
     
         <ul>
+        
+            <li><a class="toctree-l4" href="#ip-address-type">IP address type</a></li>
         
             <li><a class="toctree-l4" href="#socket">socket</a></li>
         
@@ -826,7 +831,25 @@
             <div class="section">
               
                 <p>《Network Programming With Go》不是很深入。</p>
+<h1 id="1-architecture">1. Architecture</h1>
+<p>Eight fallacies of distributed computing</p>
+<ul>
+<li>The network is reliable.</li>
+<li>Latency is zero.</li>
+<li>Bandwidth is infinite.</li>
+<li>The network is secure.</li>
+<li>Topology doesn't change.</li>
+<li>There is one administrator.</li>
+<li>Transport cost is zero.</li>
+<li>The network is homogeneous.</li>
+</ul>
 <h1 id="3-socket-level-programming">3. Socket level Programming</h1>
+<h3 id="ip-address-type">IP address type</h3>
+<pre><code>type IP []byte
+type IPMask []byte
+type IPAddr {IP IP}
+</code></pre>
+
 <h3 id="socket">socket</h3>
 <pre><code>// resolve IP
 package main
@@ -845,6 +868,24 @@ func main() {
         os.Exit(1)
     }
     fmt.Println(&quot;addr ip is &quot;, addr.String())
+}
+
+// host lookup
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;net&quot;
+)
+
+func main() {
+    addrs, err := net.LookupHost(&quot;www.baidu.com&quot;)
+    if err != nil {
+        fmt.Println(err)
+    }
+    for _, s := range addrs {
+        fmt.Println(s)
+    }
 }
 </code></pre>
 
