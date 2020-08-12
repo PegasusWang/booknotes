@@ -221,6 +221,8 @@
         
             <li><a class="toctree-l4" href="#udp-datagrams">UDP Datagrams</a></li>
         
+            <li><a class="toctree-l4" href="#the-types-conn-packetconn-and-listener">The types Conn, PacketConn and Listener</a></li>
+        
             <li><a class="toctree-l4" href="#raw-sockets-and-the-type-ipconn">Raw sockets and the type IPConn</a></li>
         
         </ul>
@@ -1178,8 +1180,54 @@ func checkError(err error) {
 }
 </code></pre>
 
+<h3 id="the-types-conn-packetconn-and-listener">The types Conn, PacketConn and Listener</h3>
+<pre><code>func Dial(net, laddr, raddr string) (c Conn, err os.Error)
+</code></pre>
+
+<p>改写之前 tcp 发送 http 请求的例子</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;io/ioutil&quot;
+    &quot;log&quot;
+    &quot;net&quot;
+)
+
+func checkError(err error) {
+    if err != nil {
+        log.Fatal(err)
+    }
+}
+
+func main() {
+    conn, err := net.Dial(&quot;tcp&quot;, &quot;www.baidu.com:80&quot;)
+    checkError(err)
+    _, err = conn.Write([]byte(&quot;HEAD / HTTP/1.0\r\n\r\n&quot;))
+    checkError(err)
+
+    res, err := ioutil.ReadAll(conn) // 读取直到 error 或者 EOF
+    checkError(err)
+    fmt.Println(string(res))
+}
+</code></pre>
+
+<p>同样的  listen 也可以简化</p>
+<pre><code>func Listen(net, laddr string) (l Listener, err os.Error)
+func (l Listener) Accept() (c Conn, err os.Error)
+</code></pre>
+
 <h3 id="raw-sockets-and-the-type-ipconn">Raw sockets and the type IPConn</h3>
-<pre><code class="go">// Ping
+<p>IP 协议基础上自定义。按照 ping 发送格式模仿写一个 ping</p>
+<ul>
+<li>The first byte is 8, standing for the echo message</li>
+<li>The second byte is zero</li>
+<li>The third and fourth bytes are a checksum on the entire message</li>
+<li>The fifth and sixth bytes are an arbitrary identifier</li>
+<li>The seventh and eight bytes are an arbitrary sequence number</li>
+<li>The rest of the packet is user data</li>
+</ul>
+<pre><code class="go">// Ping，使用 root 运行
 package main
 
 import (
