@@ -219,6 +219,8 @@
         
             <li><a class="toctree-l4" href="#controlling-tcp-connections">Controlling TCP connections</a></li>
         
+            <li><a class="toctree-l4" href="#udp-datagrams">UDP Datagrams</a></li>
+        
             <li><a class="toctree-l4" href="#raw-sockets-and-the-type-ipconn">Raw sockets and the type IPConn</a></li>
         
         </ul>
@@ -889,8 +891,68 @@ func main() {
 }
 </code></pre>
 
-<p>编写一个时间回显tcp服务器：</p>
-<pre><code>// DaytimeServer
+<p>TCPAddr 包含 IP 和 Port：</p>
+<pre><code class="go">type TCPAddr struct{
+    IP IP
+    Port int
+}
+</code></pre>
+
+<p>使用 ResolveTCPAddr 创建一个 TCPAddr</p>
+<p><code>func ResolveTCPAddr(net, addr string) (*TCPAddr, os.Error)</code></p>
+<p>TCP Sockets:</p>
+<pre><code>func (c *TCPConn) Write(b []byte) (n int, err os.Error)
+func (c *TCPConn) Read(b []byte) (n int, err os.Error)
+</code></pre>
+
+<p>客户端用 DialTCP 建立一个连接:</p>
+<p><code>func DialTCP(net string, laddr, raddr *TCPAddr) (c *TCPConn, err os.Error)</code></p>
+<p>尝试使用 tcp 发送一个 http 请求示例：</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;io/ioutil&quot;
+    &quot;log&quot;
+    &quot;net&quot;
+)
+
+func checkError(err error) {
+    if err != nil {
+        log.Fatal(err)
+    }
+}
+
+func main() {
+    // 使用 tcp 发送 http 请求示例 (只是为了测试几个函数，用 dial 最方便)
+
+    // get addr
+    addr, err := net.ResolveIPAddr(&quot;ip&quot;, &quot;www.baidu.com&quot;)
+    fmt.Println(addr)
+    checkError(err)
+
+    // create tcpAddr
+    tcpAddr, err := net.ResolveTCPAddr(&quot;tcp4&quot;, fmt.Sprintf(&quot;%s:%d&quot;, addr, 80))
+    checkError(err)
+    // dialtcp
+    conn, err := net.DialTCP(&quot;tcp&quot;, nil, tcpAddr)
+    checkError(err)
+
+    _, err = conn.Write([]byte(&quot;HEAD / HTTP/1.0\r\n\r\n&quot;))
+    checkError(err)
+
+    res, err := ioutil.ReadAll(conn) // 读取直到 error 或者 EOF
+    checkError(err)
+    fmt.Println(string(res))
+}
+</code></pre>
+
+<p>编写一个时间回显tcp服务器，tcp server 主要涉及两个函数：</p>
+<pre><code>func ListenTCP(net string, laddr *TCPAddr) (l *TCPListener, err os.Error)
+func (l *TCPListener) Accept() (c Conn, err os.Error)
+</code></pre>
+
+<pre><code class="go">// DaytimeServer
 // telnet localhost 1200
 package main
 
@@ -926,10 +988,9 @@ func checkErr(err error) {
         os.Exit(1)
     }
 }
-
-编写一个简单的tcp回显服务器：
 </code></pre>
 
+<p>编写一个简单的tcp回显服务器：</p>
 <pre><code>// SimpleEchoServer
 package main
 
@@ -1005,6 +1066,7 @@ func main() {
         go handleClient(conn) // NOTE: use goroutine
     }
 }
+
 func handleClient(conn net.Conn) {
     defer conn.Close() // NOTE: close connection on exit
     var buf [512]byte
@@ -1035,6 +1097,14 @@ func (c *TCPConn) SetTimeout(nsec int64) os.Error
 
 // Staying alive, a client wish to stay connected to a server even if it has nothing to send
 func (c *TCPConn) SetKeepAlive(keepalive bool) os.Error
+</code></pre>
+
+<h3 id="udp-datagrams">UDP Datagrams</h3>
+<pre><code class="go">func ResolveUDPAddr(net, addr string) (*UDPAddr, os.Error)
+func DialUDP(net string, laddr, raddr *UDPAddr) (c *UDPConn, err os.Error)
+func ListenUDP(net string, laddr *UDPAddr) (c *UDPConn, err os.Error)
+func (c *UDPConn) ReadFromUDP(b []byte) (n int, addr *UDPAddr, err os.Error
+func (c *UDPConn) WriteToUDP(b []byte, addr *UDPAddr) (n int, err os.Error)
 </code></pre>
 
 <p>UDP client server demo:</p>
