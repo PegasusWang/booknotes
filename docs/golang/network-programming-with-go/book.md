@@ -65,9 +65,80 @@ func main() {
 }
 ```
 
-编写一个时间回显tcp服务器：
+TCPAddr 包含 IP 和 Port：
+
+```go
+type TCPAddr struct{
+	IP IP
+	Port int
+}
+```
+
+使用 ResolveTCPAddr 创建一个 TCPAddr
+
+`func ResolveTCPAddr(net, addr string) (*TCPAddr, os.Error)`
+
+TCP Sockets:
 
 ```
+func (c *TCPConn) Write(b []byte) (n int, err os.Error)
+func (c *TCPConn) Read(b []byte) (n int, err os.Error)
+```
+
+客户端用 DialTCP 建立一个连接:
+
+`func DialTCP(net string, laddr, raddr *TCPAddr) (c *TCPConn, err os.Error)`
+
+尝试使用 tcp 发送一个 http 请求示例：
+
+```go
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net"
+)
+
+func checkError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func main() {
+	// 使用 tcp 发送 http 请求示例 (只是为了测试几个函数，用 dial 最方便)
+
+	// get addr
+	addr, err := net.ResolveIPAddr("ip", "www.baidu.com")
+	fmt.Println(addr)
+	checkError(err)
+
+	// create tcpAddr
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", fmt.Sprintf("%s:%d", addr, 80))
+	checkError(err)
+	// dialtcp
+	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	checkError(err)
+
+	_, err = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
+	checkError(err)
+
+	res, err := ioutil.ReadAll(conn) // 读取直到 error 或者 EOF
+	checkError(err)
+	fmt.Println(string(res))
+}
+```
+
+编写一个时间回显tcp服务器，tcp server 主要涉及两个函数：
+
+```
+func ListenTCP(net string, laddr *TCPAddr) (l *TCPListener, err os.Error)
+func (l *TCPListener) Accept() (c Conn, err os.Error)
+```
+
+```go
 // DaytimeServer
 // telnet localhost 1200
 package main
@@ -104,9 +175,10 @@ func checkErr(err error) {
 		os.Exit(1)
 	}
 }
+```
 
 编写一个简单的tcp回显服务器：
-```
+
 ```
 // SimpleEchoServer
 package main
@@ -185,6 +257,7 @@ func main() {
 		go handleClient(conn) // NOTE: use goroutine
 	}
 }
+
 func handleClient(conn net.Conn) {
 	defer conn.Close() // NOTE: close connection on exit
 	var buf [512]byte
@@ -217,6 +290,16 @@ func (c *TCPConn) SetTimeout(nsec int64) os.Error
 
 // Staying alive, a client wish to stay connected to a server even if it has nothing to send
 func (c *TCPConn) SetKeepAlive(keepalive bool) os.Error
+```
+
+### UDP Datagrams
+
+```go
+func ResolveUDPAddr(net, addr string) (*UDPAddr, os.Error)
+func DialUDP(net string, laddr, raddr *UDPAddr) (c *UDPConn, err os.Error)
+func ListenUDP(net string, laddr *UDPAddr) (c *UDPConn, err os.Error)
+func (c *UDPConn) ReadFromUDP(b []byte) (n int, addr *UDPAddr, err os.Error
+func (c *UDPConn) WriteToUDP(b []byte, addr *UDPAddr) (n int, err os.Error)
 ```
 
 UDP client server demo:
