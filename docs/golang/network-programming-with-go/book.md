@@ -375,10 +375,62 @@ func checkError(err error) {
 }
 ```
 
-### Raw sockets and the type IPConn
+### The types Conn, PacketConn and Listener
+
+```
+func Dial(net, laddr, raddr string) (c Conn, err os.Error)
+```
+
+改写之前 tcp 发送 http 请求的例子
 
 ```go
-// Ping
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net"
+)
+
+func checkError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func main() {
+	conn, err := net.Dial("tcp", "www.baidu.com:80")
+	checkError(err)
+	_, err = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
+	checkError(err)
+
+	res, err := ioutil.ReadAll(conn) // 读取直到 error 或者 EOF
+	checkError(err)
+	fmt.Println(string(res))
+}
+```
+
+同样的  listen 也可以简化
+
+```
+func Listen(net, laddr string) (l Listener, err os.Error)
+func (l Listener) Accept() (c Conn, err os.Error)
+```
+
+### Raw sockets and the type IPConn
+
+IP 协议基础上自定义。按照 ping 发送格式模仿写一个 ping
+
+- The first byte is 8, standing for the echo message
+- The second byte is zero
+- The third and fourth bytes are a checksum on the entire message
+- The fifth and sixth bytes are an arbitrary identifier
+- The seventh and eight bytes are an arbitrary sequence number
+- The rest of the packet is user data
+
+```go
+// Ping，使用 root 运行
 package main
 
 import (
