@@ -1,7 +1,29 @@
 《Network Programming With Go》不是很深入。
 
+# 1. Architecture
+
+Eight fallacies of distributed computing
+
+- The network is reliable.
+- Latency is zero.
+- Bandwidth is infinite.
+- The network is secure.
+- Topology doesn't change.
+- There is one administrator.
+- Transport cost is zero.
+- The network is homogeneous.
+
 
 # 3. Socket level Programming
+
+### IP address type
+
+```
+type IP []byte
+type IPMask []byte
+type IPAddr {IP IP}
+```
+
 
 ### socket
 ```
@@ -22,6 +44,24 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("addr ip is ", addr.String())
+}
+
+// host lookup
+package main
+
+import (
+	"fmt"
+	"net"
+)
+
+func main() {
+	addrs, err := net.LookupHost("www.baidu.com")
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, s := range addrs {
+		fmt.Println(s)
+	}
 }
 ```
 
