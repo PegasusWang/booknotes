@@ -150,6 +150,7 @@ public class DemoPartitioner implements Partitioner {
 ### 3.1 消费者和消费者组
 
 每个消费者都有一个对应的消费者组(逻辑概念)，消息发布到topic 后，只会投递给订阅它的每个消费组中的一个消费者。
+消费者组是Kafka实现单播和广播两种消息模型的手段。同一个topic，每个消费者组都可以拿到相同的全部数据。
 
 ![](./消费者与消费组.png)
 
