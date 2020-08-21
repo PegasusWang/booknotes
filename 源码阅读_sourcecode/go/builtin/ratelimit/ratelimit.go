@@ -335,6 +335,7 @@ func (lim *MyLimiter) AllowN(now time.Time, n int) bool {
 	lim.mu.Lock()
 	defer lim.mu.Unlock()
 
+	// 发现这里第一次没有初始化，不过后来判断 tokens > burst 的时候会被赋值成 lim.burst ，所以没有问题
 	delta := now.Sub(lim.last).Seconds() * lim.limit // 计算到上一次应该加多少个令牌
 	lim.tokens += delta
 
