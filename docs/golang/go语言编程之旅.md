@@ -112,3 +112,42 @@ Local表示当前系统本地时区；UTC表示通用协调时间，也就是零
 
 
 # 2. HTTP 应用
+
+编译信息:
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+)
+
+/*
+信号是UNIX、类UNIX，以及其他POSIX兼容的操作系统中进程间通信的一种有限制的方式。它是一种异步的通知机制，用来提醒进程一个事件（硬件异常、程序执行异常、外部发出信号）已经发生。当一个信号发送给一个进程时，操作系统中断了进程正常的控制流程。此时，任何非原子操作都将被中断。如果进程定义了信号的处理函数，那么它将被执行，否则执行默认的处理函数。
+
+kill -l
+
+ctrl + c  SIGINT  希望进程中断，进程结束
+ctrl + z  SIGTSTP 任务中断，进程挂起
+ctrl + \  SIGQUIT 进程结束和 dump core
+
+
+kill -9 pid 发送 SIGKILL 信号给进程，强制中断进程
+*/
+
+func main() {
+	// Set up channel on which to send signal notifications.
+	// We must use a buffered channel or risk missing the signal
+	// if we're not ready to receive when the signal is sent.
+	c := make(chan os.Signal, 1)
+	// signal.Notify(c, os.Interrupt)
+	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+
+	// Block until a signal is received.
+	s := <-c
+	fmt.Println("Got signal +++++:", s)
+}
+```
