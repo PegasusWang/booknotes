@@ -153,3 +153,8 @@ func main() {
 	fmt.Println("Got signal +++++:", s)
 }
 ```
+
+
+# 5 进程内缓存
+
+https://github.com/go-programming-tour-book/cache-example
