@@ -158,3 +158,9 @@ func main() {
 # 5 进程内缓存
 
 https://github.com/go-programming-tour-book/cache-example
+
+sync.Map类似于Go的map[interface{}]interface{}，但是它可以安全地被多个goroutine并发使用，而无须额外的锁。
+在大部分情况下，我们都应该只使用普通的 map，在需要锁时再加上锁。sync.Map对以下两种场景进行了优化：
+
+- 当给定key的条目仅被写入一次却被读取多次时，例如在仅增长的高速缓存中。
+- 当多个goroutine读取、写入和覆盖不相交的键集合条目时。
