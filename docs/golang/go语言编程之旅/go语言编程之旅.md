@@ -164,3 +164,21 @@ sync.Map类似于Go的map[interface{}]interface{}，但是它可以安全地被�
 
 - 当给定key的条目仅被写入一次却被读取多次时，例如在仅增长的高速缓存中。
 - 当多个goroutine读取、写入和覆盖不相交的键集合条目时。
+
+
+# 6 Go 语言大杀器
+
+
+讲了pprof, godebug, runtime/debug 等使用。
+
+
+GOGC变量来调整初始垃圾收集器的目标百分比值，其规则为，当新分配的数值与上一次收集后剩余的实时数值的比例达到设置的目标百分比时，就会触发 GC。而GOGC的默认设置为GOGC=100，如果将其设置为GOGC=off，则可以完全禁用垃圾回收器。
+一般来说，GOGC 的值设置得越大，GC 的频率越低，但每次 GC 所触发到的堆内存也会越大。在程序运行时，可以通过调用下述方法来动态调整GOGC的值：
+
+```go
+// runtime/debug
+debug.SetGCPercent
+```
+
+go 进程诊断工具： gops (go process status)
+
