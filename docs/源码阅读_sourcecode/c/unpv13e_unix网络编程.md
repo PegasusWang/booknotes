@@ -1,5 +1,5 @@
-unpv13e
-=============
+unpv13e 环境搭建
+=========================
 
 UNIX网络编程 卷1：套接字联网API（第3版）源代码
 
@@ -39,3 +39,22 @@ gcc tcpserv01.c -o tcpserv01 -lunp
 `make tcpserv01`
 
 七、运行程序。
+
+
+# 简易搭建步骤
+
+```
+# clone code
+git clone https://github.com/DingHe/unpv13e.git
+
+cd unpv13e
+./configure
+cd lib
+make
+
+cd ..
+cp libunp.a /usr/local/lib/
+
+cd ./tcpcliserv
+make all
+```
