@@ -32,5 +32,10 @@ sudo cp libunp.a /usr/lib
 六、编译程序时要以-lunp参数方式指定程序需要依赖的库（unplib.a），如编译daytimetcpcli.c文件：
 
 gcc daytimetcpcli.c -o daytimetcpcli -lunp
+gcc tcpserv01.c -o tcpserv01 -lunp
+
+直接用 make 生成。
+
+`make tcpserv01`
 
 七、运行程序。
