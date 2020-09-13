@@ -43,7 +43,7 @@ gcc tcpserv01.c -o tcpserv01 -lunp
 
 # 简易搭建步骤
 
-```
+```bash
 # clone code
 git clone https://github.com/DingHe/unpv13e.git
 

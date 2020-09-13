@@ -1,3 +1,121 @@
+# unix 网络编程代码下载
+
+```bash
+# clone code
+git clone https://github.com/DingHe/unpv13e.git
+
+cd unpv13e
+./configure
+cd lib
+make
+
+cd ..
+cp libunp.a /usr/local/lib/
+
+cd ./tcpcliserv
+make all
+```
+
+# 1-5 Tcp 套接口
+
+Tcp 回显示例：
+
+```c
+
+// strcli11.c
+/* Use standard echo server; baseline measurements for nonblocking version */
+#include	"unp.h"
+
+int
+main(int argc, char **argv)
+{
+	int					sockfd;
+	struct sockaddr_in	servaddr;
+
+	if (argc != 2)
+		err_quit("usage: tcpcli <IPaddress>");
+
+	sockfd = Socket(AF_INET, SOCK_STREAM, 0);
+
+	bzero(&servaddr, sizeof(servaddr));
+	servaddr.sin_family = AF_INET;
+	// servaddr.sin_port = htons(7);
+	servaddr.sin_port = htons(SERV_PORT);
+	Inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
+
+	Connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
+
+	str_cli(stdin, sockfd);		/* do it all */
+
+	exit(0);
+}
+
+#include	"unp.h"
+
+void
+str_cli(FILE *fp, int sockfd)
+{
+	char	sendline[MAXLINE], recvline[MAXLINE];
+
+	while (Fgets(sendline, MAXLINE, fp) != NULL) {
+
+		Writen(sockfd, sendline, 1); // 第一次引发一个 RST
+		sleep(1);
+		Writen(sockfd, sendline+1, strlen(sendline)-1); //第二次产生 SIGPIPE
+
+
+		if (Readline(sockfd, recvline, MAXLINE) == 0)
+			err_quit("str_cli: server terminated prematurely");
+
+		Fputs(recvline, stdout);
+	}
+}
+
+
+// tcpcliserv/tcpserv09.c
+#include	"unp.h"
+
+int
+main(int argc, char **argv)
+{
+	int					listenfd, connfd;
+	pid_t				childpid;
+	socklen_t			clilen;
+	struct sockaddr_in	cliaddr, servaddr;
+	void				sig_chld(int);
+
+	listenfd = Socket(AF_INET, SOCK_STREAM, 0);
+
+	bzero(&servaddr, sizeof(servaddr));
+	servaddr.sin_family      = AF_INET;
+	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	servaddr.sin_port        = htons(SERV_PORT);
+
+	Bind(listenfd, (SA *) &servaddr, sizeof(servaddr));
+
+	Listen(listenfd, LISTENQ);
+
+	Signal(SIGCHLD, sig_chld);
+
+	for ( ; ; ) {
+		clilen = sizeof(cliaddr);
+		if ( (connfd = accept(listenfd, (SA *) &cliaddr, &clilen)) < 0) {
+			if (errno == EINTR)
+				continue;		/* back to for() */
+			else
+				err_sys("accept error");
+		}
+
+		if ( (childpid = Fork()) == 0) {	/* child process */
+			Close(listenfd);	/* close listening socket */
+			str_echo(connfd);	/* process the request */
+			exit(0);
+		}
+		Close(connfd);			/* parent closes connected socket */
+	}
+}
+```
+
 # 6章 I/O 复用：select 和 poll 函数
 
 unix 可用的五种 I/O 模型：
@@ -17,3 +135,249 @@ POSIX 定义术语：
 - 异步 I/O 操作(asynchronous I/O opetation) 不导致请求进程阻塞。前面五种只有异步 I/O 与 POSIX  定义的异步 I/O 匹配。
 
 select 函数：允许进程指示内核等待多个事件中的任何一个发生，并只在有一个或多个事件发生或经历一段指定的时间后才唤醒它。
+
+```c 
+#include <sys/select.h>
+#include <sys/time.h>
+int select(int maxfdp1, fd_et *readset, fd_set *writeset, fd_set *exceptset, const struct timeval *timeout);
+```
+
+
+```c
+//select/strcliselect02.c
+#include	"unp.h"
+
+void
+str_cli(FILE *fp, int sockfd)
+{
+	int			maxfdp1, stdineof;
+	fd_set		rset;
+	char		buf[MAXLINE];
+	int		n;
+
+	stdineof = 0;
+	FD_ZERO(&rset);
+	for ( ; ; ) {
+		if (stdineof == 0)
+			FD_SET(fileno(fp), &rset);
+		FD_SET(sockfd, &rset);
+		maxfdp1 = max(fileno(fp), sockfd) + 1;
+		Select(maxfdp1, &rset, NULL, NULL, NULL);
+
+		if (FD_ISSET(sockfd, &rset)) {	/* socket is readable */
+			if ( (n = Read(sockfd, buf, MAXLINE)) == 0) {
+				if (stdineof == 1)
+					return;		/* normal termination */
+				else
+					err_quit("str_cli: server terminated prematurely");
+			}
+
+			Write(fileno(stdout), buf, n);
+		}
+
+		if (FD_ISSET(fileno(fp), &rset)) {  /* input is readable */
+			if ( (n = Read(fileno(fp), buf, MAXLINE)) == 0) {
+				stdineof = 1;
+				Shutdown(sockfd, SHUT_WR);	/* send FIN */
+				FD_CLR(fileno(fp), &rset);
+				continue;
+			}
+
+			Writen(sockfd, buf, n);
+		}
+	}
+}
+
+
+/* include fig01 */
+#include	"unp.h"
+
+int
+main(int argc, char **argv)
+{
+	int					i, maxi, maxfd, listenfd, connfd, sockfd;
+	int					nready, client[FD_SETSIZE];
+	ssize_t				n;
+	fd_set				rset, allset;
+	char				buf[MAXLINE];
+	socklen_t			clilen;
+	struct sockaddr_in	cliaddr, servaddr;
+
+	listenfd = Socket(AF_INET, SOCK_STREAM, 0);
+
+	bzero(&servaddr, sizeof(servaddr));
+	servaddr.sin_family      = AF_INET;
+	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	servaddr.sin_port        = htons(SERV_PORT);
+
+	Bind(listenfd, (SA *) &servaddr, sizeof(servaddr));
+
+	Listen(listenfd, LISTENQ);
+
+	maxfd = listenfd;			/* initialize */
+	maxi = -1;					/* index into client[] array */
+	for (i = 0; i < FD_SETSIZE; i++)
+		client[i] = -1;			/* -1 indicates available entry */
+	FD_ZERO(&allset);
+	FD_SET(listenfd, &allset);
+/* end fig01 */
+
+/* include fig02 */
+	for ( ; ; ) {
+		rset = allset;		/* structure assignment */
+		nready = Select(maxfd+1, &rset, NULL, NULL, NULL); // 等待事件发生。返回就绪描述字正数目，0-超时，-1-出错
+
+		if (FD_ISSET(listenfd, &rset)) {	/* new client connection */
+			clilen = sizeof(cliaddr);
+			connfd = Accept(listenfd, (SA *) &cliaddr, &clilen);
+#ifdef	NOTDEF
+			printf("new client: %s, port %d\n",
+					Inet_ntop(AF_INET, &cliaddr.sin_addr, 4, NULL),
+					ntohs(cliaddr.sin_port));
+#endif
+
+			for (i = 0; i < FD_SETSIZE; i++)
+				if (client[i] < 0) {
+					client[i] = connfd;	/* save descriptor */
+					break;
+				}
+			if (i == FD_SETSIZE)
+				err_quit("too many clients");
+
+			FD_SET(connfd, &allset);	/* add new descriptor to set */
+			if (connfd > maxfd)
+				maxfd = connfd;			/* for select */
+			if (i > maxi)
+				maxi = i;				/* max index in client[] array */
+
+			if (--nready <= 0)
+				continue;				/* no more readable descriptors */
+		}
+
+		for (i = 0; i <= maxi; i++) {	/* check all clients for data */
+			if ( (sockfd = client[i]) < 0)
+				continue;
+			if (FD_ISSET(sockfd, &rset)) {
+				if ( (n = Read(sockfd, buf, MAXLINE)) == 0) {
+						/*4connection closed by client */
+					Close(sockfd);
+					FD_CLR(sockfd, &allset);
+					client[i] = -1;
+				} else
+					Writen(sockfd, buf, n);
+
+				if (--nready <= 0)
+					break;				/* no more readable descriptors */
+			}
+		}
+	}
+}
+/* end fig02 */
+```
+
+使用 poll 函数改写 tcp server
+
+```c 
+#include <poll.h>
+int poll(struct pollfd *fdarray, unsigned long nfds, int timeout);//返回就绪描述字个数。0 超时，-1 出错
+
+struct pollfd {
+	int fd; // descriptor to check
+	short events; // events of interest on fd
+	short revents; // events occurred on fd
+}
+```
+
+```c
+/* include fig01 */
+#include	"unp.h"
+#include	<limits.h>		/* for OPEN_MAX */
+
+int
+main(int argc, char **argv)
+{
+	int					i, maxi, listenfd, connfd, sockfd;
+	int					nready;
+	ssize_t				n;
+	char				buf[MAXLINE];
+	socklen_t			clilen;
+	struct pollfd		client[OPEN_MAX];
+	struct sockaddr_in	cliaddr, servaddr;
+
+	listenfd = Socket(AF_INET, SOCK_STREAM, 0);
+
+	bzero(&servaddr, sizeof(servaddr));
+	servaddr.sin_family      = AF_INET;
+	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	servaddr.sin_port        = htons(SERV_PORT);
+
+	Bind(listenfd, (SA *) &servaddr, sizeof(servaddr));
+
+	Listen(listenfd, LISTENQ);
+
+	client[0].fd = listenfd;
+	client[0].events = POLLRDNORM;
+	for (i = 1; i < OPEN_MAX; i++)
+		client[i].fd = -1;		/* -1 indicates available entry */
+	maxi = 0;					/* max index into client[] array */
+/* end fig01 */
+
+/* include fig02 */
+	for ( ; ; ) {
+		nready = Poll(client, maxi+1, INFTIM);
+
+		if (client[0].revents & POLLRDNORM) {	/* new client connection */
+			clilen = sizeof(cliaddr);
+			connfd = Accept(listenfd, (SA *) &cliaddr, &clilen);
+#ifdef	NOTDEF
+			printf("new client: %s\n", Sock_ntop((SA *) &cliaddr, clilen));
+#endif
+
+			for (i = 1; i < OPEN_MAX; i++) // 从 1 开始，0 用作监听套接口
+				if (client[i].fd < 0) { // 找到第一个可用项
+					client[i].fd = connfd;	/* save descriptor */
+					break;
+				}
+			if (i == OPEN_MAX)
+				err_quit("too many clients");
+
+			client[i].events = POLLRDNORM;
+			if (i > maxi)
+				maxi = i;				/* max index in client[] array */
+
+			if (--nready <= 0)
+				continue;				/* no more readable descriptors */
+		}
+
+		for (i = 1; i <= maxi; i++) {	/* check all clients for data */
+			if ( (sockfd = client[i].fd) < 0)
+				continue;
+			if (client[i].revents & (POLLRDNORM | POLLERR)) {
+				if ( (n = read(sockfd, buf, MAXLINE)) < 0) {
+					if (errno == ECONNRESET) {
+							/*4connection reset by client */
+#ifdef	NOTDEF
+						printf("client[%d] aborted connection\n", i);
+#endif
+						Close(sockfd);
+						client[i].fd = -1;
+					} else
+						err_sys("read error");
+				} else if (n == 0) {
+						/*4connection closed by client */
+#ifdef	NOTDEF
+					printf("client[%d] closed connection\n", i);
+#endif
+					Close(sockfd);
+					client[i].fd = -1;
+				} else
+					Writen(sockfd, buf, n);
+
+				if (--nready <= 0)
+					break;				/* no more readable descriptors */
+			}
+		}
+	}
+}
+/* end fig02 */
+```
