@@ -384,4 +384,11 @@ main(int argc, char **argv)
 
 # 7. 套接口选项
 
+```c
+#include <sys/socket.h>
+int getsockopt(int sockfd, int level, int optname, vod *optval, socklen_t *optlen);
+int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t *optlen);
 
+# include<fcntl.h>
+int fcntl(int fd, int cmd, ... /* int arg */); // file control
+```
