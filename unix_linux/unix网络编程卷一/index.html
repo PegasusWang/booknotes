@@ -1132,6 +1132,13 @@ main(int argc, char **argv)
 </code></pre>
 
 <h1 id="7">7. 套接口选项</h1>
+<pre><code class="c">#include &lt;sys/socket.h&gt;
+int getsockopt(int sockfd, int level, int optname, vod *optval, socklen_t *optlen);
+int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t *optlen);
+
+# include&lt;fcntl.h&gt;
+int fcntl(int fd, int cmd, ... /* int arg */); // file control
+</code></pre>
               
             </div>
           </div>
