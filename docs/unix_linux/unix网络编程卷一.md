@@ -392,3 +392,110 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
 # include<fcntl.h>
 int fcntl(int fd, int cmd, ... /* int arg */); // file control
 ```
+
+# 8 udp 套接口编程
+
+回显client示例：
+
+```c
+//udpcliserv/udpcli04.c
+#include	"unp.h"
+
+int
+main(int argc, char **argv)
+{
+	int					sockfd;
+	struct sockaddr_in	servaddr;
+
+	if (argc != 2)
+		err_quit("usage: udpcli <IPaddress>");
+
+	bzero(&servaddr, sizeof(servaddr));
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_port = htons(SERV_PORT);
+	Inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
+
+	sockfd = Socket(AF_INET, SOCK_DGRAM, 0);
+
+	dg_cli(stdin, sockfd, (SA *) &servaddr, sizeof(servaddr));
+
+	exit(0);
+}
+
+//udpcliserv/dgcliconnect.c
+#include	"unp.h"
+
+void
+dg_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
+{
+	int		n;
+	char	sendline[MAXLINE], recvline[MAXLINE + 1];
+
+	Connect(sockfd, (SA *) pservaddr, servlen);
+
+	while (Fgets(sendline, MAXLINE, fp) != NULL) {
+
+		Write(sockfd, sendline, strlen(sendline));
+
+		n = Read(sockfd, recvline, MAXLINE);
+
+		recvline[n] = 0;	/* null terminate */
+		Fputs(recvline, stdout);
+	}
+}
+
+```
+
+回显 udp server 示例：
+
+```c
+#include	"unp.h"
+
+int
+main(int argc, char **argv)
+{
+	int					sockfd;
+	struct sockaddr_in	servaddr, cliaddr;
+
+	sockfd = Socket(AF_INET, SOCK_DGRAM, 0);
+
+	bzero(&servaddr, sizeof(servaddr));
+	servaddr.sin_family      = AF_INET;
+	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	servaddr.sin_port        = htons(SERV_PORT);
+
+	Bind(sockfd, (SA *) &servaddr, sizeof(servaddr));
+
+	dg_echo(sockfd, (SA *) &cliaddr, sizeof(cliaddr));
+}
+
+
+#include	"unp.h"
+
+static void	recvfrom_int(int);
+static int	count;
+
+void
+dg_echo(int sockfd, SA *pcliaddr, socklen_t clilen)
+{
+	socklen_t	len;
+	char		mesg[MAXLINE];
+
+	Signal(SIGINT, recvfrom_int);
+
+	for ( ; ; ) {
+		len = clilen;
+		Recvfrom(sockfd, mesg, MAXLINE, 0, pcliaddr, &len);
+
+		count++;
+	}
+}
+
+static void
+recvfrom_int(int signo)
+{
+	printf("\nreceived %d datagrams\n", count);
+	exit(0);
+}
+```
+
