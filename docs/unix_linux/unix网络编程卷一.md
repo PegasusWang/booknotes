@@ -499,3 +499,15 @@ recvfrom_int(int signo)
 }
 ```
 
+
+# 11. 名字与地址转换
+
+```c
+#include <netdb.h>
+
+// 根据主机名获取 ipv4 。 python : socket.gethostbyname("www.baidu.com")
+struct hostent *gethostbyname(const char *hostname);
+
+// 根据二进制 ip 地址找到主机名。 python：socket.gethostbyaddr("4.2.2.2")
+struct hostent *gethostbyaddr(const char *addr, socklen_t len, int family);
+```
