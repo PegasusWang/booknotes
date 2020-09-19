@@ -502,6 +502,8 @@ recvfrom_int(int signo)
 
 # 11. 名字与地址转换
 
+以下这些函数可以在 python 中测试一下，使用起来要比 c 语言简便很多。
+
 ```c
 #include <netdb.h>
 
@@ -510,4 +512,13 @@ struct hostent *gethostbyname(const char *hostname);
 
 // 根据二进制 ip 地址找到主机名。 python：socket.gethostbyaddr("4.2.2.2")
 struct hostent *gethostbyaddr(const char *addr, socklen_t len, int family);
+
+// socket.getaddrinfo(host, port, family=0, type=0, proto=0, flags=0)
+#include <netdb.h>
+int getaddrinfo(const char *hostname , const char *service , const struct addrinfo *hints , struct addrinfo **result );
+// 返回：若成功则为0，若出错则为非0（见图11-7）
 ```
+
+可重入函数：若一个程序或子程序可以“在任意时刻被中断然后操作系统调度执行另外一段代码，这段代码又调用了该子程序不会出错”，
+则称其为可重入的。 即当该子程序正在运行时，执行线程可以再次进入并执行它，仍然获得符合设计时预期的结果。
+与多线程并发执行的线程安全不同，可重入强调对单个线程执行时重新进入同一个子程序仍然是安全的。
