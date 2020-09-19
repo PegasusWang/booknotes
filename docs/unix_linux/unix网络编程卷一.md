@@ -513,12 +513,18 @@ struct hostent *gethostbyname(const char *hostname);
 // 根据二进制 ip 地址找到主机名。 python：socket.gethostbyaddr("4.2.2.2")
 struct hostent *gethostbyaddr(const char *addr, socklen_t len, int family);
 
-// socket.getaddrinfo(host, port, family=0, type=0, proto=0, flags=0)
+// socket.getaddrinfo(host, port, family=0, type=0, proto=0, flags=0)。协议无关
 #include <netdb.h>
 int getaddrinfo(const char *hostname , const char *service , const struct addrinfo *hints , struct addrinfo **result );
 // 返回：若成功则为0，若出错则为非0（见图11-7）
 ```
 
-可重入函数：若一个程序或子程序可以“在任意时刻被中断然后操作系统调度执行另外一段代码，这段代码又调用了该子程序不会出错”，
-则称其为可重入的。 即当该子程序正在运行时，执行线程可以再次进入并执行它，仍然获得符合设计时预期的结果。
-与多线程并发执行的线程安全不同，可重入强调对单个线程执行时重新进入同一个子程序仍然是安全的。
+[可重入函数](https://baike.baidu.com/item/%E5%8F%AF%E9%87%8D%E5%85%A5%E5%87%BD%E6%95%B0)：
+可重入函数主要用于多任务环境中，一个可重入的函数简单来说就是可以被中断的函数，也就是说，可以在这个函数执行的任何时刻中断它，
+转入OS调度下去执行另外一段代码，而返回控制时不会出现什么错误；而不可重入的函数由于使用了一些系统资源，比如全局变量区，
+中断向量表等，所以它如果被中断的话，可能会出现问题，这类函数是不能运行在多任务环境下的。
+
+
+# 12. ipv4 与 ipv6 的互操作性
+
+双栈(dual stacks):ipv4和ipv6协议栈。
