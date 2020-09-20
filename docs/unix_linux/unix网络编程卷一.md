@@ -528,3 +528,45 @@ int getaddrinfo(const char *hostname , const char *service , const struct addrin
 # 12. ipv4 与 ipv6 的互操作性
 
 双栈(dual stacks):ipv4和ipv6协议栈。
+
+# 13. 守护进程和 inetd 超级服务器
+
+守护进程(daemon): 后台运行且不与任何控制终端关联的进程。
+
+```c
+#include	"unp.h"
+#include	<time.h>
+
+int main(int argc, char **argv)
+{
+	int listenfd, connfd;
+	socklen_t addrlen, len;
+	struct sockaddr	*cliaddr;
+	char buff[MAXLINE];
+	time_t ticks;
+
+	if (argc < 2 || argc > 3)
+		err_quit("usage: daytimetcpsrv2 [ <host> ] <service or port>");
+
+	daemon_init(argv[0], 0);
+
+	if (argc == 2)
+		listenfd = Tcp_listen(NULL, argv[1], &addrlen);
+	else
+		listenfd = Tcp_listen(argv[1], argv[2], &addrlen);
+
+	cliaddr = Malloc(addrlen);
+
+	for ( ; ; ) {
+		len = addrlen;
+		connfd = Accept(listenfd, cliaddr, &len);
+		err_msg("connection from %s", Sock_ntop(cliaddr, len));
+
+		ticks = time(NULL);
+		snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
+		Write(connfd, buff, strlen(buff));
+
+		Close(connfd);
+	}
+}
+```
