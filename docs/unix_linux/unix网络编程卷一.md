@@ -580,3 +580,64 @@ int main(int argc, char **argv)
 1. 调用alarm，它在指定超时期满时产生SIGALRM信号。这个方法涉及信号处理，而信号处理在不同的实现上存在差异，而且可能干扰进程中现有的alarm调用。
 2. 在select中阻塞等待I/O（select有内置的时间限制），以此代替直接阻塞在read或write调用上。
 3. 使用较新的SO_RCVTIMEO和SO_SNDTIMEO套接字选项。这个方法的问题在于并非所有实现都支持这两个套接字选项
+
+## 14.9 高级轮询技术
+
+- dev/poll
+- kqueue
+
+```c
+// advio/str_cli_kqueue04.c
+#include	"unp.h"
+
+void
+str_cli(FILE *fp, int sockfd)
+{
+	int				kq, i, n, nev, stdineof = 0, isfile;
+	char			buf[MAXLINE];
+	struct kevent	kev[2];
+	struct timespec	ts;
+	struct stat		st;
+
+	isfile = ((fstat(fileno(fp), &st) == 0) &&
+			  (st.st_mode & S_IFMT) == S_IFREG);
+
+	EV_SET(&kev[0], fileno(fp), EVFILT_READ, EV_ADD, 0, 0, NULL);
+	EV_SET(&kev[1], sockfd, EVFILT_READ, EV_ADD, 0, 0, NULL);
+
+	kq = Kqueue();
+	ts.tv_sec = ts.tv_nsec = 0;
+	Kevent(kq, kev, 2, NULL, 0, &ts);
+
+	for ( ; ; ) {
+		nev = Kevent(kq, NULL, 0, kev, 2, NULL);
+
+		for (i = 0; i < nev; i++) {
+			if (kev[i].ident == sockfd) {	/* socket is readable */
+				if ( (n = Read(sockfd, buf, MAXLINE)) == 0) {
+					if (stdineof == 1)
+						return;		/* normal termination */
+					else
+						err_quit("str_cli: server terminated prematurely");
+				}
+
+				Write(fileno(stdout), buf, n);
+			}
+
+			if (kev[i].ident == fileno(fp)) {  /* input is readable */
+				n = Read(fileno(fp), buf, MAXLINE);
+				if (n > 0)
+					Writen(sockfd, buf, n);
+
+				if (n == 0 || (isfile && n == kev[i].data)) {
+					stdineof = 1;
+					Shutdown(sockfd, SHUT_WR);	/* send FIN */
+					kev[i].flags = EV_DELETE;
+					Kevent(kq, &kev[i], 1, NULL, 0, &ts);	/* remove kevent */
+					continue;
+				}
+			}
+		}
+	}
+}
+```
