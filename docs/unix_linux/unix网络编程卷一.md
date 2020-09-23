@@ -641,3 +641,59 @@ str_cli(FILE *fp, int sockfd)
 	}
 }
 ```
+
+# 15. unix 域协议
+
+unix域协议不是一个实际的协议族，而是单个主机上执行客户/服务器通信的一种方法。
+
+
+```c 
+// unixdomain/unixdgserv01.c
+#include	"unp.h"
+
+int
+main(int argc, char **argv)
+{
+	int					sockfd;
+	struct sockaddr_un	servaddr, cliaddr;
+
+	sockfd = Socket(AF_LOCAL, SOCK_DGRAM, 0);
+
+	unlink(UNIXDG_PATH);
+	bzero(&servaddr, sizeof(servaddr));
+	servaddr.sun_family = AF_LOCAL;
+	strcpy(servaddr.sun_path, UNIXDG_PATH);
+
+	Bind(sockfd, (SA *) &servaddr, sizeof(servaddr));
+
+	dg_echo(sockfd, (SA *) &cliaddr, sizeof(cliaddr));
+}
+
+// unixdomain/unixdgcli01.c
+#include	"unp.h"
+
+int
+main(int argc, char **argv)
+{
+	int					sockfd;
+	struct sockaddr_un	cliaddr, servaddr;
+
+	sockfd = Socket(AF_LOCAL, SOCK_DGRAM, 0);
+
+	bzero(&cliaddr, sizeof(cliaddr));		/* bind an address for us */
+	cliaddr.sun_family = AF_LOCAL;
+	strcpy(cliaddr.sun_path, tmpnam(NULL));
+
+	Bind(sockfd, (SA *) &cliaddr, sizeof(cliaddr));
+
+	bzero(&servaddr, sizeof(servaddr));	/* fill in server's address */
+	servaddr.sun_family = AF_LOCAL;
+	strcpy(servaddr.sun_path, UNIXDG_PATH);
+
+	dg_cli(stdin, sockfd, (SA *) &servaddr, sizeof(servaddr));
+
+	exit(0);
+}
+```
+
+- socketpair 函数
