@@ -697,3 +697,144 @@ main(int argc, char **argv)
 ```
 
 - socketpair 函数
+
+
+# 16. 非阻塞 IO
+
+套接字的默认状态是阻塞的。这就意味着当发出一个不能立即完成的套接字调用时，其进程将被投入睡眠，等待相应操作完成。可能阻塞的套接字调用可分为以下四类。
+
+1. 输入操作，包括read、readv、recv、recvfrom和recvmsg共5个函数。如果某个进程对一个阻塞的TCP套接字（默认设置）调用这些输入函数之一，而且该套接字的接收缓冲区中没有数据可读，该进程将被投入睡眠，直到有一些数据到达。既然TCP是字节流协议，该进程的唤醒就是只要有一些数据到达，这些数据既可能是单个字节，也可以是一个完整的TCP分节中的数据。如果想等到某个固定数目的数据可读为止，那么可以调用我们的readn函数（图3-15），或者指定MSG_WAITALL标志（图14-6）。
+2. 输出操作，包括write、writev、send、sendto和sendmsg共5个函数。对于一个TCP套接字我们已在2.11节说过，内核将从应用进程的缓冲区到该套接字的发送缓冲区复制数据。对于阻塞的套接字，如果其发送缓冲区中没有空间，进程将被投入睡眠，直到有空间为止。
+对于一个非阻塞的TCP套接字，如果其发送缓冲区中根本没有空间，输出函数调用将立即返回一个EWOULDBLOCK错误。如果其发送缓冲区中有一些空间，返回值将是内核能够复制到该缓冲区中的字节数。这个字节数也称为不足计数（short count）。
+3. 接受外来连接，即accept函数。如果对一个阻塞的套接字调用accept函数，并且尚无新的连接到达，调用进程将被投入睡眠。如果对一个非阻塞的套接字调用accept函数，并且尚无新的连接到达，accept调用将立即返回一个EWOULDBLOCK错误。
+4. 发起外出连接，即用于TCP的connect函数。（回顾一下，我们知道connect同样可用于UDP，不过它不能使一个“真正”的连接建立起来，它只是使内核保存对端的IP地址和端口号。）我们已在2.6节展示过，TCP连接的建立涉及一个三路握手过程，而且connect函数一直要等到客户收到对于自己的SYN的ACK为止才返回。这意味着TCP的每个connect总会阻塞其调用进程至少一个到服务器的RTT时间。
+
+## 16.2 非阻塞读和写: str_cli 函数
+
+```c
+/* include nonb1 */
+#include	"unp.h"
+
+void
+str_cli(FILE *fp, int sockfd)
+{
+	int			maxfdp1, val, stdineof;
+	ssize_t		n, nwritten;
+	fd_set		rset, wset;
+	char		to[MAXLINE], fr[MAXLINE];
+	char		*toiptr, *tooptr, *friptr, *froptr;
+
+	val = Fcntl(sockfd, F_GETFL, 0);
+	Fcntl(sockfd, F_SETFL, val | O_NONBLOCK);
+
+	val = Fcntl(STDIN_FILENO, F_GETFL, 0);
+	Fcntl(STDIN_FILENO, F_SETFL, val | O_NONBLOCK);
+
+	val = Fcntl(STDOUT_FILENO, F_GETFL, 0);
+	Fcntl(STDOUT_FILENO, F_SETFL, val | O_NONBLOCK);
+
+	toiptr = tooptr = to;	/* initialize buffer pointers */
+	friptr = froptr = fr;
+	stdineof = 0;
+
+	maxfdp1 = max(max(STDIN_FILENO, STDOUT_FILENO), sockfd) + 1;
+	for ( ; ; ) {
+		FD_ZERO(&rset);
+		FD_ZERO(&wset);
+		if (stdineof == 0 && toiptr < &to[MAXLINE])
+			FD_SET(STDIN_FILENO, &rset);	/* read from stdin */
+		if (friptr < &fr[MAXLINE])
+			FD_SET(sockfd, &rset);			/* read from socket */
+		if (tooptr != toiptr)
+			FD_SET(sockfd, &wset);			/* data to write to socket */
+		if (froptr != friptr)
+			FD_SET(STDOUT_FILENO, &wset);	/* data to write to stdout */
+
+		Select(maxfdp1, &rset, &wset, NULL, NULL);
+/* end nonb1 */
+/* include nonb2 */
+		if (FD_ISSET(STDIN_FILENO, &rset)) { // 如果标准输入可以读，就调用 read
+			if ( (n = read(STDIN_FILENO, toiptr, &to[MAXLINE] - toiptr)) < 0) {
+				if (errno != EWOULDBLOCK) // 忽略 EWOULDBLOCK 错误
+					err_sys("read error on stdin");
+
+			} else if (n == 0) {
+#ifdef	VOL2
+				fprintf(stderr, "%s: EOF on stdin\n", gf_time());
+#endif
+				stdineof = 1;			/* all done with stdin */
+				if (tooptr == toiptr)
+					Shutdown(sockfd, SHUT_WR);/* send FIN */
+
+			} else {
+#ifdef	VOL2
+				fprintf(stderr, "%s: read %d bytes from stdin\n", gf_time(), n);
+#endif
+				toiptr += n;			/* # just read */
+				FD_SET(sockfd, &wset);	/* try and write to socket below */
+			}
+		}
+
+		if (FD_ISSET(sockfd, &rset)) {
+			if ( (n = read(sockfd, friptr, &fr[MAXLINE] - friptr)) < 0) {
+				if (errno != EWOULDBLOCK)
+					err_sys("read error on socket");
+
+			} else if (n == 0) {
+#ifdef	VOL2
+				fprintf(stderr, "%s: EOF on socket\n", gf_time());
+#endif
+				if (stdineof)
+					return;		/* normal termination */
+				else
+					err_quit("str_cli: server terminated prematurely");
+
+			} else {
+#ifdef	VOL2
+				fprintf(stderr, "%s: read %d bytes from socket\n",
+								gf_time(), n);
+#endif
+				friptr += n;		/* # just read */
+				FD_SET(STDOUT_FILENO, &wset);	/* try and write below */
+			}
+		}
+/* end nonb2 */
+/* include nonb3 */
+		if (FD_ISSET(STDOUT_FILENO, &wset) && ( (n = friptr - froptr) > 0)) {
+			if ( (nwritten = write(STDOUT_FILENO, froptr, n)) < 0) {
+				if (errno != EWOULDBLOCK)
+					err_sys("write error to stdout");
+
+			} else {
+#ifdef	VOL2
+				fprintf(stderr, "%s: wrote %d bytes to stdout\n",
+								gf_time(), nwritten);
+#endif
+				froptr += nwritten;		/* # just written */
+				if (froptr == friptr)
+					froptr = friptr = fr;	/* back to beginning of buffer */
+			}
+		}
+
+		if (FD_ISSET(sockfd, &wset) && ( (n = toiptr - tooptr) > 0)) {
+			if ( (nwritten = write(sockfd, tooptr, n)) < 0) {
+				if (errno != EWOULDBLOCK)
+					err_sys("write error to socket");
+
+			} else {
+#ifdef	VOL2
+				fprintf(stderr, "%s: wrote %d bytes to socket\n",
+								gf_time(), nwritten);
+#endif
+				tooptr += nwritten;	/* # just written */
+				if (tooptr == toiptr) {
+					toiptr = tooptr = to;	/* back to beginning of buffer */
+					if (stdineof)
+						Shutdown(sockfd, SHUT_WR);	/* send FIN */
+				}
+			}
+		}
+	}
+}
+/* end nonb3 */
+```

@@ -81,6 +81,7 @@ pages:
     - unix/linux:
       - 《Linux高性能服务器编程》: 'unix_linux/Linux高性能服务器编程/Linux高性能服务器编程.md'
       - 《unix编程艺术》: 'unix_linux/unix编程艺术.md'
+      - 《unix网络编程卷一》: 'unix_linux/unix网络编程卷一.md'
     - 分布式:
       - 《Kafka 权威指南》:  '分布式/Kafka权威指南.md'
       - 《分布式框架原理与应用》:  '分布式/分布式框架原理与应用.md'
