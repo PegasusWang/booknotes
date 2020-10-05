@@ -958,6 +958,8 @@ main(int argc, char **argv)
 若是UDP数据报则需沿协议栈向上一直处理到UDP层，即使不参与广播应用的主机也不能幸免。要是运行诸如音频、视频等以较高数据速率工作的应用，
 这些非必要的处理会给这些主机带来过度的处理负担。我们将在下一章看到多播可以解决本问题，因为多播发送的数据报只会由对相应多播应用感兴趣的主机接收。
 
+竞争状态：多个进程访问共享数据，正确结果取决于进程的执行顺序时，称这些进程处于竞争状态。
+
 ```c
 // bcast/udpcli06.c
 #include	"unp.h"
@@ -1049,3 +1051,86 @@ recvfrom_alarm(int signo)
 }
 ```
 
+# 21. 多播 (multiplcasting)
+
+
+```c
+
+//mcast/main.c
+#include	"unp.h"
+
+void	recv_all(int, socklen_t);
+void	send_all(int, SA *, socklen_t);
+
+int
+main(int argc, char **argv)
+{
+	int					sendfd, recvfd;
+	const int			on = 1;
+	socklen_t			salen;
+	struct sockaddr		*sasend, *sarecv;
+
+	if (argc != 3)
+		err_quit("usage: sendrecv <IP-multicast-address> <port#>");
+
+	sendfd = Udp_client(argv[1], argv[2], (void **) &sasend, &salen);
+
+	recvfd = Socket(sasend->sa_family, SOCK_DGRAM, 0);
+
+	Setsockopt(recvfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+
+	sarecv = Malloc(salen);
+	memcpy(sarecv, sasend, salen);
+	Bind(recvfd, sarecv, salen);
+
+	Mcast_join(recvfd, sasend, salen, NULL, 0);
+	Mcast_set_loop(sendfd, 0);
+
+	if (Fork() == 0)
+		recv_all(recvfd, salen);		/* child -> receives */
+
+	send_all(sendfd, sasend, salen);	/* parent -> sends */
+}
+
+
+// ssntp/sntp_proc.c
+#include	"sntp.h"
+
+void
+sntp_proc(char *buf, ssize_t n, struct timeval *nowptr)
+{
+	int				version, mode;
+	uint32_t		nsec, useci;
+	double			usecf;
+	struct timeval	diff;
+	struct ntpdata	*ntp;
+
+	if (n < (ssize_t)sizeof(struct ntpdata)) {
+		printf("\npacket too small: %d bytes\n", n);
+		return;
+	}
+
+	ntp = (struct ntpdata *) buf;
+	version = (ntp->status & VERSION_MASK) >> 3;
+	mode = ntp->status & MODE_MASK;
+	printf("\nv%d, mode %d, strat %d, ", version, mode, ntp->stratum);
+	if (mode == MODE_CLIENT) {
+		printf("client\n");
+		return;
+	}
+
+	nsec = ntohl(ntp->xmt.int_part) - JAN_1970;
+	useci = ntohl(ntp->xmt.fraction);	/* 32-bit integer fraction */
+	usecf = useci;				/* integer fraction -> double */
+	usecf /= 4294967296.0;		/* divide by 2**32 -> [0, 1.0) */
+	useci = usecf * 1000000.0;	/* fraction -> parts per million */
+
+	diff.tv_sec = nowptr->tv_sec - nsec;
+	if ( (diff.tv_usec = nowptr->tv_usec - useci) < 0) {
+		diff.tv_usec += 1000000;
+		diff.tv_sec--;
+	}
+	useci = (diff.tv_sec * 1000000) + diff.tv_usec;	/* diff in microsec */
+	printf("clock difference = %d usec\n", useci);
+}
+```
