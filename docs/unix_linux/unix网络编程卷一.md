@@ -952,4 +952,100 @@ main(int argc, char **argv)
 # 19. 密钥管理套接口
 
 
-# 20. 广播
+# 20. 广播(broadcasting)
+
+广播发送的数据报由发送主机某个所在子网上的所有主机接收。广播的劣势在于同一子网上的所有主机都必须处理数据报，
+若是UDP数据报则需沿协议栈向上一直处理到UDP层，即使不参与广播应用的主机也不能幸免。要是运行诸如音频、视频等以较高数据速率工作的应用，
+这些非必要的处理会给这些主机带来过度的处理负担。我们将在下一章看到多播可以解决本问题，因为多播发送的数据报只会由对相应多播应用感兴趣的主机接收。
+
+```c
+// bcast/udpcli06.c
+#include	"unp.h"
+
+int
+main(int argc, char **argv)
+{
+	int					sockfd;
+	struct sockaddr_in	servaddr;
+
+	if (argc != 2)
+		err_quit("usage: udpcli02 <IPaddress>");
+
+	bzero(&servaddr, sizeof(servaddr));
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_port = htons(13);		/* standard daytime server */
+	Inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
+
+	sockfd = Socket(AF_INET, SOCK_DGRAM, 0);
+
+	dg_cli(stdin, sockfd, (SA *) &servaddr, sizeof(servaddr));
+
+	exit(0);
+}
+
+// bcast/dgclibcast6.c
+#include	"unp.h"
+
+static void	recvfrom_alarm(int);
+static int	pipefd[2];
+
+void
+dg_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
+{
+	int				n, maxfdp1;
+	const int		on = 1;
+	char			sendline[MAXLINE], recvline[MAXLINE + 1];
+	fd_set			rset;
+	socklen_t		len;
+	struct sockaddr	*preply_addr;
+
+	preply_addr = Malloc(servlen);
+
+	Setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on)); // SO_BROADCAST 多播选项
+
+	Pipe(pipefd);
+	maxfdp1 = max(sockfd, pipefd[0]) + 1;
+
+	FD_ZERO(&rset);
+
+	Signal(SIGALRM, recvfrom_alarm);
+
+	while (Fgets(sendline, MAXLINE, fp) != NULL) {
+		Sendto(sockfd, sendline, strlen(sendline), 0, pservaddr, servlen);
+
+		alarm(5);
+		for ( ; ; ) {
+			FD_SET(sockfd, &rset);
+			FD_SET(pipefd[0], &rset);
+			if ( (n = select(maxfdp1, &rset, NULL, NULL, NULL)) < 0) {
+				if (errno == EINTR)
+					continue;
+				else
+					err_sys("select error");
+			}
+
+			if (FD_ISSET(sockfd, &rset)) {
+				len = servlen;
+				n = Recvfrom(sockfd, recvline, MAXLINE, 0, preply_addr, &len);
+				recvline[n] = 0;	/* null terminate */
+				printf("from %s: %s",
+						Sock_ntop_host(preply_addr, len), recvline);
+			}
+
+			if (FD_ISSET(pipefd[0], &rset)) {
+				Read(pipefd[0], &n, 1);		/* timer expired */ // 定时器到时
+				break;
+			}
+		}
+	}
+	free(preply_addr);
+}
+
+static void
+recvfrom_alarm(int signo)
+{
+	Write(pipefd[1], "", 1);	/* write one null byte to pipe */
+	return;
+}
+```
+
