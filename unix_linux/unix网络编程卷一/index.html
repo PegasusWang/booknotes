@@ -416,7 +416,21 @@
         
             <li><a class="toctree-l4" href="#162-str_cli">16.2 非阻塞读和写: str_cli 函数</a></li>
         
+            <li><a class="toctree-l4" href="#163-connect">16.3 非阻塞 connect</a></li>
+        
         </ul>
+    
+
+    <li class="toctree-l3"><a href="#17-ioctl">17 ioctl 操作</a></li>
+    
+
+    <li class="toctree-l3"><a href="#18">18. 路由套接口</a></li>
+    
+
+    <li class="toctree-l3"><a href="#19">19. 密钥管理套接口</a></li>
+    
+
+    <li class="toctree-l3"><a href="#20-broadcasting">20. 广播(broadcasting)</a></li>
     
 
     </ul>
@@ -1616,6 +1630,204 @@ str_cli(FILE *fp, int sockfd)
     }
 }
 /* end nonb3 */
+</code></pre>
+
+<h2 id="163-connect">16.3 非阻塞 connect</h2>
+<pre><code class="c">#include    &quot;unp.h&quot;
+
+int connect_nonb(int sockfd, const SA *saptr, socklen_t salen, int nsec)
+{
+    int             flags, n, error;
+    socklen_t       len;
+    fd_set          rset, wset;
+    struct timeval  tval;
+
+    flags = Fcntl(sockfd, F_GETFL, 0);
+    Fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
+
+    error = 0;
+    if ( (n = connect(sockfd, saptr, salen)) &lt; 0)
+        if (errno != EINPROGRESS)
+            return(-1);
+
+    /* Do whatever we want while the connect is taking place. */
+
+    if (n == 0)
+        goto done;  /* connect completed immediately */
+
+    FD_ZERO(&amp;rset);
+    FD_SET(sockfd, &amp;rset);
+    wset = rset;
+    tval.tv_sec = nsec;
+    tval.tv_usec = 0;
+
+    if ( (n = Select(sockfd+1, &amp;rset, &amp;wset, NULL,
+                     nsec ? &amp;tval : NULL)) == 0) {
+        close(sockfd);      /* timeout */
+        errno = ETIMEDOUT;
+        return(-1);
+    }
+
+    if (FD_ISSET(sockfd, &amp;rset) || FD_ISSET(sockfd, &amp;wset)) {
+        len = sizeof(error);
+        if (getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &amp;error, &amp;len) &lt; 0)
+            return(-1);         /* Solaris pending error */
+    } else
+        err_quit(&quot;select error: sockfd not set&quot;);
+
+done:
+    Fcntl(sockfd, F_SETFL, flags);  /* restore file status flags */
+
+    if (error) {
+        close(sockfd);      /* just in case */
+        errno = error;
+        return(-1);
+    }
+    return(0);
+}
+</code></pre>
+
+<h1 id="17-ioctl">17 ioctl 操作</h1>
+<pre><code class="c">#include    &quot;unp.h&quot;
+#include    &lt;net/if.h&gt;
+
+int
+main(int argc, char **argv)
+{
+    int     i, sockfd, numif;
+    char    buf[1024];
+
+    sockfd = Socket(AF_INET, SOCK_DGRAM, 0);
+
+    numif = 999;
+    Ioctl(sockfd, SIOCGIFNUM, &amp;numif);
+    printf(&quot;numif = %d\n&quot;, numif);
+
+    i = ioctl(sockfd, SIOCGHIWAT, &amp;buf);
+    printf(&quot;i = %d, errno = %d\n&quot;, i, errno);
+    exit(0);
+}
+</code></pre>
+
+<h1 id="18">18. 路由套接口</h1>
+<pre><code class="c">// 检查 udp 校验和是否开启
+#include    &quot;unproute.h&quot;
+#include    &lt;netinet/udp.h&gt;
+#include    &lt;netinet/ip_var.h&gt;
+#include    &lt;netinet/udp_var.h&gt;     /* for UDPCTL_xxx constants */
+
+int
+main(int argc, char **argv)
+{
+    int     mib[4], val;
+    size_t  len;
+
+    mib[0] = CTL_NET;
+    mib[1] = AF_INET;
+    mib[2] = IPPROTO_UDP;
+    mib[3] = UDPCTL_CHECKSUM;
+
+    len = sizeof(val);
+    Sysctl(mib, 4, &amp;val, &amp;len, NULL, 0);
+    printf(&quot;udp checksum flag: %d\n&quot;, val);
+
+    exit(0);
+}
+</code></pre>
+
+<h1 id="19">19. 密钥管理套接口</h1>
+<h1 id="20-broadcasting">20. 广播(broadcasting)</h1>
+<p>广播发送的数据报由发送主机某个所在子网上的所有主机接收。广播的劣势在于同一子网上的所有主机都必须处理数据报，
+若是UDP数据报则需沿协议栈向上一直处理到UDP层，即使不参与广播应用的主机也不能幸免。要是运行诸如音频、视频等以较高数据速率工作的应用，
+这些非必要的处理会给这些主机带来过度的处理负担。我们将在下一章看到多播可以解决本问题，因为多播发送的数据报只会由对相应多播应用感兴趣的主机接收。</p>
+<pre><code class="c">// bcast/udpcli06.c
+#include    &quot;unp.h&quot;
+
+int
+main(int argc, char **argv)
+{
+    int                 sockfd;
+    struct sockaddr_in  servaddr;
+
+    if (argc != 2)
+        err_quit(&quot;usage: udpcli02 &lt;IPaddress&gt;&quot;);
+
+    bzero(&amp;servaddr, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(13);      /* standard daytime server */
+    Inet_pton(AF_INET, argv[1], &amp;servaddr.sin_addr);
+
+    sockfd = Socket(AF_INET, SOCK_DGRAM, 0);
+
+    dg_cli(stdin, sockfd, (SA *) &amp;servaddr, sizeof(servaddr));
+
+    exit(0);
+}
+
+// bcast/dgclibcast6.c
+#include    &quot;unp.h&quot;
+
+static void recvfrom_alarm(int);
+static int  pipefd[2];
+
+void
+dg_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
+{
+    int             n, maxfdp1;
+    const int       on = 1;
+    char            sendline[MAXLINE], recvline[MAXLINE + 1];
+    fd_set          rset;
+    socklen_t       len;
+    struct sockaddr *preply_addr;
+
+    preply_addr = Malloc(servlen);
+
+    Setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &amp;on, sizeof(on)); // SO_BROADCAST 多播选项
+
+    Pipe(pipefd);
+    maxfdp1 = max(sockfd, pipefd[0]) + 1;
+
+    FD_ZERO(&amp;rset);
+
+    Signal(SIGALRM, recvfrom_alarm);
+
+    while (Fgets(sendline, MAXLINE, fp) != NULL) {
+        Sendto(sockfd, sendline, strlen(sendline), 0, pservaddr, servlen);
+
+        alarm(5);
+        for ( ; ; ) {
+            FD_SET(sockfd, &amp;rset);
+            FD_SET(pipefd[0], &amp;rset);
+            if ( (n = select(maxfdp1, &amp;rset, NULL, NULL, NULL)) &lt; 0) {
+                if (errno == EINTR)
+                    continue;
+                else
+                    err_sys(&quot;select error&quot;);
+            }
+
+            if (FD_ISSET(sockfd, &amp;rset)) {
+                len = servlen;
+                n = Recvfrom(sockfd, recvline, MAXLINE, 0, preply_addr, &amp;len);
+                recvline[n] = 0;    /* null terminate */
+                printf(&quot;from %s: %s&quot;,
+                        Sock_ntop_host(preply_addr, len), recvline);
+            }
+
+            if (FD_ISSET(pipefd[0], &amp;rset)) {
+                Read(pipefd[0], &amp;n, 1);     /* timer expired */ // 定时器到时
+                break;
+            }
+        }
+    }
+    free(preply_addr);
+}
+
+static void
+recvfrom_alarm(int signo)
+{
+    Write(pipefd[1], &quot;&quot;, 1);    /* write one null byte to pipe */
+    return;
+}
 </code></pre>
               
             </div>
