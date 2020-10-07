@@ -433,6 +433,15 @@
     <li class="toctree-l3"><a href="#20-broadcasting">20. 广播(broadcasting)</a></li>
     
 
+    <li class="toctree-l3"><a href="#21-multiplcasting">21. 多播 (multiplcasting)</a></li>
+    
+
+    <li class="toctree-l3"><a href="#22-udp">22 高级 udp 套接口编程</a></li>
+    
+
+    <li class="toctree-l3"><a href="#24">24. 带外数据</a></li>
+    
+
     </ul>
                 </li>
     </ul>
@@ -1828,6 +1837,298 @@ recvfrom_alarm(int signo)
 {
     Write(pipefd[1], &quot;&quot;, 1);    /* write one null byte to pipe */
     return;
+}
+</code></pre>
+
+<h1 id="21-multiplcasting">21. 多播 (multiplcasting)</h1>
+<pre><code class="c">
+//mcast/main.c
+#include    &quot;unp.h&quot;
+
+void    recv_all(int, socklen_t);
+void    send_all(int, SA *, socklen_t);
+
+int
+main(int argc, char **argv)
+{
+    int                 sendfd, recvfd;
+    const int           on = 1;
+    socklen_t           salen;
+    struct sockaddr     *sasend, *sarecv;
+
+    if (argc != 3)
+        err_quit(&quot;usage: sendrecv &lt;IP-multicast-address&gt; &lt;port#&gt;&quot;);
+
+    sendfd = Udp_client(argv[1], argv[2], (void **) &amp;sasend, &amp;salen);
+
+    recvfd = Socket(sasend-&gt;sa_family, SOCK_DGRAM, 0);
+
+    Setsockopt(recvfd, SOL_SOCKET, SO_REUSEADDR, &amp;on, sizeof(on));
+
+    sarecv = Malloc(salen);
+    memcpy(sarecv, sasend, salen);
+    Bind(recvfd, sarecv, salen);
+
+    Mcast_join(recvfd, sasend, salen, NULL, 0);
+    Mcast_set_loop(sendfd, 0);
+
+    if (Fork() == 0)
+        recv_all(recvfd, salen);        /* child -&gt; receives */
+
+    send_all(sendfd, sasend, salen);    /* parent -&gt; sends */
+}
+
+
+// ssntp/sntp_proc.c
+#include    &quot;sntp.h&quot;
+
+void
+sntp_proc(char *buf, ssize_t n, struct timeval *nowptr)
+{
+    int             version, mode;
+    uint32_t        nsec, useci;
+    double          usecf;
+    struct timeval  diff;
+    struct ntpdata  *ntp;
+
+    if (n &lt; (ssize_t)sizeof(struct ntpdata)) {
+        printf(&quot;\npacket too small: %d bytes\n&quot;, n);
+        return;
+    }
+
+    ntp = (struct ntpdata *) buf;
+    version = (ntp-&gt;status &amp; VERSION_MASK) &gt;&gt; 3;
+    mode = ntp-&gt;status &amp; MODE_MASK;
+    printf(&quot;\nv%d, mode %d, strat %d, &quot;, version, mode, ntp-&gt;stratum);
+    if (mode == MODE_CLIENT) {
+        printf(&quot;client\n&quot;);
+        return;
+    }
+
+    nsec = ntohl(ntp-&gt;xmt.int_part) - JAN_1970;
+    useci = ntohl(ntp-&gt;xmt.fraction);   /* 32-bit integer fraction */
+    usecf = useci;              /* integer fraction -&gt; double */
+    usecf /= 4294967296.0;      /* divide by 2**32 -&gt; [0, 1.0) */
+    useci = usecf * 1000000.0;  /* fraction -&gt; parts per million */
+
+    diff.tv_sec = nowptr-&gt;tv_sec - nsec;
+    if ( (diff.tv_usec = nowptr-&gt;tv_usec - useci) &lt; 0) {
+        diff.tv_usec += 1000000;
+        diff.tv_sec--;
+    }
+    useci = (diff.tv_sec * 1000000) + diff.tv_usec; /* diff in microsec */
+    printf(&quot;clock difference = %d usec\n&quot;, useci);
+}
+</code></pre>
+
+<h1 id="22-udp">22 高级 udp 套接口编程</h1>
+<p>给 udp 增加可靠性：</p>
+<ul>
+<li>超时和重传: 用户处理丢失的数据报 (比如通过携带时间戳计算 rtt 判断是否需要重传)</li>
+<li>序列号：供客户验证一个应答是否匹配相应的需求 (发送报文生成序列号)</li>
+</ul>
+<pre><code class="c">// rtt/dg_send_recv.c
+/* include dgsendrecv1 */
+#include    &quot;unprtt.h&quot;
+#include    &lt;setjmp.h&gt;
+
+#define RTT_DEBUG
+
+static struct rtt_info   rttinfo;
+static int  rttinit = 0;
+static struct msghdr    msgsend, msgrecv;   /* assumed init to 0 */
+static struct hdr {
+  uint32_t  seq;    /* sequence # */
+  uint32_t  ts;     /* timestamp when sent */
+} sendhdr, recvhdr;
+
+static void sig_alrm(int signo);
+static sigjmp_buf   jmpbuf;
+
+ssize_t
+dg_send_recv(int fd, const void *outbuff, size_t outbytes,
+             void *inbuff, size_t inbytes,
+             const SA *destaddr, socklen_t destlen)
+{
+    ssize_t         n;
+    struct iovec    iovsend[2], iovrecv[2];
+
+    if (rttinit == 0) {
+        rtt_init(&amp;rttinfo);     /* first time we're called */
+        rttinit = 1;
+        rtt_d_flag = 1;
+    }
+
+    sendhdr.seq++;
+    msgsend.msg_name = destaddr;
+    msgsend.msg_namelen = destlen;
+    msgsend.msg_iov = iovsend;
+    msgsend.msg_iovlen = 2;
+    iovsend[0].iov_base = &amp;sendhdr;
+    iovsend[0].iov_len = sizeof(struct hdr);
+    iovsend[1].iov_base = outbuff;
+    iovsend[1].iov_len = outbytes;
+
+    msgrecv.msg_name = NULL;
+    msgrecv.msg_namelen = 0;
+    msgrecv.msg_iov = iovrecv;
+    msgrecv.msg_iovlen = 2;
+    iovrecv[0].iov_base = &amp;recvhdr;
+    iovrecv[0].iov_len = sizeof(struct hdr);
+    iovrecv[1].iov_base = inbuff;
+    iovrecv[1].iov_len = inbytes;
+/* end dgsendrecv1 */
+
+/* include dgsendrecv2 */
+    Signal(SIGALRM, sig_alrm);
+    rtt_newpack(&amp;rttinfo);      /* initialize for this packet */
+
+sendagain:
+#ifdef  RTT_DEBUG
+    fprintf(stderr, &quot;send %4d: &quot;, sendhdr.seq);
+#endif
+    sendhdr.ts = rtt_ts(&amp;rttinfo);
+    Sendmsg(fd, &amp;msgsend, 0);
+
+    alarm(rtt_start(&amp;rttinfo)); /* calc timeout value &amp; start timer */
+#ifdef  RTT_DEBUG
+    rtt_debug(&amp;rttinfo);
+#endif
+
+    if (sigsetjmp(jmpbuf, 1) != 0) {
+        if (rtt_timeout(&amp;rttinfo) &lt; 0) {
+            err_msg(&quot;dg_send_recv: no response from server, giving up&quot;);
+            rttinit = 0;    /* reinit in case we're called again */
+            errno = ETIMEDOUT;
+            return(-1);
+        }
+#ifdef  RTT_DEBUG
+        err_msg(&quot;dg_send_recv: timeout, retransmitting&quot;);
+#endif
+        goto sendagain;
+    }
+
+    do {
+        n = Recvmsg(fd, &amp;msgrecv, 0);
+#ifdef  RTT_DEBUG
+        fprintf(stderr, &quot;recv %4d\n&quot;, recvhdr.seq);
+#endif
+    } while (n &lt; sizeof(struct hdr) || recvhdr.seq != sendhdr.seq);
+
+    alarm(0);           /* stop SIGALRM timer */
+        /* 4calculate &amp; store new RTT estimator values */
+    rtt_stop(&amp;rttinfo, rtt_ts(&amp;rttinfo) - recvhdr.ts);
+
+    return(n - sizeof(struct hdr)); /* return size of received datagram */
+}
+
+static void
+sig_alrm(int signo)
+{
+    siglongjmp(jmpbuf, 1);
+}
+/* end dgsendrecv2 */
+
+ssize_t
+Dg_send_recv(int fd, const void *outbuff, size_t outbytes,
+             void *inbuff, size_t inbytes,
+             const SA *destaddr, socklen_t destlen)
+{
+    ssize_t n;
+
+    n = dg_send_recv(fd, outbuff, outbytes, inbuff, inbytes,
+                     destaddr, destlen);
+    if (n &lt; 0)
+        err_quit(&quot;dg_send_recv error&quot;);
+
+    return(n);
+}
+</code></pre>
+
+<h1 id="24">24. 带外数据</h1>
+<p>带外数据(out-of-band data): 比普通数据具有更高的优先级。tcp 没有真正的带外数据，不过提供紧急模式和紧急指针。</p>
+<pre><code class="c">// oob/tcpsend01.c
+#include    &quot;unp.h&quot;
+
+int
+main(int argc, char **argv)
+{
+    int     sockfd;
+
+    if (argc != 3)
+        err_quit(&quot;usage: tcpsend01 &lt;host&gt; &lt;port#&gt;&quot;);
+
+    sockfd = Tcp_connect(argv[1], argv[2]);
+
+    Write(sockfd, &quot;123&quot;, 3);
+    printf(&quot;wrote 3 bytes of normal data\n&quot;);
+    sleep(1);
+
+    Send(sockfd, &quot;4&quot;, 1, MSG_OOB); // MSG_OOB 带外标志
+    printf(&quot;wrote 1 byte of OOB data\n&quot;);
+    sleep(1);
+
+    Write(sockfd, &quot;56&quot;, 2);
+    printf(&quot;wrote 2 bytes of normal data\n&quot;);
+    sleep(1);
+
+    Send(sockfd, &quot;7&quot;, 1, MSG_OOB);
+    printf(&quot;wrote 1 byte of OOB data\n&quot;);
+    sleep(1);
+
+    Write(sockfd, &quot;89&quot;, 2);
+    printf(&quot;wrote 2 bytes of normal data\n&quot;);
+    sleep(1);
+
+    exit(0);
+}
+
+
+// oob/tcprecv01.c
+#include    &quot;unp.h&quot;
+
+int     listenfd, connfd;
+
+void    sig_urg(int);
+
+int
+main(int argc, char **argv)
+{
+    int     n;
+    char    buff[100];
+
+    if (argc == 2)
+        listenfd = Tcp_listen(NULL, argv[1], NULL);
+    else if (argc == 3)
+        listenfd = Tcp_listen(argv[1], argv[2], NULL);
+    else
+        err_quit(&quot;usage: tcprecv01 [ &lt;host&gt; ] &lt;port#&gt;&quot;);
+
+    connfd = Accept(listenfd, NULL, NULL);
+
+    Signal(SIGURG, sig_urg);
+    Fcntl(connfd, F_SETOWN, getpid());
+
+    for ( ; ; ) {
+        if ( (n = Read(connfd, buff, sizeof(buff)-1)) == 0) {
+            printf(&quot;received EOF\n&quot;);
+            exit(0);
+        }
+        buff[n] = 0;    /* null terminate */
+        printf(&quot;read %d bytes: %s\n&quot;, n, buff);
+    }
+}
+
+void
+sig_urg(int signo)
+{
+    int     n;
+    char    buff[100];
+
+    printf(&quot;SIGURG received\n&quot;);
+    n = Recv(connfd, buff, sizeof(buff)-1, MSG_OOB);
+    buff[n] = 0;        /* null terminate */
+    printf(&quot;read %d OOB byte: %s\n&quot;, n, buff);
 }
 </code></pre>
               
