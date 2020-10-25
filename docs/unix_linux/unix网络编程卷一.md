@@ -1479,3 +1479,101 @@ sig_hup(int signo)
 }
 /* end sig_hup */
 ```
+
+# 26 线程
+
+fork的问题：
+
+- 开销大。尽管有copy-on-write
+- 父子进程之间传递信息需要 IPC 机制
+
+使用线程开销小，不过需要考虑“同步”问题。
+
+```c
+// threads/strclithread2.c
+#include	"unpthread.h"
+
+void	*copyto(void *);
+
+static int	sockfd;
+static FILE	*fp;
+static int	done;
+
+void
+str_cli(FILE *fp_arg, int sockfd_arg)
+{
+	char		recvline[MAXLINE];
+	pthread_t	tid;
+
+	sockfd = sockfd_arg;	/* copy arguments to externals */
+	fp = fp_arg;
+
+	Pthread_create(&tid, NULL, copyto, NULL);
+
+	while (Readline(sockfd, recvline, MAXLINE) > 0)
+		Fputs(recvline, stdout);
+
+	if (done == 0)
+		err_quit("server terminated prematurely");
+}
+
+void *
+copyto(void *arg)
+{
+	char	sendline[MAXLINE];
+
+	while (Fgets(sendline, MAXLINE, fp) != NULL)
+		Writen(sockfd, sendline, strlen(sendline));
+
+	Shutdown(sockfd, SHUT_WR);	/* EOF on stdin, send FIN */
+
+	done = 1;
+	return(NULL);
+	/* return (i.e., thread terminates) when end-of-file on stdin */
+}
+
+
+// threads/tcpserv02.c
+#include	"unpthread.h"
+
+static void	*doit(void *);		/* each thread executes this function */
+
+int
+main(int argc, char **argv)
+{
+	int				listenfd, *iptr;
+	thread_t		tid;
+	socklen_t		addrlen, len;
+	struct sockaddr	*cliaddr;
+
+	if (argc == 2)
+		listenfd = Tcp_listen(NULL, argv[1], &addrlen);
+	else if (argc == 3)
+		listenfd = Tcp_listen(argv[1], argv[2], &addrlen);
+	else
+		err_quit("usage: tcpserv01 [ <host> ] <service or port>");
+
+	cliaddr = Malloc(addrlen);
+
+	for ( ; ; ) {
+		len = addrlen;
+		iptr = Malloc(sizeof(int));
+		*iptr = Accept(listenfd, cliaddr, &len);
+		Pthread_create(&tid, NULL, &doit, iptr);
+	}
+}
+
+static void *
+doit(void *arg)
+{
+	int		connfd;
+
+	connfd = *((int *) arg);
+	free(arg);
+
+	Pthread_detach(pthread_self());
+	str_echo(connfd);		/* same function as before */
+	Close(connfd);			/* done with connected socket */
+	return(NULL);
+}
+```
