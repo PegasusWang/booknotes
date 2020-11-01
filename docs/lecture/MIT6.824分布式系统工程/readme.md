@@ -139,3 +139,152 @@ Big sequential access
 
 ![](./4-0.jpeg)
 ![](./4-1.jpeg)
+
+
+# 5. Go, Threads, and Raft
+
+```go
+// closure.go
+package main
+
+import "sync"
+
+func main() {
+
+	var a string
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func() {
+		a = "hello world"
+		wg.Done()
+	}()
+	wg.Wait()
+	println(a)
+}
+
+// loop.go
+package main
+
+import "sync"
+
+func main() {
+	var wg sync.WaitGroup
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+		go func(x int) {
+			sendRPC(x)
+			wg.Done()
+		}(i) // 注意闭包变量
+	}
+	wg.Wait()
+}
+
+func sendRPC(i int) {
+	println(i)
+}
+
+// sleep.go
+package main
+
+import "time"
+
+func main() {
+	time.Sleep(1 * time.Second)
+	println("started")
+	go periodic()
+	time.Sleep(5 * time.Second)
+}
+
+func periodic() {
+	for {
+		println("tick")
+		time.Sleep(1 * time.Second)
+	}
+}
+
+// sleep-cancel.go
+package main
+
+import (
+	"sync"
+	"time"
+)
+
+var done bool
+var mu sync.Mutex
+
+func main() {
+	time.Sleep(1 * time.Second)
+	println("started")
+	go periodic()
+	time.Sleep(5 * time.Second)
+
+	mu.Lock()
+	done = true
+	mu.Unlock()
+	println("cancelled")
+	time.Sleep(3 * time.Second)
+}
+
+func periodic() {
+	for {
+		println("tick")
+		time.Sleep(1 * time.Second)
+		mu.Lock()
+		if done {
+			mu.Unlock()
+			return
+		}
+		mu.Unlock()
+	}
+}
+
+
+// bank.go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func main() {
+	alice := 10000
+	bob := 10000
+
+	var mu sync.Mutex
+
+	total := alice + bob
+
+	go func() {
+		for i := 0; i < 1000; i++ {
+            // 这代码演示目的就是 锁的粒度，不能单独给两个操作分别加锁，而是放到一起
+            // 这样才能保证不变式 total := alice+bob 始终成立
+			mu.Lock()
+			alice -= 1
+			bob += 1
+			mu.Unlock()
+		}
+	}()
+
+	go func() {
+		for i := 0; i < 1000; i++ {
+			mu.Lock()
+			bob -= 1
+			alice += 1
+			mu.Unlock()
+		}
+	}()
+
+	start := time.Now()
+	for time.Since(start) < 1*time.Second {
+		mu.Lock()
+		if alice+bob != total {
+			fmt.Printf("observed violation, alice=%v,bob=%v,sum=%v\n", alice, bob, alice+bob)
+		}
+		mu.Unlock()
+	}
+}
+```
