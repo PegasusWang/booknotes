@@ -440,4 +440,53 @@ func main() {
 	fmt.Println("===")
 	<-c // 因为上边一直阻塞住了，这里始终不会执行到，最终导致死锁
 }
+
+
+// producer-consumer.go
+package main
+
+import (
+	"math/rand"
+	"time"
+)
+
+func main() {
+	c := make(chan int)
+	for i := 0; i < 4; i++ {
+		go doWork(c)
+	}
+	for {
+		v := <-c
+		println(v)
+	}
+}
+
+func doWork(c chan int) {
+	for {
+		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
+		c <- rand.Int()
+	}
+}
+
+
+// waitgroup
+package main
+
+import "sync"
+
+func main() {
+	var wg sync.WaitGroup
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+		go func(x int) {
+			sendRPC(x)
+			wg.Done()
+		}(i)
+	}
+	wg.Wait()
+}
+
+func sendRPC(i int) {
+	println(i)
+}
 ```
