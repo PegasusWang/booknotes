@@ -442,6 +442,12 @@
     <li class="toctree-l3"><a href="#24">24. 带外数据</a></li>
     
 
+    <li class="toctree-l3"><a href="#25-io">25 信号驱动 I/O</a></li>
+    
+
+    <li class="toctree-l3"><a href="#26">26 线程</a></li>
+    
+
     </ul>
                 </li>
     </ul>
@@ -2129,6 +2135,227 @@ sig_urg(int signo)
     n = Recv(connfd, buff, sizeof(buff)-1, MSG_OOB);
     buff[n] = 0;        /* null terminate */
     printf(&quot;read %d OOB byte: %s\n&quot;, n, buff);
+}
+</code></pre>
+
+<h1 id="25-io">25 信号驱动 I/O</h1>
+<p>信号驱动 IO 是指进程预先告知内核，使得当某个描述字上发生某事时，内核使用信号通知相关进程。
+对 TCP 没啥用，没有告诉发生了什么事件。
+作者找到的唯一用途：基于 UDP 的 NTP 服务器。</p>
+<pre><code class="c">/* include dgecho1 */
+#include    &quot;unp.h&quot;
+
+static int      sockfd;
+
+#define QSIZE      8        /* size of input queue */
+#define MAXDG   4096        /* max datagram size */
+
+typedef struct {
+  void      *dg_data;       /* ptr to actual datagram */
+  size_t    dg_len;         /* length of datagram */
+  struct sockaddr  *dg_sa;  /* ptr to sockaddr{} w/client's address */
+  socklen_t dg_salen;       /* length of sockaddr{} */
+} DG;
+static DG   dg[QSIZE];          /* queue of datagrams to process */
+static long cntread[QSIZE+1];   /* diagnostic counter */
+
+static int  iget;       /* next one for main loop to process */
+static int  iput;       /* next one for signal handler to read into */
+static int  nqueue;     /* # on queue for main loop to process */
+static socklen_t clilen;/* max length of sockaddr{} */
+
+static void sig_io(int);
+static void sig_hup(int);
+/* end dgecho1 */
+
+/* include dgecho2 */
+void
+dg_echo(int sockfd_arg, SA *pcliaddr, socklen_t clilen_arg)
+{
+    int         i;
+    const int   on = 1;
+    sigset_t    zeromask, newmask, oldmask;
+
+    sockfd = sockfd_arg;
+    clilen = clilen_arg;
+
+    for (i = 0; i &lt; QSIZE; i++) {   /* init queue of buffers */
+        dg[i].dg_data = Malloc(MAXDG);
+        dg[i].dg_sa = Malloc(clilen);
+        dg[i].dg_salen = clilen;
+    }
+    iget = iput = nqueue = 0;
+
+    Signal(SIGHUP, sig_hup);
+    Signal(SIGIO, sig_io);
+    Fcntl(sockfd, F_SETOWN, getpid());
+    Ioctl(sockfd, FIOASYNC, &amp;on);
+    Ioctl(sockfd, FIONBIO, &amp;on);
+
+    Sigemptyset(&amp;zeromask);     /* init three signal sets */
+    Sigemptyset(&amp;oldmask);
+    Sigemptyset(&amp;newmask);
+    Sigaddset(&amp;newmask, SIGIO); /* signal we want to block */
+
+    Sigprocmask(SIG_BLOCK, &amp;newmask, &amp;oldmask);
+    for ( ; ; ) {
+        while (nqueue == 0)
+            sigsuspend(&amp;zeromask);  /* wait for datagram to process */
+
+            /* 4unblock SIGIO */
+        Sigprocmask(SIG_SETMASK, &amp;oldmask, NULL);
+
+        Sendto(sockfd, dg[iget].dg_data, dg[iget].dg_len, 0,
+               dg[iget].dg_sa, dg[iget].dg_salen);
+
+        if (++iget &gt;= QSIZE)
+            iget = 0;
+
+            /* 4block SIGIO */
+        Sigprocmask(SIG_BLOCK, &amp;newmask, &amp;oldmask);
+        nqueue--;
+    }
+}
+/* end dgecho2 */
+
+/* include sig_io */
+static void
+sig_io(int signo)
+{
+    ssize_t     len;
+    int         nread;
+    DG          *ptr;
+
+    for (nread = 0; ; ) {
+        if (nqueue &gt;= QSIZE)
+            err_quit(&quot;receive overflow&quot;);
+
+        ptr = &amp;dg[iput];
+        ptr-&gt;dg_salen = clilen;
+        len = recvfrom(sockfd, ptr-&gt;dg_data, MAXDG, 0,
+                       ptr-&gt;dg_sa, &amp;ptr-&gt;dg_salen);
+        if (len &lt; 0) {
+            if (errno == EWOULDBLOCK)
+                break;      /* all done; no more queued to read */
+            else
+                err_sys(&quot;recvfrom error&quot;);
+        }
+        ptr-&gt;dg_len = len;
+
+        nread++;
+        nqueue++;
+        if (++iput &gt;= QSIZE)
+            iput = 0;
+
+    }
+    cntread[nread]++;       /* histogram of # datagrams read per signal */
+}
+/* end sig_io */
+
+/* include sig_hup */
+static void
+sig_hup(int signo)
+{
+    int     i;
+
+    for (i = 0; i &lt;= QSIZE; i++)
+        printf(&quot;cntread[%d] = %ld\n&quot;, i, cntread[i]);
+}
+/* end sig_hup */
+</code></pre>
+
+<h1 id="26">26 线程</h1>
+<p>fork的问题：</p>
+<ul>
+<li>开销大。尽管有copy-on-write</li>
+<li>父子进程之间传递信息需要 IPC 机制</li>
+</ul>
+<p>使用线程开销小，不过需要考虑“同步”问题。</p>
+<pre><code class="c">// threads/strclithread2.c
+#include    &quot;unpthread.h&quot;
+
+void    *copyto(void *);
+
+static int  sockfd;
+static FILE *fp;
+static int  done;
+
+void
+str_cli(FILE *fp_arg, int sockfd_arg)
+{
+    char        recvline[MAXLINE];
+    pthread_t   tid;
+
+    sockfd = sockfd_arg;    /* copy arguments to externals */
+    fp = fp_arg;
+
+    Pthread_create(&amp;tid, NULL, copyto, NULL);
+
+    while (Readline(sockfd, recvline, MAXLINE) &gt; 0)
+        Fputs(recvline, stdout);
+
+    if (done == 0)
+        err_quit(&quot;server terminated prematurely&quot;);
+}
+
+void *
+copyto(void *arg)
+{
+    char    sendline[MAXLINE];
+
+    while (Fgets(sendline, MAXLINE, fp) != NULL)
+        Writen(sockfd, sendline, strlen(sendline));
+
+    Shutdown(sockfd, SHUT_WR);  /* EOF on stdin, send FIN */
+
+    done = 1;
+    return(NULL);
+    /* return (i.e., thread terminates) when end-of-file on stdin */
+}
+
+
+// threads/tcpserv02.c
+#include    &quot;unpthread.h&quot;
+
+static void *doit(void *);      /* each thread executes this function */
+
+int
+main(int argc, char **argv)
+{
+    int             listenfd, *iptr;
+    thread_t        tid;
+    socklen_t       addrlen, len;
+    struct sockaddr *cliaddr;
+
+    if (argc == 2)
+        listenfd = Tcp_listen(NULL, argv[1], &amp;addrlen);
+    else if (argc == 3)
+        listenfd = Tcp_listen(argv[1], argv[2], &amp;addrlen);
+    else
+        err_quit(&quot;usage: tcpserv01 [ &lt;host&gt; ] &lt;service or port&gt;&quot;);
+
+    cliaddr = Malloc(addrlen);
+
+    for ( ; ; ) {
+        len = addrlen;
+        iptr = Malloc(sizeof(int));
+        *iptr = Accept(listenfd, cliaddr, &amp;len);
+        Pthread_create(&amp;tid, NULL, &amp;doit, iptr);
+    }
+}
+
+static void *
+doit(void *arg)
+{
+    int     connfd;
+
+    connfd = *((int *) arg);
+    free(arg);
+
+    Pthread_detach(pthread_self());
+    str_echo(connfd);       /* same function as before */
+    Close(connfd);          /* done with connected socket */
+    return(NULL);
 }
 </code></pre>
               

@@ -894,6 +894,304 @@ Big sequential access</p>
 <h1 id="4-primary-backup-replication">4. Primary-Backup Replication</h1>
 <p><img alt="" src="../4-0.jpeg" />
 <img alt="" src="../4-1.jpeg" /></p>
+<h1 id="5-go-threads-and-raft">5. Go, Threads, and Raft</h1>
+<pre><code class="go">// closure.go
+package main
+
+import &quot;sync&quot;
+
+func main() {
+
+    var a string
+    var wg sync.WaitGroup
+
+    wg.Add(1)
+    go func() {
+        a = &quot;hello world&quot;
+        wg.Done()
+    }()
+    wg.Wait()
+    println(a)
+}
+
+// loop.go
+package main
+
+import &quot;sync&quot;
+
+func main() {
+    var wg sync.WaitGroup
+    for i := 0; i &lt; 5; i++ {
+        wg.Add(1)
+        go func(x int) {
+            sendRPC(x)
+            wg.Done()
+        }(i) // 注意闭包变量
+    }
+    wg.Wait()
+}
+
+func sendRPC(i int) {
+    println(i)
+}
+
+// sleep.go
+package main
+
+import &quot;time&quot;
+
+func main() {
+    time.Sleep(1 * time.Second)
+    println(&quot;started&quot;)
+    go periodic()
+    time.Sleep(5 * time.Second)
+}
+
+func periodic() {
+    for {
+        println(&quot;tick&quot;)
+        time.Sleep(1 * time.Second)
+    }
+}
+
+// sleep-cancel.go
+package main
+
+import (
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+var done bool
+var mu sync.Mutex
+
+func main() {
+    time.Sleep(1 * time.Second)
+    println(&quot;started&quot;)
+    go periodic()
+    time.Sleep(5 * time.Second)
+
+    mu.Lock()
+    done = true
+    mu.Unlock()
+    println(&quot;cancelled&quot;)
+    time.Sleep(3 * time.Second)
+}
+
+func periodic() {
+    for {
+        println(&quot;tick&quot;)
+        time.Sleep(1 * time.Second)
+        mu.Lock()
+        if done {
+            mu.Unlock()
+            return
+        }
+        mu.Unlock()
+    }
+}
+
+
+// bank.go
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    alice := 10000
+    bob := 10000
+
+    var mu sync.Mutex
+
+    total := alice + bob
+
+    go func() {
+        for i := 0; i &lt; 1000; i++ {
+            // 这代码演示目的就是 锁的粒度，不能单独给两个操作分别加锁，而是放到一起
+            // 这样才能保证不变式 total := alice+bob 始终成立
+            mu.Lock()
+            alice -= 1
+            bob += 1
+            mu.Unlock()
+        }
+    }()
+
+    go func() {
+        for i := 0; i &lt; 1000; i++ {
+            mu.Lock()
+            bob -= 1
+            alice += 1
+            mu.Unlock()
+        }
+    }()
+
+    start := time.Now()
+    for time.Since(start) &lt; 1*time.Second {
+        mu.Lock()
+        if alice+bob != total {
+            fmt.Printf(&quot;observed violation, alice=%v,bob=%v,sum=%v\n&quot;, alice, bob, alice+bob)
+        }
+        mu.Unlock()
+    }
+}
+
+
+// vote-count-2.go
+package main
+
+import (
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+// 同步原语演示：演示条件变量 cond var
+func main() {
+    rand.Seed(time.Now().UnixNano())
+
+    count := 0
+    finished := 0
+    var mu sync.Mutex
+
+    for i := 0; i &lt; 10; i++ {
+        go func() {
+            vote := requestVote()
+            mu.Lock()
+            defer mu.Unlock()
+            if vote {
+                count++
+            }
+            finished++
+        }()
+    }
+    // bad: 这里浪费 cpu，一个比较low 的实现是在 for 里 time.Sleep(50 * time.Millisecond)
+    for {
+        mu.Lock()
+        if count &gt;= 5 || finished == 10 {
+            break
+        }
+        mu.Unlock()
+        // time.Sleep(50 * time.Millisecond)
+    }
+
+    if count &gt;= 5 {
+        println(&quot;recived 5+ votes!&quot;)
+    } else {
+        println(&quot;lost&quot;)
+    }
+
+    mu.Unlock() // NOTE: 注意上边 for 循环里如果 break 了这里需要 unlock
+}
+
+func requestVote() bool {
+    return rand.Intn(100) &lt; 50 // 50%概率返回 true
+}
+
+
+// vote-count-4.go
+package main
+
+import (
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+// 同步原语演示：演示条件变量 cond var
+func main() {
+    rand.Seed(time.Now().UnixNano())
+
+    count := 0
+    finished := 0
+    var mu sync.Mutex
+    cond := sync.NewCond(&amp;mu) // 使用条件变量
+
+    for i := 0; i &lt; 10; i++ {
+        go func() {
+            vote := requestVote()
+            mu.Lock()
+            defer mu.Unlock()
+            if vote {
+                count++
+            }
+            finished++
+            cond.Broadcast() // Broadcast wakes all goroutines waiting on c.
+        }()
+    }
+
+    mu.Lock()
+    for count &lt; 5 &amp;&amp; finished != 10 {
+        cond.Wait()
+    }
+    if count &gt;= 5 {
+        println(&quot;received 5+ votes!&quot;)
+    } else {
+        println(&quot;lost&quot;)
+    }
+    mu.Unlock()
+}
+
+func requestVote() bool {
+    return rand.Intn(100) &lt; 50 // 50%概率返回 true
+}
+
+/* cond.txt
+
+mu.Lock()
+// do something that might affect the condition
+cond.Broadcast()
+mu.Unlock()
+
+---
+
+mu.Lock()
+for !condition {
+    cond.Wait()
+}
+// now condition is true and we have the lock
+mu.Unlock()
+*/
+
+
+// channel-unbuffered.go
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    c := make(chan bool)
+    go func() {
+        time.Sleep(1 * time.Second)
+        &lt;-c
+    }()
+
+    start := time.Now()
+    c &lt;- true // block until other goroutine receives 。
+    fmt.Printf(&quot;send took %v\n\n&quot;, time.Since(start)) // 等待 1s 之后输出 时间
+}
+
+// unbuffered-deadlock.go
+package main
+
+import &quot;fmt&quot;
+
+// 死锁啦！
+func main() {
+    c := make(chan bool) // 如果改成 c := make(chan bool, 1) 就不会死锁
+    c &lt;- true            // block until  reveive。 如果放到一个 单独 goroutine 里就可以了，可以继续执行以下代码
+
+    // never execute
+    fmt.Println(&quot;===&quot;)
+    &lt;-c // 因为上边一直阻塞住了，这里始终不会执行到，最终导致死锁
+}
+</code></pre>
               
             </div>
           </div>
