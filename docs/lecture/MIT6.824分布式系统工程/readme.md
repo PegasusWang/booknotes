@@ -287,4 +287,157 @@ func main() {
 		mu.Unlock()
 	}
 }
+
+
+// vote-count-2.go
+package main
+
+import (
+	"math/rand"
+	"sync"
+	"time"
+)
+
+// 同步原语演示：演示条件变量 cond var
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	count := 0
+	finished := 0
+	var mu sync.Mutex
+
+	for i := 0; i < 10; i++ {
+		go func() {
+			vote := requestVote()
+			mu.Lock()
+			defer mu.Unlock()
+			if vote {
+				count++
+			}
+			finished++
+		}()
+	}
+	// bad: 这里浪费 cpu，一个比较low 的实现是在 for 里 time.Sleep(50 * time.Millisecond)
+	for {
+		mu.Lock()
+		if count >= 5 || finished == 10 {
+			break
+		}
+		mu.Unlock()
+		// time.Sleep(50 * time.Millisecond)
+	}
+
+	if count >= 5 {
+		println("recived 5+ votes!")
+	} else {
+		println("lost")
+	}
+
+	mu.Unlock() // NOTE: 注意上边 for 循环里如果 break 了这里需要 unlock
+}
+
+func requestVote() bool {
+	return rand.Intn(100) < 50 // 50%概率返回 true
+}
+
+
+// vote-count-4.go
+package main
+
+import (
+	"math/rand"
+	"sync"
+	"time"
+)
+
+// 同步原语演示：演示条件变量 cond var
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	count := 0
+	finished := 0
+	var mu sync.Mutex
+	cond := sync.NewCond(&mu) // 使用条件变量
+
+	for i := 0; i < 10; i++ {
+		go func() {
+			vote := requestVote()
+			mu.Lock()
+			defer mu.Unlock()
+			if vote {
+				count++
+			}
+			finished++
+			cond.Broadcast() // Broadcast wakes all goroutines waiting on c.
+		}()
+	}
+
+	mu.Lock()
+	for count < 5 && finished != 10 {
+		cond.Wait()
+	}
+	if count >= 5 {
+		println("received 5+ votes!")
+	} else {
+		println("lost")
+	}
+	mu.Unlock()
+}
+
+func requestVote() bool {
+	return rand.Intn(100) < 50 // 50%概率返回 true
+}
+
+/* cond.txt
+
+mu.Lock()
+// do something that might affect the condition
+cond.Broadcast()
+mu.Unlock()
+
+---
+
+mu.Lock()
+for !condition {
+	cond.Wait()
+}
+// now condition is true and we have the lock
+mu.Unlock()
+*/
+
+
+// channel-unbuffered.go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	c := make(chan bool)
+	go func() {
+		time.Sleep(1 * time.Second)
+		<-c
+	}()
+
+	start := time.Now()
+	c <- true // block until other goroutine receives 。
+	fmt.Printf("send took %v\n\n", time.Since(start)) // 等待 1s 之后输出 时间
+}
+
+// unbuffered-deadlock.go
+package main
+
+import "fmt"
+
+// 死锁啦！
+func main() {
+	c := make(chan bool) // 如果改成 c := make(chan bool, 1) 就不会死锁
+	c <- true            // block until  reveive。 如果放到一个 单独 goroutine 里就可以了，可以继续执行以下代码
+
+	// never execute
+	fmt.Println("===")
+	<-c // 因为上边一直阻塞住了，这里始终不会执行到，最终导致死锁
+}
 ```
