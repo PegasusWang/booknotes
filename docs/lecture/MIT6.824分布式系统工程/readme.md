@@ -1,6 +1,6 @@
 # MIT 6.824 分布式系统工程
 
-- http://nil.csail.mit.edu/6.824/2020/schedule.html 课程表，课程表包含 youbute 视频链接，讲义和论文地址，可以自行下载
+- http://nil.csail.mit.edu/6.824/2020/schedule.html 课程表，课程表包含 youbute 视频链接，讲义和论文pdf地址，可以自行下载
 - https://www.youtube.com/watch?v=cQP8WApzIQQ&list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB
 - https://www.bilibili.com/video/av87684880/ 2020 年最新官方视频
 
@@ -490,3 +490,5 @@ func sendRPC(i int) {
 	println(i)
 }
 ```
+
+lab: https://www.cnblogs.com/mignet/p/6824_Lab_2_Raft_2A.html
