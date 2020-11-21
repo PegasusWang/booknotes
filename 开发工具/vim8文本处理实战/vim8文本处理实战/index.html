@@ -832,11 +832,10 @@
 <p>分析 vim 性能： 使用 <code>-startuptime</code> 和 :profile 来分析性能</p>
 <p><code>:map g</code> 将显示所有 g 开头映射</p>
 <p><code>noremap &lt;c-u&gt; :w&lt;cr&gt;</code> 使用 ctrl-s 保存文件</p>
-<pre><code class="vim">let mapleader = &quot;\&lt;space&gt;&quot;
+<pre><code class="language-vim">let mapleader = &quot;\&lt;space&gt;&quot;
 noremap &lt;leader&gt;w :w&lt;cr&gt;
 noremap &lt;leader&gt;n :NERDTreeToggle&lt;cr&gt;
 </code></pre>
-
 <h1 id="4">4. 理解文本</h1>
 <p>本章介绍了几个插件</p>
 <ul>
@@ -857,7 +856,6 @@ noremap &lt;leader&gt;n :NERDTreeToggle&lt;cr&gt;
 [REMOTE change]
 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; [REMOTE commit/branch]
 </code></pre>
-
 <ul>
 <li>vim-tmux-navigator</li>
 <li>vim-test 执行单测。 :TestNearest :TestFile :TestSuite :TestLast</li>
@@ -880,7 +878,6 @@ let is_cat = 1 &quot; bool 使用1/0
 &quot;vim 中变量和作用域是通过前缀实现的
 let g:animal_name = 'miss'
 </code></pre>
-
 <p>作用域规则：</p>
 <ul>
 <li>g为全局作用域（若未指定作用域，则默认为全局作用域）。</li>
@@ -899,14 +896,12 @@ let &amp;ignorecase = 0
 &quot; 整数可以进行 (+, - , *, /)，字符串拼接使用点 .
 let g:cat = g:animal . ' is a cat'
 </code></pre>
-
 <h3 id="_2">打印</h3>
 <pre><code>&quot; 使用 echo 输出变量到状态栏
 echo g:animal_name
 &quot; 使用 echomsg 可以记录输出结果，使用 :messages 就可以查看
 echom 'here is another message'
 </code></pre>
-
 <h3 id="_3">条件表达式</h3>
 <pre><code>let g:animal_kind = 'cat'
 if g:animal_kind == 'cat'
@@ -927,7 +922,6 @@ if !g:is_cat &amp;&amp; !g:is_dog
   echo g:animal_name . 'is something else'
 endif
 </code></pre>
-
 <p>字符串比较:</p>
 <ul>
 <li>== ，是否忽略大小写取决于用户设置</li>
@@ -969,7 +963,6 @@ endif
 
 count(animals, 'cat') &quot; 统计个数
 </code></pre>
-
 <h3 id="_5">字典</h3>
 <pre><code>&quot; :help dict
 let animal_names = {
@@ -994,7 +987,6 @@ if has_key(animal_names, 'cat')
   echo 'Cat is:' . animal_names['cat']
 endif
 </code></pre>
-
 <h3 id="_6">循环</h3>
 <p>列表和字典都可以用 for 遍历</p>
 <pre><code>&quot; iter list
@@ -1037,7 +1029,6 @@ while len(animals) &gt; 0
   endif
 endwhile
 </code></pre>
-
 <h3 id="_7">函数</h3>
 <pre><code>&quot; vim中自己定义的函数需要大写开头，除非函数在脚本作用域或者命名空间中
 function Hello(animal)
@@ -1074,7 +1065,6 @@ endfunction
 &quot;   echo a:animal . 'says hello!'
 &quot; endfunction
 </code></pre>
-
 <h3 id="_8">类</h3>
 <p>通过在字典上定义方法来实现</p>
 <pre><code>let animal_names = {
@@ -1089,12 +1079,10 @@ endfunction
 
 echo animal_names.GetGreeting('cat')
 </code></pre>
-
 <h3 id="lambda">lambda 表达式</h3>
 <pre><code>let Hi = {animal -&gt; animal . 'says hello'}
 echo Hi('cat')
 </code></pre>
-
 <h3 id="mapfilter">高阶函数：映射(map)和过滤(filter)</h3>
 <p>map/filter 第一个参数是 list/dict，第二个是 function</p>
 <pre><code>let animal_names = {
@@ -1139,32 +1127,27 @@ echo animal_names
 call map(animal_names,
   \ {key, val -&gt; IsProperName(val) ? val : 'Miss ' .val})
 </code></pre>
-
 <h3 id="vim">与 vim 交互</h3>
 <p>execute 会把它的参数解析为一条vim命令执行，比如</p>
 <pre><code>let animal = 'cat'
 execute 'echo ' . animal
 </code></pre>
-
 <p>normal 用于执行按键序列，与正常模式操作相似</p>
 <pre><code>&quot; search cat and delete。
 normal /cat&lt;cr&gt;dw
 &quot; normal 会遵守用户按键映射，忽略可以用 nomal!
 nomal! /cat&lt;cr&gt;dw
 </code></pre>
-
 <p>silent 可以隐藏(比如execute)的输出。还可以隐藏外部命令输出，并禁止弹出对话框</p>
 <pre><code>silent echo animal . ' hello'
 silent ececute 'echo ' . animal
 silent !echo 'this is running in a shell'
 </code></pre>
-
 <p>has 检查 vim 是否支持某个功能</p>
 <pre><code>if has('python3')
   echom 'support python3'
 endif
 </code></pre>
-
 <h3 id="_9">文件相关命令</h3>
 <pre><code>&quot; expand 用于操作文件路径信息
 echom 'current file' . expand('%:e')
@@ -1173,7 +1156,6 @@ if filereadable(expand('%'))
   echom 'Current file (' . expand('%:t') . ') is readable!'
 endif
 </code></pre>
-
 <ul>
 <li>:p 展开为完整路径</li>
 <li>:h 路径头</li>
@@ -1204,7 +1186,6 @@ function AskAnimalName()
 endfunction
 nnoremap &lt;leader&gt;a = :let name= AskAnimalName()&lt;cr&gt;:echo name&lt;cr&gt;
 </code></pre>
-
 <p>编程风格参考：《google vimscript style guide》</p>
 <h3 id="_11">编写一个插件</h3>
 <p>一般的 vim 插件目录结构</p>

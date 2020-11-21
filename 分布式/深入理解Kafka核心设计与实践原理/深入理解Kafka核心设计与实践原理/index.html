@@ -978,7 +978,7 @@
 <li>sync: 调用 send 之后调用 get() 等待</li>
 <li>async: 传入回调 callback</li>
 </ul>
-<pre><code class="java">package chapter2;
+<pre><code class="language-java">package chapter2;
 
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -1023,9 +1023,8 @@ public class KafkaProducerAnalysis {
     }
 }
 </code></pre>
-
 <p>自定义分区器的实现：</p>
-<pre><code class="java">package chapter2;
+<pre><code class="language-java">package chapter2;
 
 import org.apache.kafka.clients.producer.Partitioner;
 import org.apache.kafka.common.Cluster;
@@ -1064,7 +1063,6 @@ public class DemoPartitioner implements Partitioner {
     }
 }
 </code></pre>
-
 <h3 id="22">2.2 原理分析</h3>
 <p><img alt="" src="../producer.png" /></p>
 <h3 id="23">2.3 重要生产者参数</h3>
@@ -1095,7 +1093,7 @@ public class DemoPartitioner implements Partitioner {
 <li>（4）提交消费位移。</li>
 <li>（5）关闭消费者实例。</li>
 </ul>
-<pre><code class="java">package chapter3;
+<pre><code class="language-java">package chapter3;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -1156,7 +1154,6 @@ public class KafkaConsumerAnalysis {
     }
 }
 </code></pre>
-
 <p>消费者使用 offset 表示消费者消费到分区中某个消息所在的位置。消费者在消费完消息之后需要执行消费位移的提交。
 默认有自动位移提交 enable.auto.commit 为 true。如果设置为 false 可以手动提交。</p>
 <ul>
@@ -1169,9 +1166,8 @@ public class KafkaConsumerAnalysis {
 <h3 id="41">4.1 主题管理</h3>
 <pre><code>kafka-topics.sh --zookeeper localhost:2181/kafka--create --topic topic-create --partitions 4 --replication-factor 2
 </code></pre>
-
 <h3 id="kafkaadminclient">KafkaAdminClient</h3>
-<pre><code class="java">package chapter4;
+<pre><code class="language-java">package chapter4;
 
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.config.ConfigResource;
@@ -1209,7 +1205,6 @@ public class KafkaAdminConfigOperation {
     }
 }
 </code></pre>
-
 <h3 id="43">4.3 分区的管理</h3>
 <p>只有 leader 副本对外提供读写服务，flollwer 副本只负责内部进行消息的同步。</p>
 <h3 id="44">4.4 选择合适分区数</h3>

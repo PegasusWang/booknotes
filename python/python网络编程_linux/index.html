@@ -769,7 +769,7 @@
             <div class="section">
               
                 <h1 id="cpu">获取服务器 cpu 使用情况代码</h1>
-<pre><code class="py"># 返回服务器信息(udp) server
+<pre><code class="language-py"># 返回服务器信息(udp) server
 import socket
 import psutil
 
@@ -799,8 +799,7 @@ while True:
     print(&quot;The client is&quot;, addr)
     print(&quot;Sended CPU data is:&quot;, data)
 </code></pre>
-
-<pre><code class="py"># client 获取 cpu 占用信息
+<pre><code class="language-py"># client 获取 cpu 占用信息
 import socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

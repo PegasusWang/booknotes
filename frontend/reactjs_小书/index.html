@@ -806,7 +806,7 @@
 <li>react-dom 负责把这个用来描述 UI 信息的 JavaScript 对象变成 DOM 元素，并且渲染到页面上。</li>
 </ul>
 <h3 id="_1">事件监听</h3>
-<pre><code class="js"> class Title extends Component {
+<pre><code class="language-js"> class Title extends Component {
   handleClickOnTitle () {
     console.log('Click on title.')
   }
@@ -818,7 +818,6 @@
   }
 }
 </code></pre>
-
 <p>没有经过特殊处理的话，这些 on* 的事件监听只能用在普通的 HTML 的标签上，而不能用在组件标签上。也就是说，<Header onClick={…} /> 这样的写法不会有什么效果的。这一点要注意，但是有办法可以做到这样的绑定，以后我们会提及</p>
 <h3 id="_2">高阶组件</h3>
 <p>高阶组件是一个函数（不是组件），传给他一个组件返回一个新的组件，新的组件使用传入的组件作为子组件。
@@ -834,7 +833,6 @@ export default WrappedComponent =&gt; {
   return NewComponent;
 };
 </code></pre>
-
 <p>为了组件之间代码复用，高阶组件内部的包装组件和被包装组件之间通过 props 传递数据。</p>
 <h3 id="context">context</h3>
 <p>React.js 的 context 就是这么一个东西，某个组件只要往自己的 context 里面放了某些状态，这个组件之下的所有子组件都直接访问这个状态而不需要通过中间组件的传递。一个组件的 context 只有它的子组件能够访问，它的父组件是不能访问到的，你可以理解每个组件的 context 就是瀑布的源头，只能往下流不能往上飞。</p>
@@ -861,7 +859,6 @@ function createStore (reducer) {
   return { getState, dispatch, subscribe }
 }
 </code></pre>
-
 <p>createStore 接受一个叫 reducer 的函数作为参数，这个函数规定是一个纯函数，它接受两个参数，一个是 state，一个是 action。</p>
 <p>如果没有传入 state 或者 state 是 null，那么它就会返回一个初始化的数据。
 reducer 是不允许有副作用的。你不能在里面操作 DOM，也不能发 Ajax 请求，更不能直接修改 state，它要做的仅仅是 ——
@@ -884,7 +881,6 @@ renderApp(store.getState())
 // 后面可以随意 dispatch 了，页面自动更新
 store.dispatch(...)
 </code></pre>
-
 <h1 id="smart-vs-dumb">Smart 组件 vs Dumb 组件</h1>
 <ul>
 <li>只会接受 props 并且渲染确定结果的组件我们把它叫做 Dumb 组件，这种组件只关心一件事情 —— 根据 props 进行渲染。 这个组件可能会在多处被使用到，那么我们就把它做成 Dumb 组件。</li>

@@ -852,7 +852,7 @@
             <div class="section">
               
                 <h1 id="unix">unix 网络编程代码下载</h1>
-<pre><code class="bash"># clone code
+<pre><code class="language-bash"># clone code
 git clone https://github.com/DingHe/unpv13e.git
 
 cd unpv13e
@@ -866,10 +866,9 @@ cp libunp.a /usr/local/lib/
 cd ./tcpcliserv
 make all
 </code></pre>
-
 <h1 id="1-5-tcp">1-5 Tcp 套接口</h1>
 <p>Tcp 回显示例：</p>
-<pre><code class="c">
+<pre><code class="language-c">
 // strcli11.c
 /* Use standard echo server; baseline measurements for nonblocking version */
 #include    &quot;unp.h&quot;
@@ -963,7 +962,6 @@ main(int argc, char **argv)
     }
 }
 </code></pre>
-
 <h1 id="6-io-select-poll">6章 I/O 复用：select 和 poll 函数</h1>
 <p>unix 可用的五种 I/O 模型：
 - 阻塞式 I/O
@@ -978,12 +976,11 @@ main(int argc, char **argv)
 - 同步 I/O 操作(synchronous I/O opetation) 导致请求进程阻塞，直到 I/O 操作完成。
 - 异步 I/O 操作(asynchronous I/O opetation) 不导致请求进程阻塞。前面五种只有异步 I/O 与 POSIX  定义的异步 I/O 匹配。</p>
 <p>select 函数：允许进程指示内核等待多个事件中的任何一个发生，并只在有一个或多个事件发生或经历一段指定的时间后才唤醒它。</p>
-<pre><code class="c">#include &lt;sys/select.h&gt;
+<pre><code class="language-c">#include &lt;sys/select.h&gt;
 #include &lt;sys/time.h&gt;
 int select(int maxfdp1, fd_et *readset, fd_set *writeset, fd_set *exceptset, const struct timeval *timeout);
 </code></pre>
-
-<pre><code class="c">//select/strcliselect02.c
+<pre><code class="language-c">//select/strcliselect02.c
 #include    &quot;unp.h&quot;
 
 void
@@ -1113,9 +1110,8 @@ main(int argc, char **argv)
 }
 /* end fig02 */
 </code></pre>
-
 <p>使用 poll 函数改写 tcp server</p>
-<pre><code class="c">#include &lt;poll.h&gt;
+<pre><code class="language-c">#include &lt;poll.h&gt;
 int poll(struct pollfd *fdarray, unsigned long nfds, int timeout);//返回就绪描述字个数。0 超时，-1 出错
 
 struct pollfd {
@@ -1124,8 +1120,7 @@ struct pollfd {
     short revents; // events occurred on fd
 }
 </code></pre>
-
-<pre><code class="c">/* include fig01 */
+<pre><code class="language-c">/* include fig01 */
 #include    &quot;unp.h&quot;
 #include    &lt;limits.h&gt;      /* for OPEN_MAX */
 
@@ -1217,19 +1212,17 @@ main(int argc, char **argv)
 }
 /* end fig02 */
 </code></pre>
-
 <h1 id="7">7. 套接口选项</h1>
-<pre><code class="c">#include &lt;sys/socket.h&gt;
+<pre><code class="language-c">#include &lt;sys/socket.h&gt;
 int getsockopt(int sockfd, int level, int optname, vod *optval, socklen_t *optlen);
 int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t *optlen);
 
 # include&lt;fcntl.h&gt;
 int fcntl(int fd, int cmd, ... /* int arg */); // file control
 </code></pre>
-
 <h1 id="8-udp">8 udp 套接口编程</h1>
 <p>回显client示例：</p>
-<pre><code class="c">//udpcliserv/udpcli04.c
+<pre><code class="language-c">//udpcliserv/udpcli04.c
 #include    &quot;unp.h&quot;
 
 int
@@ -1276,9 +1269,8 @@ dg_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
 }
 
 </code></pre>
-
 <p>回显 udp server 示例：</p>
-<pre><code class="c">#include    &quot;unp.h&quot;
+<pre><code class="language-c">#include    &quot;unp.h&quot;
 
 int
 main(int argc, char **argv)
@@ -1327,10 +1319,9 @@ recvfrom_int(int signo)
     exit(0);
 }
 </code></pre>
-
 <h1 id="11">11. 名字与地址转换</h1>
 <p>以下这些函数可以在 python 中测试一下，使用起来要比 c 语言简便很多。</p>
-<pre><code class="c">#include &lt;netdb.h&gt;
+<pre><code class="language-c">#include &lt;netdb.h&gt;
 
 // 根据主机名获取 ipv4 。 python : socket.gethostbyname(&quot;www.baidu.com&quot;)
 struct hostent *gethostbyname(const char *hostname);
@@ -1343,7 +1334,6 @@ struct hostent *gethostbyaddr(const char *addr, socklen_t len, int family);
 int getaddrinfo(const char *hostname , const char *service , const struct addrinfo *hints , struct addrinfo **result );
 // 返回：若成功则为0，若出错则为非0（见图11-7）
 </code></pre>
-
 <p><a href="https://baike.baidu.com/item/%E5%8F%AF%E9%87%8D%E5%85%A5%E5%87%BD%E6%95%B0">可重入函数</a>：
 可重入函数主要用于多任务环境中，一个可重入的函数简单来说就是可以被中断的函数，也就是说，可以在这个函数执行的任何时刻中断它，
 转入OS调度下去执行另外一段代码，而返回控制时不会出现什么错误；而不可重入的函数由于使用了一些系统资源，比如全局变量区，
@@ -1352,7 +1342,7 @@ int getaddrinfo(const char *hostname , const char *service , const struct addrin
 <p>双栈(dual stacks):ipv4和ipv6协议栈。</p>
 <h1 id="13-inetd">13. 守护进程和 inetd 超级服务器</h1>
 <p>守护进程(daemon): 后台运行且不与任何控制终端关联的进程。</p>
-<pre><code class="c">#include    &quot;unp.h&quot;
+<pre><code class="language-c">#include    &quot;unp.h&quot;
 #include    &lt;time.h&gt;
 
 int main(int argc, char **argv)
@@ -1388,7 +1378,6 @@ int main(int argc, char **argv)
     }
 }
 </code></pre>
-
 <h1 id="14-io">14. 高级 IO 函数</h1>
 <h2 id="142">14.2 套接口超时</h2>
 <p>在涉及套接字的I/O操作上设置超时的方法有以下3种。</p>
@@ -1402,7 +1391,7 @@ int main(int argc, char **argv)
 <li>dev/poll</li>
 <li>kqueue</li>
 </ul>
-<pre><code class="c">// advio/str_cli_kqueue04.c
+<pre><code class="language-c">// advio/str_cli_kqueue04.c
 #include    &quot;unp.h&quot;
 
 void
@@ -1456,10 +1445,9 @@ str_cli(FILE *fp, int sockfd)
     }
 }
 </code></pre>
-
 <h1 id="15-unix">15. unix 域协议</h1>
 <p>unix域协议不是一个实际的协议族，而是单个主机上执行客户/服务器通信的一种方法。</p>
-<pre><code class="c">// unixdomain/unixdgserv01.c
+<pre><code class="language-c">// unixdomain/unixdgserv01.c
 #include    &quot;unp.h&quot;
 
 int
@@ -1506,7 +1494,6 @@ main(int argc, char **argv)
     exit(0);
 }
 </code></pre>
-
 <ul>
 <li>socketpair 函数</li>
 </ul>
@@ -1520,7 +1507,7 @@ main(int argc, char **argv)
 <li>发起外出连接，即用于TCP的connect函数。（回顾一下，我们知道connect同样可用于UDP，不过它不能使一个“真正”的连接建立起来，它只是使内核保存对端的IP地址和端口号。）我们已在2.6节展示过，TCP连接的建立涉及一个三路握手过程，而且connect函数一直要等到客户收到对于自己的SYN的ACK为止才返回。这意味着TCP的每个connect总会阻塞其调用进程至少一个到服务器的RTT时间。</li>
 </ol>
 <h2 id="162-str_cli">16.2 非阻塞读和写: str_cli 函数</h2>
-<pre><code class="c">/* include nonb1 */
+<pre><code class="language-c">/* include nonb1 */
 #include    &quot;unp.h&quot;
 
 void
@@ -1646,9 +1633,8 @@ str_cli(FILE *fp, int sockfd)
 }
 /* end nonb3 */
 </code></pre>
-
 <h2 id="163-connect">16.3 非阻塞 connect</h2>
-<pre><code class="c">#include    &quot;unp.h&quot;
+<pre><code class="language-c">#include    &quot;unp.h&quot;
 
 int connect_nonb(int sockfd, const SA *saptr, socklen_t salen, int nsec)
 {
@@ -1701,9 +1687,8 @@ done:
     return(0);
 }
 </code></pre>
-
 <h1 id="17-ioctl">17 ioctl 操作</h1>
-<pre><code class="c">#include    &quot;unp.h&quot;
+<pre><code class="language-c">#include    &quot;unp.h&quot;
 #include    &lt;net/if.h&gt;
 
 int
@@ -1723,9 +1708,8 @@ main(int argc, char **argv)
     exit(0);
 }
 </code></pre>
-
 <h1 id="18">18. 路由套接口</h1>
-<pre><code class="c">// 检查 udp 校验和是否开启
+<pre><code class="language-c">// 检查 udp 校验和是否开启
 #include    &quot;unproute.h&quot;
 #include    &lt;netinet/udp.h&gt;
 #include    &lt;netinet/ip_var.h&gt;
@@ -1749,14 +1733,13 @@ main(int argc, char **argv)
     exit(0);
 }
 </code></pre>
-
 <h1 id="19">19. 密钥管理套接口</h1>
 <h1 id="20-broadcasting">20. 广播(broadcasting)</h1>
 <p>广播发送的数据报由发送主机某个所在子网上的所有主机接收。广播的劣势在于同一子网上的所有主机都必须处理数据报，
 若是UDP数据报则需沿协议栈向上一直处理到UDP层，即使不参与广播应用的主机也不能幸免。要是运行诸如音频、视频等以较高数据速率工作的应用，
 这些非必要的处理会给这些主机带来过度的处理负担。我们将在下一章看到多播可以解决本问题，因为多播发送的数据报只会由对相应多播应用感兴趣的主机接收。</p>
 <p>竞争状态：多个进程访问共享数据，正确结果取决于进程的执行顺序时，称这些进程处于竞争状态。</p>
-<pre><code class="c">// bcast/udpcli06.c
+<pre><code class="language-c">// bcast/udpcli06.c
 #include    &quot;unp.h&quot;
 
 int
@@ -1845,9 +1828,8 @@ recvfrom_alarm(int signo)
     return;
 }
 </code></pre>
-
 <h1 id="21-multiplcasting">21. 多播 (multiplcasting)</h1>
-<pre><code class="c">
+<pre><code class="language-c">
 //mcast/main.c
 #include    &quot;unp.h&quot;
 
@@ -1926,14 +1908,13 @@ sntp_proc(char *buf, ssize_t n, struct timeval *nowptr)
     printf(&quot;clock difference = %d usec\n&quot;, useci);
 }
 </code></pre>
-
 <h1 id="22-udp">22 高级 udp 套接口编程</h1>
 <p>给 udp 增加可靠性：</p>
 <ul>
 <li>超时和重传: 用户处理丢失的数据报 (比如通过携带时间戳计算 rtt 判断是否需要重传)</li>
 <li>序列号：供客户验证一个应答是否匹配相应的需求 (发送报文生成序列号)</li>
 </ul>
-<pre><code class="c">// rtt/dg_send_recv.c
+<pre><code class="language-c">// rtt/dg_send_recv.c
 /* include dgsendrecv1 */
 #include    &quot;unprtt.h&quot;
 #include    &lt;setjmp.h&gt;
@@ -2050,10 +2031,9 @@ Dg_send_recv(int fd, const void *outbuff, size_t outbytes,
     return(n);
 }
 </code></pre>
-
 <h1 id="24">24. 带外数据</h1>
 <p>带外数据(out-of-band data): 比普通数据具有更高的优先级。tcp 没有真正的带外数据，不过提供紧急模式和紧急指针。</p>
-<pre><code class="c">// oob/tcpsend01.c
+<pre><code class="language-c">// oob/tcpsend01.c
 #include    &quot;unp.h&quot;
 
 int
@@ -2137,12 +2117,11 @@ sig_urg(int signo)
     printf(&quot;read %d OOB byte: %s\n&quot;, n, buff);
 }
 </code></pre>
-
 <h1 id="25-io">25 信号驱动 I/O</h1>
 <p>信号驱动 IO 是指进程预先告知内核，使得当某个描述字上发生某事时，内核使用信号通知相关进程。
 对 TCP 没啥用，没有告诉发生了什么事件。
 作者找到的唯一用途：基于 UDP 的 NTP 服务器。</p>
-<pre><code class="c">/* include dgecho1 */
+<pre><code class="language-c">/* include dgecho1 */
 #include    &quot;unp.h&quot;
 
 static int      sockfd;
@@ -2263,7 +2242,6 @@ sig_hup(int signo)
 }
 /* end sig_hup */
 </code></pre>
-
 <h1 id="26">26 线程</h1>
 <p>fork的问题：</p>
 <ul>
@@ -2271,7 +2249,7 @@ sig_hup(int signo)
 <li>父子进程之间传递信息需要 IPC 机制</li>
 </ul>
 <p>使用线程开销小，不过需要考虑“同步”问题。</p>
-<pre><code class="c">// threads/strclithread2.c
+<pre><code class="language-c">// threads/strclithread2.c
 #include    &quot;unpthread.h&quot;
 
 void    *copyto(void *);

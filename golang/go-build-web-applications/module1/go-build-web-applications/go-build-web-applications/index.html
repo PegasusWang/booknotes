@@ -866,7 +866,7 @@ func main() {
 </code></pre>
 <h1 id="1-an-introduction-to-concurrency-in-go">1 An Introduction to Concurrency in Go</h1>
 <p>注意引用传递在 defer 中的坑。下边的例子输出0而不是100</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
@@ -880,9 +880,8 @@ func main() {
     }
 }
 </code></pre>
-
 <h3 id="channel-cspcommunicating-sequential-processes">channel 的使用。 CSP(Communicating Sequential Processes)</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -923,11 +922,10 @@ func main() {
     fmt.Println(finalString)
 }
 </code></pre>
-
 <h3 id="select">select 的使用</h3>
 <p>语法类似 switch 。
 select reacts to actions and communication across a channel.</p>
-<pre><code class="go">switch {
+<pre><code class="language-go">switch {
     case 'x':
     case 'y':
 }
@@ -936,10 +934,9 @@ select {
     case &lt;- channelB:
 }
 </code></pre>
-
 <p>select 会 block直到有数据发送给channel。否则会 deadlocks
 如果同时 receive，go 会无法预期地执行其中一个</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1010,7 +1007,6 @@ func main() {
     }
 }
 </code></pre>
-
 <h1 id="2-understanding-the-concurrency-model">2 Understanding the Concurrency Model</h1>
 <p>go get github.com/ajstarks/svgo</p>
 <p>Go/Csp vs Actor model:</p>
@@ -1026,7 +1022,6 @@ c = new Channel
 a -&gt; c(&quot;sending something&quot;)
 b &lt;- c(&quot;receiving something&quot;)
 </code></pre>
-
 <p>go里简单的多态实现(polymorphism):</p>
 <pre><code>package main
 
@@ -1051,7 +1046,6 @@ func main() {
 
 }
 </code></pre>
-
 <p>use sync and mutexes to lock data:</p>
 <pre><code>package main
 
@@ -1082,12 +1076,11 @@ func main() {
     wg.Wait()
 }
 </code></pre>
-
 <h1 id="3-developing-a-concurrent-strategy">3 Developing a Concurrent Strategy</h1>
 <h3 id="use-race-flag-when-testing-building-or-running">Use -race flag when testing, building or running.</h3>
 <p><code>go run -race race-test.go</code></p>
 <h3 id="using-mutual-exclusions">using mutual exclusions:</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1116,9 +1109,8 @@ func main() {
     wg.wait()
 }
 </code></pre>
-
 <h3 id="exploring-timeouts">Exploring timeouts:</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1137,14 +1129,13 @@ func main() {
     }
 }
 </code></pre>
-
 <h3 id="synchronizing-our-concurrent-operations">Synchronizing our concurrent operations</h3>
 <h1 id="4-data-integrity-in-an-application">4 Data Integrity in an Application</h1>
 <h3 id="getting-depper-with-mutexes-and-sync">Getting depper with mutexes and sync</h3>
 <ul>
 <li>RWMutex: miltireader, single-writer lock(feaquent read , infrequent write, cannot dirty read)</li>
 </ul>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1193,9 +1184,8 @@ func main() {
     fmt.Println(currentTime.String())
 }
 </code></pre>
-
 <h3 id="working-with-files">Working with files</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1231,9 +1221,8 @@ func main() {
     fmt.Println(&quot;Done!&quot;)
 }
 </code></pre>
-
 <h3 id="getting-low-implementing-c">Getting low-implementing C</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 /*
     #include &lt;stdio.h&gt;
@@ -1252,7 +1241,6 @@ func main() {
     C.free(unsafe.Pointer(v))
 }
 </code></pre>
-
 <h3 id="distributed-go">Distributed Go</h3>
 <ul>
 <li>distributed lock</li>
@@ -1265,7 +1253,7 @@ func main() {
 <li>master-slave model</li>
 </ul>
 <p>producer-consumer problem</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
@@ -1292,7 +1280,6 @@ func main() {
     fmt.Println(&quot;All Done!&quot;)
 }
 </code></pre>
-
 <h3 id="go-circuit">Go Circuit</h3>
 <p>https://github.com/gocircuit/circuit
 need Zookpeer</p>
@@ -1304,18 +1291,17 @@ need Zookpeer</p>
 <li>2.the select statement in a loop</li>
 <li>3.network connections and reads</li>
 </ul>
-<pre><code class="go">&lt;- myChannel  // same way as the following code snippet
+<pre><code class="language-go">&lt;- myChannel  // same way as the following code snippet
 
 select {
 case mc := &lt;- myChannel:
     // do something
 }
 </code></pre>
-
 <p>Cleaning up goroutines:Any channel that is left waiting and/or left receiving will result in a deadlock.</p>
 <h3 id="pprof">Pprof</h3>
 <p>runtime.ppof package</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;flag&quot;
@@ -1379,7 +1365,6 @@ func main() {
     fmt.Println(initString)
 }
 </code></pre>
-
 <h3 id="handling-deadlocks-and-errors">Handling deadlocks and errors</h3>
 <p>```package maingo</p>
 <p>import "os"</p>

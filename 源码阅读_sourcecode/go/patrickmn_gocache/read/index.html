@@ -770,9 +770,8 @@
               
                 <h1 id="_1">代码阅读</h1>
 <p>https://github.com/patrickmn/go-cache</p>
-<pre><code class="sh">go get github.com/patrickmn/go-cache
+<pre><code class="language-sh">go get github.com/patrickmn/go-cache
 </code></pre>
-
 <h1 id="_2">进程缓存使用场景</h1>
 <p>除了使用 redis 等内存缓存之外，有时候还需要单机 cache 场景(不用和 redis server 进行网络请求了)。
 举一个例子就是像是微博这种服务，对于一些超高热点数据(比如某明星又出轨），缓存的 key 会集中在某台 redis
@@ -783,7 +782,7 @@
 <h1 id="go-cache">go-cache</h1>
 <p>star 数量较高，也比较稳定了。实现了 goroutine 安全的 map[string]interface{}，包含超时。支持序列化到文件并且重新加载</p>
 <p>示例代码:</p>
-<pre><code class="go">import (
+<pre><code class="language-go">import (
     &quot;fmt&quot;
     &quot;github.com/patrickmn/go-cache&quot;
     &quot;time&quot;

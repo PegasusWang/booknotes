@@ -847,7 +847,6 @@
 <pre><code>:nmap v :version&lt;cr&gt;
 :nunmap v
 </code></pre>
-
 <p>使用非递归版本 nnoremap</p>
 <p>禁用某个键可以使用 <code>:noremap &lt;left&gt; &lt;nop&gt;</code></p>
 <h1 id="17-folding">17. Folding</h1>
@@ -874,14 +873,12 @@
 autocmd InsertEnter * :setlocal norelativenumber
 autocmd InsertLeave * :setlocal relativenumber
 </code></pre>
-
 <ul>
 <li>Using the Leader Key: leader 提供了给vim映射定义命名空间的方式，比如使用 leader + w 来保存文件</li>
 </ul>
 <pre><code>let mapleader  = &quot;\&lt;Space&gt;&quot;
 nnoremap &lt;Leader&gt;w :w&lt;CR&gt;
 </code></pre>
-
 <ul>
 <li>Automatic Completion:  ctrl + n/p, ctrl+x ctrl+f 补全文件名</li>
 </ul>
@@ -923,14 +920,12 @@ a[0] = 2
 a[0] = 3
 a[0] = 4
 </code></pre>
-
 <p>变成</p>
 <pre><code>a[1] = 1
 a[2] = 2
 a[3] = 3
 a[4] = 4
 </code></pre>
-
 <p>使用 ctrl-v 块选中所有的 0，然后执行 <code>g ctrl+a</code> 完美解决。</p>
 <ul>
 <li>Clear highlighted searches: <code>nmap &lt;silent&gt; ,/ :nohlsearch&lt;CR&gt;</code></li>
@@ -947,7 +942,6 @@ a[4] = 4
 <pre><code>match ErrorMsg '\s\s+$'
 autocmd BufWritePre * :%s/\s\+$//e
 </code></pre>
-
 <ul>
 <li>Navigation through cursor history:
     - Jumplist : 存储光标跳转的每个位置。ctrl-o ctrl-i 分别是向之前（backwards） 和之后(forwards) 跳转
@@ -964,7 +958,6 @@ autocmd BufWritePre * :%s/\s\+$//e
 <pre><code>:g/127.0.0.1/d    删除包含 127.0.0.1 的行
 :v/127.0.0.1/d    删除不包含 127.0.0.1 的行
 </code></pre>
-
 <ul>
 <li>Quickly switching buffers: vim 有个快捷键切换最后一个编辑的buffer。 ctrl-^ ,不是很方便。</li>
 </ul>
@@ -972,7 +965,6 @@ autocmd BufWritePre * :%s/\s\+$//e
 nnoremap &lt;C-[&gt; &lt;C-^&gt;
 inoremap &lt;C-[&gt; &lt;esc&gt;&lt;C-^&gt;
 </code></pre>
-
 <h1 id="20-plugins">20. Plugins</h1>
 <p>使用插件管理器，书中推荐的是 Vundle，不过使用 dein 或者 vim-plug
 支持并发管理，速度要快很多。安装过程看下github文档就好</p>

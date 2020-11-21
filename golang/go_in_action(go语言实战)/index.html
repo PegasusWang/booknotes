@@ -881,7 +881,6 @@ for idx, val := range slice {
     fmt.Println(val)
 }
 </code></pre>
-
 <h3 id="_3">映射</h3>
 <p>map使用两个数据结构实现。一个是数组，存储的是选择桶的散列键的高八位，区分每个键值对存储在哪个桶里。
 第二个是一个字节数组，用于存储键值对。
@@ -901,7 +900,6 @@ func main() {
   // 编译器不会做隐式类型转换
 }
 </code></pre>
-
 <p>go 语言有两种类型的接收者：值接收者和指针接收者。
 值接收者获取的是副本（如果是指针也是指针指向的值的副本）</p>
 <p>如果想要修改值就需要用 pointer receivers，但是 pointer receivers 不是并发安全的。
@@ -963,7 +961,6 @@ func main() {
 
 }
 </code></pre>
-
 <p>竞争状态：两个或者多个 goroutine 在没有同步的情况的下，访问某个共享的资源，并试图同时读写这个资源，就会处于
 相互竞争状态。</p>
 <pre><code>// 竞争状态演示
@@ -1001,7 +998,6 @@ func incCounter(id int) {
     }
 }
 </code></pre>
-
 <p>使用锁来锁住共享资源：</p>
 <ul>
 <li>原子函数(atomic)</li>
@@ -1040,7 +1036,6 @@ func incCounter(id int) {
     }
 }
 </code></pre>
-
 <p>使用互斥锁:</p>
 <pre><code>// 使用 互斥锁 mutex
 package main
@@ -1080,7 +1075,6 @@ func incCounter(id int) {
     }
 }
 </code></pre>
-
 <p>使用通道，通过发送和接收需要共享的资源，在 goroutine 之间做同步。
 可以通过 Channel 共享内置类型、命名类型、结构类型、和引用类型的值或者指针。</p>
 <p>unbuffered channel: 接收前没有能力保存任何值的通道。要求发送和接收的goroutine 同时准备好，才能完成发送和接收。
@@ -1143,7 +1137,6 @@ func player(name string, court chan int) {
     }
 }
 </code></pre>
-
 <p>buffered channel: 在接收前能够存储一个或者多个值的通道。只在通道中没有要接收的值时，接收动作才会阻塞。
 只有通道没有可用缓冲区容纳被发送的值，发送动作才会阻塞。
 无缓冲通道保证进行发送和接收的 goroutine 会在同一时间进行数据交换；有缓冲通道没有这个保证。</p>
@@ -1225,7 +1218,6 @@ func worker(tasks chan string, worker int) {
     }
 }
 </code></pre>
-
 <h1 id="7">7 并发模式</h1>
 <h3 id="runner">runner</h3>
 <p>使用通道监视程序运行时间，终止程序等。当开发需要后台处理任务程序的时候，比较有用。</p>
@@ -1331,7 +1323,6 @@ func (r *Runner) gotInterrupt() bool {
     }
 }
 </code></pre>
-
 <p>支持终止方式：</p>
 <ul>
 <li>程序在分配的时间之内完成工作，正常终止</li>
@@ -1389,7 +1380,6 @@ func createTask() func(int) {
     }
 }
 </code></pre>
-
 <h3 id="pool">pool</h3>
 <p>使用有缓冲的通道实现资源池，来管理可以在任意数量的 goroutine 之间共享以及独立使用的资源。
 pool模式在共享一组静态资源（数据库连接，内存缓冲区）非常有用。</p>
@@ -1499,7 +1489,6 @@ func (p *Pool) Close() {
     }
 }
 </code></pre>
-
 <p>测试代码如下，注意实现 closer:</p>
 <pre><code>// This sample program demonstrates how to use the pool package
 // to share a simulated set of database connections.
@@ -1593,7 +1582,6 @@ func performQueries(query int, p *pool.Pool) {
     log.Printf(&quot;Query: QID[%d] CID[%d]\n&quot;, query, conn.(*dbConnection).ID)
 }
 </code></pre>
-
 <h3 id="work">work</h3>
 <p>使用无缓冲的通道创建一个goroutine池，这些goroutine执行并控制一组工作，让其并发执行。</p>
 <pre><code>// Example provided with help from Jason Waldrip.
@@ -1645,7 +1633,6 @@ func (p *Pool) Shutdown() {
     p.wg.Wait()
 }
 </code></pre>
-
 <p>测试代码：</p>
 <pre><code>// This sample program demonstrates how to use the work package
 // to use a pool of goroutines to get work done.
@@ -1712,7 +1699,6 @@ func main() {
     p.Shutdown()
 }
 </code></pre>
-
 <h1 id="8">8 标准库</h1>
 <h3 id="_4">标注库</h3>
 <p>标准库的代码经过预编译的，这些预编译后的文件，称作归档文件(archive file, .a)，放在 pkg 下。</p>
@@ -1768,7 +1754,6 @@ func main() {
     Error.Println(&quot;Something has failed&quot;)
 }
 </code></pre>
-
 <h3 id="marshal">序列化和反序列化：marshal</h3>
 <ul>
 <li>序列化(marshal): 数据-&gt; json</li>
@@ -1790,7 +1775,6 @@ func main() {
       b.WriteTo(os.Stdout)
 }
 </code></pre>
-
 <pre><code>package main
 
 import (
@@ -1818,7 +1802,6 @@ func main() {
     }
 }
 </code></pre>
-
 <pre><code>// 实现一个简单的 curl 请求，同时把返回结果写到 stdout 和文件
 package main
 
@@ -1855,7 +1838,6 @@ func main() {
     }
 }
 </code></pre>
-
 <h1 id="9">9 测试和性能</h1>
 <h3 id="_5">单元测试</h3>
 <p>单测：用来测试包或者程序的一部分代码或者一组代码的函数。目的是确认目标代码在给定场景下，是否按照预期工作。</p>
@@ -1901,7 +1883,6 @@ func TestDownload(t *testing.T) {
     }
 }
 </code></pre>
-
 <p>注意测试文件用 test_file 开头，测试函数需要 Test 开头并且接收 testing.T 指针，不能有返回值。</p>
 <p>如果有多组测试用例，使用表组测试:</p>
 <pre><code>package listing08
@@ -1959,7 +1940,6 @@ func TestDownload(t *testing.T) {
     }
 }
 </code></pre>
-
 <h3 id="mocking-httptest-mock">mocking: 标准库包含一个 httptest 可以 mock 网络调用</h3>
 <p>一般单元测试不要依赖网络或者其他服务。mock 是一种常见的手段，用来模拟访问不可用的资源。
 使用 httptest 来 mock 一个网络调用。(这个例子麻烦在处理这个返回的 xml)
@@ -2082,7 +2062,6 @@ type Document struct {
     URI     string
 }
 </code></pre>
-
 <h3 id="endpoint">测试服务端点(endpoint)</h3>
 <p>endpoint是指与服务宿主信息无关，用来分辨某个服务的地址，一般是不包含宿主的一个路径。
 （感觉这个测试相比动态语言还是麻烦太多了)</p>
@@ -2150,7 +2129,6 @@ func TestSendJSON(t *testing.T) {
     }
 }
 </code></pre>
-
 <h3 id="example">Example 示例文档</h3>
 <p>注意函数名需要时基于已经存在的公开的函数或者方法。</p>
 <pre><code>// Sample test to show how to write a basic example.
@@ -2184,7 +2162,6 @@ func ExampleSendJSON() {
     // {Bill bill@ardanstudios.com}
 }
 </code></pre>
-
 <p>使用 <code>godoc -http=":3000"</code> 启动能看到 godoc 多了示例代码。
 可以用 <code>go test -v -run="ExampleSendJSON"</code> 运行这个示例函数。支持正则和单元测试</p>
 <h3 id="benchmark-test">基准测试(benchmark test)</h3>
@@ -2239,16 +2216,14 @@ func BenchmarkItoa(b *testing.B) {
 // go test -v -run=&quot;none&quot; -bench=&quot;BenchmarkSprintf&quot;
 // go test -v -run=&quot;none&quot; -bench=. -benchtime=&quot;3s&quot;
 </code></pre>
-
 <p>commands:</p>
-<pre><code class="sh"># run all package's test
+<pre><code class="language-sh"># run all package's test
 go test ./...
 # code coverage
 go test -coverprofile=c.out
 go tool cover -func=c.out
 go tool cover -html=c.out
 </code></pre>
-
 <p><a href="https://www.youtube.com/watch?v=BaMcmZRrG-c">How to write testable code</a></p>
               
             </div>

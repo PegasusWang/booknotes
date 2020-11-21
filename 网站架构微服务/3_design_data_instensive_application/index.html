@@ -782,7 +782,7 @@
 <p>比如你想找到5个访问最多的页面： cat access.log | awk '{print $7}' | sort | uniq -c | sort -r -n | head -n 5</p>
 <h5 id="chain-of-commands-versus-custom-program">Chain of commands versus custom program</h5>
 <p>下面这段 ruby 代码做了同样的事情</p>
-<pre><code class="ruby">counts = Hash.new(0)
+<pre><code class="language-ruby">counts = Hash.new(0)
 File.open('/var/log/nginx/access.log') do |file|
     file.each do |line|
         url = line.split[6]
@@ -792,7 +792,6 @@ end
 top5 = counts.map{|url, count| [count, url] }.sort.reverse[0...5]
 top5.each{|count, url| puts &quot;#{count} #{url}&quot; }
 </code></pre>
-
 <h5 id="sorting-versus-in-memory-aggregation">Sorting versus in-memory aggregation</h5>
 <p>ruby 代码里保存了一个 url 的 hash 表，unix pipeline 示例没有 hash 表但是要求数据是预先排序的，那种更好呢？
 如果数据量级比较小放在内存没问题， pipeline 工具能处理远大于内存的数据。数据可以被分片排序后写入到段文件，然后每个排序好的段可以被合并成一个大的排序文件。</p>

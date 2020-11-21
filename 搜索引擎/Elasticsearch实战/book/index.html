@@ -942,13 +942,12 @@
 <ul>
 <li>发送部分文档</li>
 </ul>
-<pre><code class="sh">curl -XPOST 'localhost:9200/get-together/group/2/_update' -d '{
+<pre><code class="language-sh">curl -XPOST 'localhost:9200/get-together/group/2/_update' -d '{
 　&quot;doc&quot;: {
 　　&quot;organizer&quot;: &quot;Roy&quot;
 　}
 }'
 </code></pre>
-
 <ul>
 <li>使用 upsert 创建不存在的文档。默认脚本语言是 Groovy</li>
 </ul>
@@ -976,7 +975,7 @@
 <li>_source: 指定_source 字段如何返回</li>
 <li>sort: 默认排序基于文档得分。sort 可以额外控制</li>
 </ul>
-<pre><code class="sh">curl 'localhost:9200/get-together/group/_search' -d '
+<pre><code class="language-sh">curl 'localhost:9200/get-together/group/_search' -d '
 {
   &quot;query&quot;: {
     &quot;match_all&quot;: {}
@@ -987,10 +986,9 @@
   &quot;sort&quot;: [&quot;created_on&quot;: &quot;desc&quot;]
 }'
 </code></pre>
-
 <h3 id="42-dsl">4.2 查询和过滤 DSL</h3>
 <p>由于不计算得分，过滤器处理更少，并且可以被缓存。</p>
-<pre><code class="sh">curl 'localhost:9200/get-together/_search' -d '
+<pre><code class="language-sh">curl 'localhost:9200/get-together/_search' -d '
 {
   &quot;query&quot;: {
     &quot;filtered&quot;: {
@@ -1008,7 +1006,6 @@
   }
 }'
 </code></pre>
-
 <ul>
 <li>match_all 查询</li>
 <li>query_string 查询</li>
@@ -1027,7 +1024,7 @@
 </ul>
 <h3 id="44-match">4.4 超越 match 和过滤器查询</h3>
 <p>范围查询：</p>
-<pre><code class="sh">curl 'localhost:9200/get-together/_search' -d '
+<pre><code class="language-sh">curl 'localhost:9200/get-together/_search' -d '
 {
   &quot;query&quot;: {
     &quot;range&quot;: {
@@ -1039,9 +1036,8 @@
   }
 }'
 </code></pre>
-
 <p>前缀查询：(如果需要可以先转成小写)</p>
-<pre><code class="sh">curl 'localhost:9200/get-together/_search' -d '
+<pre><code class="language-sh">curl 'localhost:9200/get-together/_search' -d '
 {
   &quot;query&quot;: {
       &quot;prefix&quot;: {
@@ -1051,7 +1047,6 @@
   }
 }'
 </code></pre>
-
 <p>wildcard 查询: 类似 shell globbing 的工作方式</p>
 <h3 id="45">4.5 使用过滤器查询字段的存在性</h3>
 <ul>
@@ -1107,7 +1102,7 @@
 考虑 boost 的相对值， name boost 3 倍意味着 name 字段的重要性大概是其他字段 3 倍。</p>
 <h3 id="64-explain">6.4 使用 explain 理解文档是被如何评分的</h3>
 <p>explain=true。可以查看为什么一个文档和某个查询没有被匹配，有性能开销，不要在生产环境使用。</p>
-<pre><code class="sh">curl -XPOST 'localhost:9200/get-together/_search?pretty' -d '{
+<pre><code class="language-sh">curl -XPOST 'localhost:9200/get-together/_search?pretty' -d '{
 　&quot;query&quot;: {
 　　&quot;match&quot;: {
       &quot;description&quot;: &quot;elasticsearch&quot;
@@ -1116,7 +1111,6 @@
   &quot;explain&quot;: true
 }
 </code></pre>
-
 <h3 id="65">6.5 使用查询打分来减小评分操作的性能影响</h3>
 <p>下列情况可能导致打分变成资源密集操作：</p>
 <ul>
@@ -1143,7 +1137,7 @@
 <h3 id="71">7.1 理解聚集的结构</h3>
 <h3 id="72">7.2 度量聚集</h3>
 <p>单独统计：</p>
-<pre><code class="sh">URI = localhost:9200/get-together/event/_search
+<pre><code class="language-sh">URI = localhost:9200/get-together/event/_search
 curl &quot;$URI?pretty&amp;search_type=count&quot; -d '
 {
     &quot;aggregations&quot;: {
@@ -1155,7 +1149,6 @@ curl &quot;$URI?pretty&amp;search_type=count&quot; -d '
     }
 }'
 </code></pre>
-
 <p>高级统计：extended_stats，获取平方值、方差和标准差。根据文档统计的，具有 100% 准确性
 (注意你的需求是精确统计还是近似统计，近似统计可以限制内存和 cpu 使用。)</p>
 <p>近似统计：</p>
@@ -1183,7 +1176,7 @@ curl &quot;$URI?pretty&amp;search_type=count&quot; -d '
 <li>应用端的连接：当数据少，并且可以承受规范化的开销时，可以很好运作</li>
 </ul>
 <h3 id="82">8.2 将对象作为字段值(适合一对一关系)</h3>
-<pre><code class="sh">curl -XPOST 'localhost:9200/get-together/event-object/1' -d '{
+<pre><code class="language-sh">curl -XPOST 'localhost:9200/get-together/event-object/1' -d '{
     &quot;title&quot;: &quot;title&quot;,
     &quot;location&quot;: {
         &quot;name&quot; &quot;name&quot;,
@@ -1191,7 +1184,6 @@ curl &quot;$URI?pretty&amp;search_type=count&quot; -d '
     }
 }`
 </code></pre>
-
 <p>es 会进行扁平化处理， location.name 这种形式。</p>
 <p>不足：</p>
 <ul>

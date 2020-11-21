@@ -1891,7 +1891,6 @@ func init() {
     go teller() // start monitor goroutine
 }
 </code></pre>
-
 <p>我们还可以通过在 pipeline 中的 goroutine 共享变量，如果 pipeline
 中在把变量发送到下一个阶段后都限制访问，所有访问变量就变成了序列化的。In effect, the variable is confined to one stage
 of the pipeline, then confined to the next, and so on.</p>

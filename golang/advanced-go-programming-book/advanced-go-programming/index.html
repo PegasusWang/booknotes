@@ -770,7 +770,7 @@
               
                 <h3 id="153">1.5.3 顺序一致性内存模型</h3>
 <p>go 中同一个 goroutine 保证顺序一致性内存模型，但是不同 goroutine 之间不保证，需要定义明确的同步事件。</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -804,11 +804,10 @@ func main() {
     mu.Lock() // Lock一定在unlock之后发生，通过sync.Mutex保证
 }
 </code></pre>
-
 <h3 id="154">1.5.4 初始化顺序</h3>
 <p><img alt="" src="../init_order.png" /></p>
 <h3 id="156-channel">1.5.6 基于Channel通信</h3>
-<pre><code class="go">// 利用channel缓存大小控制并发执行的goroutine最大数
+<pre><code class="language-go">// 利用channel缓存大小控制并发执行的goroutine最大数
 var limit = make(chan int, 3)
 
 func main() {
@@ -822,7 +821,6 @@ func main() {
     select {} // 阻塞 main，避免过早退出
 }
 </code></pre>
-
 <h2 id="16">1.6 常见并发模式</h2>
 <p>CSP: 同步通信</p>
 <blockquote>
@@ -831,7 +829,7 @@ func main() {
 </blockquote>
 <h3 id="161-hello-world">1.6.1 并发Hello World</h3>
 <p>并发编程核心概念是同步通信。</p>
-<pre><code class="go">// 错误的示例
+<pre><code class="language-go">// 错误的示例
 package main
 
 import (
@@ -849,9 +847,8 @@ func main() {
     mu.Unlock()  //这里的Lock/Unlock无法保证顺序，必须先Lock之后才能Unlock
 }
 </code></pre>
-
 <p>修复方式用main 中使用两次 lock</p>
-<pre><code class="go">func main() {
+<pre><code class="language-go">func main() {
     var mu sync.Mutex
     mu.Lock()
     go func() {
@@ -861,9 +858,8 @@ func main() {
     mu.Lock() // Lock一定在unlock之后发生，通过sync.Mutex保证
 }
 </code></pre>
-
 <p>使用无缓冲管道实现同步:</p>
-<pre><code class="go">func main() {
+<pre><code class="language-go">func main() {
     done := make(chan int)
 
     go func() {
@@ -874,12 +870,11 @@ func main() {
 
 }
 </code></pre>
-
 <p>对于无缓存Channel 进行的接收，发生在对该 channel 进行发送完成之前。</p>
 <p>更好的做法是将管道的发送和接受方调换，使用有缓存的管道。避免同步受到管道缓存大小影响。
 对于带缓冲的channel,对于channel 的第 k 个接手完成操作发生在第k+c 个发送操作完成之前，
 其中 c 是 channel 的缓存大小。</p>
-<pre><code class="go">func main() {
+<pre><code class="language-go">func main() {
     done := make(chan int, 1)
 
     go func() {
@@ -889,9 +884,8 @@ func main() {
     &lt;-done
 }
 </code></pre>
-
 <p>扩展到 n 个：</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -913,10 +907,9 @@ func main() {
 
 }
 </code></pre>
-
 <p>当然最简单的方式使用 sync.WaitGroup , wg.Add wg.Done wg.Wait</p>
 <h3 id="162">1.6.2 生产者消费者</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -948,12 +941,11 @@ func main() {
     fmt.Printf(&quot;quit %v\n&quot;, &lt;-sig)
 }
 </code></pre>
-
 <h3 id="163">1.6.3 发布订阅</h3>
 <p>Pub/Sub m:n</p>
 <h3 id="164">1.6.4 控制并发数</h3>
 <p>通过带缓存管道的发送和接收规则实现最大并发阻塞。</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 var limit = make(chan int, 3)
 
@@ -983,9 +975,8 @@ func (fs gatefs) Lstat(p string) (os.FileInfo, error) {
     return fs.fs.Lstat(p)
 }
 </code></pre>
-
 <h3 id="165">1.6.5 赢者为王</h3>
-<pre><code class="go">func main() {
+<pre><code class="language-go">func main() {
     ch := make(chan string, 32)
 
     go func() {
@@ -1003,9 +994,8 @@ func (fs gatefs) Lstat(p string) (os.FileInfo, error) {
     fmt.Println(&lt;-ch)
 }
 </code></pre>
-
 <h3 id="167">1.6.7 并发安全退出</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1039,7 +1029,6 @@ func main() {
     wg.Wait()
 }
 </code></pre>
-
 <h3 id="168-context">1.6.8 context 包</h3>
 <p>go1.7 增加了 context, 简化对于处理单个请求的多个goroutine之间与请求域的数据、超时和退出等操作。</p>
 <h1 id="17">1.7 错误和异常</h1>
@@ -1047,7 +1036,7 @@ func main() {
 <h3 id="171">1.7.1 错误处理策略</h3>
 <p>go 中的导出函数一般不抛出异常，一个未受控的异常可以看成程序 bug。
 web框架一般会防御性地捕获所有异常。</p>
-<pre><code class="go">// go库实现习惯是即使包内部使用了 panic，但是在函数 export 时候会被转换成明确的错误值
+<pre><code class="language-go">// go库实现习惯是即使包内部使用了 panic，但是在函数 export 时候会被转换成明确的错误值
 func ParseJSON(input string) (s *Syntax, err error) {
     defer func() {
         if p:=recover(); p!=nil {
@@ -1057,21 +1046,19 @@ func ParseJSON(input string) (s *Syntax, err error) {
     // ... parser ...
 }
 </code></pre>
-
 <h3 id="172">1.7.2 获取错误上下文</h3>
 <p>一般为了防止丢失错误信息，一般使用包装函数。
 go 大部分代码逻辑类似，先一系列初始检查，用于防止错误发生，然后是实际逻辑。</p>
-<pre><code class="go">f, err := op.Open(&quot;filename&quot;)
+<pre><code class="language-go">f, err := op.Open(&quot;filename&quot;)
 if err !=nil {
     // 失败场景
 }
 // 正常流程
 </code></pre>
-
 <p>`1.7.3 错误的错误返回</p>
 <p>go 中 error 是一种接口类型。接口信息包含了原始类型和原始的值。
 只有当接口的类型和原始值都为空，接口值才对应 nil。`</p>
-<pre><code class="go">// 错误示例
+<pre><code class="language-go">// 错误示例
 func returnsError() error {
     var p *MyError = nil
     if bad() {
@@ -1090,7 +1077,6 @@ func returnsError() error {
 }
 
 </code></pre>
-
 <h3 id="174">1.7.4 剖析异常</h3>
 <p>必须在 defer 函数中直接调用 recover，并且不能包装 recover 函数，直接调用。
 必须和有异常的栈帧只隔一个栈帧才能正确捕获异常。</p>
@@ -1109,7 +1095,7 @@ func returnsError() error {
 <p>go web框架使用radix tree 实现 route</p>
 <h2 id="53-middleware">5.3 中间件middleware</h2>
 <p>解耦业务和非业务代码逻辑</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;net/http&quot;
@@ -1149,11 +1135,10 @@ func (f handlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
     f(w, r)
 }
 </code></pre>
-
 <p>请求调用链：</p>
 <p>h = getHandler() =&gt; h.ServeHTTP(w, r) =&gt; h(w, r)</p>
 <h3 id="533">5.3.3 更优雅的中间件写法</h3>
-<pre><code class="go">r = NewRouter()
+<pre><code class="language-go">r = NewRouter()
 r.Use(logger)
 r.Use(timeout)
 r.Use(ratelimit)
@@ -1182,13 +1167,12 @@ func (r *Router) Add(route string, h http.Handler) {
     r.mux[route] = mergedHandler
 }
 </code></pre>
-
 <p>哪些可以写成中间件呢？参考 gin-gonic/contrib</p>
 <h2 id="54-validator">5.4 Validator</h2>
 <p>https://github.com/go-playground/validator</p>
 <p>通过反射对结构体进行树形遍历</p>
 <h2 id="55-database">5.5 Database 和数据库打交道</h2>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 import &quot;database/sql&quot;
 import _ &quot;github.com/go-sql-driver/mysql&quot; 
 
@@ -1199,7 +1183,6 @@ func init() {
     sql.Register(&quot;mysql&quot;, &amp;MySQLDriver{})
 }
 </code></pre>
-
 <p>Sql Build 相比orm 在可维护性上取得了更好平衡，不会屏蔽太多细节。</p>
 <h3 id="56-ratelimit">5.6 Ratelimit 服务流量限制</h3>
 <p>磁盘 IO/CPU/带宽瓶颈</p>
@@ -1215,7 +1198,7 @@ func init() {
 <p>原理：令牌桶模型实际上是对全局计数的加减法操作过程，
 但使用计数器需要自己加上读写锁。</p>
 <p>可以使用 bufferd channel 完成简单的加令牌和取令牌操作。</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1264,7 +1247,6 @@ func TakeAvailable(block bool) bool {
     return takenResult
 }
 </code></pre>
-
 <h3 id="563-qos">5.6.3服务瓶颈和 Qos</h3>
 <p>Qos: Quality of Service。包含可用性、吞吐量、时延、时延变化和丢失等</p>
 <h2 id="57">5.7 大型项目分层</h2>
@@ -1282,7 +1264,7 @@ func TakeAvailable(block bool) bool {
 <p>优点:正交性。依赖反转
 缺点：难以查找实现了接口的类型</p>
 <h3 id="585">5.8.5 表驱动开发</h3>
-<pre><code class="go">func entry() {
+<pre><code class="language-go">func entry() {
     var bi BusinessInstance
     switch businessType {
     case TravelBusiness:
@@ -1303,7 +1285,6 @@ func entry() {
     bi := BusinessInstance[businessType]
 }
 </code></pre>
-
 <h2 id="59-ab-test">5.9 灰度发布和A/B test</h2>
 <p>恢复一般两种方式实现：</p>
 <ul>
@@ -1319,7 +1300,7 @@ func entry() {
 <p>sonyflake sony一个开源项目，思路和snowflake类似，分配上有所不同</p>
 <p>github.com/sony/sonyflake</p>
 <h2 id="62">6.2 分布式锁</h2>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1347,11 +1328,10 @@ func main() {
     }
 }
 </code></pre>
-
 <h3 id="621">6.2.1 进程内加锁</h3>
 <p>trylock: 尝试加锁，加锁成功执行后续流程，如果加锁失败也不会阻塞，
 而会直接返回加锁结果。go 中可以用大小为1的 channel 模拟 trylock。</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1404,7 +1384,6 @@ func main() {
     wg.Wait()
 }
 </code></pre>
-
 <p>单机系统 trylock 不好，大量 goroutine 抢锁可能导致 cpu 无意义浪费。(活锁)</p>
 <h3 id="623-redis-setnx">6.2.3 基于 redis setnx</h3>
 <p>redis setnx 模拟分布式锁</p>
@@ -1416,7 +1395,7 @@ func main() {
 与单机中的 mutex.Lock 很相似。</p>
 <p>分布式阻塞锁 适合分布式任务调度场景，但是不适合高频次持有锁时间短的抢锁场景。</p>
 <p>Google(chubby论文)，基于强一致性的锁适用于粗粒度加锁操作，粗粒度指的是占用时间较长。</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1442,7 +1421,6 @@ func main() {
     fmt.Println(&quot;unlock success, finish your logic&quot;)
 }
 </code></pre>
-
 <h3 id="625-etcd">6.2.5 基于 etcd</h3>
 <p>类似 ZooKeeper 的组件</p>
 <p>github.com/zieckey/etcdsync</p>
@@ -1491,9 +1469,8 @@ func main() {
 <h2 id="66">6.6 分布式配置管理</h2>
 <h3 id="662-etcd">6.6.2 使用 etcd 实现配置更新</h3>
 <p>简单的配置可以讲内容完全存储在 etcd 中。</p>
-<pre><code class="sh">etcdctl get /configs/remote_config.json
+<pre><code class="language-sh">etcdctl get /configs/remote_config.json
 </code></pre>
-
 <h3 id="663">6.6.3 配置膨胀</h3>
 <p>支持版本管理进行回滚</p>
 <p>客户端缓存容错</p>

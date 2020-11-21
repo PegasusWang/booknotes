@@ -819,13 +819,12 @@
 </ul>
 </li>
 </ul>
-<pre><code class="go">// github.com/pkg/errors
+<pre><code class="language-go">// github.com/pkg/errors
 _, err := ioutil.ReadAll(r)
 if err != nil {
   return errors.Wrap(err, &quot;read failed&quot;)
 }
 </code></pre>
-
 <ul>
 <li>根因追踪<ul>
 <li>Cause 获取根因，用于 Sentinel errors 逻辑处理</li>

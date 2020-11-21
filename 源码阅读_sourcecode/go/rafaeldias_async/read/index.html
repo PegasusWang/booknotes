@@ -774,13 +774,11 @@
 <h1 id="async_1">async</h1>
 <p>async is a utility library for manipulating synchronous and asynchronous flows.</p>
 <h3 id="install">Install</h3>
-<pre><code class="bash">$ go get github.com/rafaeldias/async
+<pre><code class="language-bash">$ go get github.com/rafaeldias/async
 </code></pre>
-
 <h3 id="concurrent">Concurrent</h3>
-<pre><code class="go">async.Concurrent(tasks taskier) (Results, error)
+<pre><code class="language-go">async.Concurrent(tasks taskier) (Results, error)
 </code></pre>
-
 <p>Concurrent will execute all the functions concurrently using goroutines.</p>
 <ul>
 <li><code>tasks</code> is an internal interface which accept two async public types:
@@ -790,9 +788,8 @@
 <p>The type of <code>Results</code> value depends on the type of tasks passed to the function. See <a href="#type-results">type Results</a></p>
 <p>All errors ocurred in the functions will be returned. See <a href="#returning-error">returning error</a> and <a href="#type-errors">type Errors</a>.</p>
 <h3 id="parallel">Parallel</h3>
-<pre><code class="go">async.Parallel(tasks taskier) (Results, error)
+<pre><code class="language-go">async.Parallel(tasks taskier) (Results, error)
 </code></pre>
-
 <p>Parallel will execute all the functions in parallel. It creates multiple goroutines and distributes the functions execution among them.
 The number of goroutines  defaults to <code>GOMAXPROCS</code>. If the number of active goroutines is equal to <code>GOMAXPROCS</code> and there're more functions to execute, these functions will wait until one of functions being executed finishes its job.</p>
 <ul>
@@ -803,9 +800,8 @@ The number of goroutines  defaults to <code>GOMAXPROCS</code>. If the number of 
 <p>The type of <code>Results</code> value depends on the type of tasks passed to the function. See <a href="#type-results">type Results</a>.</p>
 <p>All errors ocurred in the functions will be returned. See <a href="#returning-error">returning error</a> and <a href="#type-errors">type Errors</a>.</p>
 <h3 id="waterfall">Waterfall</h3>
-<pre><code class="go">async.Waterfall(tasks Tasks, args ...interface{}) ([]interface[}, error)
+<pre><code class="language-go">async.Waterfall(tasks Tasks, args ...interface{}) ([]interface[}, error)
 </code></pre>
-
 <p>Waterfall will execute all the functions in sequence, each returning their results to the next. If the last returning value of the function is of type <code>error</code>, then this value will not be passed to the next function. </p>
 <ul>
 <li><code>tasks</code> is a list of functions that will be executed in series.</li>
@@ -815,14 +811,13 @@ The number of goroutines  defaults to <code>GOMAXPROCS</code>. If the number of 
 <p>If an error occur in any of the functions to be executed, the next function will not be executed, and the error will be returned to the caller. See <a href="#returning-error">returning error</a>.</p>
 <h3 id="type-results"><a name="type-results"></a>Type Results</h3>
 <p>The <code>Results</code> is the type that is returned by <code>Parallel</code> and <code>Concurrent</code>:</p>
-<pre><code class="go">type Results interface {
+<pre><code class="language-go">type Results interface {
       Index(int) []interface{}  // Gets values by index
       Key(string) []interface{} // Gets values by key
       Len() int                 // Gets the length of the results
       Keys() []string           // Gets the keys of the results
 }
 </code></pre>
-
 <p>The underlying type of <code>Results</code> will be different depending on the type of tasks passed to either <code>Parallel</code> or <code>Concurrent</code>.
 There are two async public types that can be passed to both functions:</p>
 <ul>
@@ -830,46 +825,40 @@ There are two async public types that can be passed to both functions:</p>
 <li><code>MapTasks</code> is a map of string of functions to be executed.</li>
 </ul>
 <p>When using <code>Tasks</code>, the underlying <code>Results</code> will be <code>[][]interface{}</code>:</p>
-<pre><code class="go">res, err : = async.Parallel(async.Tasks{
+<pre><code class="language-go">res, err : = async.Parallel(async.Tasks{
         func1,
         func2,
         ...funcN,
 })
 </code></pre>
-
 <p>We can get the results of the the second function:</p>
-<pre><code class="go">res.Index(1)
+<pre><code class="language-go">res.Index(1)
 </code></pre>
-
 <p>Or we can iterate over the results using the  <code>Len()</code> method:</p>
-<pre><code class="go">for i := 0; i &lt; res.Len(); i++ {
+<pre><code class="language-go">for i := 0; i &lt; res.Len(); i++ {
     fmt.Println(res.Index(i))
 }
 </code></pre>
-
 <p>When using <code>MapTasks</code>, the underlying <code>Results</code> will be <code>map[string][]interface{}</code>:</p>
-<pre><code class="go">res, err : = async.Concurrent(async.MapTasks{
+<pre><code class="language-go">res, err : = async.Concurrent(async.MapTasks{
         &quot;one&quot;  : funcOne,
         &quot;two&quot;  : funcTwo,
         &quot;three&quot;: funcThree,
 })
 </code></pre>
-
 <p>We can get the results of function "three":</p>
-<pre><code class="go">res.Key(&quot;three&quot;)
+<pre><code class="language-go">res.Key(&quot;three&quot;)
 </code></pre>
-
 <p>Or we can also iterate over the map of results by using the <code>Keys()</code> method:</p>
-<pre><code class="go">for k := range res.Keys() {
+<pre><code class="language-go">for k := range res.Keys() {
     fmt.Println(res.Key(k))
 }
 </code></pre>
-
 <h3 id="type-errors"><a name="type-errors"></a>Type Errors</h3>
 <p>If errors occur in any function executed by <code>Concurrent</code> or <code>Parallel</code> an instance of <code>Errors</code> will be returned.
 <code>Errors</code> implements the <code>error</code> interface, so in order to test if an error occurred, check if the returned error is not nil,
 if it's not type cast it to <code>Errors</code>:</p>
-<pre><code class="go">_, err : = async.Parallel(async.Tasks{func1, func2, ...funcN})
+<pre><code class="language-go">_, err : = async.Parallel(async.Tasks{func1, func2, ...funcN})
 
 if err != nil {
         parallelErrors := err.(async.Errors)
@@ -879,10 +868,9 @@ if err != nil {
         }
 }
 </code></pre>
-
 <h3 id="returning-error"><a name="returning-error"></a>Returning error</h3>
 <p>In order for async to identify if an error occured, the error <strong>must</strong> be the last returning value of the function:</p>
-<pre><code class="go">_, err := async.Waterfall(async.Tasks{
+<pre><code class="language-go">_, err := async.Waterfall(async.Tasks{
         func () (int, error) {
                 return 1, nil
         },
@@ -904,10 +892,9 @@ if err != nil {
       fmt.Println(err.Error()); // &quot;Error occurred&quot;
 }
 </code></pre>
-
 <h1 id="examples">Examples</h1>
 <h3 id="waterfall_1">Waterfall</h3>
-<pre><code class="go">import (
+<pre><code class="language-go">import (
         &quot;fmt&quot;
 
         &quot;github.com/rafaeldias/async&quot;
@@ -937,9 +924,8 @@ func main() {
 }
 
 </code></pre>
-
 <h3 id="parallel_1">Parallel</h3>
-<pre><code class="go">import (
+<pre><code class="language-go">import (
         &quot;fmt&quot;
         &quot;time&quot;
 
@@ -980,9 +966,8 @@ func main() {
         fmt.Println(&quot;Results from task 'two': %v&quot;, res.Key(&quot;two&quot;))
 }
 </code></pre>
-
 <h3 id="concurrent_1">Concurrent</h3>
-<pre><code class="go">import (
+<pre><code class="language-go">import (
         &quot;errors&quot;
         &quot;fmt&quot;
 
@@ -1014,7 +999,6 @@ func main() {
         fmt.Println(&quot;Result from function 0: %v&quot;, res.Index(0))
 }
 </code></pre>
-
 <h1 id="license">License</h1>
 <p>Distributed under MIT License. See LICENSE file for more details.</p>
               

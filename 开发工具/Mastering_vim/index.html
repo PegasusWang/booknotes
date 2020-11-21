@@ -915,12 +915,11 @@ substring search.</p>
 <h1 id="3-follow-the-leader-plugin-management">3. Follow the Leader - Plugin Management</h1>
 <h3 id="vim-plug">vim-plug</h3>
 <p>可以懒加载:</p>
-<pre><code class="vim">&quot; 使用 NERDTreeToggle 命令时候加载插件：
+<pre><code class="language-vim">&quot; 使用 NERDTreeToggle 命令时候加载插件：
 Plug 'scrooloose/nerdtreee', { 'on': 'NERDTreeToggle' }
 &quot; 指定文件类型加载
 Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
 </code></pre>
-
 <h3 id="profiling">Profiling</h3>
 <p>Profiling slow plugins : <code>vim --startuptime startuptime.log</code></p>
 <p>Profiling spedific actions:</p>
@@ -928,7 +927,6 @@ Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
 :profile func *
 :profile file *
 </code></pre>
-
 <h3 id="mode">Mode</h3>
 <p>在visual 模式下，可以用 o 从选择的开始和结束跳转</p>
 <p>可以用 term 模式运行一个命令输出到 buffer</p>
@@ -962,7 +960,6 @@ Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
 let mapleader = ','
 let mapleader = &quot;\&lt;space&gt;&quot;
 </code></pre>
-
 <h1 id="4-understanding-the-text">4. Understanding the Text</h1>
 <h3 id="code-autocomplete">Code autocomplete</h3>
 <p>YouCompleteMe</p>
@@ -975,7 +972,6 @@ set tags=tags;
 &quot; regerate tags when saving python file
 autocmd BufWritePost *.py silent! !ctags -R &amp;
 </code></pre>
-
 <ul>
 <li>ctrl+] ctrl+t jump and to back in the tag stack</li>
 <li>:tn :tp  next tag and previous tag</li>
@@ -1006,7 +1002,6 @@ autocmd BufWritePost *.py silent! !ctags -R &amp;
 git config --global merge.conflictstyle diff3
 git config --global mergetool.promptt false
 </code></pre>
-
 <p>git mergetool 进入合并页面。</p>
 <ul>
 <li>LOCAL: current branch</li>
@@ -1022,7 +1017,6 @@ git config --global mergetool.promptt false
 [REMOTE change]
 &gt;&gt;&gt;&gt;&gt;&gt;&gt; [REMOTE commit/branch]
 </code></pre>
-
 <ul>
 <li>Get a REMOTE change using :diffg R</li>
 <li>Get a BASE change using :diffg B</li>
@@ -1070,7 +1064,6 @@ git config --global mergetool.promptt false
 <pre><code>:arg **/*.py
 :argdo %s/\&lt;animal\&gt;/creature/ge | update
 </code></pre>
-
 <h3 id="regex-expression">Regex Expression</h3>
 <ul>
 <li>magic mode: <code>\m</code></li>
@@ -1086,7 +1079,6 @@ git config --global mergetool.promptt false
 <pre><code>:arg **.*.yp
 :argdo execute &quot;:normal @a&quot; | update
 </code></pre>
-
 <h3 id="using-plugins-to-do-the-job">Using plugins to do the job</h3>
 <h1 id="making-vim-your-own">Making Vim Your Own</h1>
 <h3 id="playing-with-the-vim-ui">Playing with the Vim UI</h3>
@@ -1098,7 +1090,6 @@ git config --global mergetool.promptt false
 <pre><code>set laststatus=2
 set showcmd
 </code></pre>
-
 <h3 id="keeping-track-of-configuration-files">Keeping track of configuration files</h3>
 <p>使用 dotfiles 一定要注意别加上敏感信息</p>
 <h3 id="healthy-vim-customization-habits">Healthy vim customization habits</h3>

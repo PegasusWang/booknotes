@@ -990,7 +990,6 @@ func main() {
     log.Fatal(http.ListenAndServe(&quot;:8000&quot;, router))
 }
 </code></pre>
-
 <h3 id="building-the-simple-static-file-server">Building the simple static file server</h3>
 <pre><code>package main
 
@@ -1007,7 +1006,6 @@ func main() {
     log.Fatal(http.ListenAndServe(&quot;:8000&quot;, router))
 }
 </code></pre>
-
 <h3 id="gorilla-mux-a-powerful-http-router">Gorilla Mux, a powerful HTTP router</h3>
 <ul>
 <li>Path-based matching</li>
@@ -1044,7 +1042,6 @@ func main() {
     http.listenandserve(&quot;:8000&quot;, nil)
 }
 </code></pre>
-
 <h3 id="multiple-middleware-and-chaining">Multiple middleware and chaining</h3>
 <pre><code>// cityAPI.go
 package main
@@ -1085,7 +1082,6 @@ func main() {
     http.ListenAndServe(&quot;:8000&quot;, nil)
 }
 </code></pre>
-
 <p>抽象出来俩middleware:</p>
 <pre><code>package main
 
@@ -1153,7 +1149,6 @@ func main() {
     http.listenandserve(&quot;:8000&quot;, nil)
 }
 </code></pre>
-
 <h3 id="paniless-middleware-chaining-with-alice">Paniless middleware chaining with Alice</h3>
 <pre><code>//go get github.com/justinas/alice
 
@@ -1164,7 +1159,6 @@ func main() {
     http.ListenAndServe(&quot;:8000&quot;, nil)
 }
 </code></pre>
-
 <h3 id="using-gorillas-handlers-middleware-for-logging">Using Gorilla's Handlers middleware for Logging</h3>
 <ul>
 <li>LoggingHandler</li>
@@ -1203,7 +1197,6 @@ func pingTime(req *restful.Request, resp *restful.Response) {
 
 // curl -X GET &quot;http://localhost:8000/ping&quot;
 </code></pre>
-
 <h3 id="crud-and-sqlite3-basics">CRUD and SQLite3 basics</h3>
 <pre><code>// sqliteFundamentals.go
 package main
@@ -1262,7 +1255,6 @@ func main() {
 // 略坑啊：
 // This program runs on Windows and Linux without any problem. In Go versions less than 1.8.1, you may see problems on macOS X such as Signal Killed. This is because of the Xcode version; please keep this in mind.
 </code></pre>
-
 <h3 id="building-a-metro-rail-api-with-go-restful">Building a Metro Rail APi with go-restful</h3>
 <p>// go get github.com/emicklei/go-restful</p>
 <h3 id="building-restful-apis-with-the-gin-framework">Building RESTful APIs with the Gin framework</h3>
@@ -1284,7 +1276,6 @@ func main() {
     r.Run(&quot;:8000&quot;)
 }
 </code></pre>
-
 <h3 id="building-a-restful-api-with-revelgo">Building a RESTful API with Revel.go</h3>
 <p>Like Python's Django.</p>
 <p>go get github.com/revel/revel</p>
@@ -1305,7 +1296,6 @@ message NetworkInterface {
   string hardwareaddr=4;
 }
 </code></pre>
-
 <p>the protocol buffer message will be converted to a Go struct and fiels are filled with empty defaut values.</p>
 <h3 id="compiling-a-protocol-buffer-with-protoc">Compiling a protocol buffer with protoc</h3>
 <p>install protobuf compiler on your meachine.  brew install protobuf</p>
@@ -1349,7 +1339,6 @@ func main() {
 }
 // ./flagExample -name laowang or ./flagExample -name=laowang
 </code></pre>
-
 <h3 id="cli-a-library-for-building-beautiful-clients">CLI - a library for building beautiful clients</h3>
 <p>go get github.com/urfave/cli</p>
 <pre><code>// cliBasci.go
@@ -1383,7 +1372,6 @@ func main() {
     app.Run(os.Args)
 }
 </code></pre>
-
 <h3 id="collecting-command-line-arguments-in-cli">Collecting command-line arguments in CLI</h3>
 <p><img alt="" src="../flag.png" /></p>
 <pre><code>// storeMarks.go
@@ -1434,7 +1422,6 @@ func main() {
 
 // ./storeMarks --save=yes Albert 89 85 97
 </code></pre>
-
 <h3 id="grequests-a-rest-api-package-for-go">grequests - a REST API package for GO</h3>
 <p>go get -u github.com/levigross/grequests</p>
 <pre><code>package main
@@ -1477,7 +1464,6 @@ type Response struct {
 }
 */
 </code></pre>
-
 <h3 id="getting-comfortable-with-the-github-rest-api">Getting comfortable with the GitHub REST API</h3>
 <pre><code>// https://developer.github.com/v3/
 
@@ -1519,7 +1505,6 @@ func main() {
   log.Println(repos)
 }
 </code></pre>
-
 <h3 id="using-redis-for-caching-the-api-data">Using Redis for caching the API data</h3>
 <p>go get github.com/go-redis/redis</p>
 <h3 id="creating-a-unit-testing-tool-for-our-url-shortening-service">Creating a unit testing tool for our URL shortening service</h3>
@@ -1540,7 +1525,6 @@ func TestGetoOriginalURL(t *testing.T) {
     }
 }
 </code></pre>
-
 <h1 id="9-scaling-our-rest-api-using-microservices">9. Scaling Our REST API Using Microservices</h1>
 <p>The disadvantage list of a monolithic application could be:</p>
 <ul>
@@ -1599,7 +1583,6 @@ Combination of OpenResty and Nginx.</p>
 <pre><code>//go get github.com/gorilla/sessions
 var store = sessions.NewCookieStore([]byte(&quot;secret_key&quot;))
 </code></pre>
-
 <h3 id="session-based-authentication">session-based authentication</h3>
 <pre><code>package main
 
@@ -1675,8 +1658,7 @@ func main() {
 
 }
 </code></pre>
-
-<pre><code class="py"># test py code
+<pre><code class="language-py"># test py code
 import requests
 
 resp = requests.post(&quot;http://localhost:8000/login&quot;, data={&quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &quot;password&quot;})
@@ -1688,7 +1670,6 @@ resp = requests.get(&quot;http://localhost:8000/health&quot;, cookies=cookies)
 print(resp.text)
 assert resp.status_code == 200
 </code></pre>
-
 <h3 id="jwt">JWT</h3>
 <p><img alt="" src="../jwt.png" /></p>
 <h3 id="json-web-token-format">Json web token format</h3>

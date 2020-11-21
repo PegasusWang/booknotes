@@ -901,13 +901,11 @@
 }
 // httptest generate Mock versions of the dependent objects http.Request and http.ResponseWriter
 </code></pre>
-
 <h3 id="dependency-injection-and-mocking">Dependency injection and mocking</h3>
 <p>github.com/stretchr/testify</p>
 <h3 id="code-coverage">Code coverage</h3>
 <pre><code>go test -cover ./...
 </code></pre>
-
 <h3 id="behavioral-driven-developentbdd">Behavioral Driven Developent(BDD)</h3>
 <p>github.com/DATA-DOG/godog/cmd/godog</p>
 <h3 id="testing-with-docker-compose">Testing with Docker Compose</h3>
@@ -931,7 +929,6 @@ go func() {
     log.Println(http.ListenAndServe(&quot;localhost:6060&quot;, nil))
 }
 </code></pre>
-
 <h1 id="5-commong-patterns">5. Commong Patterns</h1>
 <h3 id="design-for-failure">Design for failure</h3>
 <p>Anything that can go wrong will go wrong.
@@ -965,7 +962,6 @@ func makeTimeoutRequest() {
     }
 }
 </code></pre>
-
 <h5 id="back-off">Back off</h5>
 <p>A backoff algorithm waits for a set period before retrying after the first failure, this then increments
 with subsequent failures up to a maximum duration.</p>
@@ -980,7 +976,7 @@ and the circuit enters a half-open state, in this state a failure immediately re
 of the errorThreshold. Once some requests have been processed without any error, then the circuit again returns
 to the closed state, and only if the number of failures exceeded the error threshold would the circuit open again.</p>
 <p><img alt="" src="../circuit.png" /></p>
-<pre><code class="go">// go-resilience
+<pre><code class="language-go">// go-resilience
 
 // Threshold: number of times a request can fail before the circuit opens
 // successThreshold: number of times that we need a successful reqeust in the half-open state before we move back to open
@@ -1016,7 +1012,6 @@ func main() {
 
 }
 </code></pre>
-
 <p>One of more modern implementations of circuit breaking and timeouts is the Hystrix library from Netflix.</p>
 <ul>
 <li>github.com/Netflix/Hystrix</li>
@@ -1073,7 +1068,6 @@ Client is responsible for the service discovery and load balancing.</p>
 <pre><code>$ go get google.golang.org/grpc
 $ go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 </code></pre>
-
 <h1 id="7-logging-and-montoring">7. Logging and Montoring</h1>
 <p>stack traces and other application outout which helps you diagnose a problem can be broken down into three categories:</p>
 <ul>
@@ -1112,7 +1106,7 @@ All the defered functions are run in the normal way then the program is terminat
 When called inside a deferred function, recover stops the execution of the panic and returns the error passed to the
 call of panic.</p>
 <p><code>func recover() interface{}</code></p>
-<pre><code class="go">func (p *panicHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+<pre><code class="language-go">func (p *panicHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
     defer func() {
         if err := recover(); err != nil {
             p.logger.WithFields(
@@ -1132,7 +1126,6 @@ call of panic.</p>
     p.next.ServeHTTP(rw, r)
 }
 </code></pre>
-
 <h1 id="8-security">8. Security</h1>
 <h3 id="encryption-and-signing">Encryption and signing</h3>
 <h5 id="symmetric-key-encryption">Symmetric-key encryption</h5>
@@ -1228,7 +1221,6 @@ func Handler(rw http.ResponseWriter, r *http.Request) {
     rw.WriteHeader(http.StatusOK)
 }
 </code></pre>
-
 <ul>
 <li>Fuzzing : github.com/dvyukov/go-fuzz/go-fuzz  generating random input</li>
 </ul>

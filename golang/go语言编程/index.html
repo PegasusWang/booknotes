@@ -802,18 +802,17 @@
                 <p>七牛-许式伟</p>
 <h1 id="2">2 顺序编程</h1>
 <p>字符类型包括俩：rune/byte(uint8别名)，rune 代表单个 unicode 字符</p>
-<pre><code class="go">// go 如何比较 float
+<pre><code class="language-go">// go 如何比较 float
 import &quot;math&quot;
 // p为用户自定义的比较精度，比如0.00001
 func IsEqual(f1, f2, p float64) bool {
     return math.Fdim(f1, f2) &lt; p
 }
 </code></pre>
-
 <p>append 元素： append(slice1, slice2...)</p>
 <p>map: map delete操作如果 key 不存在不会发生作用，也没有任何副作用</p>
 <p>不定参数：</p>
-<pre><code class="go">import &quot;fmt&quot;
+<pre><code class="language-go">import &quot;fmt&quot;
 
 // ...type 本质上一个数组切片，`
 func f(args ...int) {
@@ -823,7 +822,6 @@ func f(args ...int) {
     }
 }
 </code></pre>
-
 <h3 id="_1">闭包</h3>
 <p>闭包：包含是可以包含自由(未绑定到特定对象)变量的代码块，这些变量不在这个代码块内或者任何全局上下文中定义，
 而是在定义代码块的环境中定义。要执行的代码块（由于自由变量包含在代码块中，所以这些自由变量和它们引用的对象都没有被释放）
@@ -833,20 +831,19 @@ func f(args ...int) {
 <h1 id="3">3.面向对象编程</h1>
 <p>go有4个类型比较特别，看起来像是引用类型：切片；map; channel; interface</p>
 <p>go没有构造函数概念，对象的创建通常交给一个全局创建函数完成，用 NewXXX命名，表示"构造函数"</p>
-<pre><code class="go">
+<pre><code class="language-go">
 func NewRect(x, y width, height float64) *Rect {
     return &amp;Rect{x,y,width,height}
 }
 
 </code></pre>
-
 <h1 id="4">4.并发编程</h1>
 <blockquote>
 <p>不要通过共享内存来通信，而应该通过通信来共享内存。</p>
 </blockquote>
 <p>main函数不会等待非主 goroutine 结束。</p>
 <p>两种常见的并发通信模型：共享数据和消息</p>
-<pre><code class="go">var chanName chan ElementType
+<pre><code class="language-go">var chanName chan ElementType
 ch &lt;- value //向 channle 写入数据会导致程序阻塞，直到有其他 goroutine 从这个channel读入厨具
 value := &lt;-ch //如果 channel 之前没有数据，从 channel 中读取数据也会导致程序阻塞，直到channel中被写入数据为止
 
@@ -867,9 +864,8 @@ func main() {
     }
 }
 </code></pre>
-
 <p>用 select 实现超时机制：</p>
-<pre><code class="go">func main() {
+<pre><code class="language-go">func main() {
     timeout := make(chan bool, 1)
     go func() {
         time.Sleep(1e9)
@@ -885,19 +881,17 @@ func main() {
 
 }
 </code></pre>
-
 <p>如何判断channel是否已经关闭：</p>
 <pre><code>close(ch) //close channel
 x, ok :=&lt;=ch //如果返回的 ok false，表示 ch已经被关闭了
 // 使用 runtime.Gosched() 出让时间片
 </code></pre>
-
 <p>go 提供了 sync.Mutex和sync.RWmutex 锁类型</p>
 <p>sync.Once 全局唯一操作。</p>
 <p>sync.atomic 提供了对于一些基础数据类型的原子操作。</p>
 <h1 id="5">5.网络编程</h1>
 <h2 id="51-socket">5.1 socket编程</h2>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 // conn, err  net.Dioal(&quot;tcp&quot;, &quot;127.0.0.1&quot;)
 
 import (

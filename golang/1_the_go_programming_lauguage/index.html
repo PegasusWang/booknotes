@@ -1181,7 +1181,7 @@ func counter(w http.ResponseWriter, r *http.Request) {
 <ul>
 <li>控制流 switch</li>
 </ul>
-<pre><code class="go">switch coinflip() {
+<pre><code class="language-go">switch coinflip() {
 case &quot;heads&quot;:    // case 还支持简单的语句 ()。case可以支持 string
     heads++
 case &quot;tails&quot;:
@@ -1190,17 +1190,15 @@ default:
     fmt.Println(&quot;landed on edge!&quot;)
 }
 </code></pre>
-
 <ul>
 <li>Named Types:</li>
 </ul>
-<pre><code class="go">//定义一个 Point 类型
+<pre><code class="language-go">//定义一个 Point 类型
 type Point struct {
     X, Y int
 }
 var p Point
 </code></pre>
-
 <ul>
 <li>Pointers(指针)：和 C 类似，go 中也实现了指针</li>
 <li>Methods and interfaces（方法和接口）: 方法是关联到一个命名类型的函数。接口是一种把不同类型同等对待的抽象类型</li>
@@ -1442,7 +1440,6 @@ func main() {
     fmt.Println(utf8.RuneCountInString(s)) // 9
 }
 </code></pre>
-
 <p>几个用来处理字符串的包：</p>
 <ul>
 <li>bytes:  操作 slices of bytes, type []byte</li>
@@ -2065,7 +2062,6 @@ errors，这种方式需要付出更多精力来应对错误处理逻辑。</p>
     return fmt.Errorf(&quot;server %s failed to respond after %s&quot;, url, timeout)
 }
 </code></pre>
-
 <ul>
 <li>3.如果无法继续处理，调用者可以打印 error 然后停止执行，通常是 main
     包的保留行为。库函数通常应该传递错误给调用者，除非遇到了内部不一致性，也就是有 bug。</li>
@@ -2080,7 +2076,6 @@ if err := WaitForServer(url); err != nil {
     log.Fatalf(&quot;Site is down: %v\n&quot;, err)
 }
 </code></pre>
-
 <ul>
 <li>4.有些情况直接打印 error 然后继续执行，比如无关紧要的问题</li>
 <li>5.极少数情况下可以完全忽略整个错误，但是需要做好代码注释。比如创建临时文件失败了可以不用管，操作系统定期会回收。</li>
@@ -2105,7 +2100,6 @@ func main() {
     }
 }
 </code></pre>
-
 <h2 id="55-function-values">5.5 Function Values</h2>
 <p>函数在 go 里是第一公民，和其他值一样，有自己的类型，可以被赋值给变量，可以当做函数参数或者返回值（function 零值是
 nil，调用会直接 panic）。函数可以和 nil 比较但是无法互相比较，不能作为map 的 key</p>
@@ -2826,7 +2820,6 @@ func main() {
     c := w.(*bytes.Buffer) // panic: interface holds *os.File, not *bytes.Buffer
 }
 </code></pre>
-
 <ul>
 <li>T is interface type: 检查 x 的动态值是否满足T，检查成功动态值不会被提取出来，结果仍然是接口值，但是具有接口类型 T。
     换言之，对于接口类型的类型断言表达式改变了表达式的类型，使得更多方法可以被访问，但是保留接口值里的接口类型和值组件。</li>
@@ -2837,7 +2830,6 @@ rw := w.(io.ReadWriter) // success: *os.File has both Read and Write
 w = new(ByteCounter)
 rw = w.(io.ReadWriter) // panic: *ByteCounter has no Read method
 </code></pre>
-
 <p>如果我们期望两个返回结果，检查不成功也不会 panic，而是返回是否 ok</p>
 <pre><code>var w io.Writer = os.Stdout
 f, ok := w.(*os.File)      // success:  ok, f == os.Stdout

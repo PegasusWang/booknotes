@@ -770,7 +770,7 @@
               
                 <h1 id="mit-6824">MIT 6.824 分布式系统工程</h1>
 <ul>
-<li>http://nil.csail.mit.edu/6.824/2020/schedule.html 课程表，课程表包含 youbute 视频链接，讲义和论文地址，可以自行下载</li>
+<li>http://nil.csail.mit.edu/6.824/2020/schedule.html 课程表，课程表包含 youbute 视频链接，讲义和论文pdf地址，可以自行下载</li>
 <li>https://www.youtube.com/watch?v=cQP8WApzIQQ&amp;list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB</li>
 <li>https://www.bilibili.com/video/av87684880/ 2020 年最新官方视频</li>
 </ul>
@@ -850,7 +850,6 @@ Map(k, v): k[filename], v[content of this map]
 Reduce(k, v):
   emit(len(v))
 </code></pre>
-
 <h1 id="2-rpc-and-threads">2. RPC and Threads</h1>
 <p>Why Go?</p>
 <ul>
@@ -895,7 +894,7 @@ Big sequential access</p>
 <p><img alt="" src="../4-0.jpeg" />
 <img alt="" src="../4-1.jpeg" /></p>
 <h1 id="5-go-threads-and-raft">5. Go, Threads, and Raft</h1>
-<pre><code class="go">// closure.go
+<pre><code class="language-go">// closure.go
 package main
 
 import &quot;sync&quot;
@@ -1191,7 +1190,57 @@ func main() {
     fmt.Println(&quot;===&quot;)
     &lt;-c // 因为上边一直阻塞住了，这里始终不会执行到，最终导致死锁
 }
+
+
+// producer-consumer.go
+package main
+
+import (
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    c := make(chan int)
+    for i := 0; i &lt; 4; i++ {
+        go doWork(c)
+    }
+    for {
+        v := &lt;-c
+        println(v)
+    }
+}
+
+func doWork(c chan int) {
+    for {
+        time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
+        c &lt;- rand.Int()
+    }
+}
+
+
+// waitgroup
+package main
+
+import &quot;sync&quot;
+
+func main() {
+    var wg sync.WaitGroup
+    for i := 0; i &lt; 5; i++ {
+        wg.Add(1)
+        go func(x int) {
+            sendRPC(x)
+            wg.Done()
+        }(i)
+    }
+    wg.Wait()
+}
+
+func sendRPC(i int) {
+    println(i)
+}
 </code></pre>
+<p>lab: https://www.cnblogs.com/mignet/p/6824_Lab_2_Raft_2A.html</p>
               
             </div>
           </div>

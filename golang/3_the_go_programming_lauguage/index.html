@@ -1386,7 +1386,6 @@ fmt.Println(t.String()) // &quot;int&quot;
 fmt.Println(t)          // &quot;int&quot;
 fmt.Printf(&quot;%T\n&quot;, 3)   // 内部也会使用 reflect.TypeOf
 </code></pre>
-
 <ul>
 <li>Value: reflect.Value 能保存任何类型的值，reflect.ValueOf function accepts any interface{} and returns a reflect.Value containing the interface’s dynamic value.</li>
 </ul>
@@ -1395,7 +1394,6 @@ fmt.Println(v)          // &quot;3&quot;
 fmt.Printf(&quot;%v\n&quot;, v)   // &quot;3&quot;
 fmt.Println(v.String()) // NOTE: &quot;&lt;int Value&gt;&quot;
 </code></pre>
-
 <p>reflect.ValueOf 和 reflect.Value.Interface 互为反操作</p>
 <pre><code>v := reflect.ValueOf(3) // a reflect.Value
 x := v.Interface() // an interface{}

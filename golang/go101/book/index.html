@@ -1043,7 +1043,7 @@
 - the sending goroutine queue
 - the value buffer queue</p>
 <p><img alt="" src="../channel.png" /></p>
-<pre><code class="go">// unbufferd demo
+<pre><code class="language-go">// unbufferd demo
 package main
 
 import (
@@ -1099,7 +1099,6 @@ func main() {
 }
 
 </code></pre>
-
 <ul>
 <li>Channel Element Values are Transferred by Copy。If the passed value size too large, use a pointer element type instead.</li>
 <li>A goroutine can be garbage collected when it has already exited.</li>
@@ -1125,7 +1124,7 @@ func main() {
 <h1 id="37-channel-use-cases">37 Channel Use Cases</h1>
 <h2 id="use-channels-as-futurespromises">Use channels as Futures/Promises</h2>
 <h4 id="return-receive-only-channels-as-results">Return receive-only channels as results</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1153,9 +1152,8 @@ func main() {
     fmt.Println(sumSquares(&lt;-a, &lt;-b)) // 3s 返回, a,b 并发执行的
 }
 </code></pre>
-
 <h4 id="pass-send-only-channels-as-arguments">Pass send-only channels as arguments</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1181,9 +1179,8 @@ func main() {
     fmt.Println(sumSquares(&lt;-ra, &lt;-rb))
 }
 </code></pre>
-
 <h4 id="the-first-response-wins">The first response wins</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1211,11 +1208,10 @@ func main() {
     fmt.Println(rnd)
 }
 </code></pre>
-
 <h2 id="use-channels-for-notifications">Use Channels for Notifications</h2>
 <p>Use blank struct{} as element types of the notification channels, size of type struct{} is zero, doesn't consume memory.</p>
 <h4 id="1-to-1-notification-by-sending-a-value-to-a-channel">1-To-1 notification by sending a value to a channel</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1245,9 +1241,8 @@ func main() {
     fmt.Println(values[0], values[len(values)-1])
 }
 </code></pre>
-
 <h4 id="1-to-1-notification-by-receiving-a-value-from-a-channel">1-To-1 notification by receiving a value from a channel</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1266,10 +1261,9 @@ func main() {
     fmt.Println(&quot; world&quot;)
 }
 </code></pre>
-
 <p>slowers notify the faster waiting for notifications.</p>
 <h4 id="n-to-1-and-1-to-n-notifications">N-to-1 and 1-to-N notifications</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;log&quot;
@@ -1308,12 +1302,11 @@ func main() {
     &lt;-done
 }
 </code></pre>
-
 <p>更常见的使用 sync.WaitGroup 做 N-to-1，通过 close channels 实现 1-to-N.</p>
 <h4 id="broadcast-1-to-n-notifications-by-closing-a-channel">Broadcast (1-To-N) notifications by closing a channel</h4>
 <p>上例中的三个发送 ready 可以直接换成一个 close(ready)</p>
 <h4 id="timer-scheduled-notification">Timer: scheduled notification</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1337,7 +1330,6 @@ func main() {
     fmt.Println(&quot;bye&quot;)
 }
 </code></pre>
-
 <p>实际中使用 time.After</p>
 <h2 id="use-channels-as-mutex-locks">Use Channels as Mutex Locks</h2>
 <p>two manners to use one-capacity bufferd channels as mutex locks.</p>
@@ -1345,7 +1337,7 @@ func main() {
 <li>Lock through a send, unlock through a receive</li>
 <li>Lock through a receive, unlock through a send</li>
 </ul>
-<pre><code class="go">// lock through send
+<pre><code class="language-go">// lock through send
 package main
 
 import &quot;fmt&quot;
@@ -1376,7 +1368,6 @@ func main() {
     fmt.Println(counter) //2000
 }
 </code></pre>
-
 <h2 id="use-channels-as-counting-semaphores">Use Channels as Counting Semaphores</h2>
 <p>Buffered channels can be used as counting semaphores.
 Counting semaphores can be viewed a multi-owner locks, can have most N owners at any time.</p>
@@ -1384,7 +1375,7 @@ Counting semaphores can be viewed a multi-owner locks, can have most N owners at
 <li>Acquire ownership through a send, release through a receive</li>
 <li>Acquire ownership through a receive, release through a send</li>
 </ul>
-<pre><code class="go">// acquire-through-receiving.go
+<pre><code class="language-go">// acquire-through-receiving.go
 package main
 
 import (
@@ -1425,8 +1416,7 @@ func main() {
     }
 }
 </code></pre>
-
-<pre><code class="go">// channeltest/go101/acquire-through-sending.go
+<pre><code class="language-go">// channeltest/go101/acquire-through-sending.go
 package main
 
 import (
@@ -1461,9 +1451,8 @@ func main() {
 
 }
 </code></pre>
-
 <h2 id="dialogueping-pong">Dialogue(Ping-Pong)</h2>
-<pre><code class="go">// channeltest/go101/two-goroutines-dialogue-through-channel.go
+<pre><code class="language-go">// channeltest/go101/two-goroutines-dialogue-through-channel.go
 package main
 
 import (
@@ -1498,7 +1487,6 @@ func main() {
     Play(&quot;B&quot;, table)
 }
 </code></pre>
-
 <h2 id="channel-encapsulated-in-channel">Channel Encapsulated in Channel</h2>
 <p>We can use a channel type as the element of another channel type.</p>
 <pre><code>package main
@@ -1539,9 +1527,8 @@ func main() {
     fmt.Println(&lt;-request) //2000
 }
 </code></pre>
-
 <h2 id="check-lengths-and-capacities-of-channels">Check Lengths and Capacities of Channels</h2>
-<pre><code class="go">for len(c) &gt; 0 {
+<pre><code class="language-go">for len(c) &gt; 0 {
     value := &lt;-c
     // use value
 }
@@ -1550,12 +1537,11 @@ for len(c) &lt; cap(c) {
     c &lt;- aValue
 }
 </code></pre>
-
 <h2 id="block-the-current-goroutine-forever">Block the Current Goroutine Forever</h2>
 <p>We can use a blank select block <code>select{}</code> to block the current goroutine for ever.
 Generally, <code>select{}</code> is used to prevent the main goroutine from exiting, for if the main goroutine exits, the whole
 program will also exit.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;runtime&quot;
 
@@ -1572,11 +1558,10 @@ func main() {
     select {}
 }
 </code></pre>
-
 <h2 id="try-send-and-try-receive">Try-Send and Try-Receive</h2>
 <p>A select block with one "default" branch and only one case branch is called a try-send or try-receive channel operation.
 Try-Send and Try-Receive operations never block.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
@@ -1603,11 +1588,10 @@ func main() {
     }
 }
 </code></pre>
-
 <h4 id="check-if-a-channel-is-closed-without-blocking-the-current-goroutine">Check if a channel is closed without blocking the current goroutine</h4>
 <p>no values were ever(and will be) send to a channel, we can use the following code to
 (concurrency and safetly) check whether or not the channel is already closed without blocking the current goroutine.</p>
-<pre><code class="go">// T is the element type of the corresponding channel type
+<pre><code class="language-go">// T is the element type of the corresponding channel type
 func IsClosed(c chan T) bool {
     select {
     case &lt;-c:
@@ -1617,11 +1601,10 @@ func IsClosed(c chan T) bool {
     return false
 }
 </code></pre>
-
 <h4 id="peakburst-limiting">Peak/burst limiting</h4>
 <p>limit number of concurrent request without blocking any requests</p>
 <h4 id="another-way-to-implement-the-first-response-wins-use-case">Another way to implement the first-response-wins use case</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1649,10 +1632,9 @@ func main() {
     fmt.Println(rnd)
 }
 </code></pre>
-
 <h4 id="timeout">Timeout</h4>
 <p>请求超时返回 error</p>
-<pre><code class="go">func requestWithTimeout(timeout time.Duration) (int, error) {
+<pre><code class="language-go">func requestWithTimeout(timeout time.Duration) (int, error) {
     c := make(chan int)
     // may need a long time to get the response.
     go doRequest(c)
@@ -1665,10 +1647,9 @@ func main() {
     }
 }
 </code></pre>
-
 <h4 id="ticker">Ticker</h4>
 <p>We can use the try-send mechanism to implement a ticker.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1699,10 +1680,9 @@ func main() {
     }
 }
 </code></pre>
-
 <h4 id="rate-limiting">Rate Limiting</h4>
 <p>use try-send to do rate limiting(with the help of a ticker).</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1744,10 +1724,9 @@ func main() {
     }
 }
 </code></pre>
-
 <h4 id="switches">Switches</h4>
 <p>sending a value to or receiving a value from a nil channel are both blocking operations.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1787,9 +1766,8 @@ func main() {
     Play(&quot;B:&quot;, table, true)
 }
 </code></pre>
-
 <h4 id="control-code-execution-possibility-weights">Control code execution possibility weights</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
@@ -1814,12 +1792,11 @@ func main() {
     fmt.Println(x / y) // 大概是 2
 }
 </code></pre>
-
 <h4 id="select-from-dynamic-number-cases">Select from dynamic number cases</h4>
 <p>reflect also provides TrySend and TryRecv functions to implement one-case-plus-default select blocks.</p>
 <h2 id="data-flow-manipulations">Data Flow Manipulations</h2>
 <h4 id="data-generationcollectionloading">Data generation/collection/loading</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;encoding/binary&quot;
@@ -1849,9 +1826,8 @@ func main() {
     }
 }
 </code></pre>
-
 <h4 id="data-aggregation">Data aggregation</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1887,10 +1863,9 @@ func main() {
     fmt.Println(&quot;hehe&quot;)
 }
 </code></pre>
-
 <h4 id="data-composition">Data composition</h4>
 <p>A data composition worker merges several pieces of data from different input data streams into one piece of data.</p>
-<pre><code class="go">func Composor(intA, intB &lt;-chan uint64) &lt;-chan uint64 {
+<pre><code class="language-go">func Composor(intA, intB &lt;-chan uint64) &lt;-chan uint64 {
     output := make(chan uint64)
     go func() {
         for {
@@ -1901,10 +1876,9 @@ func main() {
     return output
 }
 </code></pre>
-
 <h4 id="data-duplicationproliferation">Data duplication/proliferation</h4>
 <p>One piece of data will be duplicated and each of the duplicated data will be sent to different output data streams.</p>
-<pre><code class="go">func Duplicator(in &lt;-chan uint64) (&lt;-chan uint64, &lt;-chan uint64) {
+<pre><code class="language-go">func Duplicator(in &lt;-chan uint64) (&lt;-chan uint64, &lt;-chan uint64) {
     outA, outB := make(chan uint64), make(chan uint64)
     go func() {
         for {
@@ -1916,9 +1890,8 @@ func main() {
     return outA, outB
 }
 </code></pre>
-
 <h4 id="data-calculationanalysis">Data calculation/analysis</h4>
-<pre><code class="go">func Calculator(in &lt;-chan uint64, out chan uint64) &lt;-chan uint64 {
+<pre><code class="language-go">func Calculator(in &lt;-chan uint64, out chan uint64) &lt;-chan uint64 {
     if out == nil {
         out = make(chan uint64)
     }
@@ -1929,9 +1902,8 @@ func main() {
     return out
 }
 </code></pre>
-
 <h4 id="data-validationfiltering">Data validation/filtering</h4>
-<pre><code class="go">func Filter(input &lt;-chan uint64, output chan uint64) &lt;-chan uint64 {
+<pre><code class="language-go">func Filter(input &lt;-chan uint64, output chan uint64) &lt;-chan uint64 {
     if output == nil {
         output = make(chan uint64)
     }
@@ -1948,9 +1920,8 @@ func main() {
     return output
 }
 </code></pre>
-
 <h4 id="data-servingsaving">Data serving/saving</h4>
-<pre><code class="go">func Printer(input &lt;-chan uint64) {
+<pre><code class="language-go">func Printer(input &lt;-chan uint64) {
     for {
         x, ok := &lt;-input
         if ok {
@@ -1961,9 +1932,8 @@ func main() {
     }
 }
 </code></pre>
-
 <h4 id="data-flow-system-assembling">Data flow system assembling</h4>
-<pre><code class="go">func main() {
+<pre><code class="language-go">func main() {
     Printer(
         Filter(
             Calculator(
@@ -1973,9 +1943,8 @@ func main() {
     )
 }
 </code></pre>
-
 <h1 id="how-to-gracefully-close-channels">How to Gracefully Close Channels</h1>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
@@ -1997,7 +1966,6 @@ func main() {
     fmt.Println(IsClosed(c))
 }
 </code></pre>
-
 <h4 id="channel-closing-principle">Channel Closing Principle</h4>
 <ul>
 <li>don't close a channel from the receiver side and don't close a channel if the channel has multiple concurrent senders.</li>
@@ -2005,7 +1973,7 @@ func main() {
 </ul>
 <h4 id="solutions-which-close-channels-rudely">Solutions which Close Channels Rudely</h4>
 <p>use recover prevent possible panic.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 type T int
 
@@ -2030,9 +1998,8 @@ func SafeSend(ch chan T, vlue T) (closed bool) {
     return false
 }
 </code></pre>
-
 <h4 id="solutions-which-close-channels-politely">Solutions Which Close Channels Politely</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;sync&quot;
 
@@ -2081,10 +2048,9 @@ func (mc *MyChannel) IsClosed() {
     return mc.closed
 }
 </code></pre>
-
 <h4 id="solutions-which-close-channels-gracefully">Solutions Which Close Channels Gracefully</h4>
 <h6 id="m-receivers-one-sender-the-sender-says-no-more-sends-by-closing-the-data-channel">M receivers, one sender, the sender says "no more sends" by closing the data channel</h6>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;log&quot;
@@ -2132,9 +2098,8 @@ func main() {
     wgReceivers.Wait()
 }
 </code></pre>
-
 <h4 id="one-receiver-n-senders-the-only-receiver-says-please-stop-sending-more-by-closing-an-additional-signal-channel">One receiver, N senders, the only receiver says "please stop sending more" by closing an additional signal channel</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;log&quot;
@@ -2193,9 +2158,8 @@ func main() {
 // this example dataCh is never closed. A channel will eventually garbage collected if no goroutines reference it any
 // more, whether it is closed or not.
 </code></pre>
-
 <h4 id="m-receivers-n-senders-any-one-of-them-says-lets-end-the-game-by-notifying-a-moderator-to-close-an-additional-signal-channel">M receivers, N senders, any one of them says "let's end the game" by notifying a moderator to close an additional signal channel</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;log&quot;
@@ -2295,14 +2259,13 @@ func main() {
     log.Println(&quot;stopped by&quot;, stoppedBy)
 }
 </code></pre>
-
 <h1 id="concurrency-synchronization-techniques-provided-in-the-sync-standard-package">Concurrency Synchronization Techniques Provided in the sync Standard Package</h1>
 <p>For the specialized circumstances, sync are more efficient and more readable.</p>
 <p>NOTE: To avoid abnormal behaviors, it is best not to copy the values of the types int the sync standard package.</p>
 <h3 id="the-syncwaitgroup-type">The sync.WaitGroup Type</h3>
 <p>Each sync.WaitGroup value maintains a counter(init 0) internally.</p>
 <p>Used for one goroutine waits until all of several other goroutines finish their respective jobs.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;log&quot;
@@ -2330,13 +2293,12 @@ func main() {
     log.Println(&quot;values:&quot;, values)
 }
 </code></pre>
-
 <h3 id="the-synconce-type">The sync.Once Type</h3>
 <p>The code in the invoked argument function is guaranteed to be executed before any o.Do method call returns.</p>
 <h3 id="the-syncmutex-and-syncrwmutex-types">The sync.Mutex and sync.RWMutex Types</h3>
 <p>Both implements sync.Locker (Lock/Unlock). m.Lock/m.UnLock() are shortands of (&amp;m).Lock() and (&amp;m).Unlock()</p>
 <p>A lock doesn't know which goroutine acquired it, and any goroutine can release a lock which in acquired status.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -2391,10 +2353,9 @@ func (c *Counter) Value() uint64 {
     return c.n
 }
 </code></pre>
-
 <h3 id="type-synccond-type">Type sync.Cond Type</h3>
 <p>Notifications among goroutines. Wait(), Signal(), Broadcast()</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -2438,13 +2399,12 @@ func main() {
     cond.L.Unlock()
 }
 </code></pre>
-
 <h1 id="atomic-operations-provided-in-the-syncatomic-standard-package">Atomic Operations Provided in The sync/atomic Standard Package</h1>
 <h3 id="overview-of-atomic-operations-provided-in-go">Overview of Atomic Operations Provided in Go</h3>
 <p>AddT/LoadT/StoreT/SwapT/CompareAndSwapT, T must be any of int32,int64,uin32,uint64 and uintptr.</p>
 <p>Value.Load, Value.Store.</p>
 <h3 id="atomic-operations-for-integers">Atomic Operations for Integers</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -2467,10 +2427,9 @@ func main() {
     fmt.Println(atomic.LoadInt32(&amp;n))
 }
 </code></pre>
-
 <p>StoreT and LoadT atomic functions are often used to implement the setter/getter methods of a type if the values of the
 type need to be used concurrently.</p>
-<pre><code class="go">type Page struct {
+<pre><code class="language-go">type Page struct {
     views uint32
 }
 
@@ -2482,11 +2441,10 @@ func (page *Page) Views() uint32 {
     return atomic.LoadUint32(&amp;page.views)
 }
 </code></pre>
-
 <h3 id="atomic-operations-for-pointers">Atomic Operations for Pointers</h3>
 <h3 id="atomic-operations-for-values-of-arbitrary-types">Atomic Operations for Values of Arbitrary Types</h3>
 <p>The Value type provided in the sync/atomic standard pacakge can be used to atomically load and store values of any type.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -2506,14 +2464,13 @@ func main() {
     // v.Store(&quot;hello&quot;)
 }
 </code></pre>
-
 <h1 id="memory-order-guarantees-in-go">Memory Order Guarantees in Go</h1>
 <p>很多编译器和 cpu 经常会对指令顺序做一些优化，导致和原始的代码可能不同。Instruction ordering is also often called memory
 ordering.</p>
 <p><code>go build -race</code> to check data races in the program.</p>
 <h3 id="go-memory-model">Go Memory Model</h3>
 <h4 id="the-creation-of-a-gouroutine-happens-before-the-execution-of-the-goroutine">The creation of a gouroutine happens before the execution of the goroutine</h4>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
@@ -2529,7 +2486,6 @@ func f1() {
     }()
 }
 </code></pre>
-
 <h4 id="channel-operations-related-order-guarantees">Channel operations related order guarantees</h4>
 <ul>
 <li>The nth successful send to a channel happens before the nth successful receive from that channel completes(no matter
@@ -2539,7 +2495,7 @@ func f1() {
 <li>The closing of a channel happens before a receive completes if the receive returns a zero value because the channel is
     closed.</li>
 </ul>
-<pre><code class="go">func f3() {
+<pre><code class="language-go">func f3() {
     var a, b int
     var c = make(chan bool)
     go func() {
@@ -2558,7 +2514,6 @@ func f1() {
     }()
 }
 </code></pre>
-
 <h4 id="mutex-related-order-guarantees">Mutex related order guarantees</h4>
 <ul>
 <li>For an addressable value m of type Mutex/RWMutex in the sync, the nth successful m.Unlock() call happens before n+1th m.Lock() returns</li>
@@ -2576,7 +2531,7 @@ func f1() {
 <p>Don't rely on atomic to guarantee ordering in general Go programming.</p>
 <h1 id="common-concurrent-programming-mistakes">Common Concurrent Programming Mistakes</h1>
 <h3 id="no-synchronizations-when-synchronizations-are-needed">No Synchronizations When Synchronizations Are Needed</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;runtime&quot;
@@ -2610,7 +2565,6 @@ func main() {
     a[0], a[1], a[2] = 0, 1, 2
 }
 </code></pre>
-
 <h3 id="use-timesleep-calls-to-do-synchronizations">Use time.Sleep Calls to Do Synchronizations</h3>
 <p>We should never use time.Sleep calls to do synchronizations in formal projects.</p>
 <h3 id="leave-goroutines-hanging">Leave Goroutines Hanging</h3>
@@ -2621,7 +2575,7 @@ Go runtime will never release the resources consumed by a hanging goroutine.</p>
 <h3 id="copy-values-of-the-types-in-the-sync-standard-package">Copy Values of the Types in the sync Standard Package</h3>
 <p>Values of types(except the Locker interface values) in the sync standard package should never be copied.
 We should only copy pointers of such values.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;sync&quot;
 
@@ -2647,10 +2601,9 @@ func (c Counter) Value() (r int64) {
     return
 }
 </code></pre>
-
 <h3 id="call-the-syncwaitgroupadd-method-at-wrong-places">Call the sync.WaitGroup.Add Method at Wrong Places</h3>
 <p>Each sync.WaitGroup value maintains a counter internally, a call to wait blocks until counter value becomes 0.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -2677,20 +2630,18 @@ func main() {
     fmt.Println(atomic.LoadInt32(&amp;x)) // not always 100
 }
 </code></pre>
-
 <h3 id="use-channels-as-futurespromises-improperly">Use Channels as Futures/Promises Improperly</h3>
-<pre><code class="go">// ERROR: two channel receive are processed sequentially, instead of concurrently
+<pre><code class="language-go">// ERROR: two channel receive are processed sequentially, instead of concurrently
 DoSomethingWithFutureArguments(&lt;-fa(), &lt;-fb())
 
 // concurrently
 ca, cb := fa(), fb()
 DoSomethingWithFutureArguments(&lt;-ca, &lt;-cb)
 </code></pre>
-
 <h3 id="close-channels-not-from-the-last-active-sender-goroutine">Close Channels Not From the Last Active Sender Goroutine</h3>
 <h3 id="do-64-bit-atomic-operations-on-values-which-are-not-guaranteed-to-be-8-byte-aligned">Do 64-bit Atomic Operations on Values Which are Not Guaranteed to Be 8-byte Aligned</h3>
 <h3 id="not-pay-attention-to-too-many-resources-are-consumed-by-calls-to-the-timeafter-function">Not Pay Attention to Too Many Resources Are Consumed by Calls to the time.After Function</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -2731,9 +2682,8 @@ func LongRunning(messages &lt;-chan string) {
     }
 }
 </code></pre>
-
 <h3 id="use-timetimer-values-incorrectly">Use time.Timer Values Incorrectly</h3>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -2756,7 +2706,6 @@ func main() {
     fmt.Println(time.Since(start)) //about 1 s
 }
 </code></pre>
-
 <h1 id="memory-blocks">Memory Blocks</h1>
 <h3 id="memory-blocks_1">Memory Blocks</h3>
 <p>A meomory block is a continuous memory segment to host value parts at run time..
@@ -2809,7 +2758,7 @@ reflect.TypeOf(t).FieldAlign()。</p>
 <h1 id="go-memory-leaking-scenarios">Go Memory Leaking Scenarios</h1>
 <h3 id="kind-of-memory-leaking-caused-by-substrings">Kind-of Memory Leaking Caused by Substrings</h3>
 <p>Go substring expression result string and base string share same underlying memory block.</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 var s0 string //package level variable
 
@@ -2823,9 +2772,8 @@ func main() {
     f(s)
 }
 </code></pre>
-
 <p>解决方式：</p>
-<pre><code class="go">func f(s1 string) {
+<pre><code class="language-go">func f(s1 string) {
     s0 = string([]byte(s1[:50]))
 }
 
@@ -2841,9 +2789,8 @@ func f(s1 string) {
     // or call strings.Repeat
 }
 </code></pre>
-
 <h3 id="kind-of-memory-leaking-caused-by-subslices">Kind-of Memory Leaking Caused by subslices</h3>
-<pre><code class="go">func s0 []int
+<pre><code class="language-go">func s0 []int
 func g(s1 []int) {
     // assume length of s1 is much larger than 30
     s0=s1[len(s1)-30:]
@@ -2853,9 +2800,8 @@ func g(s1 []int) {
     s0 = append([]int(nil), s1[len(s1-30:]...)
 }
 </code></pre>
-
 <h3 id="kind-of-memory-leaking-caused-by-not-resetting-pointers-in-lost-slice-elements">Kind-of Memory Leaking Caused by Not resetting Pointers in Lost Slice Elements</h3>
-<pre><code class="go">func h() []*int {
+<pre><code class="language-go">func h() []*int {
     s := []*int{new(int), new(int), new(int), new(int)}
     // do with s
     return s[1:3:3]
@@ -2870,11 +2816,10 @@ func h() []*int {
     return s[1:3:3]
 }
 </code></pre>
-
 <h3 id="kind-of-memory-leaking-caused-by-hanging-goroutines">Kind-of Memory Leaking Caused by Hanging Goroutines</h3>
 <h3 id="real-memory-leaking-caused-by-not-stopping-timeticker-values-which-are-not-used-anymore">Real Memory Leaking Caused by Not Stopping time.Ticker Values Which Are Not Used Anymore</h3>
 <h3 id="real-memory-leaking-caused-by-using-finalizers-improperly">Real Memory Leaking Caused by Using Finalizers Improperly</h3>
-<pre><code class="go">func memoryLeaking() {
+<pre><code class="language-go">func memoryLeaking() {
     type T struct {
         v [1&lt;&lt;20]int
         t * T
@@ -2889,7 +2834,6 @@ func h() []*int {
     x.t, y.t = &amp;y, &amp;x  // y also escape to heap
 }
 </code></pre>
-
 <h3 id="kind-of-resources-leaking-by-deferring-function-calls">Kind-of Resources Leaking by Deferring Function Calls</h3>
 <h1 id="nils-in-go">nils in Go</h1>
 <p>nil can Represent Zero Values of Many Types:</p>
@@ -2905,13 +2849,12 @@ func h() []*int {
 <p><code>fmt.Println( (interface{})(nil) == (*int)(nil))  // false</code></p>
 <h3 id="retrieving-elements-from-nil-maps-will-not-panic">Retrieving Elements From Nil Maps Will Not Panic</h3>
 <p>will always return zero value.</p>
-<pre><code class="go">(map[string]int)(nil)[&quot;key&quot;]  // 0
+<pre><code class="language-go">(map[string]int)(nil)[&quot;key&quot;]  // 0
 (map[int]bool)(nil)[123]  // false
 (map[int]*int64)(nil)[123]  // nil
 </code></pre>
-
 <h3 id="it-is-legal-to-range-over-nil-channels-maps-slices-and-array-pointers">It is Legal to Range Over Nil Channels, Maps, Slices and Array Pointers</h3>
-<pre><code class="go">func main() {
+<pre><code class="language-go">func main() {
     // following code will print 0,1,2,3 and 4, then block for ever
     for range []int(nil) {
         fmt.Println(&quot;Hello&quot;) // never print
@@ -2928,7 +2871,6 @@ func h() []*int {
 }
 
 </code></pre>
-
 <h1 id="value-conversion-assignment-and-comparison-rules-in-go">Value Conversion, Assignment and Comparison Rules In Go</h1>
 <h3 id="value-conversion-rules">Value Conversion Rules</h3>
 <ol>
@@ -2952,12 +2894,11 @@ func h() []*int {
 <li>All basic types are defined.</li>
 <li>A non-defined type must be a composite type.</li>
 </ul>
-<pre><code class="go">type A []string     # 依据规则1，A是defined type
+<pre><code class="language-go">type A []string     # 依据规则1，A是defined type
 type B = A          # 依据规则1，B是defined type
 type C = []string   # 依据规则2，[]string是non-defined types，所以C是non-defined types
 你可以使用类型声明的语法，定义一个新的类型（也属于defined type）；当你使用类型别名声明时，未必会定义一个新的类型。
 </code></pre>
-
 <ol>
 <li>channel specific conversion rule</li>
 </ol>
@@ -3010,11 +2951,10 @@ source value is copied to the destination value.</p>
 <li>basic: Pointer values have no fields</li>
 <li>sugar: we can select the fields of a struct through pointers of the struct value</li>
 </ul>
-<pre><code class="go">var t T
+<pre><code class="language-go">var t T
 var p = &amp;t
 p.x *= 2 // sugar of the following code: (*p).x *= 2
 </code></pre>
-
 <h3 id="receiver-arguments-of-method-calls">Receiver arguments of method calls</h3>
 <p>Although the methods explicitly defined on type <code>*T</code> are not methods of type T, addressable values of type T can be
 used as the receiver arguments of calls to these methods.</p>
@@ -3046,11 +2986,10 @@ Any type compositions with all kinds of composite types in Go is kinda of generi
 <li>Declared functions can be used as function values</li>
 <li>build-in, unsafe, init can not be used as function values</li>
 </ul>
-<pre><code class="go">var _ = panic
+<pre><code class="language-go">var _ = panic
 var _ = unsafe.Sizeof
 var _ = init
 </code></pre>
-
 <h3 id="discard-return-values-of-function-calls">Discard return values of function calls</h3>
 <ul>
 <li>basic rule: return values of a function call can be discarded all together</li>
@@ -3076,7 +3015,7 @@ var _ = init
 <li>basic: if the values of a type T can be represented with composite literal, the <code>t{}</code> is its zero value.</li>
 <li>exception: for a map or a slice type T, <code>T{}</code> isn't its zero value. Its zero value is represented with nil.</li>
 </ul>
-<pre><code class="go">    type T0 struct {
+<pre><code class="language-go">    type T0 struct {
         x int
     }
     fmt.Println(T0{} == *new(T0)) //true
@@ -3088,7 +3027,6 @@ var _ = init
     type T3 map[int]int
     fmt.Println(T3{} == nil) // false
 </code></pre>
-
 <h3 id="container-element-iterations">Container element iterations</h3>
 <ul>
 <li>the iterated values are runes if the ranged containers are strings, instead of the byte elements of strings</li>
@@ -3115,7 +3053,7 @@ var _ = init
 <li>whether or not the optional evaluation result of an expression is present will not affect program behavior.</li>
 <li>exception: missing the optional result value in a type assertion will make current goroutine panic if type assertion fails</li>
 </ul>
-<pre><code class="go">var v interface{} = &quot;abc&quot;
+<pre><code class="language-go">var v interface{} = &quot;abc&quot;
 _, ok = v.(int) // will not panic
 _ = v.(int) // will panic!!!
 </code></pre>

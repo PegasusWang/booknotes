@@ -770,20 +770,18 @@
               
                 <h1 id="11-interfaces-and-reflection">11 Interfaces and reflection</h1>
 <p>An Interface define a set of methods. And cannot contain variables.</p>
-<pre><code class="go">type Namer interface {
+<pre><code class="language-go">type Namer interface {
     Method1(param_list) return_type
     Method2(param_list) return_type
 }
 </code></pre>
-
 <h2 id="113-type-assertion">11.3 type assertion</h2>
-<pre><code class="go">if v, ok := varI.(T); ok {
+<pre><code class="language-go">if v, ok := varI.(T); ok {
 //
 }
 </code></pre>
-
 <p>Value-received methods can be called with pointer values because they can be dereference first.</p>
-<pre><code class="go">package sort
+<pre><code class="language-go">package sort
 
 type Sorter interface {
     Len() int
@@ -818,9 +816,8 @@ func (p IntArray) Len() int {return len(p)}
 func (p IntArray) Less(i,j int) bool {return p[i] &lt; p[j]}
 func (p IntArray) Swap(i,j int) {p[i],p[j] = p[j],p[i]}
 </code></pre>
-
 <h3 id="1192-contsucting-an-array-of-a-general-type-or-with-variables-of-different-types">11.9.2 contsucting an array of a general type or with variables of different types</h3>
-<pre><code class="go">type Element interface{}
+<pre><code class="language-go">type Element interface{}
 
 type Vector struct {
     a []Element
@@ -834,9 +831,8 @@ func (p *Vector) Set(i int, Element e) {
     p.a[i] = e
 }
 </code></pre>
-
 <p>tree struct:</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
@@ -866,10 +862,9 @@ func main() {
     fmt.Printf(&quot;%v\n&quot;, root)
 }
 </code></pre>
-
 <h2 id="1110-the-reflect-package">11.10 The reflect package</h2>
 <h2 id="1114-structs-coolections-and-higher-order-functions">11.14 Structs coolections and higher order functions</h2>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 type Any interface{}
 
@@ -895,9 +890,8 @@ allNewBMWs := allCars.FindAll(func(car *Car) bool {
     return (car.Manufacturer == &quot;BMW&quot;) &amp;&amp; (car.BuildYear &gt; 2010)
 })
 </code></pre>
-
 <h1 id="12-reading-and-writing">12 Reading and writing</h1>
-<pre><code class="go">// read input from console:
+<pre><code class="language-go">// read input from console:
 package main
 
 import &quot;fmt&quot;
@@ -913,10 +907,9 @@ func main() {
 
 // or use bufio.Reader
 </code></pre>
-
 <h1 id="13-error-handling-and-testing">13 Error-handling and Testing</h1>
 <p>no try/catch, defer-panic-and-recover mechanism.</p>
-<pre><code class="go">type error interface {
+<pre><code class="language-go">type error interface {
     Error() string
 }
 // to stop an error-state program, use os.Exit(1)
@@ -939,7 +932,6 @@ if f &lt; 0 {
     return 0, fmt.Errorf(&quot;math: square root of negative number %g&quot;, f)
 }
 </code></pre>
-
 <h2 id="132-run-time-exceptions-and-panic">13.2 Run-time exceptions and panic</h2>
 <p>if panic is called from a nested function, immediately stops the execution of the current function,
 all defer statement are guaranteed to execute and the control is given to the function caller, which receives this call
@@ -948,7 +940,7 @@ to panic.</p>
 <p>recover is only useful when called inside a deferred function: it then retrieves the error value passed through the call
 of panic; when used in normal execution a call to recover will return nil and have no other effects.</p>
 <p>like catch in java.</p>
-<pre><code class="go">func protect(g func()) {
+<pre><code class="language-go">func protect(g func()) {
     defer func() {
         log.Println(&quot;done&quot;)
         if err := recover(); err != nil {
@@ -984,7 +976,6 @@ func main() {
     fmt.Printf(&quot;calling test end\r\n&quot;)
 }
 </code></pre>
-
 <h2 id="134-error-handling-and-panicking-in-a-custom-package">13.4 Error-handling and panicking in a custom package</h2>
 <p>best practice:</p>
 <ul>
@@ -992,7 +983,7 @@ func main() {
 <li>return errors as error values to the callers of your package.</li>
 </ul>
 <h2 id="135-an-error-handling-scheme-with-closures">13.5 An Error-handling scheme with closures</h2>
-<pre><code class="go">func f(a type1, b type2)
+<pre><code class="language-go">func f(a type1, b type2)
 
 fType1 = func f(a type1, b type2)
 
@@ -1009,7 +1000,6 @@ func errorHandler(fn fType1) fType1 {
 }
 
 </code></pre>
-
 <h2 id="136-starting-an-external-command-or-program">13.6 Starting an external command or program</h2>
 <p>os.StartProcess
 exec.Command(name string, arg ...string)</p>
@@ -1036,7 +1026,6 @@ Only one goroutine has access to a  data item at any given time: so data races c
 var cha1 chan string // reference type
 ch1 = make(chan string)
 </code></pre>
-
 <p>Channel send and receive operations are aotmic, they always complete without interruption.</p>
 <h3 id="1423-blocking-of-channels">14.2.3 Blocking of channels</h3>
 <p>default communication is synchronous and unbuffered: sends do not complete until there is a receiver to accept the value. So channel send/receive block until the other side is ready.</p>
@@ -1071,13 +1060,11 @@ func suck(ch chan int) {
     }
 }
 </code></pre>
-
 <h3 id="1425-asynchronous-channels-making-a-channel-with-a-buffer">14.2.5 Asynchronous channels-making a channel with a buffer</h3>
 <p>An unbuffered channel can only contain 1 item and is for that reason somethimes too restrictive.</p>
 <pre><code>buf := 100
 ch1 := make(chan string, buf) //buf is the number of elements the channel can hold
 </code></pre>
-
 <p>sending to a bufferd channel will not blocked unless buffer is full, reading not blocked unless buffer is empty.
 If the capacity is greater than 0, channel is asychronous</p>
 <p>Semaphore pattern</p>
@@ -1089,7 +1076,6 @@ If the capacity is greater than 0, channel is asychronous</p>
     doSomethingElseForAWhile()
     &lt;-ch // wait for goroutine to finish. discard send value
 </code></pre>
-
 <h3 id="1429-implementing-a-semaphore-using-a-buffered-channel">14.2.9 Implementing a semaphore using a buffered channel</h3>
 <pre><code>type Empty interface{}
 type semaphore chan Empty
@@ -1127,7 +1113,6 @@ func (s semaphore) Signal() {
     s.V(1)
 }
 </code></pre>
-
 <h3 id="14210-for-range-applied-to-channels">14.2.10 For-range applied to channels</h3>
 <p>It reads from the given channel ch until the channel is closed and then the code following for continue to execute. Obviously another goroutine must be writing to ch(otherwise the executino blocks in the for-loop) and must close ch when it's done writing.</p>
 <p>producer consumer pattern:</p>
@@ -1135,12 +1120,10 @@ func (s semaphore) Signal() {
     Consume(Product())
 }
 </code></pre>
-
 <h3 id="14211-channel-directionality">14.2.11 Channel directionality</h3>
 <pre><code>var send_only chan&lt;- int // channel can only receive data (&lt;-chan T)
 var recv_only &lt;-chan int // channel can only send data
 </code></pre>
-
 <p>IDIOM: Pipe and filter pattern</p>
 <pre><code>sendChan := make(chan int)
 receiveChan := make(chan string)
@@ -1153,7 +1136,6 @@ func processChannel(in &lt;- chan int, out chan&lt;- string) {
     }
 }
 </code></pre>
-
 <pre><code>// sieve primer number
 package main
 
@@ -1201,7 +1183,6 @@ func main() {
     }
 }
 </code></pre>
-
 <h2 id="143-synchronization-of-goroutine-closing-a-channel-testing-for-blocked-channels">14.3 Synchronization of goroutine: closing a channel - testing for blocked channels</h2>
 <p>Only the sender should close a channel, never receiver.
 Sending or Closing a closed channel causes a run-time panic.</p>
@@ -1209,7 +1190,6 @@ Sending or Closing a closed channel causes a run-time panic.</p>
     process(v)
 }
 </code></pre>
-
 <p>To do a non-blocking channel you need to use a select.
 for range will automatically detect when the channel is closed.</p>
 <h2 id="144-switching-between-goroutines-with-select">14.4 Switching between goroutines with select</h2>
@@ -1262,7 +1242,6 @@ func suck(ch1 chan int, ch2 chan int) {
     }
 }
 </code></pre>
-
 <h2 id="145-channels-timeouts-and-tickers">14.5 Channels, Timeouts and Tickers</h2>
 <p>time.Ticker is an object that repeatedly sends a time value on a contained channel C at a specified time interval.</p>
 <pre><code>func main() {
@@ -1280,7 +1259,6 @@ func suck(ch1 chan int, ch2 chan int) {
     }
 }
 </code></pre>
-
 <p>rate limiter:</p>
 <pre><code>rate_per_sec := 10
 var dur Dration = 1e9
@@ -1290,7 +1268,6 @@ for req := range requests {
     go client.Call(&quot;service.Method&quot;, req, ...)
 }
 </code></pre>
-
 <p>time.After(d) only send time once:</p>
 <pre><code>package main
 
@@ -1316,7 +1293,6 @@ func main() {
     }
 }
 </code></pre>
-
 <h2 id="146-using-recover-with-goroutines">14.6 Using recover with goroutines</h2>
 <pre><code>func server(workChan &lt;-chan *Work) {
     for work := range workChan {
@@ -1333,7 +1309,6 @@ func safelyDo(work *Work) {
     do(work)
 }
 </code></pre>
-
 <h3 id="147-tasks-and-worker-processes">14.7 Tasks and Worker processes</h3>
 <pre><code>// Master-worker paradigm
 func Worker(in, out chan *Task){
@@ -1344,7 +1319,6 @@ func Worker(in, out chan *Task){
     }
 }
 </code></pre>
-
 <p>when to use: a sync.Mutex or a channel?</p>
 <ul>
 <li>use locking(mutexes) when:
@@ -1388,7 +1362,6 @@ func main() {
     fmt.Println(generateInteger())
 }
 </code></pre>
-
 <h2 id="149-implementing-futures">14.9 Implementing Futures</h2>
 <p>future: somtimes you know yopu need to compute a value before you need to actually use the value.
 in this case, you can potentially start computing the value on another processor and have it ready
@@ -1416,7 +1389,6 @@ func InverseFuture(a Matrix) {
     return future
 }
 </code></pre>
-
 <h2 id="1410-multiplexing">14.10 Multiplexing</h2>
 <h2 id="1411-limiting-the-number-of-requests-processed-concurrently">14.11 Limiting the number of requests processed concurrently</h2>
 <h2 id="1412-chaining-goroutines">14.12 Chaining goroutines</h2>
@@ -1443,7 +1415,6 @@ func main() {
     DoAll()
 }
 </code></pre>
-
 <h2 id="1414-parallelizing-a-computation-over-a-large-amount-of-data">14.14 Parallelizing a computation over a large amount of data</h2>
 <p>a number of steps: Preprocess / StepA / StepB / ... / PostProcess</p>
 <p>pipelining algorithm:</p>
@@ -1470,7 +1441,6 @@ func ParallelProcessData(in &lt;- chan  *Data, out &lt;- chan *Data) {
     go PostProcessData(stepOut, out)
 }
 </code></pre>
-
 <h2 id="1415-the-leaky-bucket-algorithm">14.15 The leaky bucket algorithm</h2>
 <pre><code>var freeList = make(chan *Buffer, 100)
 var serverChan = make(chan *Buffer)
@@ -1505,7 +1475,6 @@ func server() {
 
 }
 </code></pre>
-
 <h2 id="1416-benchmarking-goroutines">14.16 Benchmarking goroutines</h2>
 <h2 id="1417-concurrent-access-to-object-using-a-chnnel">14.17 Concurrent access to object using a chnnel</h2>
 <p>To safeguard concurrent modifications of an object instead of using locking with a sync Mutex,
@@ -1533,7 +1502,6 @@ func shadow() (err error) {
 }
 
 </code></pre>
-
 <h2 id="162-misusing-strings">16.2 Misusing strings</h2>
 <p>mind that strings in go(like java and python) are immutable, Do not use a + b in a for loop,
 intead one should use a bytes.Buffer to accumulate string content.</p>
@@ -1550,7 +1518,6 @@ intead one should use a bytes.Buffer to accumulate string content.</p>
     return
 }
 </code></pre>
-
 <h2 id="163-using-defer-for-closing-a-file-in-the-wrong-scope">16.3 Using defer for closing a file in the wrong scope</h2>
 <p>Defer is only executed at the return of a function, not at the end of a loop or some other limited scope.</p>
 <h2 id="164-confusing-new-and-make">16.4 Confusing new() and make()</h2>
@@ -1609,7 +1576,6 @@ func main() {
     time.Sleep(1e9) //10,11,12,13,14
 }
 </code></pre>
-
 <h2 id="1610-bad-error-handling">16.10 Bad error handling</h2>
 <p>wrap your error conditions in a closure wherever possible, like in the following example.</p>
 <pre><code>// seperate error checking, error reporting, and normal program logic
@@ -1632,7 +1598,6 @@ func httpRequestHandler(w http.ResponseWriter, req *http.Request) {
     doSomething() //
 }
 </code></pre>
-
 <h1 id="17-go-language-patterns">17 Go Language Patterns</h1>
 <h2 id="171-the-comma-ok-pattern">17.1 The comma, ok pattern</h2>
 <h2 id="172-the-defer-pattern">17.2 The defer pattern</h2>

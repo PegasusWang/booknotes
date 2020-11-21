@@ -1118,12 +1118,10 @@
 git bisect run test.sh
 git reset
 </code></pre>
-
 <p>如果正在做某一件事情，然后突然要去解决另外一件事，可以把当前的变更先隐藏，处理完别的事情之后再恢复。</p>
 <pre><code>git stash save interrupted-to-work-on-V1234
 git stash pop
 </code></pre>
-
 <ul>
 <li>用 git 查看文件的修改记录，确定 bug 何时以何种方式引入</li>
 <li>用 git 查看正在运行的版本和故障版本之间的区别</li>
@@ -1199,7 +1197,6 @@ git stash pop
 ps -u apache
 gdb -p pid
 </code></pre>
-
 <p>链接到正在运行的进程之后可以打断其执行过程 (gdb:break)，还可以设置断点</p>
 <h3 id="35-core-dump">35 条：了解 core dump 信息进行调试</h3>
 <p>unix 可以通过 kill-ABRT pid 发送 SIGABRT 信号，迫使其生成转储文件。终端里可以用 <code>ctrl-\</code> 组合键发送这个信号。</p>
@@ -1393,7 +1390,6 @@ kill -QUIT pid
 &gt;(gdb) thread 2
 &gt;(gdb) backtrace
 </code></pre>
-
 <ul>
 <li>jdk jstack 排查 java 死锁</li>
 </ul>
@@ -1412,13 +1408,11 @@ gdb_record race
 (gdb) continue
 (gdb) quit
 </code></pre>
-
 <p>可以用 replay 命令重放，程序按照和当初相同的顺序操作内存，也会表现出同样的错误行为。</p>
 <pre><code>replay pinball/log_0
 
 gdb_replay pinball/log_0 ./race
 </code></pre>
-
 <h3 id="62">62 条：用专门的工具探查死锁和竞争条件问题</h3>
 <ul>
 <li>FindBugs: <code>java -jar findbugs.jar -textui Counter.class</code></li>

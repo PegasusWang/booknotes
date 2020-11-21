@@ -775,11 +775,9 @@
 <p>StatsD 的协议其实非常简单，每一行就是一条数据。</p>
 <pre><code>&lt;metric_name&gt;:&lt;metric_value&gt;|&lt;metric_type&gt;
 </code></pre>
-
 <p>以监控系统负载为例，假如某一时刻系统 1分钟的负载 是 0.5，通过以下命令就可以写入 StatsD。</p>
 <pre><code>echo &quot;system.load.1:0.5|g&quot; | nc 127.0.0.1 8251
 </code></pre>
-
 <p>结合其中的 system.load.1:0.5|g，各个部分分别为：</p>
 <p>指标名称 metric_name = system.load.1
 指标的值 metric_value = 0.5
@@ -833,5 +831,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-11-05 05:30:05
+Build Date UTC : 2020-11-21 15:03:52
 -->

@@ -1033,7 +1033,7 @@ blpop,brpop 阻塞操作，如果list 没有数据就会进入休眠。这里需
 <h1 id="6-">应用6：断尾求生-简单限流</h1>
 <p>思想是使用 zset 记录用户在一个时间窗口之内的操作数量。
 这种方式适合小规模的限流，比如用户发帖等。</p>
-<pre><code class="py"># coding:utf8
+<pre><code class="language-py"># coding:utf8
 import time
 import redis
 
@@ -1072,9 +1072,8 @@ for i in range(20):
         is_action_allowed('laowang', 'reply', 60, 5)
     )
 </code></pre>
-
 <h1 id="7-">应用7：一毛不拔-漏斗限流</h1>
-<pre><code class="py"># coding:utf8
+<pre><code class="language-py"># coding:utf8
 # 单机漏斗算法
 import time
 # 漏斗的剩余空间代表当前行为可以持续进行的数量
@@ -1126,7 +1125,6 @@ def is_action_allowed(user_id, action_key, capacity, leaking_rate):
 for i in range(20):
     print(is_action_allowed(&quot;laoqian&quot;, &quot;reply&quot;, 15, 0.5))
 </code></pre>
-
 <p>如何实现分布式限流呢？这里其实可以把 dict 替换成hash，但是要保证从 hash 取值/内存计算/取出字段的原子性。
 Redis4.0 提供了一个限流 redis 模块，redis-cell，提供了漏斗算法和原子限流指令。</p>
 <pre><code># 表示user_id的回复行为频率每60秒最多30次。
@@ -1136,14 +1134,12 @@ cl.throttle user_id:reply 15 30 60 1
 30 operations/60seconds 漏水速率
 1 是可选quota, 默认值1
 </code></pre>
-
 <h1 id="8-gehash">应用8：近水楼台-GeHash</h1>
 <p>redis3.2 以后增加了地理位置 GEO，可以实现附近的餐馆这种功能。</p>
 <p>地图元素的位置数据使用二维经纬度表示，经度范围(-180, 180]，纬度范围（-90，90]</p>
 <p>比如指定一个半径r，使用 sql 可以圈出来。如果用户不满意，可以扩大半径继续筛选。</p>
 <pre><code>select id from positions where x0-r &lt;x&lt; x0+r and y0-r&lt;y&lt;y0+r
 </code></pre>
-
 <p>一般为了性能加上双向符合索引 (x,y)。但是在高并发场景不是好的选择。</p>
 <h3 id="geohash">GEOHash 算法，地理位置距离排序</h3>
 <p>原理：把地球看成二维平面，划分成一系列的正方形方格（类似棋盘）。
@@ -1196,7 +1192,6 @@ for event in write_events:
     handle_write(enent.fd)
 handle_others() # 处理其他任务，比如定时任务
 </code></pre>
-
 <h3 id="_1">指令队列</h3>
 <p>redis 为每个客户端维护了一个指令队列，先来先服务</p>
 <h3 id="_2">响应队列</h3>
@@ -1272,7 +1267,6 @@ if pid == 0:
 if pid &lt; 0:
     # fork error
 </code></pre>
-
 <h3 id="aof">AOF日志，连续的增量备份，记录内存数据修改的指令记录版本。</h3>
 <p>只记录对内存进行修改的指令记录。通过『重放』恢复 Redis 当前实例的内存数据结构状态。</p>
 <p>AOF 重写：gbrewriteaof 指令用于对 AOF 日志瘦身。开辟一个子进程对内存遍历转换成一系列 Redis 操作指令，
@@ -1301,7 +1295,6 @@ pipe.incr('a')
 pipe.incr('a')
 values = pipe.execute()
 </code></pre>
-
 <h3 id="redis-watch">redis Watch</h3>
 <p>乐观锁，解决并发修改。</p>
 <pre><code>while True:
@@ -1315,7 +1308,6 @@ values = pipe.execute()
     except WatchError:
         continue
 </code></pre>
-
 <p>watch 监控的变量如果事务执行的时候发现被修改了（包括当前客户端），
 exec 指令返回 null 告诉 client 执行失败，一般由 client 重试。</p>
 <pre><code># 使用 redis-py 实现余额加倍
@@ -1349,7 +1341,6 @@ user_id = 1
 client.setnx(ke_for(user_id), 5)  # 初始化
 print(double_account(client, user_id))
 </code></pre>
-
 <h1 id="6pubsub">原理6：Pubsub</h1>
 <p>发布订阅，不过无法持久化消息队列，一般没啥用。</p>
 <p>redis5.0 加入了 stream 数据结构，给redis 带来了持久化消息队列。
@@ -1386,7 +1377,6 @@ slot_index = hash % 1024
 redis = slots[slot_index].redis
 redis.do(command)
 </code></pre>
-
 <p>codis 使用 ZooKeeper或者etcd 来持久化槽位关系。codis 增加了 SLOTSSCAN 执行来遍历下slot 下所有槽位。
 官方建议单个集合结构的总字节容量不要超过1M，如果是粉丝列表这种业务，可能要考虑分桶存储，业务上折中。</p>
 <p>对于像是 mget 这种命令，codis 是将 key 按照所分配的示例打散分组，然后依次对每个实例调用 mget，
@@ -1405,7 +1395,6 @@ Cluster 还允许用户通过 key 里嵌入 tag 标记，强制 key 所挂在的
 <pre><code>GET x
 -MOVED 3999 127.0.0.1:6381
 </code></pre>
-
 <h3 id="_8">迁移</h3>
 <p>redis cluster 提供了 redis-trib 可以让运维人员手动调整槽位分布。以 slot 为单位进行迁移。
 应该尽量避免大 key 的产生。</p>
@@ -1442,7 +1431,6 @@ redis-cli info memory | grep used | grep human
 redis-cli info replication | grep backlog
 redis-cli info stats | grep sync # 通过sync_partial_err(主从半同步复制失败的次数) 次数决定是否需要扩大积压缓冲区
 </code></pre>
-
 <h1 id="3_1">扩展3：再谈分布式锁</h1>
 <p>集群环境下，当主从发生 failover 时候，分布式锁是不安全的。
 同一把锁可能会被两个客户端持有。比如一个客户端在主节点持有一把锁，还没同步到从节点，主节点挂掉了。
@@ -1500,7 +1488,7 @@ redis4.0 引入了 unlink，能对删除进行惰性处理，丢给后台线程�
 <p>redis 字符串 sds (Simple Dynamic String)，带有长度信息的字节数组。
 redis 字符串在长度特别短时，使用 emb 形式存储(embeded)，长度超过44使用 raw 存储。
 字符串小于 1M 之前，扩容采用加倍策略，长度超过 1M 之后，每次扩容只增加 1M。</p>
-<pre><code class="c">struct SDS&lt;T&gt; {
+<pre><code class="language-c">struct SDS&lt;T&gt; {
     T capacity; //1byte
     T len; //1byte
     byte flags;//特殊标识位, 1byte
@@ -1514,13 +1502,12 @@ struct RedisObject {
     void *ptr; // 8bytes, 64-bit system
 } robj; // 一个RedisObject 对象头占用16 byte
 </code></pre>
-
 <h1 id="2">源码2：探索字典内部</h1>
 <p>字典使用两个 hashtable，通常只有一个有值，但是当 dict 扩容缩容时，需要分配薪的 hashtable，然后渐进式搬迁，
 这时两个 hashtable 分别存储旧的和新的 hashtable。搬迁结束后，旧的 hashtable 被删除，新的 hashtable 取而代之。</p>
 <p>hashtable 和 java HashMap 类似，通过分桶的方式解决冲突，第一维是数组，第二维是链表。
 数组中存储的是第二维链表的第一个元素的指针。</p>
-<pre><code class="c">struct dictEntry {
+<pre><code class="language-c">struct dictEntry {
     void *key;
     void *val;
     dictEntry *next; // 链接下一个 entry
@@ -1532,7 +1519,6 @@ struct dictht {
     long used; // hash 表中元素个数
 }
 </code></pre>
-
 <h3 id="rehash">渐进式 rehash</h3>
 <p>redis 使用渐进式rehash （直接 rehash 操作O(n)无法接受)，搬迁操作埋伏在当前字典的后续指令中（来自客户端的hset/hdel等),
 但是有可能客户端闲下来了，所以 redis 还会在定时任务中队字典进行主动搬迁。</p>
@@ -1584,7 +1570,6 @@ struct zsl {
     map&lt;string, zslnode*&gt; ht; // hash 结构的所有键值对
 }
 </code></pre>
-
 <h3 id="_19">随机层数</h3>
 <p>对于每一个新插入的节点，都需要调用一个随机算法给它分配一个合理的层数。直观上
 期望的目标是 50% 的 Level1，25% 的 Level2，12.5% 的 Level3，一直到最顶层 2^-63，

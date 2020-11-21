@@ -815,20 +815,18 @@
               
                 <h1 id="2-go">2 Go 基础</h1>
 <p>定义变量:</p>
-<pre><code class="go">var varname type
+<pre><code class="language-go">var varname type
 var name1, name2, name3 type
 var name type = value
 var a,b,c = v1, v2, v3
 a,b,c := v1, v2 ,v3
 _, b = 1, 2
 </code></pre>
-
 <p>常量：</p>
 <pre><code>const name = value
 const Pi float32 = 3.14
 const i = 100
 </code></pre>
-
 <p>内置基础类型：</p>
 <pre><code>// Boolean
 var isActive = bool  // default false
@@ -851,7 +849,6 @@ fmt.Printf(&quot;%s\n&quot;, s2)
 m := `hello
     world`   // ` 括号来的是Raw string
 </code></pre>
-
 <p>错误类型：</p>
 <pre><code>// go有一个error 类型，package.errors
 err:=errors.New(&quot;emit macho swarf: elf header corrupted&quot;)
@@ -859,7 +856,6 @@ if err != nil {
    fmt.Print(err)
 }
 </code></pre>
-
 <p>分组声明：</p>
 <pre><code>import (
    &quot;fmt&quot;
@@ -875,14 +871,12 @@ var(
     pi float32
 )
 </code></pre>
-
 <p>iota 枚举：</p>
 <pre><code>const (
     x = iota  //x==0
     y = iota  //y==1
 )
 </code></pre>
-
 <p>设计规则：</p>
 <ul>
 <li>大写开头的变量可以导出（共有变量）</li>
@@ -934,7 +928,6 @@ fmt.Println(&quot;no  go rating&quot;)
 }
 delete(rating, &quot;C&quot;)
 </code></pre>
-
 <p>make, new 操作：</p>
 <p>make 只能用于 内建类型(map/slice/chanell)的内存分配, new 用于各种类型，new 返回指针。
 make 返回初始化后的（非零）值。</p>
@@ -947,7 +940,6 @@ float32, float64 0
 bool false
 string &quot;&quot;
 </code></pre>
-
 <p>流程控制:</p>
 <pre><code>// if(不用括号)
 
@@ -1008,7 +1000,6 @@ case 4:
     fallthrough // 强制执行后边的代码
 }
 </code></pre>
-
 <p>函数: func 声明</p>
 <pre><code>func funcName(input1 type1, input2 type2) (output1 type1, output2 type2) {
   //
@@ -1029,7 +1020,6 @@ func SumAndProduct(A, B int) (add int, Multiplied int) {
 }
 
 </code></pre>
-
 <p>变参：</p>
 <pre><code>func myfunc(arg ...int) {
     for _, n := range arg {
@@ -1037,7 +1027,6 @@ func SumAndProduct(A, B int) (add int, Multiplied int) {
     }
 } // arg 是一个 int 的 slice
 </code></pre>
-
 <p>传值和传指针：默认传值，无法修改传入的值。除非使用指针</p>
 <pre><code>func add(a int) int {
     a = a+1
@@ -1055,7 +1044,6 @@ func add_p(a *int) int {
 GO中 channel, slice，map 实现机制类似指针，可以直接传递，而不用取地址。（如果需要修改 slice 长度让需要取地址）
 */
 </code></pre>
-
 <p>defer: 延迟语句，函数执行到最后时，这些 defer 语句会逆序执行，最后函数返回。用来处理错误，关闭资源</p>
 <pre><code>func ReadWrite() bool {
     file.Open(&quot;file&quot;)
@@ -1069,7 +1057,6 @@ GO中 channel, slice，map 实现机制类似指针，可以直接传递，而�
     return true
 }
 </code></pre>
-
 <p>函数作为值、类型：go 中函数也是一种变量，可以用 type 定义，类型就是所有拥有相同的参数，相同返回值的一种类型</p>
 <pre><code>// type typeName func(input1 inputType1, intpu2 inputType2 [, ...]) (result1 resultType1 [, ...])
 // 可以把这个类型的函数当做值来传递
@@ -1102,7 +1089,6 @@ func main() {
 
 }
 </code></pre>
-
 <p>Panic/Recover:</p>
 <pre><code>Panic 是一个内建函数，可以中断原有的控制流程，进入一个令人恐慌的流程中。
 当 F 函数调用 panic，F 的执行逻辑被中断，但是 F 中的延迟函数会正常执行，然后 F 返回调用它的地方。
@@ -1112,7 +1098,6 @@ panic 可以手动或者运行时错误产生（越界数组）
  recover：内建函数，可以让进入恐慌的流程中的 goroutine 回复过来。recover 仅在延迟函数中有效。
  正常逻辑调用 recover 返回 nil。当前的 goroutine 先入恐慌可以用 recover 捕获 panic 的输入值，并且回复正常的执行。
 </code></pre>
-
 <p>main init 函数：</p>
 <p><img alt="" src="../main_init.png" /></p>
 <p>import: 导入包文件</p>
@@ -1132,7 +1117,6 @@ import (
     _ &quot;github.com/ziutek/mymysql/godrv&quot; //_引入该包，而不直接使用包里的函数，而是调用包里的 init 函数
 )
 </code></pre>
-
 <p>Struct 类型：属性或者字段容器</p>
 <pre><code>package main
 
@@ -1163,7 +1147,6 @@ func main() {
     fmt.Printf(&quot;name is &quot;, P.name)
 }
 </code></pre>
-
 <h3 id="25">2.5 面向对象</h3>
 <p>method: 带有接受者的函数。method 附属在一个给定的类型上，语法和函数的声明语法几乎一样，只是在函数后加上一个 receiver</p>
 <blockquote>
@@ -1204,13 +1187,11 @@ func main() {
     fmt.Println(&quot;r1 area&quot;, c2.area())
 }
 </code></pre>
-
 <p>指针作为 receiver:</p>
 <pre><code>func (r *Rectangle) setHeight(height float64) {
     r.height = height //NOTE：注意这里不必非要用 *r.hight = hight，Go 发现参数指针以后帮你自动处理
 }
 </code></pre>
-
 <p>method 继承：如果匿名字段实现了一个 method，那么包含这个匿名字段的 struct 也能调用该 method</p>
 <p>method 重写：和匿名字段冲突一样的道理，重写就实现了隐藏匿名字段的 method</p>
 <h3 id="26-interface">2.6 接口 interface</h3>
@@ -1281,7 +1262,6 @@ type ElderyGent interface {
     SpendSalary(amount float32)
 }
 </code></pre>
-
 <p>interface 可以被任意对象实现，一个对象也可以实现任意多个 interface。
 任意类型都是现了空 interface (interface{})，也就是包含了0个 method 的interface。</p>
 <p>interface 值：如果定义一个interface的变量，这个变量里可以存实现这个 interface 的任意类型的对象。
@@ -1296,7 +1276,6 @@ type ElderyGent interface {
     a = i
     a = s
 </code></pre>
-
 <p>interface 的函数参数：interface的变量可以持有任意实现该interface 类型的对象。只要实现接口，我们就可以传入</p>
 <p>interface变量存储的类型：如何知道变量里实际存储的类型呢？</p>
 <ul>
@@ -1342,13 +1321,11 @@ func main() {
     }
 }
 </code></pre>
-
 <p>嵌入 interface：如果一个 interface1 作为另一个interface2 的嵌入字段，那么interface2 隐式包含了interface1 里的 method</p>
 <h3 id="reflect">反射: 检查程序运行时状态。reflect</h3>
 <pre><code>t := reflect.TypeOf(i)
 v := reflect.ValueOf(i)
 </code></pre>
-
 <h3 id="_1">并发</h3>
 <p>goroutine: 通过 go 的 runtime 管理的一个线程管理器，通过 go 关键字实现。其实就是一个普通的函数</p>
 <p><code>go hello(a,b,c)</code> 通过 go 关键字启动了一个 goroutine</p>
@@ -1372,7 +1349,6 @@ func main() {
     say(&quot;hello&quot;)
 }
 </code></pre>
-
 <p>多个 goroutine 运行在同一个进程里边，共享内存数据。
 不过设计上需要遵循：不要通过共享来通信，通过通信来共享。</p>
 <p>channels：goroutine 共享相同的地址空间，访问共享内存需要做好同步。必须用 make 创建</p>
@@ -1382,7 +1358,6 @@ func main() {
     ch &lt;- v  //发送数据 v 到 channel ch
     v:= &lt;-ch  //从 ch 中接受数据，并赋值给v
 </code></pre>
-
 <p>默认channel接收和发送数据都是阻塞的，除非另一端准备好，这样使得 goroutine 同步变得简单，无需显示 lock。</p>
 <p>buffered channels: 允许指定 channel 缓冲区大小。<code>ch := make(chan type, value)</code>
 当 value =0，channel 是无缓冲区阻塞读写的，当 value&gt;0，channel 是有缓冲、非阻塞的，知道写满 value 个才阻塞写入。</p>
@@ -1407,7 +1382,6 @@ func main() {
     fmt.Println(x, y, x+y)
 }
 </code></pre>
-
 <p>Range 和 Close: 通过 range，像操作slice 或者 map 一样操作缓存类型的 channel</p>
 <pre><code>package main
 
@@ -1429,7 +1403,6 @@ func main() {
     }
 }
 </code></pre>
-
 <p>Select: 多个 channel 操作。Go提供了select监听 channel 数据流动
 Select: 多个 channel。select 可以监听 channel 上的数据流动。select 默认阻塞，只有当监听的 channel 中有发送或接收可以
 进行时才会运行，当多个 channel 都准备好的时候随机选择一个执行。</p>
@@ -1465,7 +1438,6 @@ func main() {
     fibonacci(c, quit)
 }
 </code></pre>
-
 <p>有时候会出现 goroutine 阻塞的情况。还可以设置 select 设置超时。</p>
 <h1 id="3-web">3 Web基础</h1>
 <p>用 go 实现一个 http server 真滴很简单，支持高并发，内部实现是一个单独的 goroutine 处理请求。</p>
@@ -1498,7 +1470,6 @@ func main() {
     }
 }
 </code></pre>
-
 <h1 id="4">4 表单</h1>
 <h1 id="5">5 访问数据库</h1>
 <h3 id="51-databasesql">5.1 database/sql 接口</h3>
@@ -1516,7 +1487,6 @@ driver.ValueConverter // 把一个普通值转换成 driver.Value
 driver.Valuer // 定义了返回一个 driver.Value 的方式
 database/sql
 </code></pre>
-
 <h3 id="52-mysql">5.2 使用 Mysql</h3>
 <p>使用 "github.com/go-sql-driver/mysql" 演示数据库增删改查</p>
 <pre><code>package main
@@ -1586,7 +1556,6 @@ func checkErr(err error) {
     }
 }
 </code></pre>
-
 <h1 id="55-beego-orm">5.5 使用 Beego orm</h1>
 <pre><code>package main
 
@@ -1631,7 +1600,6 @@ func main() {
 
 }
 </code></pre>
-
 <h1 id="56-nosql">5.6 Nosql 数据库使用</h1>
               
             </div>

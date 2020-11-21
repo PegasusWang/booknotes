@@ -772,7 +772,7 @@
 <p>源码：https://github.com/avast/retry-go</p>
 <h1 id="_1">简单实现</h1>
 <p>一个简单的重试 go 函数可以这么实现</p>
-<pre><code class="go">func Retry(fn func() error, attempts int, sleep time.Duration) error {
+<pre><code class="language-go">func Retry(fn func() error, attempts int, sleep time.Duration) error {
     if err := fn(); err != nil {
         if s, ok := err.(stop); ok {
             return s.error
@@ -837,5 +837,5 @@ func NoRetryError(err error) stop {
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-11-05 05:30:05
+Build Date UTC : 2020-11-21 15:03:52
 -->

@@ -857,7 +857,6 @@
 type IPMask []byte
 type IPAddr {IP IP}
 </code></pre>
-
 <h3 id="socket">socket</h3>
 <pre><code>// resolve IP
 package main
@@ -896,25 +895,22 @@ func main() {
     }
 }
 </code></pre>
-
 <p>TCPAddr 包含 IP 和 Port：</p>
-<pre><code class="go">type TCPAddr struct{
+<pre><code class="language-go">type TCPAddr struct{
     IP IP
     Port int
 }
 </code></pre>
-
 <p>使用 ResolveTCPAddr 创建一个 TCPAddr</p>
 <p><code>func ResolveTCPAddr(net, addr string) (*TCPAddr, os.Error)</code></p>
 <p>TCP Sockets:</p>
 <pre><code>func (c *TCPConn) Write(b []byte) (n int, err os.Error)
 func (c *TCPConn) Read(b []byte) (n int, err os.Error)
 </code></pre>
-
 <p>客户端用 DialTCP 建立一个连接:</p>
 <p><code>func DialTCP(net string, laddr, raddr *TCPAddr) (c *TCPConn, err os.Error)</code></p>
 <p>尝试使用 tcp 发送一个 http 请求示例：</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -952,13 +948,11 @@ func main() {
     fmt.Println(string(res))
 }
 </code></pre>
-
 <p>编写一个时间回显tcp服务器，tcp server 主要涉及两个函数：</p>
 <pre><code>func ListenTCP(net string, laddr *TCPAddr) (l *TCPListener, err os.Error)
 func (l *TCPListener) Accept() (c Conn, err os.Error)
 </code></pre>
-
-<pre><code class="go">// DaytimeServer
+<pre><code class="language-go">// DaytimeServer
 // telnet localhost 1200
 package main
 
@@ -995,7 +989,6 @@ func checkErr(err error) {
     }
 }
 </code></pre>
-
 <p>编写一个简单的tcp回显服务器：</p>
 <pre><code>// SimpleEchoServer
 package main
@@ -1045,7 +1038,6 @@ func checkError(err error) {
     }
 }
 </code></pre>
-
 <p>可以很容易修改成并发的，使用 goroutine</p>
 <pre><code>// SimpleEchoServer
 package main
@@ -1096,25 +1088,22 @@ func checkError(err error) {
     }
 }
 </code></pre>
-
 <h3 id="controlling-tcp-connections">Controlling TCP connections</h3>
-<pre><code class="go">// Timeout
+<pre><code class="language-go">// Timeout
 func (c *TCPConn) SetTimeout(nsec int64) os.Error
 
 // Staying alive, a client wish to stay connected to a server even if it has nothing to send
 func (c *TCPConn) SetKeepAlive(keepalive bool) os.Error
 </code></pre>
-
 <h3 id="udp-datagrams">UDP Datagrams</h3>
-<pre><code class="go">func ResolveUDPAddr(net, addr string) (*UDPAddr, os.Error)
+<pre><code class="language-go">func ResolveUDPAddr(net, addr string) (*UDPAddr, os.Error)
 func DialUDP(net string, laddr, raddr *UDPAddr) (c *UDPConn, err os.Error)
 func ListenUDP(net string, laddr *UDPAddr) (c *UDPConn, err os.Error)
 func (c *UDPConn) ReadFromUDP(b []byte) (n int, addr *UDPAddr, err os.Error
 func (c *UDPConn) WriteToUDP(b []byte, addr *UDPAddr) (n int, err os.Error)
 </code></pre>
-
 <p>UDP client server demo:</p>
-<pre><code class="go">// UDPDaytimeClient
+<pre><code class="language-go">// UDPDaytimeClient
 package main
 
 import (
@@ -1183,13 +1172,11 @@ func checkError(err error) {
     }
 }
 </code></pre>
-
 <h3 id="the-types-conn-packetconn-and-listener">The types Conn, PacketConn and Listener</h3>
 <pre><code>func Dial(net, laddr, raddr string) (c Conn, err os.Error)
 </code></pre>
-
 <p>改写之前 tcp 发送 http 请求的例子</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
@@ -1215,12 +1202,10 @@ func main() {
     fmt.Println(string(res))
 }
 </code></pre>
-
 <p>同样的  listen 也可以简化</p>
 <pre><code>func Listen(net, laddr string) (l Listener, err os.Error)
 func (l Listener) Accept() (c Conn, err os.Error)
 </code></pre>
-
 <h3 id="raw-sockets-and-the-type-ipconn">Raw sockets and the type IPConn</h3>
 <p>IP 协议基础上自定义。按照 ping 发送格式模仿写一个 ping</p>
 <ul>
@@ -1231,7 +1216,7 @@ func (l Listener) Accept() (c Conn, err os.Error)
 <li>The seventh and eight bytes are an arbitrary sequence number</li>
 <li>The rest of the packet is user data</li>
 </ul>
-<pre><code class="go">// Ping，使用 root 运行
+<pre><code class="language-go">// Ping，使用 root 运行
 package main
 
 import (
@@ -1302,7 +1287,6 @@ func checkSum(msg []byte) uint16 {
     return answer
 }
 </code></pre>
-
 <h1 id="4-data-serialisation">4. Data serialisation</h1>
 <ul>
 <li>ASN.1</li>
@@ -1347,7 +1331,6 @@ func main() {
     }
 }
 </code></pre>
-
 <h3 id="symmetric-key-encryption">Symmetric key encryption</h3>
 <ul>
 <li>Blowfish</li>
@@ -1401,14 +1384,12 @@ func main() {
 
 }
 </code></pre>
-
 <p>Proxy handling:</p>
 <pre><code>proxyURL, err := url.Parse(proxyString) // http://proxy-host:port
 transport := &amp;http.Transport{Proxy: http.ProxyURL(proxyURL)}
 client := &amp;http.Client{Transport: transport}
 // func ProxyFromEnvironment(req *Request) (*url.URL, error)
 </code></pre>
-
 <h3 id="servers">Servers</h3>
 <ul>
 <li>File server</li>
@@ -1423,14 +1404,12 @@ func main() {
     checkError(err)
 }
 </code></pre>
-
 <ul>
 <li>Handler function</li>
 </ul>
 <pre><code>func Handle(pattern string, handler Handler)
 func HandleFunc(pattern string, handler func(*Conn, *Request))
 </code></pre>
-
 <h1 id="9-templates">9. Templates</h1>
 <ul>
 <li>html/template, text/template</li>

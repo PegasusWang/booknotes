@@ -1001,21 +1001,20 @@ Zookeeper 群组(Ensemble)，使用一致性协议，建议每个群组包含奇
 <p>修改 jvm 垃圾回收参数来调优。</p>
 <h1 id="3-kafka-kafka">3. Kafka 生产者-向 Kafka 写入数据</h1>
 <p>场景：是否允许丢失？偶尔重复是否能接受？是否有严格的延迟和吞吐量要求</p>
-<pre><code class="java">private Properties kafkaProps=new Properties();
+<pre><code class="language-java">private Properties kafkaProps=new Properties();
 kafkaProps.put(&quot;bootstrap.serves&quot;, &quot;broker1:9092,borker2:9092&quot;);
 
 kafkaProps.put(&quot;key.serializer&quot;, &quot;org.apache.kafka.common.serizlization.StringSerializer&quot;);
 kafkaProps.put(&quot;value.serializer&quot;, &quot;org.apache.kafka.common.serizlization.StringSerializer&quot;);
 producer = new KafkaProducer&lt;String, String&gt;(kafkaProps);
 </code></pre>
-
 <p>发送方式：</p>
 <ul>
 <li>发送并忘记(fire-and-forget)</li>
 <li>同步发送 (send发送返回一个 Future 对象，调用 get()方法等待，就知道是否发送成功)</li>
 <li>异步发送(send()并且指定一个回调函数，服务器在返回响应时调用该函数)</li>
 </ul>
-<pre><code class="java">ProducerRecord&lt;String, String&gt; record=new ProducerRecord&lt;&gt;(&quot;CostomerCountry&quot;, &quot;Precision Products&quot;, &quot;France&quot;);
+<pre><code class="language-java">ProducerRecord&lt;String, String&gt; record=new ProducerRecord&lt;&gt;(&quot;CostomerCountry&quot;, &quot;Precision Products&quot;, &quot;France&quot;);
 try {
     producer.send(record);
 } catch (Exception e){
@@ -1046,7 +1045,6 @@ private class DemoProducerCallback implements Callback {
 ProducerRecord&lt;String, String&gt; record=new ProducerRecord&lt;&gt;(&quot;CostomerCountry&quot;, &quot;Precision Products&quot;, &quot;France&quot;);
 producer.send(record, new DemoProducerCallback());
 </code></pre>
-
 <h1 id="4-kafka-kafka">4 Kafka消费者-从 Kafka 读取数据</h1>
 <p>应用程序从 KafkaConsumer 向 Kafka 订阅主题，并从订阅的主题上接收消息。</p>
 <h3 id="41-kafkaconsumer">4.1 KafkaConsumer 概念</h3>
@@ -1058,7 +1056,7 @@ producer.send(record, new DemoProducerCallback());
 从属关系以及它们对分区的所有权关系。消费者轮询消息（为了获取消息）或者提交偏移量时发送心跳。
 如果消费者停止发送心跳的时间足够长，会话就会过期，群组协调器就认为他已经死亡，出发一次再均衡。</p>
 <h1 id="42-kafka">4.2 创建 Kafka 消费者</h1>
-<pre><code class="java">// 创建 KafkaConsumer 对象
+<pre><code class="language-java">// 创建 KafkaConsumer 对象
 Properties props = new Properties();
 props.put(&quot;bootstrap.servers&quot;, &quot;broker1:9092,borker2:9092&quot;);
 props.put(&quot;group.id&quot;, &quot;CountryCounter&quot;);
@@ -1089,7 +1087,6 @@ try {
     consumer.close();
 }
 </code></pre>
-
 <p>提交：把更新分区当前位置的操作叫做提交。消费者往一个叫做 <code>_consumer_offset</code> 的特殊主题发送消息，
 消息里包含每个分区的偏移量。如果消费者一直处于运行状态，偏移量就没啥用处。
 如果消费者崩溃或者有新的消费者加入群组，就会出发再均衡，完成均衡以后每个消费者可能分配到新分区，
@@ -1112,10 +1109,9 @@ auto.commit.offset 设置为false，让程序决定何时提交。commitSync() �
 可以安全重试，否则说明一个新的提交已经发送出去了，应该停止重试。</p>
 <h3 id="411">4.11 独立消费者</h3>
 <p>有时候简单一些不想要群组，不需要订阅主题，而是自己分配分区。</p>
-<pre><code class="java">consumer.partitionsFor(&quot;topic&quot;);
+<pre><code class="language-java">consumer.partitionsFor(&quot;topic&quot;);
 consumer.assign(partitions);
 </code></pre>
-
 <h1 id="5-kafka">5 深入 Kafka</h1>
 <h3 id="51">5.1 集群成员关系</h3>
 <p>Kafka 使用 Zookeeper 维护集群成员关系，kafka 组件订阅 Zookeeper 的 /brokers/ids 路径，当有
@@ -1272,7 +1268,6 @@ kakfa大部分命令行工具直接操作 Zookeeper 元数据，不会连接到 
 <pre><code>#kafka-topic.sh --zookeeper zoo1.example.com:2181/kafka-cluster --create --topic my-topic
 --replication-factor 2 --partitions 8
 </code></pre>
-
 <p>增加分区；删除主题o</p>
 <h3 id="92">9.2 消费者群组</h3>
 <p>消费者群组信息，旧版 kafka 存储在 Zookeeper 上，新版保存在 broker 上。</p>
@@ -1293,7 +1288,6 @@ zoo1.example.com:2181/kafka-cluster -- topic my-topic
 sample message 1
 sample message 2
 </code></pre>
-
 <p>控制台生产者，默认将命令行输入的每一行视为一个消息，消息键值通过 tab 字符分隔，没有 tab 键是 null。发送 EOF 字符来关闭客户端。</p>
 <p>```</p>
 <h1 id="kafka-console-producersh-broker-list">kafka-console-producer.sh --broker-list</h1>

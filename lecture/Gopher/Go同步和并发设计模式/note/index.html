@@ -914,13 +914,12 @@
 </ul>
 <h1 id="_2">扩展同步原语</h1>
 <h3 id="reentrantlock">ReentrantLock</h3>
-<pre><code class="go">type RecursiveMutext struct {
+<pre><code class="language-go">type RecursiveMutext struct {
     sync.Mutex
     owner     int64
     recursion int32
 }
 </code></pre>
-
 <h3 id="semaphore">Semaphore</h3>
 <ul>
 <li>Dijkstra 提出并发访问通用资源的并发原语 (sync/semaphore)</li>

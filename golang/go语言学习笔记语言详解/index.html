@@ -860,7 +860,7 @@
               
                 <h1 id="4">4 函数</h1>
 <p>函数参数过多可以重构为一个符合类型结构，也算是变相实现可选参数和命名实参功能。</p>
-<pre><code class="go">// Package main  provides ...
+<pre><code class="language-go">// Package main  provides ...
 package main
 
 import (
@@ -893,10 +893,9 @@ func main() {
     server(opt)
 }
 </code></pre>
-
 <p>闭包(closure)：是在其此法上下文中引用了自由变量的函数。或者说是函数和其引用的环境的组合体。
 本质上返回的是一个funcval 结构，可在 runtime/runtime2.go 找到定义。</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 func test(x int) func() {
     return func() {
@@ -909,10 +908,9 @@ func main() {
     f()
 }
 </code></pre>
-
 <p>闭包通过指针引用环境变量，可能导致其生命周期延长，甚至被分配到堆内存。
 延迟求值特性。</p>
-<pre><code class="go">package main
+<pre><code class="language-go">package main
 
 func test() []func() {
     var s []func()
@@ -930,14 +928,13 @@ func main() {
     }
 }
 </code></pre>
-
 <p>输出格式:for循环复用局部变量i，每次添加的匿名函数引用的自然是同一变量。添加操作仅仅是把匿名函数放入列表，并未执行。
 当 main 执行这些函数时，读取的是环境变量 i 最后一次循环的值。</p>
 <pre><code>0xc00001a088 2
 0xc00001a088 2
 </code></pre>
 <p>解决方式是每次用不同的环境变量或者传参复制，让各自的闭包环境各部相同。</p>
-<pre><code class="go">func test() []func() {
+<pre><code class="language-go">func test() []func() {
     var s []func()
     for i := 0; i &lt; 2; i++ {
         x := i
@@ -948,7 +945,6 @@ func main() {
     return s
 }
 </code></pre>
-
 <p>go 复古地使用了返回错误值（通常是最后一个值），大量函数和方法返回 error，会使得调用方比较难看，
 处理方式有：</p>
 <ul>
@@ -963,7 +959,7 @@ func main() {
 recover必须在延迟调用函数中执行才能正常工作。</p>
 <p>建议：除非是不可恢复性、导致系统无法正常工作的错误，否则不建议使用
 panic。比如文件系统无权限、端口被占用、数据库未启动等。</p>
-<pre><code class="go">// func panic(v interface{})
+<pre><code class="language-go">// func panic(v interface{})
 // func recover() interface{}
 package main
 
@@ -1020,7 +1016,6 @@ func main() {
     test()
 }
 </code></pre>
-
 <h1 id="5">5 数据</h1>
 <h3 id="_1">字符串</h3>
 <p>字符串操作通常在堆上分配内存，会对 web 等高并发场景造成交大影响，会有大量字符串对象要做垃圾回收。

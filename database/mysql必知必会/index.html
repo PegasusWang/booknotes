@@ -824,7 +824,6 @@ select distinct column from table;
 select column from table limit 5;
 select column from table 5,5;   #  从行5开始的5行
 </code></pre>
-
 <h2 id="5">5 排序检索数据</h2>
 <p>默认以数据底层表中出现的顺序展示，不应该假定检索出来的顺序有意义。</p>
 <pre><code>select column from table order by column;   # 使用非检索的列排序也是合法的
@@ -833,14 +832,12 @@ select column from table order by column desc;  # 降序排列
 select column from table order by column desc, column2; # desc 直接作用它前边的列，多列降序需要每个列都指定 desc
 select column from table order by column desc limit 1; # limit 放最后，这里找到最大的值
 </code></pre>
-
 <h2 id="6">6 过滤数据</h2>
 <p>where子句操作符： = , != , &lt;, &lt;=, &gt;, &gt;=, BETWEEN</p>
 <pre><code>select name, price from products where price=2;
 select name, price from products where price is null;  # 空值 NULL 检查
 select name, price from products where price BETWEEN 3 and 5;  # 找到3和5之间，包括3和5
 </code></pre>
-
 <h2 id="7">7 数据过滤</h2>
 <p>组合 where 子句。注意 AND 优先级高于 OR，如果必要应该使用括号，尽量都用括号防止歧义。</p>
 <p><code>select prod_name, prod_price from products where (vend_id=1002 or vend_id=1003) and prod_price&gt;=10</code></p>
@@ -849,7 +846,6 @@ select name, price from products where price in (3,5);  # in 比使用 or 更快
 select name, price from products where price not in (3,5);  # 使用 not 否定条件
 select Concat(vend_name, '(', vend_country, ')') from vendors order by vend_name;    # 计算字段
 </code></pre>
-
 <h2 id="8">8 用通配符过滤</h2>
 <p>LIKE操作符(谓词)。</p>
 <pre><code># %表示任何字符出现任意次数，不会匹配 NULL
@@ -859,7 +855,6 @@ select prod_id,prod_name from products where prod_name LIKE '%anvil%';
 # _ 只能匹配单个字符
 select prod_id,prod_name from products where prod_name LIKE '% ton anvil';
 </code></pre>
-
 <p>注意：不要过度使用通配符；尽量不要把通配符放在开始位置；</p>
 <h2 id="9">9 使用正则表达式搜索</h2>
 <p>mysql 支持正则表达式的子集 REGEXP, LIKE匹配整串</p>
@@ -867,21 +862,17 @@ select prod_id,prod_name from products where prod_name LIKE '% ton anvil';
 select prod_id,prod_name from products where prod_name REGEXP '1000' order by prod_name;
 select prod_id,prod_name from products where prod_name REGEXP '1000|2000' order by prod_name; # 搜索两个串之一
 </code></pre>
-
 <h2 id="10">10 创建计算字段</h2>
 <p>拼接字段： concat()</p>
 <pre><code>select concat(vend_name, ' (', vend_country, ')') from vendors order by vend_name;
 select concat(vend_name, ' (', RTrim(vend_country), ')') from vendors order by vend_name;  # RTrim/LTrim/TRim 去除空格
 </code></pre>
-
 <p>别名：使用 as 支持列 别名</p>
 <pre><code>select Concat(RTrim(vend_name), ' (', RTrim(vend_country), ')') AS vend_title from vendors order by vend_name;
 </code></pre>
-
 <p>算数计算：对检索出的数据进行算数计算</p>
 <pre><code>select prod_id,quantity,item_price,quantity*item_price AS expanded_price from orderitems where order_num=20005;
 </code></pre>
-
 <h2 id="11">11 使用数据处理函数</h2>
 <p>文本、数值计算、日期处理、系统函数等</p>
 <pre><code># 文本：Left, Length, Locate, Lower, LTrim, Right, RTrim, Soundex(替换为描述语音表示的字母数字模式), SubString, Upper
@@ -895,7 +886,6 @@ select cust_id,order_num from orders where Year(order_date) =2005 and Month(orde
 
 # 数值：Abs, Cos, Exp, Mod, Pi, Rand, Sin, Sqrt, Tan
 </code></pre>
-
 <h2 id="12">12 汇总数据</h2>
 <p>汇总而不是检索数据，确定行数、获取和、找出最大最小平均值。</p>
 <p>五个聚集函数（运行在行组上，计算和返回单个值的函数）: avg, count, max, min, sum</p>
@@ -915,7 +905,6 @@ select sum(quantity) as items_ordered from orderitems where order_num = 20005; #
 # distince
 select avg(quantity) as items_ordered from orderitems where order_num = 20005; # ignore NULL
 </code></pre>
-
 <h2 id="13">13 分组数据</h2>
 <p>group by and having，分组允许把数据分为多个逻辑组，以便能够对每个组进行聚集计算。</p>
 <pre><code># 分组
@@ -930,7 +919,6 @@ select order_num, sum(quantity*item_price) as ordertotal from orderitems group b
 having sum(quantity*item_price)&gt;=50
 order by ordertotal;
 </code></pre>
-
 <h2 id="14">14 使用子查询</h2>
 <p>子查询： 在SELECT语句中，子查询总是从内向外处理。</p>
 <pre><code># 利用子查询进行过滤。可以把一条 select 语句返回的结果用于另一条 select 语句的 where 子句
@@ -946,7 +934,6 @@ where cust_id in (select cust_id
 select cust_name, cust_state, (select count(*) from orders where orders.cust_id=customers.cust_id) as orders
 from customers order by cust_name;
 </code></pre>
-
 <h2 id="15">15 联结表</h2>
 <pre><code># 引用的列可能出现二义性时，必须使用完全限定列名
 select vend_name, prod_name, prod_price from vendors, products where vendors.vend_id=products.vend_id order by vend_name,prod_name;
@@ -959,7 +946,6 @@ select prod_name,vend_name,prod_price,quantity
 select cust_name,cust_contact, from customers,orders,orderitems
 where customers.cust_id=orders.cust_id and orderitems.order_num=orders.order_num and prod_id='TNT2';
 </code></pre>
-
 <h2 id="16">16 创建高级联结</h2>
 <p>何时使用表别名？允许单条 select 中多次引用相同的表</p>
 <p>自连接：用 as 语句别名</p>

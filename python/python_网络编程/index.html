@@ -829,7 +829,7 @@
 <p>从 python requests 模块发送请求，然后演示使用底层的 socket 编程来发送请求。</p>
 <h1 id="2-udp">2. UDP</h1>
 <p>使用 udp 发送广播的例子：</p>
-<pre><code class="py"># UDP client and server for broadcast messages on a local LAN
+<pre><code class="language-py"># UDP client and server for broadcast messages on a local LAN
 
 import argparse
 import socket
@@ -867,7 +867,6 @@ if __name__ == '__main__':
     function = choices[args.role]
     function(args.host, args.p)
 </code></pre>
-
 <h1 id="3-tcp">3 TCP</h1>
 <p>TCP 提供可靠连的基本原理：</p>
 <ul>
@@ -879,7 +878,7 @@ if __name__ == '__main__':
 <li>TCP 认为数据包被丢弃了，它会假定网络正在变得拥挤，减少每秒发送的数据量</li>
 </ul>
 <p>简单的 TCP 服务端和客户端:</p>
-<pre><code class="py">import argparse, socket
+<pre><code class="language-py">import argparse, socket
 
 def recvall(sock, length):
     data = b''
@@ -936,12 +935,11 @@ if __name__ == '__main__':
     function = choices[args.role]
     function(args.host, args.p)
 </code></pre>
-
 <p><strong>像使用文件一样使用 TCP 流</strong>:</p>
 <p>python 为每个套接字提供了一个 makefile() 方法，返回一个 python 文件对象，该对象实际会在底层调用 recv/send</p>
 <h1 id="4-dns">4 套接字名与 DNS</h1>
 <p>通过 getaddrinfo 函数连接</p>
-<pre><code class="py">import argparse, socket, sys
+<pre><code class="language-py">import argparse, socket, sys
 
 def connect_to(hostname_or_ip):
     try:
@@ -969,11 +967,10 @@ if __name__ == '__main__':
     parser.add_argument('hostname', help='hostname that you want to contact')
     connect_to(parser.parse_args().hostname)
 </code></pre>
-
 <p>python 没有内置DNS 工具到标准库。pip install dhspython3</p>
 <h1 id="5">5 网络数据与网络错误</h1>
 <p>struct 把数据和二进制格式转换</p>
-<pre><code class="py">&gt;&gt;&gt; import struct
+<pre><code class="language-py">&gt;&gt;&gt; import struct
 &gt;&gt;&gt; struct.pack('&lt;i', 4253) # 小端法
 b'\x9d\x10\x00\x00'
 &gt;&gt;&gt; struct.pack('&gt;i', 4253) # 大端法
@@ -981,7 +978,6 @@ b'\x00\x00\x10\x9d'
 &gt;&gt;&gt; struct.unpack('&gt;i', b'\x00\x00\x10\x9d')
 (4253,)
 </code></pre>
-
 <p>封帧(framing)问题: 如何分隔消息，使得消息接收方能够识别消息的开始和结束。
 需要考虑的问题：</p>
 <ul>
@@ -1028,7 +1024,7 @@ b'\x00\x00\x10\x9d'
 </ul>
 <h1 id="6-tlsssl">6 TLS/SSL</h1>
 <p>Pycon2014 The Sorry State of SSL</p>
-<pre><code class="py">#!/usr/bin/env python3
+<pre><code class="language-py">#!/usr/bin/env python3
 # Foundations of Python Network Programming, Third Edition
 # https://github.com/brandon-rhodes/fopnp/blob/m/py3/chapter06/test_tls.py
 # Attempt a TLS connection and, if successful, report its properties
@@ -1179,7 +1175,6 @@ if __name__ == '__main__':
     if args.v:
         pprint(cert)
 </code></pre>
-
 <h1 id="7">7 服务器架构</h1>
 <p>现代操作系统网络栈的两个特点使得异步模式编写服务器成为了现实：</p>
 <ul>
@@ -1187,7 +1182,7 @@ if __name__ == '__main__':
 <li>可以将一个套接字设置为非阻塞(nonblocking)，非阻塞套接字在send/recv 系统调用会立刻返回，如果发生延迟，调用方会负责在
 稍后客户端准备好继续进行交互时重试。</li>
 </ul>
-<pre><code class="py">import asyncio, zen_utils
+<pre><code class="language-py">import asyncio, zen_utils
 
 @asyncio.coroutine
 def handle_conversation(reader, writer):
@@ -1220,7 +1215,6 @@ if __name__ == '__main__':
         server.close()
         loop.close()
 </code></pre>
-
 <h1 id="8">8 缓存与消息队列</h1>
 <p>缓存：redis/memcached, 分片
 消息队列: AMQP是常见的跨语言消息队列协议实现之一，许多支持AMQP的开源服务器 RabbitMQ, Apache Qpid等
@@ -1233,7 +1227,7 @@ if __name__ == '__main__':
 </ul>
 <h1 id="9-http">9 HTTP 客户端</h1>
 <p>可以使用 <code>curl -v http://httpbin.org/headers</code> 来观察 http 协议通信过程</p>
-<pre><code class="sh">&gt; GET /headers HTTP/1.1
+<pre><code class="language-sh">&gt; GET /headers HTTP/1.1
 &gt; Host: httpbin.org
 &gt; User-Agent: curl/7.54.0
 &gt; Accept: */*
@@ -1256,7 +1250,6 @@ if __name__ == '__main__':
   }
 }
 </code></pre>
-
 <p>HTTP 协议第一行和头信息都通过表示结束的 CR-LF 进行封帧，这两部分作为一个整体又是通过空行来封帧的。
 对消息体进行封帧有三种选择：</p>
 <ul>
@@ -1268,7 +1261,7 @@ if __name__ == '__main__':
 在向同一个网站请求其他资源时，就可以自动重用连接池中保存的连接了。</p>
 <h1 id="10-http">10 HTTP 服务器</h1>
 <p>WSGI: 统一web服务器和应用框架的规范</p>
-<pre><code class="py">from pprint import pformat
+<pre><code class="language-py">from pprint import pformat
 from wsgiref.simple_server import make_server
 
 def app(environ, start_response):
@@ -1283,19 +1276,17 @@ if __name__ == '__main__':
     print('Serving on', host, 'port', port)
     httpd.serve_forever()
 </code></pre>
-
 <p>web服务器和框架区别：
 web服务器负责建立并管理监听套接字，运行accept()接收新连接，并解析所有收到的HTTP请求。
 web服务器会将符合规范的完整请求传递给web框架或应用程序代码，这一个过程功过调用在web服务器上注册的
 WSGI可调用对象实现。</p>
 <h1 id="11">11 万维网</h1>
 <p>使用 urllib.parse 模块解析和构造 url</p>
-<pre><code class="py">    from urllib.parse import urlsplit
+<pre><code class="language-py">    from urllib.parse import urlsplit
     u = urlsplit('https://www.google.com/search?q=qpod&amp;btnI=yes')
     print(u)
     #SplitResult(scheme='https', netloc='www.google.com', path='/search', query='q=qpod&amp;btnI=yes', fragment='')
 </code></pre>
-
 <h1 id="16-telnet-ssh">16 Telnet 和 SSH</h1>
 <p>SSH(Secure Sheel)
 python 社区关于远程命令行自动化的工具：</p>
@@ -1307,7 +1298,7 @@ python 社区关于远程命令行自动化的工具：</p>
 </ul>
 <p>Telnet 协议：安全性很差，基本被废弃了。 python telnetlib</p>
 <p>SSH/SFTP: python paramiko</p>
-<pre><code class="py">import argparse, paramiko, sys
+<pre><code class="language-py">import argparse, paramiko, sys
 
 class AllowAnythingPolicy(paramiko.MissingHostKeyPolicy):
     def missing_host_key(self, client, hostname, key):
@@ -1335,7 +1326,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     main(args.hostname, args.username)
 </code></pre>
-
 <h1 id="18-rpc">18 RPC</h1>
 <p>远程过程调用(RPC, Remote Procedure Cal)允许使用调用本地API或者本地库的语法来调用另一个进程或远程服务器上的函数
 特性：</p>
