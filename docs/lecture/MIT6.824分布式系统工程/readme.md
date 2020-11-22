@@ -492,3 +492,8 @@ func sendRPC(i int) {
 ```
 
 lab: https://www.cnblogs.com/mignet/p/6824_Lab_2_Raft_2A.html
+
+raft 资料：
+
+- https://raft.github.io/
+- http://thesecretlivesofdata.com/raft/
