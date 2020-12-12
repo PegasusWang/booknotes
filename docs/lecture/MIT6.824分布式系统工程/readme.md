@@ -493,7 +493,11 @@ func sendRPC(i int) {
 
 lab: https://www.cnblogs.com/mignet/p/6824_Lab_2_Raft_2A.html
 
+
+# 6. Fault Tolerance-Raft(1)
+
 raft 资料：
 
+- https://www.bilibili.com/video/BV1R7411t71W?p=6
 - https://raft.github.io/
 - http://thesecretlivesofdata.com/raft/
