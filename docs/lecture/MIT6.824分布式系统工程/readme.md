@@ -14,7 +14,6 @@
 - https://github.com/chaozh/MIT-6.824
 - https://www.v2ex.com/t/574537
 
-
 # 1. Introduction
 
 why?
@@ -134,6 +133,8 @@ Big sequential access
 
 ![](./3_gfs.png)
 
+- https://github.com/merrymercy/goGFS
+- https://github.com/Bereket-G/Google-File-System-Implementation-with-Python
 
 # 4. Primary-Backup Replication
 
