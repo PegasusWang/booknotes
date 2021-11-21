@@ -172,7 +172,7 @@ RWMutex: 适合读多写少场景。可以获取多个读锁，除非锁用来�
 A rendezvous point for goroutine waiting for or announcing the occurrence of an event.
 
 ```
-for conditoinTrue() == false{
+for conditionTrue() == false{
 	time.Sleep(1*time.Millisecond) //sleep多久是个问题，太久效率低下，太快消耗 cpu
 }
 ```
@@ -181,7 +181,7 @@ use Cond, we cloud write like this:
 ```
 c := sync.NewCond(&sync.Mutex{})
 c.L.Lock()
-for conditoinTrue() == false {
+for conditionTrue() == false {
 	c.Wait() // blocking call, will suspend
 }
 c.L.UnLock()
@@ -506,7 +506,7 @@ func main() {
 	chanOnwer := func() <-chan int {
 		results := make(chan int, 5)
 		go func() {
-			defer close(results)
+			defer close(results) // 注意关闭
 			for i := 0; i <= 5; i++ {
 				results <- i
 			}
@@ -698,7 +698,7 @@ func main() {
 ```
 
 NOTE: If a goroutine is responsible for creating a goroutine, it is also responsible for ensuring
-it can stop the gorutine.
+it can stop the goroutine.
 
 ### The or-channel pattern
 
@@ -948,7 +948,7 @@ func main() {
 ### Fan-Out, Fan-In (扇出，扇入)
 
 
-Fan-out is a term to describe the process of starting multiple gortouine to handle input from the pipeline,
+Fan-out is a term to describe the process of starting multiple goroutine to handle input from the pipeline,
 and Fan-in is a term to describe the process of combining results into one channel.
 
 Fanout one of your stages if both of the following apply:
@@ -1223,7 +1223,7 @@ For any long-running goroutines, or goroutines that need to be tested, highly re
 
 ### Replicated Request
 
-You can replicate the request to mulitple handlers(whether those be gorutines, processes, or servers),
+You can replicate the request to mulitple handlers(whether those be goroutines, processes, or servers),
 and one of them will run faster than other ones, you can then immediately return the result.
 The downside is that you'll have to utilize resources to keep multiple copies of the handlers running.
 
