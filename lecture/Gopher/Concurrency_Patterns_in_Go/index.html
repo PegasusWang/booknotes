@@ -5,10 +5,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="None">
+  
   
   <link rel="shortcut icon" href="../../../img/favicon.ico">
-  <title>go 重试 - PegasusWang的读书笔记</title>
+  <title>Concurrency Patterns in Go - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "go \u91cd\u8bd5";
-    var mkdocs_page_input_path = "\u6e90\u7801\u9605\u8bfb_sourcecode/go/retry-go/README.md";
+    var mkdocs_page_name = "Concurrency Patterns in Go";
+    var mkdocs_page_input_path = "lecture/Gopher/Concurrency_Patterns_in_Go.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -500,7 +500,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../">《源码阅读》</a>
+    <a class="" href="../../../源码阅读_sourcecode/">《源码阅读》</a>
                 </li>
     </ul>
 	    </li>
@@ -652,15 +652,15 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+    <a class="" href="../哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+    <a class="" href="../Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+    <a class="" href="../Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
                 </li>
     </ul>
 	    </li>
@@ -758,7 +758,7 @@
     
       
     
-    <li>go 重试</li>
+    <li>Concurrency Patterns in Go</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -768,35 +768,14 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="go">go 重试</h1>
-<p>源码：https://github.com/avast/retry-go</p>
-<h1 id="_1">简单实现</h1>
-<p>一个简单的重试 go 函数可以这么实现</p>
-<pre><code class="language-go">func Retry(fn func() error, attempts int, sleep time.Duration) error {
-    if err := fn(); err != nil {
-        if s, ok := err.(stop); ok {
-            return s.error
-        }
-
-        if attempts--; attempts &gt; 0 {
-            // logger.Warnf(&quot;retry func error: %s. attemps #%d after %s.&quot;, err.Error(), attempts, sleep)
-            fmt.Printf(&quot;retry times[%d], sleep[%v]\n&quot;, attempts, sleep)
-            time.Sleep(sleep)
-            return Retry(fn, attempts, 2*sleep)
-        }
-        return err
-    }
-    return nil
-}
-
-type stop struct {
-    error
-}
-
-func NoRetryError(err error) stop {
-    return stop{err}
-}
-</code></pre>
+                <p>地址： https://www.youtube.com/watch?v=rDRa23k70CU</p>
+<h1 id="gos-concurrency-toolset">Go's concurrency toolset</h1>
+<ul>
+<li>goroutines</li>
+<li>channels</li>
+<li>select</li>
+<li>sync package</li>
+</ul>
               
             </div>
           </div>
@@ -834,8 +813,3 @@ func NoRetryError(err error) stop {
 
 </body>
 </html>
-
-<!--
-MkDocs version : 1.0.4
-Build Date UTC : 2021-11-21 16:01:43
--->
