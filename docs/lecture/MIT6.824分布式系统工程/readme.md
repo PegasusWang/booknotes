@@ -499,6 +499,16 @@ lab: https://www.cnblogs.com/mignet/p/6824_Lab_2_Raft_2A.html
 
 raft 资料：
 
-- https://www.bilibili.com/video/BV1R7411t71W?p=6
 - https://raft.github.io/
-- http://thesecretlivesofdata.com/raft/
+- https://www.bilibili.com/video/BV1R7411t71W?p=6
+- http://thesecretlivesofdata.com/raft/ 这个动画非常清晰易懂
+- https://github.com/vision9527/raft-demo
+- http://kanaka.github.io/raft.js/
+- https://observablehq.com/@stwind/raft-consensus-simulator
+
+### Split Brain
+
+### Majority Vote
+
+2 of 3
+2f+1 -> f failures
