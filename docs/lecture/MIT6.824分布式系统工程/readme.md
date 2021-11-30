@@ -131,15 +131,15 @@ Single data center
 Internal use
 Big sequential access
 
-![](./3_gfs.png)
+![](./images/3_gfs.png)
 
 - https://github.com/merrymercy/goGFS
 - https://github.com/Bereket-G/Google-File-System-Implementation-with-Python
 
 # 4. Primary-Backup Replication
 
-![](./4-0.jpeg)
-![](./4-1.jpeg)
+![](./images/4-0.jpeg)
+![](./images/4-1.jpeg)
 
 
 # 5. Go, Threads, and Raft
@@ -512,3 +512,9 @@ raft 资料：
 
 2 of 3
 2f+1 -> f failures
+
+![](./images/6_7_raft.png)
+
+# 8. Zookeeper
+
+- https://www.bilibili.com/video/BV1R7411t71W?p=8 36分钟开始
