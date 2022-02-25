@@ -31,7 +31,7 @@ challenges:
 
 lectures + papers + exams + labs + project(optional)
 
-- Lab1 - MapReduce
+- Lab1 - MapReduce  https://pdos.csail.mit.edu/6.824/labs/lab-mr.html
 - Lab2 - Raft for fault tolerance
 - Lab3 - k/v server
 - Lab4 - shared k/v service
@@ -505,6 +505,15 @@ raft 资料：
 - https://github.com/vision9527/raft-demo
 - http://kanaka.github.io/raft.js/
 - https://observablehq.com/@stwind/raft-consensus-simulator
+
+- https://github.com/maemual/raft-zh_cn 中文翻译
+
+Lab2: https://pdos.csail.mit.edu/6.824/labs/lab-raft.html
+Lab3: https://pdos.csail.mit.edu/6.824/labs/lab-kvraft.html
+
+代码参考：
+
+- https://github.com/LebronAl/MIT6.824-2021
 
 ### Split Brain
 
