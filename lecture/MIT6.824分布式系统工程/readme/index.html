@@ -800,7 +800,7 @@
 </ul>
 <p>lectures + papers + exams + labs + project(optional)</p>
 <ul>
-<li>Lab1 - MapReduce</li>
+<li>Lab1 - MapReduce  https://pdos.csail.mit.edu/6.824/labs/lab-mr.html</li>
 <li>Lab2 - Raft for fault tolerance</li>
 <li>Lab3 - k/v server</li>
 <li>Lab4 - shared k/v service</li>
@@ -889,14 +889,14 @@ Automatic recovery</p>
 <p>Single data center
 Internal use
 Big sequential access</p>
-<p><img alt="" src="../3_gfs.png" /></p>
+<p><img alt="" src="../images/3_gfs.png" /></p>
 <ul>
 <li>https://github.com/merrymercy/goGFS</li>
 <li>https://github.com/Bereket-G/Google-File-System-Implementation-with-Python</li>
 </ul>
 <h1 id="4-primary-backup-replication">4. Primary-Backup Replication</h1>
-<p><img alt="" src="../4-0.jpeg" />
-<img alt="" src="../4-1.jpeg" /></p>
+<p><img alt="" src="../images/4-0.jpeg" />
+<img alt="" src="../images/4-1.jpeg" /></p>
 <h1 id="5-go-threads-and-raft">5. Go, Threads, and Raft</h1>
 <pre><code class="language-go">// closure.go
 package main
@@ -1248,9 +1248,30 @@ func sendRPC(i int) {
 <h1 id="6-fault-tolerance-raft1">6. Fault Tolerance-Raft(1)</h1>
 <p>raft 资料：</p>
 <ul>
-<li>https://www.bilibili.com/video/BV1R7411t71W?p=6</li>
 <li>https://raft.github.io/</li>
-<li>http://thesecretlivesofdata.com/raft/</li>
+<li>https://www.bilibili.com/video/BV1R7411t71W?p=6</li>
+<li>http://thesecretlivesofdata.com/raft/ 这个动画非常清晰易懂</li>
+<li>https://github.com/vision9527/raft-demo</li>
+<li>http://kanaka.github.io/raft.js/</li>
+<li>https://observablehq.com/@stwind/raft-consensus-simulator</li>
+</ul>
+<ul>
+<li>https://github.com/maemual/raft-zh_cn 中文翻译</li>
+</ul>
+<p>Lab2: https://pdos.csail.mit.edu/6.824/labs/lab-raft.html
+Lab3: https://pdos.csail.mit.edu/6.824/labs/lab-kvraft.html</p>
+<p>代码参考：</p>
+<ul>
+<li>https://github.com/LebronAl/MIT6.824-2021</li>
+</ul>
+<h3 id="split-brain">Split Brain</h3>
+<h3 id="majority-vote">Majority Vote</h3>
+<p>2 of 3
+2f+1 -&gt; f failures</p>
+<p><img alt="" src="../images/6_7_raft.png" /></p>
+<h1 id="8-zookeeper">8. Zookeeper</h1>
+<ul>
+<li>https://www.bilibili.com/video/BV1R7411t71W?p=8 36分钟开始</li>
 </ul>
               
             </div>
