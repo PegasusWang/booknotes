@@ -34,6 +34,7 @@ pages:
       - 《七周七数据库》: 'database/七周七数据库.md'
       - 《深入浅出mysql》: 'database/深入浅出mysql.md'
       - 《高性能mysql第三版》: 'database/高性能mysql第三版.md'
+      - 《MySQL是怎样运行的》: 'database/MySQL是怎样运行的从根上理解MySQL/MySQL是怎样运行的从根上理解MySQL.md'
     - 前端:
       - 《CSS_The_Missing_Manual》: 'frontend/CSS_The_Missing_Manual.md'
       - 《reactjs小书》: 'frontend/reactjs_小书.md'
