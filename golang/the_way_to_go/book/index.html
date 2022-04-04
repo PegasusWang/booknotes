@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>11 Interfaces and reflection - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "11 Interfaces and reflection";
+    var mkdocs_page_input_path = "golang/the_way_to_go/book.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">调试技术</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../debug/软件调试修炼之道/book/">《软件调试修炼之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../debug/Effective_Debugging/">《Effective Debugging》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis深度历险核心原理和应用实践/book/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/MySQL是怎样运行的从根上理解MySQL/MySQL是怎样运行的从根上理解MySQL/">《MySQL是怎样运行的》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go101/book/">《Go101》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../network-programming-with-go/book/">《Network Programming with go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go_in_action(go语言实战)/">《Go In Action(Go 实战)》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言编程/">《Go语言编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言编程之旅.md">《Go语言编程之旅》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/自控力/">《自控力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/自控力-和压力做朋友/">《自控力:和压力做朋友》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/unix网络编程卷一/">《unix网络编程卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/深入理解Kafka核心设计与实践原理/深入理解Kafka核心设计与实践原理/">《深入理解Kafka核心技术与实践原理》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">搜索引擎</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../搜索引擎/Elasticsearch实战/book/">《Elasticsearch实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/vim8文本处理实战/vim8文本处理实战/">《Vim8文本处理实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/Mastering_vim/">《Mastering Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习力/">《学习力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/微服务实战/">《微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/迈出投资第一步/迈出投资第一步/">《迈出投资第一步》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/定投十年/">《定投十年》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/指数基金投资日志/">《指数基金投资日志》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/聪明的定投/">《聪明的定投》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">写作</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../写作/刷屏文案写作技巧/">《刷屏文案写作技巧》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效15法则/">《高效15法则》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效清单工作法/">《高效清单工作法》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>11 Interfaces and reflection</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="11-interfaces-and-reflection">11 Interfaces and reflection</h1>
+<p>An Interface define a set of methods. And cannot contain variables.</p>
+<pre><code class="language-go">type Namer interface {
+    Method1(param_list) return_type
+    Method2(param_list) return_type
+}
+</code></pre>
+<h2 id="113-type-assertion">11.3 type assertion</h2>
+<pre><code class="language-go">if v, ok := varI.(T); ok {
+//
+}
+</code></pre>
+<p>Value-received methods can be called with pointer values because they can be dereference first.</p>
+<pre><code class="language-go">package sort
+
+type Sorter interface {
+    Len() int
+    Less(i, jint) bool
+    Swap(i, j int)
+}
+
+fucn Sort(data Sorter) {
+    for pass := 1; pass &lt;data.Len(); pass ++ {
+        for i :=0; i &lt; data.Len()-pass; i++ {
+            if data.Less(i+1,i) {
+                data.Swap(i,i+1)
+            }
+        }
+    }
+}
+
+func IsSorted(data Sorter) bool {
+    n := data.Len()
+    for i := n-1; i &gt;0; i-- {
+        if data.Less(i, i-1){
+            return false
+        }
+    }
+    return true
+}
+
+// convenience types for common cases
+
+type IntArray []int
+func (p IntArray) Len() int {return len(p)}
+func (p IntArray) Less(i,j int) bool {return p[i] &lt; p[j]}
+func (p IntArray) Swap(i,j int) {p[i],p[j] = p[j],p[i]}
+</code></pre>
+<h3 id="1192-contsucting-an-array-of-a-general-type-or-with-variables-of-different-types">11.9.2 contsucting an array of a general type or with variables of different types</h3>
+<pre><code class="language-go">type Element interface{}
+
+type Vector struct {
+    a []Element
+}
+
+func (p *Vector) At(i int) Element {
+    return p.a[i]
+}
+
+func (p *Vector) Set(i int, Element e) {
+    p.a[i] = e
+}
+</code></pre>
+<p>tree struct:</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+type Node struct {
+    le   *Node
+    data interface{}
+    ri   *Node
+}
+
+func NewNode(left, right *Node) *Node {
+    return &amp;Node{left, nil, right}
+}
+
+func (n *Node) SetData(data interface{}) {
+    n.data = data
+}
+
+func main() {
+    root := NewNode(nil, nil)
+    root.SetData(&quot;root node&quot;)
+    a := NewNode(nil, nil)
+    a.SetData(&quot;left node&quot;)
+    b := NewNode(nil, nil)
+    b.SetData(&quot;right node&quot;)
+    root.le = a
+    root.ri = b
+    fmt.Printf(&quot;%v\n&quot;, root)
+}
+</code></pre>
+<h2 id="1110-the-reflect-package">11.10 The reflect package</h2>
+<h2 id="1114-structs-coolections-and-higher-order-functions">11.14 Structs coolections and higher order functions</h2>
+<pre><code class="language-go">package main
+
+type Any interface{}
+
+type Car struct {
+    Model        string
+    Manufacturer string
+    BuildYear int
+}
+
+type Cars []*Car
+
+func (cs Cars) Map(f func(car *Car) Any) []Any {
+    result := make([]Any, 0)
+    ix := 0
+    cs.Process(func(c *Car) {
+        result[ix] = f(c)
+        ix++
+    })
+    return result
+}
+
+allNewBMWs := allCars.FindAll(func(car *Car) bool {
+    return (car.Manufacturer == &quot;BMW&quot;) &amp;&amp; (car.BuildYear &gt; 2010)
+})
+</code></pre>
+<h1 id="12-reading-and-writing">12 Reading and writing</h1>
+<pre><code class="language-go">// read input from console:
+package main
+
+import &quot;fmt&quot;
+
+var (
+    firstName, lastName string
+)
+
+func main() {
+    fmt.Scanln(*firstName, *lastName)
+    fmt.Println(&quot;Hi %s %s\n&quot;, &amp;firstName, &amp;lastName)
+}
+
+// or use bufio.Reader
+</code></pre>
+<h1 id="13-error-handling-and-testing">13 Error-handling and Testing</h1>
+<p>no try/catch, defer-panic-and-recover mechanism.</p>
+<pre><code class="language-go">type error interface {
+    Error() string
+}
+// to stop an error-state program, use os.Exit(1)
+
+
+// define new errors
+err := errros.New(&quot;math-square root of negative number&quot;)
+
+// custome error field
+type PathError struct {
+    Op   string
+    Path string
+    Err  error
+}
+func ( e *PathError) String() string {
+    return e.Op + &quot; &quot; + e.Path = &quot;: &quot; + e.Err.Error()
+}
+// making errror-object with fmt
+if f &lt; 0 {
+    return 0, fmt.Errorf(&quot;math: square root of negative number %g&quot;, f)
+}
+</code></pre>
+<h2 id="132-run-time-exceptions-and-panic">13.2 Run-time exceptions and panic</h2>
+<p>if panic is called from a nested function, immediately stops the execution of the current function,
+all defer statement are guaranteed to execute and the control is given to the function caller, which receives this call
+to panic.</p>
+<h2 id="133-recover">13.3 Recover</h2>
+<p>recover is only useful when called inside a deferred function: it then retrieves the error value passed through the call
+of panic; when used in normal execution a call to recover will return nil and have no other effects.</p>
+<p>like catch in java.</p>
+<pre><code class="language-go">func protect(g func()) {
+    defer func() {
+        log.Println(&quot;done&quot;)
+        if err := recover(); err != nil {
+            log.Printf(&quot;run time panic : %v&quot;, err)
+        }
+    }()
+    log.Println(&quot;start&quot;)
+    g()
+}
+
+
+package main
+
+import &quot;fmt&quot;
+
+func badCall() {
+    panic(&quot;bad end&quot;)
+}
+
+func test() {
+    defer func() {
+        if e := recover(); e != nil {
+            fmt.Printf(&quot;Panicking %s\r\n&quot;, e)
+        }
+    }()
+    badCall()
+    fmt.Printf(&quot;After bad call\r\n&quot;)
+}
+
+func main() {
+    fmt.Printf(&quot;calling test\r\n&quot;)
+    test()
+    fmt.Printf(&quot;calling test end\r\n&quot;)
+}
+</code></pre>
+<h2 id="134-error-handling-and-panicking-in-a-custom-package">13.4 Error-handling and panicking in a custom package</h2>
+<p>best practice:</p>
+<ul>
+<li>always recover from panic in your package: no explicit panic() should be allowed to cross a package boundary</li>
+<li>return errors as error values to the callers of your package.</li>
+</ul>
+<h2 id="135-an-error-handling-scheme-with-closures">13.5 An Error-handling scheme with closures</h2>
+<pre><code class="language-go">func f(a type1, b type2)
+
+fType1 = func f(a type1, b type2)
+
+
+func errorHandler(fn fType1) fType1 {
+    return func(a type1, b type2) {
+        defer func() {
+            if e, ok := recover().(error); ok {
+                log.Printf(&quot;run time panic:%v&quot;, err)
+            }
+        }()
+        fn(a,b)
+    }
+}
+
+</code></pre>
+<h2 id="136-starting-an-external-command-or-program">13.6 Starting an external command or program</h2>
+<p>os.StartProcess
+exec.Command(name string, arg ...string)</p>
+<h2 id="137-testing-and-benckmarking-in-go">13.7 Testing and benckmarking in GO</h2>
+<h1 id="14-goroutines-and-channels">14 Goroutines and channels</h1>
+<h2 id="141-concurrency-parallelism-and-goroutines">14.1 Concurrency, parallelism and goroutines</h2>
+<p>CSP(Communicating Sequentiadl Processes)</p>
+<p>parallelism is the ability to make things run quickly by using multiple processors.</p>
+<p>An experiential rule of thumb seems to be that for n cores setting GOMAXPROCS to n-1 yields the best the performance,
+and the following should also be followed: number of goroutines &gt; 1 + GOMAXPROCS &gt; 1</p>
+<p>If we do not wai int main(), the program stop the goroutines die with it.
+When the func main() returns, the program exits, it does not wait for other (non-main) goroutines to complete.
+The logic of your code must be independent of the order in which goroutines are invoked.</p>
+<h3 id="1415">14.1.5</h3>
+<p>difference bewteen goroutines and coroutines(c# and python):</p>
+<ul>
+<li>goroutines imply parallelism, coroutines in general do not</li>
+<li>goroutines communicate via channels; coroutines communicate via yield and resume operations</li>
+</ul>
+<h2 id="142-channels-for-communication-between-goroutines">14.2 Channels for communication between goroutines</h2>
+<p>Using shared variables is not discouranged.
+Only one goroutine has access to a  data item at any given time: so data races cannot occur, by design. Channels a firstclass objects.</p>
+<pre><code>var identifier chan datatype // uniniitialized channel is nil
+var cha1 chan string // reference type
+ch1 = make(chan string)
+</code></pre>
+<p>Channel send and receive operations are aotmic, they always complete without interruption.</p>
+<h3 id="1423-blocking-of-channels">14.2.3 Blocking of channels</h3>
+<p>default communication is synchronous and unbuffered: sends do not complete until there is a receiver to accept the value. So channel send/receive block until the other side is ready.</p>
+<ul>
+<li>A send opeartion on a channel blocks until a receiver is available. for the same channel.</li>
+<li>A receive operation for a channel blocks until a sender is available for the same channel.</li>
+</ul>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    ch1 := make(chan int)
+    go pump(ch1)
+    // fmt.Println(&lt;-ch1)
+    go suck(ch1)
+    time.Sleep(1e9)
+}
+
+func pump(ch chan int) {
+    for i := 0; ; i++ {
+        ch &lt;- i
+    }
+}
+
+func suck(ch chan int) {
+    for {
+        fmt.Println(&lt;-ch)
+    }
+}
+</code></pre>
+<h3 id="1425-asynchronous-channels-making-a-channel-with-a-buffer">14.2.5 Asynchronous channels-making a channel with a buffer</h3>
+<p>An unbuffered channel can only contain 1 item and is for that reason somethimes too restrictive.</p>
+<pre><code>buf := 100
+ch1 := make(chan string, buf) //buf is the number of elements the channel can hold
+</code></pre>
+<p>sending to a bufferd channel will not blocked unless buffer is full, reading not blocked unless buffer is empty.
+If the capacity is greater than 0, channel is asychronous</p>
+<p>Semaphore pattern</p>
+<pre><code>    ch := make(chan int)
+    go func() {
+        // do something
+        ch &lt;- 1
+    }()
+    doSomethingElseForAWhile()
+    &lt;-ch // wait for goroutine to finish. discard send value
+</code></pre>
+<h3 id="1429-implementing-a-semaphore-using-a-buffered-channel">14.2.9 Implementing a semaphore using a buffered channel</h3>
+<pre><code>type Empty interface{}
+type semaphore chan Empty
+
+
+sem = make(semaphore, N)
+
+// acauire n resourdces
+func (s semaphore) P(n int) {
+    e := new(Empty)
+    for i :=0 ; i &lt; n; i ++ {
+        s &lt;- e
+    }
+}
+// release n resources
+func (s semaphore) V(n int) {
+    for i :=0 ;i &lt;n;i ++ {
+        &lt;-s
+    }
+}
+
+// mutexes
+func (s semaphore) Lock() {
+    s.P(1)
+}
+func (s semaphore) Unlock() {
+    s.V(1)
+}
+
+// signal-wait
+func (s semaphore) Wait(n int) {
+    s.P(n)
+}
+func (s semaphore) Signal() {
+    s.V(1)
+}
+</code></pre>
+<h3 id="14210-for-range-applied-to-channels">14.2.10 For-range applied to channels</h3>
+<p>It reads from the given channel ch until the channel is closed and then the code following for continue to execute. Obviously another goroutine must be writing to ch(otherwise the executino blocks in the for-loop) and must close ch when it's done writing.</p>
+<p>producer consumer pattern:</p>
+<pre><code>for {
+    Consume(Product())
+}
+</code></pre>
+<h3 id="14211-channel-directionality">14.2.11 Channel directionality</h3>
+<pre><code>var send_only chan&lt;- int // channel can only receive data (&lt;-chan T)
+var recv_only &lt;-chan int // channel can only send data
+</code></pre>
+<p>IDIOM: Pipe and filter pattern</p>
+<pre><code>sendChan := make(chan int)
+receiveChan := make(chan string)
+go processChannel(sendChan, receiveChan)
+
+func processChannel(in &lt;- chan int, out chan&lt;- string) {
+    for inValue := range in {
+        result := // process inValue
+        out&lt;-result
+    }
+}
+</code></pre>
+<pre><code>// sieve primer number
+package main
+
+import &quot;fmt&quot;
+
+func generate() chan int {
+    ch := make(chan int)
+    go func() {
+        for i := 2; ; i++ {
+            ch &lt;- i
+        }
+    }()
+    return ch
+}
+
+func filter(in chan int, prime int) chan int {
+    out := make(chan int)
+    go func() {
+        for {
+            if i := &lt;-in; i%prime != 0 {
+                out &lt;- i
+            }
+        }
+    }()
+    return out
+}
+
+func sieve() chan int {
+    out := make(chan int)
+    go func() {
+        ch := generate()
+        for {
+            prime := &lt;-ch
+            ch = filter(ch, prime)
+            out &lt;- prime
+        }
+    }()
+    return out
+}
+
+func main() {
+    primes := sieve()
+    for {
+        fmt.Println(&lt;-primes)
+    }
+}
+</code></pre>
+<h2 id="143-synchronization-of-goroutine-closing-a-channel-testing-for-blocked-channels">14.3 Synchronization of goroutine: closing a channel - testing for blocked channels</h2>
+<p>Only the sender should close a channel, never receiver.
+Sending or Closing a closed channel causes a run-time panic.</p>
+<pre><code>if v, ok := &lt;-ch; ok {
+    process(v)
+}
+</code></pre>
+<p>To do a non-blocking channel you need to use a select.
+for range will automatically detect when the channel is closed.</p>
+<h2 id="144-switching-between-goroutines-with-select">14.4 Switching between goroutines with select</h2>
+<p>Getting the values out of dirrerent concurrently executing goroutines can be accomplisehd with
+the select ekyworkd. A select is terminated when a break or return is executed in one of its cases.</p>
+<ul>
+<li>if all are blocked, it waits until one can proceed</li>
+<li>if multiple can proceed, it choose one at random</li>
+<li>when none of the channel operations can proceed and default clause is present, default is always runnable</li>
+</ul>
+<pre><code>// sieve primer number
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    runtime.GOMAXPROCS(2)
+    ch1 := make(chan int)
+    ch2 := make(chan int)
+
+    go pump1(ch1)
+    go pump2(ch2)
+    go suck(ch1, ch2)
+    time.Sleep(1e9)
+}
+
+func pump1(ch chan int) {
+    for i := 0; ; i++ {
+        ch &lt;- i * 2
+    }
+}
+
+func pump2(ch chan int) {
+    for i := 0; ; i++ {
+        ch &lt;- i + 5
+    }
+}
+func suck(ch1 chan int, ch2 chan int) {
+    for {
+        select {
+        case v := &lt;-ch1:
+            fmt.Printf(&quot;received on channel 1 :%d\n&quot;, v)
+        case v := &lt;-ch2:
+            fmt.Printf(&quot;received on channel 2 :%d\n&quot;, v)
+        }
+    }
+}
+</code></pre>
+<h2 id="145-channels-timeouts-and-tickers">14.5 Channels, Timeouts and Tickers</h2>
+<p>time.Ticker is an object that repeatedly sends a time value on a contained channel C at a specified time interval.</p>
+<pre><code>func main() {
+    ticker := time.NewTicker(interval)
+    defer ticker.Stop()
+    select {
+    case u := &lt;-ch1:
+        //...
+    case v := &lt;-ch2:
+        //...
+    case &lt;-ticker.C:
+        logState(status) // call some logging function logState
+    default: // novalue ready to be received
+        //...
+    }
+}
+</code></pre>
+<p>rate limiter:</p>
+<pre><code>rate_per_sec := 10
+var dur Dration = 1e9
+chRate := time.Tick(dur)
+for req := range requests {
+    &lt;- chRate
+    go client.Call(&quot;service.Method&quot;, req, ...)
+}
+</code></pre>
+<p>time.After(d) only send time once:</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    tick := time.Tick(1e8)
+    boom := time.After(5e8)
+    for {
+        select {
+        case &lt;-tick:
+            fmt.Println(&quot;tick.&quot;)
+        case &lt;-boom:
+            fmt.Println(&quot;Boom.&quot;)
+            return
+        default:
+            fmt.Println(&quot;     .&quot;)
+            time.Sleep(5e7)
+        }
+    }
+}
+</code></pre>
+<h2 id="146-using-recover-with-goroutines">14.6 Using recover with goroutines</h2>
+<pre><code>func server(workChan &lt;-chan *Work) {
+    for work := range workChan {
+        go safelyDo(work)
+    }
+}
+
+func safelyDo(work *Work) {
+    defer func() {
+        if err := recover(); err !=nil {
+            log.Printf(&quot;work faield with %s in %v:&quot;, err, work)
+        }
+    }()
+    do(work)
+}
+</code></pre>
+<h3 id="147-tasks-and-worker-processes">14.7 Tasks and Worker processes</h3>
+<pre><code>// Master-worker paradigm
+func Worker(in, out chan *Task){
+    for {
+        t := &lt;-in
+        process(t)
+        out &lt;- t
+    }
+}
+</code></pre>
+<p>when to use: a sync.Mutex or a channel?</p>
+<ul>
+<li>use locking(mutexes) when:
+    - caching information in a shared data structure
+    - holding state information, that is context or status of the running application</li>
+</ul>
+<ul>
+<li>use channels when:
+    - communicating asynchronous results
+    - distributing units of work
+    - passing owership of data</li>
+</ul>
+<h2 id="148-implementing-a-lazy-generator">14.8 Implementing a lazy generator</h2>
+<p>A generator is a function that returns the next value in a sequence each time the function is called.</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+var resume chan int
+
+func intergers() chan int {
+    yield := make(chan int)
+    count := 0
+    go func() {
+        for {
+            yield &lt;- count
+            count++
+        }
+    }()
+    return yield
+}
+func generateInteger() int {
+    return &lt;-resume
+}
+func main() {
+    resume = intergers()
+    fmt.Println(generateInteger())
+    fmt.Println(generateInteger())
+    fmt.Println(generateInteger())
+}
+</code></pre>
+<h2 id="149-implementing-futures">14.9 Implementing Futures</h2>
+<p>future: somtimes you know yopu need to compute a value before you need to actually use the value.
+in this case, you can potentially start computing the value on another processor and have it ready
+when you need it.</p>
+<pre><code>func InverseProduct(a Matrix, b Matrix) {
+    a_inv := Inverse(a)
+    b_inv := Inverse(b)
+    return Product(a_inv, b_inv)
+}
+
+
+/// a_inv and b_inv can compute parallel
+
+fucn InverseProduct(a Matrix, b Matrix) {
+    a_inv_future := InverseFuture(a) //. started as a goroutine
+    b_inv_future := InverseFuture(b)
+    a_inv := &lt;-a_inv_future
+    b_inv := &lt;-b_inv_future
+    return Product(a_inv,b_inv)
+}
+
+func InverseFuture(a Matrix) {
+    future := make(chan Matrix)
+    go func() { future&lt;-Inverse(a) } () // launched a closure as a goroutine
+    return future
+}
+</code></pre>
+<h2 id="1410-multiplexing">14.10 Multiplexing</h2>
+<h2 id="1411-limiting-the-number-of-requests-processed-concurrently">14.11 Limiting the number of requests processed concurrently</h2>
+<h2 id="1412-chaining-goroutines">14.12 Chaining goroutines</h2>
+<h2 id="1413-parallelzing-a-computation-over-a-number-of-cores">14.13 Parallelzing a computation over a number of cores</h2>
+<pre><code>func DoAll() {
+    sem := make(chan int, NCPU)
+    for i := 0; i &lt; NCPU; i ++ {
+        go DoPart(sem)
+    }
+    // Drain the channel sem, waiting for  NCPU tasks to complete
+    for i:= 0; i &lt; NCPU; i ++ {
+        &lt;-sem
+    }
+    // All done
+}
+
+func DoPart(sem chan int) {
+    // do the part of the computation
+    sem &lt;- 1 // signal that thie piece is done
+}
+
+func main() {
+    runtime.GOMAXPROCS = NCPU
+    DoAll()
+}
+</code></pre>
+<h2 id="1414-parallelizing-a-computation-over-a-large-amount-of-data">14.14 Parallelizing a computation over a large amount of data</h2>
+<p>a number of steps: Preprocess / StepA / StepB / ... / PostProcess</p>
+<p>pipelining algorithm:</p>
+<pre><code>func SerialProcessData(in &lt;- chan *Data, out &lt;- chan *Data) {
+    for data := range in {
+        tmpA := PreprocessData(data)
+        tmpB := ProcessStepA(tmpA)
+        tmpC := ProcessStepA(tmpB)
+        out &lt;- PostProcess(tmpC)
+    }
+}
+
+func ParallelProcessData(in &lt;- chan  *Data, out &lt;- chan *Data) {
+    // make channels:
+    preOut := make(chan *Data, 100)
+    stepAOut := make(chan *Data, 100)
+    stepBOut := make(chan *Data, 100)
+    stepCOut := make(chan *Data, 100)
+    // start parallel computations
+    go PreprocessData(in, preOut)
+    go ProcessStepA(preOut, stepAOut)
+    go ProcessStepB(stepAOut, stepBOut)
+    go ProcessStepC(stepBOut, stepCOut)
+    go PostProcessData(stepOut, out)
+}
+</code></pre>
+<h2 id="1415-the-leaky-bucket-algorithm">14.15 The leaky bucket algorithm</h2>
+<pre><code>var freeList = make(chan *Buffer, 100)
+var serverChan = make(chan *Buffer)
+
+func client() {
+    for {
+        var b *Buffer
+        select {
+        case b = &lt;-freeList:
+            // Got one; nothing more todo
+        default:
+            b = new(Buffer)
+            loadInto(b) // read next message from the network
+        }
+        serverChan &lt;- b //send to server
+    }
+}
+
+func server() {
+    for  {
+        b := &lt;-serverChan // wait for work
+        process(b)
+        // reuse buffer is threre's room
+        select {
+        case freeList &lt;- b:
+            // Reuse buffer if free slot on freeList; nothing more to do
+        default:
+            // freeList is full, just carry on : the buffer is 'dropped'
+            // doesn't work when freeList is full, leaky bucket
+        }
+    }
+
+}
+</code></pre>
+<h2 id="1416-benchmarking-goroutines">14.16 Benchmarking goroutines</h2>
+<h2 id="1417-concurrent-access-to-object-using-a-chnnel">14.17 Concurrent access to object using a chnnel</h2>
+<p>To safeguard concurrent modifications of an object instead of using locking with a sync Mutex,
+we can also use a backend goroutine for the sequential execution of anonymous functions.</p>
+<h1 id="16-common-go-pitfalls-or-mistakes">16 Common Go Pitfalls or Mistakes</h1>
+<h2 id="161-hidingshadowing-a-variable-by-misusing-short-declaration">16.1 Hiding(shadowing) a variable by misusing short declaration</h2>
+<pre><code>var remeber bool = false
+if somehting {
+    remeber := true // use = not :=
+}
+// use member
+
+
+func shadow() (err error) {
+    x, err := check1() // x is created, err is assigned to
+    if err != nil {
+        return   // err correctly returned
+    }
+    if y, err := check2(x); err !=nil { //y and inner err are created
+        return // inner err shadows err so nil is wrongly returned!
+    } else {
+        fmt.Println(y)
+    }
+    return
+}
+
+</code></pre>
+<h2 id="162-misusing-strings">16.2 Misusing strings</h2>
+<p>mind that strings in go(like java and python) are immutable, Do not use a + b in a for loop,
+intead one should use a bytes.Buffer to accumulate string content.</p>
+<pre><code>func shadow() (err error) {
+    x, err := check1() // x is created, err is assigned to
+    if err != nil {
+        return   // err correctly returned
+    }
+    if y, err := check2(x); err !=nil { //y and inner err are created
+        return // inner err shadows err so nil is wrongly returned!
+    } else {
+        fmt.Println(y)
+    }
+    return
+}
+</code></pre>
+<h2 id="163-using-defer-for-closing-a-file-in-the-wrong-scope">16.3 Using defer for closing a file in the wrong scope</h2>
+<p>Defer is only executed at the return of a function, not at the end of a loop or some other limited scope.</p>
+<h2 id="164-confusing-new-and-make">16.4 Confusing new() and make()</h2>
+<ul>
+<li>for slices, maps and channels, use make</li>
+<li>for arrays, structs and all value types: use new</li>
+</ul>
+<h2 id="165-no-need-to-pass-a-pointer-to-a-slice-to-a-function">16.5 No need to pass a pointer to a slice to a function</h2>
+<h2 id="166-using-pointers-to-interface-types">16.6 Using pointers to interface types</h2>
+<p>Never use a pointer to an interface type, this is already a pointer!</p>
+<h2 id="167-misusing-pointers-wiht-value-types">16.7 Misusing pointers wiht value types</h2>
+<h2 id="168-misusing-goroutines-and-channels">16.8 Misusing goroutines and channels</h2>
+<p>Only using goroutines and channels only where concurrency is important!</p>
+<h2 id="169-using-closures-with-goroutines">16.9 Using closures with goroutines</h2>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+var values = [5]int{10, 11, 12, 13, 14}
+
+func main() {
+    // version A
+    for ix := range values {
+        func() {
+            fmt.Print(ix, &quot; &quot;)
+        }()
+    }
+    fmt.Println()   // 0,1,2,3,4
+
+    // version B
+    for ix := range values {
+        go func() {  // invoke each closure as a goroutine
+            fmt.Print(ix, &quot; &quot;)
+        }() // the goroutine will probably not begin executing until after the loop
+    }
+    fmt.Println() // 4,4,4,4,4
+    time.Sleep(5e9)
+    // Version C: the right way
+    for ix := range values {
+        go func(ix interface{}) { // invoke each closure with ix as a parameter
+            fmt.Print(ix, &quot; &quot;) //ix is the evaluated at each iteration and placed on the stack of goroutine
+        }(ix)
+    }
+    fmt.Println()  // random
+    time.Sleep(5e9)
+    // Version D: print out values
+    for ix := range values {
+        val := values[ix] // variables declared witin the body of a loop are not shared between iterations
+        go func() {
+            fmt.Print(val, &quot; &quot;)
+        }()
+    }
+    time.Sleep(1e9) //10,11,12,13,14
+}
+</code></pre>
+<h2 id="1610-bad-error-handling">16.10 Bad error handling</h2>
+<p>wrap your error conditions in a closure wherever possible, like in the following example.</p>
+<pre><code>// seperate error checking, error reporting, and normal program logic
+
+func httpRequestHandler(w http.ResponseWriter, req *http.Request) {
+    err := func() error {
+        if req.Method != &quot;GET&quot;{
+            return errors.New(&quot;expected GET&quot;)
+        }
+        if input := paraseInput(req); input != &quot;command&quot; {
+            return errors.New(&quot;malformed command&quot;)
+        }
+    }()
+    // other error conditions can be tested here
+    if err != nil {
+        w.WriteHeader(400)
+        io.WriterString(w, err)
+        return
+    }
+    doSomething() //
+}
+</code></pre>
+<h1 id="17-go-language-patterns">17 Go Language Patterns</h1>
+<h2 id="171-the-comma-ok-pattern">17.1 The comma, ok pattern</h2>
+<h2 id="172-the-defer-pattern">17.2 The defer pattern</h2>
+<h2 id="173-the-visibility-pattern">17.3 The visibility pattern</h2>
+<h2 id="174-the-operator-pattern-and-interface">17.4 The operator pattern and interface</h2>
+<p>go不支持操作符重载，可以使用函数/方法/接口 来模拟。</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../../search/main.js" defer></script>
+
+</body>
+</html>

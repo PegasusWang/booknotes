@@ -1,0 +1,3113 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>《Go101》 - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300aGo101\u300b";
+    var mkdocs_page_input_path = "golang/go101/book.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">调试技术</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../debug/软件调试修炼之道/book/">《软件调试修炼之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../debug/Effective_Debugging/">《Effective Debugging》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis深度历险核心原理和应用实践/book/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/MySQL是怎样运行的从根上理解MySQL/MySQL是怎样运行的从根上理解MySQL/">《MySQL是怎样运行的》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《Go101》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#21-channels-the-go-way-to-do-concurrency-synchronizations">21. Channels - The Go Way to do concurrency synchronizations</a></li>
+    
+
+    <li class="toctree-l3"><a href="#22-methods-in-go">22 Methods in Go</a></li>
+    
+
+    <li class="toctree-l3"><a href="#23-interfaces-in-go">23 Interfaces in Go</a></li>
+    
+
+    <li class="toctree-l3"><a href="#37-channel-use-cases">37 Channel Use Cases</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#use-channels-as-futurespromises">Use channels as Futures/Promises</a></li>
+        
+            <li><a class="toctree-l4" href="#use-channels-for-notifications">Use Channels for Notifications</a></li>
+        
+            <li><a class="toctree-l4" href="#use-channels-as-mutex-locks">Use Channels as Mutex Locks</a></li>
+        
+            <li><a class="toctree-l4" href="#use-channels-as-counting-semaphores">Use Channels as Counting Semaphores</a></li>
+        
+            <li><a class="toctree-l4" href="#dialogueping-pong">Dialogue(Ping-Pong)</a></li>
+        
+            <li><a class="toctree-l4" href="#channel-encapsulated-in-channel">Channel Encapsulated in Channel</a></li>
+        
+            <li><a class="toctree-l4" href="#check-lengths-and-capacities-of-channels">Check Lengths and Capacities of Channels</a></li>
+        
+            <li><a class="toctree-l4" href="#block-the-current-goroutine-forever">Block the Current Goroutine Forever</a></li>
+        
+            <li><a class="toctree-l4" href="#try-send-and-try-receive">Try-Send and Try-Receive</a></li>
+        
+            <li><a class="toctree-l4" href="#data-flow-manipulations">Data Flow Manipulations</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#how-to-gracefully-close-channels">How to Gracefully Close Channels</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#channel-closing-principle">Channel Closing Principle</a></li>
+        
+            <li><a class="toctree-l4" href="#solutions-which-close-channels-rudely">Solutions which Close Channels Rudely</a></li>
+        
+            <li><a class="toctree-l4" href="#solutions-which-close-channels-politely">Solutions Which Close Channels Politely</a></li>
+        
+            <li><a class="toctree-l4" href="#solutions-which-close-channels-gracefully">Solutions Which Close Channels Gracefully</a></li>
+        
+            <li><a class="toctree-l4" href="#one-receiver-n-senders-the-only-receiver-says-please-stop-sending-more-by-closing-an-additional-signal-channel">One receiver, N senders, the only receiver says "please stop sending more" by closing an additional signal channel</a></li>
+        
+            <li><a class="toctree-l4" href="#m-receivers-n-senders-any-one-of-them-says-lets-end-the-game-by-notifying-a-moderator-to-close-an-additional-signal-channel">M receivers, N senders, any one of them says "let's end the game" by notifying a moderator to close an additional signal channel</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#concurrency-synchronization-techniques-provided-in-the-sync-standard-package">Concurrency Synchronization Techniques Provided in the sync Standard Package</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#the-syncwaitgroup-type">The sync.WaitGroup Type</a></li>
+        
+            <li><a class="toctree-l4" href="#the-synconce-type">The sync.Once Type</a></li>
+        
+            <li><a class="toctree-l4" href="#the-syncmutex-and-syncrwmutex-types">The sync.Mutex and sync.RWMutex Types</a></li>
+        
+            <li><a class="toctree-l4" href="#type-synccond-type">Type sync.Cond Type</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#atomic-operations-provided-in-the-syncatomic-standard-package">Atomic Operations Provided in The sync/atomic Standard Package</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#overview-of-atomic-operations-provided-in-go">Overview of Atomic Operations Provided in Go</a></li>
+        
+            <li><a class="toctree-l4" href="#atomic-operations-for-integers">Atomic Operations for Integers</a></li>
+        
+            <li><a class="toctree-l4" href="#atomic-operations-for-pointers">Atomic Operations for Pointers</a></li>
+        
+            <li><a class="toctree-l4" href="#atomic-operations-for-values-of-arbitrary-types">Atomic Operations for Values of Arbitrary Types</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#memory-order-guarantees-in-go">Memory Order Guarantees in Go</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#go-memory-model">Go Memory Model</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#common-concurrent-programming-mistakes">Common Concurrent Programming Mistakes</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#no-synchronizations-when-synchronizations-are-needed">No Synchronizations When Synchronizations Are Needed</a></li>
+        
+            <li><a class="toctree-l4" href="#use-timesleep-calls-to-do-synchronizations">Use time.Sleep Calls to Do Synchronizations</a></li>
+        
+            <li><a class="toctree-l4" href="#leave-goroutines-hanging">Leave Goroutines Hanging</a></li>
+        
+            <li><a class="toctree-l4" href="#copy-values-of-the-types-in-the-sync-standard-package">Copy Values of the Types in the sync Standard Package</a></li>
+        
+            <li><a class="toctree-l4" href="#call-the-syncwaitgroupadd-method-at-wrong-places">Call the sync.WaitGroup.Add Method at Wrong Places</a></li>
+        
+            <li><a class="toctree-l4" href="#use-channels-as-futurespromises-improperly">Use Channels as Futures/Promises Improperly</a></li>
+        
+            <li><a class="toctree-l4" href="#close-channels-not-from-the-last-active-sender-goroutine">Close Channels Not From the Last Active Sender Goroutine</a></li>
+        
+            <li><a class="toctree-l4" href="#do-64-bit-atomic-operations-on-values-which-are-not-guaranteed-to-be-8-byte-aligned">Do 64-bit Atomic Operations on Values Which are Not Guaranteed to Be 8-byte Aligned</a></li>
+        
+            <li><a class="toctree-l4" href="#not-pay-attention-to-too-many-resources-are-consumed-by-calls-to-the-timeafter-function">Not Pay Attention to Too Many Resources Are Consumed by Calls to the time.After Function</a></li>
+        
+            <li><a class="toctree-l4" href="#use-timetimer-values-incorrectly">Use time.Timer Values Incorrectly</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#memory-blocks">Memory Blocks</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#memory-blocks_1">Memory Blocks</a></li>
+        
+            <li><a class="toctree-l4" href="#a-value-references-the-memory-blocks-which-host-its-value-parts">A Value References the Memory Blocks Which Host Its Value Parts</a></li>
+        
+            <li><a class="toctree-l4" href="#when-will-memory-blocks-be-allocated">When will Memory Blocks Be Allocated ?</a></li>
+        
+            <li><a class="toctree-l4" href="#where-will-memory-blocks-be-allocated-on">Where Will Memory Blocks Be Allocated On?</a></li>
+        
+            <li><a class="toctree-l4" href="#where-will-memory-blocks-be-allocated-on_1">Where Will Memory Blocks Be Allocated On?</a></li>
+        
+            <li><a class="toctree-l4" href="#when-can-a-memory-block-be-collected">When Can a Memory Block Be Collected?</a></li>
+        
+            <li><a class="toctree-l4" href="#how-are-unused-memory-blocks-detected">How are Unused Memory Blocks Detected?</a></li>
+        
+            <li><a class="toctree-l4" href="#when-will-an-unused-memory-block-be-collected">When Will an Unused Memory Block Be Collected?</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#memory-layouts">Memory Layouts</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#type-alignment-guarantees-in-govalue-address-alignment-guarantees">Type Alignment Guarantees in GO(value address alignment guarantees)</a></li>
+        
+            <li><a class="toctree-l4" href="#type-sizes-and-structure-padding">Type Sizes and Structure Padding</a></li>
+        
+            <li><a class="toctree-l4" href="#the-alignment-requirement-for-64-bit-word-atomic-operations">The Alignment Requirement for 64-bit Word Atomic Operations</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#go-memory-leaking-scenarios">Go Memory Leaking Scenarios</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#kind-of-memory-leaking-caused-by-substrings">Kind-of Memory Leaking Caused by Substrings</a></li>
+        
+            <li><a class="toctree-l4" href="#kind-of-memory-leaking-caused-by-subslices">Kind-of Memory Leaking Caused by subslices</a></li>
+        
+            <li><a class="toctree-l4" href="#kind-of-memory-leaking-caused-by-not-resetting-pointers-in-lost-slice-elements">Kind-of Memory Leaking Caused by Not resetting Pointers in Lost Slice Elements</a></li>
+        
+            <li><a class="toctree-l4" href="#kind-of-memory-leaking-caused-by-hanging-goroutines">Kind-of Memory Leaking Caused by Hanging Goroutines</a></li>
+        
+            <li><a class="toctree-l4" href="#real-memory-leaking-caused-by-not-stopping-timeticker-values-which-are-not-used-anymore">Real Memory Leaking Caused by Not Stopping time.Ticker Values Which Are Not Used Anymore</a></li>
+        
+            <li><a class="toctree-l4" href="#real-memory-leaking-caused-by-using-finalizers-improperly">Real Memory Leaking Caused by Using Finalizers Improperly</a></li>
+        
+            <li><a class="toctree-l4" href="#kind-of-resources-leaking-by-deferring-function-calls">Kind-of Resources Leaking by Deferring Function Calls</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#nils-in-go">nils in Go</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#two-nil-values-may-be-not-equal">Two nil Values May Be Not Equal</a></li>
+        
+            <li><a class="toctree-l4" href="#retrieving-elements-from-nil-maps-will-not-panic">Retrieving Elements From Nil Maps Will Not Panic</a></li>
+        
+            <li><a class="toctree-l4" href="#it-is-legal-to-range-over-nil-channels-maps-slices-and-array-pointers">It is Legal to Range Over Nil Channels, Maps, Slices and Array Pointers</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#value-conversion-assignment-and-comparison-rules-in-go">Value Conversion, Assignment and Comparison Rules In Go</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#value-conversion-rules">Value Conversion Rules</a></li>
+        
+            <li><a class="toctree-l4" href="#value-assignment-rules">Value Assignment Rules</a></li>
+        
+            <li><a class="toctree-l4" href="#value-comparison-rules">Value Comparison Rules</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#syntaxsemantics-exception-in-go">Syntax/Semantics Exception in Go</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#nested-function-calls">Nested function calls</a></li>
+        
+            <li><a class="toctree-l4" href="#select-struct-fields">Select struct fields</a></li>
+        
+            <li><a class="toctree-l4" href="#receiver-arguments-of-method-calls">Receiver arguments of method calls</a></li>
+        
+            <li><a class="toctree-l4" href="#take-address-of-composite-literal-values">Take address of composite literal values</a></li>
+        
+            <li><a class="toctree-l4" href="#selectors-on-defined-one-level-pointers">Selectors on defined one-Level pointers</a></li>
+        
+            <li><a class="toctree-l4" href="#the-addressability-of-a-container-and-its-elements">The addressability of a container and its elements</a></li>
+        
+            <li><a class="toctree-l4" href="#modify-unaddressable-values">Modify unaddressable values</a></li>
+        
+            <li><a class="toctree-l4" href="#generic">Generic</a></li>
+        
+            <li><a class="toctree-l4" href="#function-names-in-one-package">Function names in one package</a></li>
+        
+            <li><a class="toctree-l4" href="#function-calls">Function calls</a></li>
+        
+            <li><a class="toctree-l4" href="#functions-being-used-as-values">Functions being used as values</a></li>
+        
+            <li><a class="toctree-l4" href="#discard-return-values-of-function-calls">Discard return values of function calls</a></li>
+        
+            <li><a class="toctree-l4" href="#declared-variables">Declared variables</a></li>
+        
+            <li><a class="toctree-l4" href="#argument-passing">Argument passing</a></li>
+        
+            <li><a class="toctree-l4" href="#comparisons">Comparisons</a></li>
+        
+            <li><a class="toctree-l4" href="#blank-composite-literals">Blank composite literals</a></li>
+        
+            <li><a class="toctree-l4" href="#container-element-iterations">Container element iterations</a></li>
+        
+            <li><a class="toctree-l4" href="#methods-of-built-in-types">Methods of built-in types</a></li>
+        
+            <li><a class="toctree-l4" href="#types-of-values">Types of values</a></li>
+        
+            <li><a class="toctree-l4" href="#constant-values">Constant values</a></li>
+        
+            <li><a class="toctree-l4" href="#behavior-change-caused-by-discarding-the-optional-evaluation-results-of-expressions">Behavior change caused by discarding the optional evaluation results of expressions.</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../network-programming-with-go/book/">《Network Programming with go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go_in_action(go语言实战)/">《Go In Action(Go 实战)》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言编程/">《Go语言编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../go语言编程之旅.md">《Go语言编程之旅》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/自控力/">《自控力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/自控力-和压力做朋友/">《自控力:和压力做朋友》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/unix网络编程卷一/">《unix网络编程卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/深入理解Kafka核心设计与实践原理/深入理解Kafka核心设计与实践原理/">《深入理解Kafka核心技术与实践原理》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">搜索引擎</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../搜索引擎/Elasticsearch实战/book/">《Elasticsearch实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/vim8文本处理实战/vim8文本处理实战/">《Vim8文本处理实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/Mastering_vim/">《Mastering Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习力/">《学习力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/微服务实战/">《微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/迈出投资第一步/迈出投资第一步/">《迈出投资第一步》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/定投十年/">《定投十年》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/指数基金投资日志/">《指数基金投资日志》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/聪明的定投/">《聪明的定投》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">写作</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../写作/刷屏文案写作技巧/">《刷屏文案写作技巧》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效15法则/">《高效15法则》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效清单工作法/">《高效清单工作法》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>golang &raquo;</li>
+        
+      
+    
+    <li>《Go101》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="21-channels-the-go-way-to-do-concurrency-synchronizations">21. Channels - The Go Way to do concurrency synchronizations</h1>
+<p>Don't (let computations) communicate by sharing memroy, (let them) share memory by communicating (through channels).</p>
+<p>五种操作(all these operations are already synchronized)：</p>
+<ul>
+<li>close(ch), ch must not be a receive-only channel.</li>
+<li><code>ch &lt;- v</code>, send a value</li>
+<li><code>&lt;-ch</code>, receive a value from the channel</li>
+<li>cap(ch), value buffer capacity, return int</li>
+<li>len(ch), query current number of values in the value buffer</li>
+</ul>
+<p>We can think of each channel as maintaining 3 queues:
+- the receiving goroutine queue
+- the sending goroutine queue
+- the value buffer queue</p>
+<p><img alt="" src="../channel.png" /></p>
+<pre><code class="language-go">// unbufferd demo
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    c := make(chan int)
+    go func(ch chan&lt;- int, x int) {
+        time.Sleep(time.Second)
+        ch &lt;- x * x //block until the result is received.
+    }(c, 3)
+
+    done := make(chan struct{})
+
+    go func(ch &lt;-chan int) {
+        n := &lt;-ch //block until 9 is sent
+        fmt.Println(n)
+
+        time.Sleep(time.Second)
+        done &lt;- struct{}{}
+    }(c)
+    &lt;-done //block until a value is sent to done
+    fmt.Println(&quot;bye&quot;)
+}
+
+// buffered channel
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+// A never ending football game
+func main() {
+    var ball = make(chan string)
+    kickBall := func(playerName string) {
+        for {
+            fmt.Println(&lt;-ball, &quot;kicked the ball.&quot;)
+            time.Sleep(time.Second)
+            ball &lt;- playerName
+        }
+    }
+    go kickBall(&quot;John&quot;)
+    go kickBall(&quot;Alice&quot;)
+    go kickBall(&quot;Bob&quot;)
+    go kickBall(&quot;Emily&quot;)
+    ball &lt;- &quot;referee&quot; //kick off 开球
+    var c chan bool   //nil
+    &lt;-c               // blocking here forever
+}
+
+</code></pre>
+<ul>
+<li>Channel Element Values are Transferred by Copy。If the passed value size too large, use a pointer element type instead.</li>
+<li>A goroutine can be garbage collected when it has already exited.</li>
+<li>Channel send and receive operations are simple statements.</li>
+</ul>
+<p>empty select-case code block <code>select{}</code> will make current goroutine stay in blocking state forever.</p>
+<h1 id="22-methods-in-go">22 Methods in Go</h1>
+<p>Should a method be declared with pointer receiver or value receiver ?</p>
+<ul>
+<li>Too many pointer copies my cause heavier workload for garbage collector</li>
+<li>if value receiver type is Large , should use pointer receiver.</li>
+<li>declaring methods of both value receivers ans pointer receivers for the same base type is more
+    likely to cause data races if the declared methods are called concurrently in multiple goroutines.</li>
+<li>values of the types in sync standard package should not be copied.</li>
+</ul>
+<p>If it is hard to make a decision , just choose the pointer receiver way.</p>
+<h1 id="23-interfaces-in-go">23 Interfaces in Go</h1>
+<p>type assert and type switch</p>
+<ul>
+<li>Values of []t can't be directly converted to []I, even if type T implements interface type I.</li>
+<li>Each method specified in a interface type corresponds to an implicit function.</li>
+</ul>
+<h1 id="37-channel-use-cases">37 Channel Use Cases</h1>
+<h2 id="use-channels-as-futurespromises">Use channels as Futures/Promises</h2>
+<h4 id="return-receive-only-channels-as-results">Return receive-only channels as results</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func longTimeRequest() &lt;-chan int32 {
+    r := make(chan int32)
+    go func() {
+        // simulate a workload
+        time.Sleep(time.Second * 3)
+        r &lt;- rand.Int31n(100)
+    }()
+    return r
+}
+
+func sumSquares(a, b int32) int32 {
+    return a*a + b*b
+}
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    a, b := longTimeRequest(), longTimeRequest()
+    fmt.Println(sumSquares(&lt;-a, &lt;-b)) // 3s 返回, a,b 并发执行的
+}
+</code></pre>
+<h4 id="pass-send-only-channels-as-arguments">Pass send-only channels as arguments</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func longTiemRequest(r chan&lt;- int32) {
+    // simulate a worklaod
+    time.Sleep(time.Second * 3)
+    r &lt;- rand.Int31n(100)
+}
+
+func sumSquares(a, b int32) int32 {
+    return a*a + b*b
+}
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    ra, rb := make(chan int32), make(chan int32)
+    go longTiemRequest(ra)
+    go longTiemRequest(rb)
+    fmt.Println(sumSquares(&lt;-ra, &lt;-rb))
+}
+</code></pre>
+<h4 id="the-first-response-wins">The first response wins</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func source(c chan&lt;- int32) {
+    ra, rb := rand.Int31(), rand.Intn(3)+1
+    time.Sleep(time.Duration(rb) * time.Second)
+    c &lt;- ra
+}
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    beg := time.Now()
+    c := make(chan int32, 5) // must bufferd channel
+
+    for i := 0; i &lt; cap(c); i++ {
+        go source(c)
+    }
+    // only frist resposne will be used
+    rnd := &lt;-c
+    fmt.Println(time.Since(beg))
+    fmt.Println(rnd)
+}
+</code></pre>
+<h2 id="use-channels-for-notifications">Use Channels for Notifications</h2>
+<p>Use blank struct{} as element types of the notification channels, size of type struct{} is zero, doesn't consume memory.</p>
+<h4 id="1-to-1-notification-by-sending-a-value-to-a-channel">1-To-1 notification by sending a value to a channel</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;os&quot;
+    &quot;sort&quot;
+)
+
+func main() {
+
+    values := make([]byte, 32*1024*1024)
+    if _, err := rand.Read(values); err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+    }
+    done := make(chan struct{})
+    go func() {
+        sort.Slice(values, func(i, j int) bool {
+            return values[i] &lt; values[j]
+        })
+        // notify sorting is done
+        done &lt;- struct{}{}
+    }()
+
+    // do some other things
+    fmt.Println(&quot;other thing&quot;)
+    fmt.Println(values[0], values[len(values)-1])
+}
+</code></pre>
+<h4 id="1-to-1-notification-by-receiving-a-value-from-a-channel">1-To-1 notification by receiving a value from a channel</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    done := make(chan struct{})
+    go func() {
+        fmt.Print(&quot;hello&quot;)
+        time.Sleep(time.Second * 2)
+        &lt;-done
+    }()
+    // blocked here, wait for a notification
+    done &lt;- struct{}{}
+    fmt.Println(&quot; world&quot;)
+}
+</code></pre>
+<p>slowers notify the faster waiting for notifications.</p>
+<h4 id="n-to-1-and-1-to-n-notifications">N-to-1 and 1-to-N notifications</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;log&quot;
+    &quot;time&quot;
+)
+
+// T type
+type T = struct{}
+
+func worker(id int, ready &lt;-chan T, done chan&lt;- T) {
+    &lt;-ready // block here and wait a notification
+    log.Print(&quot;Worker#&quot;, id, &quot; starts.&quot;)
+    // simulate a workload
+    time.Sleep(time.Second * time.Duration(id+1))
+    log.Print(&quot;Worker#&quot;, id, &quot; job done.&quot;)
+    // notify main goroutine (n-to-1)
+    done &lt;- T{}
+}
+
+func main() {
+    log.SetFlags(0)
+    ready, done := make(chan T), make(chan T)
+    go worker(0, ready, done)
+    go worker(1, ready, done)
+    go worker(2, ready, done)
+
+    // simulate an initialization phase
+    time.Sleep(time.Second * 3 / 2)
+    // 1-to-n notifications
+    ready &lt;- T{}
+    ready &lt;- T{}
+    ready &lt;- T{}
+    // Being N-to-1 notified
+    &lt;-done
+    &lt;-done
+    &lt;-done
+}
+</code></pre>
+<p>更常见的使用 sync.WaitGroup 做 N-to-1，通过 close channels 实现 1-to-N.</p>
+<h4 id="broadcast-1-to-n-notifications-by-closing-a-channel">Broadcast (1-To-N) notifications by closing a channel</h4>
+<p>上例中的三个发送 ready 可以直接换成一个 close(ready)</p>
+<h4 id="timer-scheduled-notification">Timer: scheduled notification</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func AfterDuration(d time.Duration) &lt;-chan struct{} {
+    c := make(chan struct{}, 1)
+    go func() {
+        time.Sleep(d)
+        c &lt;- struct{}{}
+    }()
+    return c
+}
+
+func main() {
+    fmt.Println(&quot;hi&quot;)
+    &lt;-AfterDuration(time.Second)
+    fmt.Println(&quot;Hello!&quot;)
+    &lt;-AfterDuration(time.Second)
+    fmt.Println(&quot;bye&quot;)
+}
+</code></pre>
+<p>实际中使用 time.After</p>
+<h2 id="use-channels-as-mutex-locks">Use Channels as Mutex Locks</h2>
+<p>two manners to use one-capacity bufferd channels as mutex locks.</p>
+<ul>
+<li>Lock through a send, unlock through a receive</li>
+<li>Lock through a receive, unlock through a send</li>
+</ul>
+<pre><code class="language-go">// lock through send
+package main
+
+import &quot;fmt&quot;
+
+func main() {
+    mutex := make(chan struct{}, 1) // capacity must be one
+    counter := 0
+
+    increase := func() {
+        mutex &lt;- struct{}{} // lock
+        counter++
+        &lt;-mutex // unlock
+    }
+
+    const n = 1000
+    increase1000 := func(done chan&lt;- struct{}) {
+        for i := 0; i &lt; n; i++ {
+            increase()
+        }
+        done &lt;- struct{}{}
+    }
+
+    done := make(chan struct{})
+    go increase1000(done)
+    go increase1000(done)
+    &lt;-done
+    &lt;-done
+    fmt.Println(counter) //2000
+}
+</code></pre>
+<h2 id="use-channels-as-counting-semaphores">Use Channels as Counting Semaphores</h2>
+<p>Buffered channels can be used as counting semaphores.
+Counting semaphores can be viewed a multi-owner locks, can have most N owners at any time.</p>
+<ul>
+<li>Acquire ownership through a send, release through a receive</li>
+<li>Acquire ownership through a receive, release through a send</li>
+</ul>
+<pre><code class="language-go">// acquire-through-receiving.go
+package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+type Seat int
+type Bar chan Seat
+
+func (bar Bar) ServeCustomer(c int) {
+    log.Print(&quot;costomer#&quot;, c, &quot; enters the bar&quot;)
+    seat := &lt;-bar // need a seat to drink
+    log.Print(&quot;++ customer#&quot;, c, &quot; drinks at seat#&quot;, seat)
+    time.Sleep(time.Second * time.Duration(2+rand.Intn(6)))
+    log.Print(&quot;-- customer#&quot;, c, &quot; free seat#&quot;, seat)
+    bar &lt;- seat // free seat and leave the bar
+}
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+
+    bar24x7 := make(Bar, 10) // bar24x7 has 10 seat
+    for seatId := 0; seatId &lt; cap(bar24x7); seatId++ {
+        // None of the sends will blocks
+        bar24x7 &lt;- Seat(seatId)
+    }
+
+    for customerId := 0; ; customerId++ {
+        time.Sleep(time.Second)
+        go bar24x7.ServeCustomer(customerId)
+    }
+
+    // sleeping != blocking
+    for {
+        time.Sleep(time.Second)
+    }
+}
+</code></pre>
+<pre><code class="language-go">// channeltest/go101/acquire-through-sending.go
+package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+type Customer struct{ id int }
+type Bar chan Customer
+
+func (bar Bar) ServeCustomer(c Customer) {
+    log.Print(&quot;++ customer#&quot;, c.id, &quot; staring drinking&quot;)
+    time.Sleep(time.Second * time.Duration(3+rand.Intn(16)))
+    log.Print(&quot;-- customer#&quot;, c, &quot; leaves the bar&quot;)
+    &lt;-bar // leaves the bar and save a space
+}
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+
+    bar24x7 := make(Bar, 10) // bar24x7 has 10 seat
+    for customerId := 0; ; customerId++ {
+        time.Sleep(time.Second * 2)
+        customer := Customer{customerId}
+        bar24x7 &lt;- customer
+        go bar24x7.ServeCustomer(customer)
+    }
+    for {
+        time.Sleep(time.Second)
+    }
+
+}
+</code></pre>
+<h2 id="dialogueping-pong">Dialogue(Ping-Pong)</h2>
+<pre><code class="language-go">// channeltest/go101/two-goroutines-dialogue-through-channel.go
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;os&quot;
+    &quot;time&quot;
+)
+
+type Ball uint64
+
+func Play(playerName string, table chan Ball) {
+    var lastValue Ball = 1
+    for {
+        ball := &lt;-table //get the ball
+        fmt.Println(playerName, ball)
+        ball += lastValue
+        if ball &lt; lastValue { // overflow
+            os.Exit(0)
+        }
+        lastValue = ball
+        table &lt;- ball
+        time.Sleep(time.Second)
+    }
+}
+
+func main() {
+    table := make(chan Ball)
+    go func() {
+        table &lt;- 1 // throw ball on table,开球
+    }()
+    go Play(&quot;A:&quot;, table)
+    Play(&quot;B&quot;, table)
+}
+</code></pre>
+<h2 id="channel-encapsulated-in-channel">Channel Encapsulated in Channel</h2>
+<p>We can use a channel type as the element of another channel type.</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+// 元素类型是一个 send only channel type chan &lt;- int
+var counter = func(n int) chan&lt;- chan&lt;- int {
+    requests := make(chan chan&lt;- int)
+    go func() {
+        for request := range requests {
+            if request == nil {
+                n++
+            } else {
+                request &lt;- n // take out
+            }
+        }
+    }()
+    return requests // implicitly converted to chan&lt;- (chan&lt;- int)
+}(0)
+
+func main() {
+    increase1000 := func(done chan&lt;- struct{}) {
+        for i := 0; i &lt; 1000; i++ {
+            counter &lt;- nil
+        }
+        done &lt;- struct{}{}
+    }
+
+    done := make(chan struct{})
+    go increase1000(done)
+    go increase1000(done)
+    &lt;-done
+    &lt;-done
+
+    request := make(chan int, 1)
+    counter &lt;- request
+    fmt.Println(&lt;-request) //2000
+}
+</code></pre>
+<h2 id="check-lengths-and-capacities-of-channels">Check Lengths and Capacities of Channels</h2>
+<pre><code class="language-go">for len(c) &gt; 0 {
+    value := &lt;-c
+    // use value
+}
+
+for len(c) &lt; cap(c) {
+    c &lt;- aValue
+}
+</code></pre>
+<h2 id="block-the-current-goroutine-forever">Block the Current Goroutine Forever</h2>
+<p>We can use a blank select block <code>select{}</code> to block the current goroutine for ever.
+Generally, <code>select{}</code> is used to prevent the main goroutine from exiting, for if the main goroutine exits, the whole
+program will also exit.</p>
+<pre><code class="language-go">package main
+
+import &quot;runtime&quot;
+
+func DoSomething() {
+    for {
+        // do something
+        runtime.Gosched() // avoid being greddy
+    }
+}
+
+func main() {
+    go DoSomething()
+    go DoSomething()
+    select {}
+}
+</code></pre>
+<h2 id="try-send-and-try-receive">Try-Send and Try-Receive</h2>
+<p>A select block with one "default" branch and only one case branch is called a try-send or try-receive channel operation.
+Try-Send and Try-Receive operations never block.</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+    type Book struct{ id int }
+    bookshelf := make(chan Book, 3)
+
+    for i := 0; i &lt; cap(bookshelf)*2; i++ {
+        select {
+        case bookshelf &lt;- Book{id: i}:
+            fmt.Println(&quot;succeed to put book&quot;, i)
+        default:
+            fmt.Println(&quot;failed to put book&quot;)
+        }
+    }
+
+    for i := 0; i &lt; cap(bookshelf)*2; i++ {
+        select {
+        case book := &lt;-bookshelf:
+            fmt.Println(&quot;failed to get book&quot;, book.id)
+        default:
+            fmt.Println(&quot;failed go get book&quot;)
+        }
+    }
+}
+</code></pre>
+<h4 id="check-if-a-channel-is-closed-without-blocking-the-current-goroutine">Check if a channel is closed without blocking the current goroutine</h4>
+<p>no values were ever(and will be) send to a channel, we can use the following code to
+(concurrency and safetly) check whether or not the channel is already closed without blocking the current goroutine.</p>
+<pre><code class="language-go">// T is the element type of the corresponding channel type
+func IsClosed(c chan T) bool {
+    select {
+    case &lt;-c:
+        return true
+    default:
+    }
+    return false
+}
+</code></pre>
+<h4 id="peakburst-limiting">Peak/burst limiting</h4>
+<p>limit number of concurrent request without blocking any requests</p>
+<h4 id="another-way-to-implement-the-first-response-wins-use-case">Another way to implement the first-response-wins use case</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func source(c chan&lt;- int32) {
+    ra, rb := rand.Int31(), rand.Intn(3)+1
+    time.Sleep(time.Duration(rb) * time.Second)
+    select {
+    case c &lt;- ra:
+    default:
+    }
+}
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    // capacity should at least 1
+    c := make(chan int32, 1)
+    for i := 0; i &lt; 5; i++ {
+        go source(c)
+    }
+    rnd := &lt;-c //only the first response is used
+    fmt.Println(rnd)
+}
+</code></pre>
+<h4 id="timeout">Timeout</h4>
+<p>请求超时返回 error</p>
+<pre><code class="language-go">func requestWithTimeout(timeout time.Duration) (int, error) {
+    c := make(chan int)
+    // may need a long time to get the response.
+    go doRequest(c)
+
+    select {
+    case data := &lt;-c:
+        return data, nil
+    case &lt;-time.After(timeout):
+        return 0, errors.New(&quot;timeout&quot;)
+    }
+}
+</code></pre>
+<h4 id="ticker">Ticker</h4>
+<p>We can use the try-send mechanism to implement a ticker.</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+// Tick implement, use time.Tick in practice, just show how to implement
+func Tick(d time.Duration) &lt;-chan struct{} {
+    // capacity of c is best set as one
+    c := make(chan struct{}, 1)
+    go func() {
+        for {
+            time.Sleep(d) // 一秒向 c send 一个值
+            select {
+            case c &lt;- struct{}{}:
+            default:
+            }
+        }
+    }()
+    return c
+}
+
+func main() {
+    t := time.Now()
+    // 一秒输出一次
+    for range Tick(time.Second) {
+        fmt.Println(time.Since(t))
+    }
+}
+</code></pre>
+<h4 id="rate-limiting">Rate Limiting</h4>
+<p>use try-send to do rate limiting(with the help of a ticker).</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+// https://github.com/golang/go/wiki/RateLimiting
+
+type Request interface{}
+
+func handle(r Request) { fmt.Println(r.(int)) }
+
+const RateLimitPeriod = time.Minute
+const RateLimit = 200 // 一分钟最多200个请求
+
+func handleRequests(requests &lt;-chan Request) {
+    quotas := make(chan time.Time, RateLimit)
+    go func() {
+        tick := time.NewTicker(RateLimitPeriod / RateLimit)
+        defer tick.Stop()
+        for t := range tick.C {
+            select {
+            case quotas &lt;- t:
+            default:
+            }
+        }
+    }()
+    for r := range requests {
+        &lt;-quotas
+        go handle(r)
+    }
+}
+
+func main() {
+    requests := make(chan Request)
+    go handleRequests(requests)
+    for i := 0; ; i++ {
+        requests &lt;- i
+    }
+}
+</code></pre>
+<h4 id="switches">Switches</h4>
+<p>sending a value to or receiving a value from a nil channel are both blocking operations.</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;os&quot;
+    &quot;time&quot;
+)
+
+type Ball uint8
+
+func Play(playerName string, table chan Ball, serve bool) {
+    var receive, send chan Ball
+    if serve {
+        receive, send = nil, table
+    } else {
+        receive, send = table, nil
+    }
+    var lastValue Ball = 1
+    for {
+        select {
+        case send &lt;- lastValue:
+        case value := &lt;-receive:
+            fmt.Println(playerName, value)
+            value += lastValue
+            if value &lt; lastValue {
+                os.Exit(0)
+            }
+            lastValue = value
+        }
+        // switch on/off
+        receive, send = send, receive
+        time.Sleep(time.Second)
+    }
+}
+func main() {
+    table := make(chan Ball)
+    go Play(&quot;A:&quot;, table, false)
+    Play(&quot;B:&quot;, table, true)
+}
+</code></pre>
+<h4 id="control-code-execution-possibility-weights">Control code execution possibility weights</h4>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+    foo, bar := make(chan struct{}), make(chan struct{})
+    close(foo)
+    close(bar)
+    x, y := 0.0, 0.0
+    f := func() { x++ }
+    g := func() { y++ }
+
+    for i := 0; i &lt; 100000; i++ {
+        select {
+        case &lt;-foo: // foo 这里大概调用次数是 bar 的两倍
+            f()
+        case &lt;-foo:
+            f()
+        case &lt;-bar:
+            g()
+        }
+    }
+    fmt.Println(x / y) // 大概是 2
+}
+</code></pre>
+<h4 id="select-from-dynamic-number-cases">Select from dynamic number cases</h4>
+<p>reflect also provides TrySend and TryRecv functions to implement one-case-plus-default select blocks.</p>
+<h2 id="data-flow-manipulations">Data Flow Manipulations</h2>
+<h4 id="data-generationcollectionloading">Data generation/collection/loading</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;encoding/binary&quot;
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func RandomGenerator() &lt;-chan uint64 {
+    c := make(chan uint64)
+    go func() {
+        rnds := make([]byte, 8)
+        for {
+            _, err := rand.Read(rnds)
+            if err != nil {
+                close(c)
+            }
+            c &lt;- binary.BigEndian.Uint64(rnds)
+        }
+    }()
+    return c
+}
+func main() {
+    for i := range RandomGenerator() {
+        time.Sleep(time.Second)
+        fmt.Println(i)
+    }
+}
+</code></pre>
+<h4 id="data-aggregation">Data aggregation</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+// aggregates serveral data streams of the same data tyep into one stream
+func Aggregator(inputs ...&lt;-chan uint64) &lt;-chan uint64 {
+    output := make(chan uint64)
+    var wg sync.WaitGroup
+    for _, in := range intputs {
+        wg.Add(1)
+        in := in // essential
+        go func() {
+            for {
+                x, ok := &lt;-in
+                if ok {
+                    output &lt;- x
+                } else {
+                    wg.Done()
+                }
+            }
+        }()
+    }
+    go func() {
+        wg.Wait()
+        close(output)
+    }()
+    return output
+}
+
+func main() {
+    fmt.Println(&quot;hehe&quot;)
+}
+</code></pre>
+<h4 id="data-composition">Data composition</h4>
+<p>A data composition worker merges several pieces of data from different input data streams into one piece of data.</p>
+<pre><code class="language-go">func Composor(intA, intB &lt;-chan uint64) &lt;-chan uint64 {
+    output := make(chan uint64)
+    go func() {
+        for {
+            a1, b, a2 := &lt;-inA, &lt;-inB, &lt;-inA
+            output &lt;- a1 ^ b&amp;a2
+        }
+    }()
+    return output
+}
+</code></pre>
+<h4 id="data-duplicationproliferation">Data duplication/proliferation</h4>
+<p>One piece of data will be duplicated and each of the duplicated data will be sent to different output data streams.</p>
+<pre><code class="language-go">func Duplicator(in &lt;-chan uint64) (&lt;-chan uint64, &lt;-chan uint64) {
+    outA, outB := make(chan uint64), make(chan uint64)
+    go func() {
+        for {
+            x := &lt;-in
+            outA &lt;- x
+            outB &lt;- x
+        }
+    }()
+    return outA, outB
+}
+</code></pre>
+<h4 id="data-calculationanalysis">Data calculation/analysis</h4>
+<pre><code class="language-go">func Calculator(in &lt;-chan uint64, out chan uint64) &lt;-chan uint64 {
+    if out == nil {
+        out = make(chan uint64)
+    }
+    go func() {
+        x := &lt;-in
+        out &lt;- ^x
+    }()
+    return out
+}
+</code></pre>
+<h4 id="data-validationfiltering">Data validation/filtering</h4>
+<pre><code class="language-go">func Filter(input &lt;-chan uint64, output chan uint64) &lt;-chan uint64 {
+    if output == nil {
+        output = make(chan uint64)
+    }
+    go func() {
+        bigInt := big.NewInt(0)
+        for {
+            x := &lt;-input
+            bigInt.SetUint64(x)
+            if bigInt.ProbablyPrime(1) {
+                output &lt;- x
+            }
+        }
+    }()
+    return output
+}
+</code></pre>
+<h4 id="data-servingsaving">Data serving/saving</h4>
+<pre><code class="language-go">func Printer(input &lt;-chan uint64) {
+    for {
+        x, ok := &lt;-input
+        if ok {
+            fmt.Println(x)
+        } else {
+            return
+        }
+    }
+}
+</code></pre>
+<h4 id="data-flow-system-assembling">Data flow system assembling</h4>
+<pre><code class="language-go">func main() {
+    Printer(
+        Filter(
+            Calculator(
+                RandomGenerator(),
+            ),
+        ),
+    )
+}
+</code></pre>
+<h1 id="how-to-gracefully-close-channels">How to Gracefully Close Channels</h1>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+type T int
+
+func IsClosed(ch &lt;-chan T) bool {
+    select {
+    case &lt;-ch:
+        return true
+    default:
+    }
+    return false
+}
+
+func main() {
+    c := make(chan T)
+    fmt.Println(IsClosed(c))
+    close(c)
+    fmt.Println(IsClosed(c))
+}
+</code></pre>
+<h4 id="channel-closing-principle">Channel Closing Principle</h4>
+<ul>
+<li>don't close a channel from the receiver side and don't close a channel if the channel has multiple concurrent senders.</li>
+<li>don't close (or send values to) closed channels</li>
+</ul>
+<h4 id="solutions-which-close-channels-rudely">Solutions which Close Channels Rudely</h4>
+<p>use recover prevent possible panic.</p>
+<pre><code class="language-go">package main
+
+type T int
+
+// breaking the channel closing principle
+func SafeClose(ch chan T) (justClosed bool) {
+    defer func() {
+        if recover() != nil {
+            justClosed = false
+        }
+    }()
+    close(ch)
+    return true
+}
+
+func SafeSend(ch chan T, vlue T) (closed bool) {
+    defer func() {
+        if recover() != nil {
+            closed = true
+        }
+    }()
+    ch &lt;- value
+    return false
+}
+</code></pre>
+<h4 id="solutions-which-close-channels-politely">Solutions Which Close Channels Politely</h4>
+<pre><code class="language-go">package main
+
+import &quot;sync&quot;
+
+type T int
+
+// use sync.Once to close channels
+type MyChannelOnce struct {
+    C    chan T
+    once sync.Once
+}
+
+func NewMyChannelOnce() *MyChannelOnce {
+    return &amp;MyChannelOnce{C: make(chan T)}
+}
+
+func (mc *MyChannelOnce) SafeClose() {
+    mc.once.Do(func() {
+        close(mc.c)
+    })
+}
+
+// We can also use sync.Mutex to avoid closing a channel multiple times
+
+type MyChannel struct {
+    C      chan T
+    closed bool
+    mutex  sync.Mutex
+}
+
+func NewMyChannel() *MyChannel {
+    return &amp;MyChannel{C: make(chan T)}
+}
+
+func (mc *MyChannel) SafeClose() {
+    mc.mutex.Lock()
+    defer mc.mutex.Unlock()
+    if !mc.closed {
+        close(mc.C)
+        mc.closed = true
+    }
+}
+
+func (mc *MyChannel) IsClosed() {
+    mc.mutex.Lock()
+    defer mc.mutex.Unlock()
+    return mc.closed
+}
+</code></pre>
+<h4 id="solutions-which-close-channels-gracefully">Solutions Which Close Channels Gracefully</h4>
+<h6 id="m-receivers-one-sender-the-sender-says-no-more-sends-by-closing-the-data-channel">M receivers, one sender, the sender says "no more sends" by closing the data channel</h6>
+<pre><code class="language-go">package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    log.SetFlags(0)
+
+    //...
+    const Max = 100000
+    const NumReceivers = 100
+    wgReceivers := sync.WaitGroup{}
+    wgReceivers.Add(NumReceivers)
+
+    //...
+    dataCh := make(chan int, 100)
+
+    // the sender
+    go func() {
+        for {
+            if value := rand.Intn(Max); value == 0 {
+                // the only sender can close the channel safely
+                close(dataCh)
+                return
+            } else {
+                dataCh &lt;- value
+            }
+        }
+    }()
+
+    // receivers
+    for i := 0; i &lt; NumReceivers; i++ {
+        go func() {
+            defer wgReceivers.Done()
+            // receive until closed
+            for value := range dataCh {
+                log.Println(value)
+            }
+        }()
+    }
+    wgReceivers.Wait()
+}
+</code></pre>
+<h4 id="one-receiver-n-senders-the-only-receiver-says-please-stop-sending-more-by-closing-an-additional-signal-channel">One receiver, N senders, the only receiver says "please stop sending more" by closing an additional signal channel</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    log.SetFlags(0)
+    //...
+    const Max = 100000
+    const NumSenders = 1000
+
+    wgReceivers := sync.WaitGroup{}
+    wgReceivers.Add(1)
+
+    dataCh := make(chan int, 100)
+    stopCh := make(chan struct{})
+
+    //senders
+    for i := 0; i &lt; NumSenders; i++ {
+        go func() {
+            for {
+                select { // try-receive, try to exit the goroutine as early as possible
+                case &lt;-stopCh:
+                    return
+                default:
+                }
+
+            }
+
+            select {
+            case &lt;-stopCh:
+                return
+            case dataCh &lt;- rand.Intn(Max):
+            }
+        }()
+    }
+
+    // the receiver
+    go func() {
+        defer wgReceivers.Done()
+        for value := range dataCh {
+            if value == Max-1 {
+                close(stopCh)
+                return
+            }
+            log.Println(value)
+        }
+    }()
+    wgReceivers.Wait()
+}
+
+// this example dataCh is never closed. A channel will eventually garbage collected if no goroutines reference it any
+// more, whether it is closed or not.
+</code></pre>
+<h4 id="m-receivers-n-senders-any-one-of-them-says-lets-end-the-game-by-notifying-a-moderator-to-close-an-additional-signal-channel">M receivers, N senders, any one of them says "let's end the game" by notifying a moderator to close an additional signal channel</h4>
+<pre><code class="language-go">package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;strconv&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    log.SetFlags(0)
+
+    const Max = 100000
+    const NumReceivers = 10
+    const NumSenders = 1000
+
+    wgReceivers := sync.WaitGroup{}
+    wgReceivers.Add(NumReceivers)
+
+    dataCh := make(chan int, 100)
+    stopCh := make(chan struct{})
+    // toStop is used to notify the moderator to close the additional signal channel(stopCh)
+    // cap is 1, avoid the first notification is missed when it is sent before the moderator goroutine gets ready to
+    // receive notification from toStop
+    toStop := make(chan string, 1)
+    var stoppedBy string
+
+    // moderator
+    go func() {
+        stoppedBy = &lt;-toStop
+        close(stopCh)
+    }()
+    //senders
+    for i := 0; i &lt; NumSenders; i++ {
+        go func(id string) {
+            for {
+                value := rand.Intn(Max)
+                if value == 0 {
+                    // try-send operation is to notify the moderator to clsoe signal channel
+                    select {
+                    case toStop &lt;- &quot;sender#&quot; + id:
+                    default:
+                    }
+                    return
+                }
+                //try-receive here is to try to exit sender goroutine as early as possible.(optimized by go standard cimpiler)
+                select {
+                case &lt;-stopCh:
+                    return
+                default:
+                }
+
+                // even if stopCh is closed, the first branch in this select block might be still not selected for some
+                // loops(and for ever in theory) if the send to dataCh is also non-blocking. If this is unacceptable,
+                // then the above try-receive operation is essential.
+                select {
+                case &lt;-stopCh:
+                    return
+                case dataCh &lt;- value:
+                }
+
+            }
+        }(strconv.Itoa(i))
+    }
+
+    // receivers
+    for i := 0; i &lt; NumReceivers; i++ {
+        go func(id string) {
+            defer wgReceivers.Done()
+            for {
+                // try-receive try to exit early
+                select {
+                case &lt;-stopCh:
+                    return
+                default:
+                }
+            }
+            select {
+            case &lt;-stopCh:
+                retrurn
+            case value := &lt;-dataCh:
+                if value == Max-1 {
+                    //notify moderator to close the additional signal channel
+                    select {
+                    case toStop &lt;= &quot;receiver#&quot;+id:
+                    default:
+                    }
+                    return
+                }
+                log.Pritln(value)
+            }
+        }(strconv.Itoa(i))
+    }
+    //....
+    wgReceivers.Wait()
+    log.Println(&quot;stopped by&quot;, stoppedBy)
+}
+</code></pre>
+<h1 id="concurrency-synchronization-techniques-provided-in-the-sync-standard-package">Concurrency Synchronization Techniques Provided in the sync Standard Package</h1>
+<p>For the specialized circumstances, sync are more efficient and more readable.</p>
+<p>NOTE: To avoid abnormal behaviors, it is best not to copy the values of the types int the sync standard package.</p>
+<h3 id="the-syncwaitgroup-type">The sync.WaitGroup Type</h3>
+<p>Each sync.WaitGroup value maintains a counter(init 0) internally.</p>
+<p>Used for one goroutine waits until all of several other goroutines finish their respective jobs.</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;log&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+
+    const N = 5
+    var values [N]int32
+    var wg sync.WaitGroup
+    wg.Add(N)
+    for i := 0; i &lt; N; i++ {
+        i := i
+        go func() {
+            values[i] = 50 + rand.Int31n(50)
+            log.Println(&quot;Done:&quot;, i)
+            wg.Done() // &lt;==&gt; wg.Add(-1)
+        }()
+    }
+    wg.Wait()
+    log.Println(&quot;values:&quot;, values)
+}
+</code></pre>
+<h3 id="the-synconce-type">The sync.Once Type</h3>
+<p>The code in the invoked argument function is guaranteed to be executed before any o.Do method call returns.</p>
+<h3 id="the-syncmutex-and-syncrwmutex-types">The sync.Mutex and sync.RWMutex Types</h3>
+<p>Both implements sync.Locker (Lock/Unlock). m.Lock/m.UnLock() are shortands of (&amp;m).Lock() and (&amp;m).Unlock()</p>
+<p>A lock doesn't know which goroutine acquired it, and any goroutine can release a lock which in acquired status.</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+    &quot;sync&quot;
+)
+
+type Counter struct {
+    m sync.Mutex
+    n uint64
+}
+
+func (c *Counter) Value() uint64 {
+    c.m.Lock()
+    defer c.m.Unlock()
+    return c.n
+}
+
+func (c *Counter) Increase(delta uint64) {
+    c.m.Lock()
+    c.n += delta
+    c.m.Unlock()
+}
+
+func main() {
+    var c Counter
+    for i := 0; i &lt; 100; i++ {
+        go func() {
+            for k := 0; k &lt; 100; k++ {
+                c.Increase(1)
+            }
+        }()
+    }
+    for c.Value() &lt; 10000 {
+        runtime.Gosched()
+    }
+    fmt.Println(c.Value())
+}
+
+// use rwmutex for better performance
+type Counter struct {
+    // m sync.Mutex
+    m sync.RWMutex
+    n uint64
+}
+
+func (c *Counter) Value() uint64 {
+    // c.m.Lock()
+    // defer c.m.Unlock()
+    c.m.RLock()
+    defer c.m.RUnlock()
+    return c.n
+}
+</code></pre>
+<h3 id="type-synccond-type">Type sync.Cond Type</h3>
+<p>Notifications among goroutines. Wait(), Signal(), Broadcast()</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;sync&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    rand.Seed(time.Now().UnixNano())
+    const N = 10
+    var values [N]string
+    cond := sync.NewCond(&amp;sync.Mutex{})
+    cond.L.Lock()
+    for i := 0; i &lt; N; i++ {
+        d := time.Second * time.Duration(rand.Intn(10))
+        go func(i int) {
+            time.Sleep(d)
+            cond.L.Lock()
+            values[i] = string('a' + i)
+            // notify when cond.L lock is released
+            cond.Broadcast()
+            cond.L.Unlock()
+        }(i)
+    }
+
+    // must be called when cond.L is locked
+    checkCondition := func() bool {
+        fmt.Println(values)
+        for i := 0; i &lt; N; i++ {
+            if values[i] == &quot;&quot; {
+                return false
+            }
+        }
+        return true
+    }
+    for !checkCondition() {
+        // must be called wen cond.L is locked
+        cond.Wait()
+    }
+    cond.L.Unlock()
+}
+</code></pre>
+<h1 id="atomic-operations-provided-in-the-syncatomic-standard-package">Atomic Operations Provided in The sync/atomic Standard Package</h1>
+<h3 id="overview-of-atomic-operations-provided-in-go">Overview of Atomic Operations Provided in Go</h3>
+<p>AddT/LoadT/StoreT/SwapT/CompareAndSwapT, T must be any of int32,int64,uin32,uint64 and uintptr.</p>
+<p>Value.Load, Value.Store.</p>
+<h3 id="atomic-operations-for-integers">Atomic Operations for Integers</h3>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+    &quot;sync/atomic&quot;
+)
+
+func main() {
+    var n int32
+    var wg sync.WaitGroup
+    // 1000 个 gouroutine 同时进行 +1 操作
+    for i := 0; i &lt; 1000; i++ {
+        wg.Add(1)
+        go func() {
+            atomic.AddInt32(&amp;n, 1)
+            wg.Done()
+        }()
+    }
+    wg.Wait()
+    fmt.Println(atomic.LoadInt32(&amp;n))
+}
+</code></pre>
+<p>StoreT and LoadT atomic functions are often used to implement the setter/getter methods of a type if the values of the
+type need to be used concurrently.</p>
+<pre><code class="language-go">type Page struct {
+    views uint32
+}
+
+func (page *Page) SetViews(n uint32) {
+    atomic.StoreUint32(&amp;page.views, n)
+}
+
+func (page *Page) Views() uint32 {
+    return atomic.LoadUint32(&amp;page.views)
+}
+</code></pre>
+<h3 id="atomic-operations-for-pointers">Atomic Operations for Pointers</h3>
+<h3 id="atomic-operations-for-values-of-arbitrary-types">Atomic Operations for Values of Arbitrary Types</h3>
+<p>The Value type provided in the sync/atomic standard pacakge can be used to atomically load and store values of any type.</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync/atomic&quot;
+)
+
+func main() {
+    type T struct{ a, b, c int }
+    var ta = T{1, 2, 3}
+    var v atomic.Value
+    v.Store(ta)
+    var tb = v.Load().(T)
+    fmt.Println(tb)       //{1,2,3}
+    fmt.Println(ta == tb) //true
+
+    // panic, store的后续调用需要和之前类型保持一致
+    // v.Store(&quot;hello&quot;)
+}
+</code></pre>
+<h1 id="memory-order-guarantees-in-go">Memory Order Guarantees in Go</h1>
+<p>很多编译器和 cpu 经常会对指令顺序做一些优化，导致和原始的代码可能不同。Instruction ordering is also often called memory
+ordering.</p>
+<p><code>go build -race</code> to check data races in the program.</p>
+<h3 id="go-memory-model">Go Memory Model</h3>
+<h4 id="the-creation-of-a-gouroutine-happens-before-the-execution-of-the-goroutine">The creation of a gouroutine happens before the execution of the goroutine</h4>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+var x, y int
+
+func f1() {
+    x, y = 123, 789 // 先于 fmt.Println(x) 执行
+    go func() {
+        fmt.Println(x) // 先于 fmt.Println(y) 执行
+        go func() {
+            fmt.Println(y)
+        }()
+    }()
+}
+</code></pre>
+<h4 id="channel-operations-related-order-guarantees">Channel operations related order guarantees</h4>
+<ul>
+<li>The nth successful send to a channel happens before the nth successful receive from that channel completes(no matter
+    buffered or not)</li>
+<li>The nth successful receive from a channel with capacity m happens before the (n+m)th successful send to that channel
+    completes.</li>
+<li>The closing of a channel happens before a receive completes if the receive returns a zero value because the channel is
+    closed.</li>
+</ul>
+<pre><code class="language-go">func f3() {
+    var a, b int
+    var c = make(chan bool)
+    go func() {
+        a = 1
+        c &lt;- true
+        if b != 1 {
+            panic(&quot;b!=1&quot;) // will never happen
+        }
+    }()
+    go func() {
+        b = 1
+        &lt;-c
+        if a != 1 {
+            panic(&quot;a!=1&quot;) // will never happen
+        }
+    }()
+}
+</code></pre>
+<h4 id="mutex-related-order-guarantees">Mutex related order guarantees</h4>
+<ul>
+<li>For an addressable value m of type Mutex/RWMutex in the sync, the nth successful m.Unlock() call happens before n+1th m.Lock() returns</li>
+<li>For an addressable value m of type RWMutex, if its nth rw.Lock() method call has returned, the its successful nth
+    rw.Unlock() method call happens before the return of any rw.RLock() method call which is guaranteed to happen after
+    the nth rw.Lock() method call returns.</li>
+<li>For an addressable value m of type RWMutex, if its rw.RLock() method call has returned, then its mth successful
+    rw.RUnlock() method call, where <code>m&lt;=n</code>, happens before the return of any rw.Lock() method call which is guaranteed to
+    happen after the nth rw.RLock() method call returns.</li>
+</ul>
+<h4 id="order-guarantees-made-by-syncwaitgroup-values">Order guarantees made by sync.WaitGroup values</h4>
+<p>before wg.Wait method call returns</p>
+<h4 id="order-guarantees-made-by-synconce-values">Order guarantees made by sync.Once values</h4>
+<h4 id="atomic-opeartions-related-order-guarantees">Atomic opeartions related order guarantees</h4>
+<p>Don't rely on atomic to guarantee ordering in general Go programming.</p>
+<h1 id="common-concurrent-programming-mistakes">Common Concurrent Programming Mistakes</h1>
+<h3 id="no-synchronizations-when-synchronizations-are-needed">No Synchronizations When Synchronizations Are Needed</h3>
+<pre><code class="language-go">package main
+
+import (
+    &quot;runtime&quot;
+    &quot;time&quot;
+)
+
+func testMightPanic() {
+    var a []int // nil
+    var b bool  //false
+
+    go func() {
+        a = make([]int, 3)
+        b = true
+    }()
+
+    for !b {
+        time.Sleep(time.Second)
+        runtime.Gosched()
+    }
+    a[0], a[1], a[2] = 0, 1, 2 // might panic
+}
+func main() {
+    var a []int = nil
+    c := make(chan struct{})
+    go func() {
+        a = make([]int, 3)
+        c &lt;- struct{}{}
+    }()
+    &lt;-c
+    // will not panic for sure
+    a[0], a[1], a[2] = 0, 1, 2
+}
+</code></pre>
+<h3 id="use-timesleep-calls-to-do-synchronizations">Use time.Sleep Calls to Do Synchronizations</h3>
+<p>We should never use time.Sleep calls to do synchronizations in formal projects.</p>
+<h3 id="leave-goroutines-hanging">Leave Goroutines Hanging</h3>
+<p>Hanging goroutines are the goroutines staying in blocking state for ever.
+Go runtime will never release the resources consumed by a hanging goroutine.</p>
+<p>比如：永远接收不到值;值永远不会被接收;自己死锁;一组goroutines互相死锁;没有 default 的 select 并且所有 case
+语句永远阻塞。</p>
+<h3 id="copy-values-of-the-types-in-the-sync-standard-package">Copy Values of the Types in the sync Standard Package</h3>
+<p>Values of types(except the Locker interface values) in the sync standard package should never be copied.
+We should only copy pointers of such values.</p>
+<pre><code class="language-go">package main
+
+import &quot;sync&quot;
+
+type Counter struct {
+    sync.Mutex
+    n int64
+}
+
+// this method is okay
+func (c *Counter) Increase(d int64) (r int64) {
+    c.Lock()
+    c.n += d
+    r = c.n
+    c.Unlock()
+    return
+}
+
+// bad, counter receiver value will be copied
+func (c Counter) Value() (r int64) {
+    c.Lock()
+    r = c.n
+    c.Unlock()
+    return
+}
+</code></pre>
+<h3 id="call-the-syncwaitgroupadd-method-at-wrong-places">Call the sync.WaitGroup.Add Method at Wrong Places</h3>
+<p>Each sync.WaitGroup value maintains a counter internally, a call to wait blocks until counter value becomes 0.</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+    &quot;sync/atomic&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    var wg sync.WaitGroup
+    var x int32 = 0
+    for i := 0; i &lt; 100; i++ {
+        // wg.Add(1) // 正确的方式
+        go func() {
+            // none of Add calls are guaranteeed to happend before Wait()
+            wg.Add(1) // ERROR: 错误的调用地点
+            time.Sleep(time.Second)
+            atomic.AddInt32(&amp;x, 1)
+            wg.Done()
+        }()
+    }
+    fmt.Println(&quot;Wait ....&quot;)
+    wg.Wait()
+    fmt.Println(atomic.LoadInt32(&amp;x)) // not always 100
+}
+</code></pre>
+<h3 id="use-channels-as-futurespromises-improperly">Use Channels as Futures/Promises Improperly</h3>
+<pre><code class="language-go">// ERROR: two channel receive are processed sequentially, instead of concurrently
+DoSomethingWithFutureArguments(&lt;-fa(), &lt;-fb())
+
+// concurrently
+ca, cb := fa(), fb()
+DoSomethingWithFutureArguments(&lt;-ca, &lt;-cb)
+</code></pre>
+<h3 id="close-channels-not-from-the-last-active-sender-goroutine">Close Channels Not From the Last Active Sender Goroutine</h3>
+<h3 id="do-64-bit-atomic-operations-on-values-which-are-not-guaranteed-to-be-8-byte-aligned">Do 64-bit Atomic Operations on Values Which are Not Guaranteed to Be 8-byte Aligned</h3>
+<h3 id="not-pay-attention-to-too-many-resources-are-consumed-by-calls-to-the-timeafter-function">Not Pay Attention to Too Many Resources Are Consumed by Calls to the time.After Function</h3>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func longRunning(messages &lt;-chan string) {
+    for {
+        select {
+        //bad way: each call will creat a new value of the time.Timer
+        case &lt;-time.After(time.Minute):
+            return
+        case msg := &lt;-messages:
+            fmt.Println(msg)
+        }
+    }
+}
+
+func LongRunning(messages &lt;-chan string) {
+    // reuse a single timer value to the same job
+    timer := time.NewTimer(time.Minute)
+    defer time.Stop()
+
+    for {
+        select {
+        case &lt;-time.C: // expires(timeout)
+            return
+        case msg := &lt;-messages:
+            fmt.Println(msg)
+            // discard/drain a possible timer notification which is sent in the small period when executing the second
+            // branch code block
+            if !timer.Stop() {
+                &lt;-timer.C
+            }
+        }
+        // reset to reuse
+        timer.Reset(time.Minute)
+    }
+}
+</code></pre>
+<h3 id="use-timetimer-values-incorrectly">Use time.Timer Values Incorrectly</h3>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+
+    start := time.Now()
+    timer := time.NewTimer(time.Second / 2)
+    select {
+    case &lt;-timer.C:
+    default:
+        // most likely go here
+        time.Sleep(time.Second)
+    }
+    // Potential dat race in the next line
+    timer.Reset(time.Second * 10)
+    &lt;-timer.C
+    fmt.Println(time.Since(start)) //about 1 s
+}
+</code></pre>
+<h1 id="memory-blocks">Memory Blocks</h1>
+<h3 id="memory-blocks_1">Memory Blocks</h3>
+<p>A meomory block is a continuous memory segment to host value parts at run time..
+For any value part, it never crosses memory blocks.</p>
+<p>Why One memory block may host host multiple value parts.</p>
+<ul>
+<li>a struct value often have several fields.</li>
+<li>an array values often have many elements</li>
+<li>the underlying element sequences of two slices may be hosted on the same memory block</li>
+</ul>
+<h3 id="a-value-references-the-memory-blocks-which-host-its-value-parts">A Value References the Memory Blocks Which Host Its Value Parts</h3>
+<h3 id="when-will-memory-blocks-be-allocated">When will Memory Blocks Be Allocated ?</h3>
+<h3 id="where-will-memory-blocks-be-allocated-on">Where Will Memory Blocks Be Allocated On?</h3>
+<h3 id="where-will-memory-blocks-be-allocated-on_1">Where Will Memory Blocks Be Allocated On?</h3>
+<ul>
+<li>allocating memory blocks on stacks is much faster than on heap</li>
+<li>memory blocks allocated on a stack don't need to be garbage collected</li>
+<li>stack memory blocks are more CPU cache friendly than heap ones.</li>
+</ul>
+<p>If some value parts of a local variable declared in a function is allocated on heap, we can say the value parts(and the
+variable) escape(逃逸) to heap.
+We can use <code>go build -gcflags -m</code> to check which local values will escape to heap at run time.(不是完全精确)</p>
+<p>A memory block created by calling <code>new</code> function may be allocated on heap or stacks, different to cpp.</p>
+<h3 id="when-can-a-memory-block-be-collected">When Can a Memory Block Be Collected?</h3>
+<p>Memory blocks allocated for direct parts of package-level variables will never be collected.
+The stack of a goroutine will be collected as a whole when the goroutine exits.
+So there is no need to collect the memory blocks allocated on stacks one by one, stacks are not collected by gc.</p>
+<p>Unused memory blocks on heap will be collected by the garbage collector.</p>
+<h3 id="how-are-unused-memory-blocks-detected">How are Unused Memory Blocks Detected?</h3>
+<p>The current Go compiler(1.12) uses a concurrent, tri-color, mark-sweep garbage collector.</p>
+<h3 id="when-will-an-unused-memory-block-be-collected">When Will an Unused Memory Block Be Collected?</h3>
+<p>Unused heap memory. Concurrently(go1.12), the threshold is controlled by GOGC environment variable.
+Default GOGC=100, set GOGC=off disable the garbage collector entirely.</p>
+<p>runtime.SetGCPercent.</p>
+<p>A garbage collection can also be started manually by calling the runtime.GC function.</p>
+<h1 id="memory-layouts">Memory Layouts</h1>
+<h3 id="type-alignment-guarantees-in-govalue-address-alignment-guarantees">Type Alignment Guarantees in GO(value address alignment guarantees)</h3>
+<p>The address of addressable values of type T are guaranteed to be N-byte aligned.</p>
+<ul>
+<li>unsafe.Alignof(t): get its general alignment guarantee</li>
+<li>unsafe.Alignof(x.t): get field alignment guarantee</li>
+</ul>
+<p>unsafe are always evaluated at compile time. At runtime call reflect.TypeOf(t).Align() and
+reflect.TypeOf(t).FieldAlign()。</p>
+<p>一般只有为了优化或者编写一些可移植代码(使用了sync/atomic 64-bit functions) 才会在意地址对齐。</p>
+<h3 id="type-sizes-and-structure-padding">Type Sizes and Structure Padding</h3>
+<p>内存对齐，对于 struct 一些位数小的会进行填充操作。(类似 c 的)</p>
+<h3 id="the-alignment-requirement-for-64-bit-word-atomic-operations">The Alignment Requirement for 64-bit Word Atomic Operations</h3>
+<p>64-bit int64 or uint64. On very old cpu architecture, 64-bit atomic functions are not supported.</p>
+<h1 id="go-memory-leaking-scenarios">Go Memory Leaking Scenarios</h1>
+<h3 id="kind-of-memory-leaking-caused-by-substrings">Kind-of Memory Leaking Caused by Substrings</h3>
+<p>Go substring expression result string and base string share same underlying memory block.</p>
+<pre><code class="language-go">package main
+
+var s0 string //package level variable
+
+func f(s1 string) {
+    s0 = s1[:50]
+    //s0 share same memory block with s1
+}
+
+func main() {
+    s := createStringWithLengthOnHeap(1 &lt;&lt; 20) // 1Mbytes
+    f(s)
+}
+</code></pre>
+<p>解决方式：</p>
+<pre><code class="language-go">func f(s1 string) {
+    s0 = string([]byte(s1[:50]))
+}
+
+func f(s1 string) {
+    s0 = (&quot; &quot; + s1[:50])[1:]
+}
+
+func f(s1 string) {
+    var b strings.Builder
+    b.Grow(50)
+    b.WriteString(s1[:50])
+    s0 = b.String()
+    // or call strings.Repeat
+}
+</code></pre>
+<h3 id="kind-of-memory-leaking-caused-by-subslices">Kind-of Memory Leaking Caused by subslices</h3>
+<pre><code class="language-go">func s0 []int
+func g(s1 []int) {
+    // assume length of s1 is much larger than 30
+    s0=s1[len(s1)-30:]
+}
+
+func g(s1 []int) {
+    s0 = append([]int(nil), s1[len(s1-30:]...)
+}
+</code></pre>
+<h3 id="kind-of-memory-leaking-caused-by-not-resetting-pointers-in-lost-slice-elements">Kind-of Memory Leaking Caused by Not resetting Pointers in Lost Slice Elements</h3>
+<pre><code class="language-go">func h() []*int {
+    s := []*int{new(int), new(int), new(int), new(int)}
+    // do with s
+    return s[1:3:3]
+}
+
+func h() []*int {
+    s := []*int{new(int), new(int), new(int), new(int)}
+    // do with s
+
+    // reset pointer values
+    s[0], s[len(s)-1] = nil, nil
+    return s[1:3:3]
+}
+</code></pre>
+<h3 id="kind-of-memory-leaking-caused-by-hanging-goroutines">Kind-of Memory Leaking Caused by Hanging Goroutines</h3>
+<h3 id="real-memory-leaking-caused-by-not-stopping-timeticker-values-which-are-not-used-anymore">Real Memory Leaking Caused by Not Stopping time.Ticker Values Which Are Not Used Anymore</h3>
+<h3 id="real-memory-leaking-caused-by-using-finalizers-improperly">Real Memory Leaking Caused by Using Finalizers Improperly</h3>
+<pre><code class="language-go">func memoryLeaking() {
+    type T struct {
+        v [1&lt;&lt;20]int
+        t * T
+    }
+    var finalizer  = func(t *T) {
+        fmt.Println(&quot;finalizer called&quot;)
+    }
+    var x,y T
+    // the setfinalizer call makes x escape to heap
+    runtime.SetFinalizer(&amp;x, finalizer)
+    //cyclic reference, x and y are not collectable
+    x.t, y.t = &amp;y, &amp;x  // y also escape to heap
+}
+</code></pre>
+<h3 id="kind-of-resources-leaking-by-deferring-function-calls">Kind-of Resources Leaking by Deferring Function Calls</h3>
+<h1 id="nils-in-go">nils in Go</h1>
+<p>nil can Represent Zero Values of Many Types:</p>
+<ul>
+<li>pointer types ( including type-unsafe ones)</li>
+<li>map types</li>
+<li>slice types</li>
+<li>function types</li>
+<li>channel types</li>
+<li>interface types</li>
+</ul>
+<h3 id="two-nil-values-may-be-not-equal">Two nil Values May Be Not Equal</h3>
+<p><code>fmt.Println( (interface{})(nil) == (*int)(nil))  // false</code></p>
+<h3 id="retrieving-elements-from-nil-maps-will-not-panic">Retrieving Elements From Nil Maps Will Not Panic</h3>
+<p>will always return zero value.</p>
+<pre><code class="language-go">(map[string]int)(nil)[&quot;key&quot;]  // 0
+(map[int]bool)(nil)[123]  // false
+(map[int]*int64)(nil)[123]  // nil
+</code></pre>
+<h3 id="it-is-legal-to-range-over-nil-channels-maps-slices-and-array-pointers">It is Legal to Range Over Nil Channels, Maps, Slices and Array Pointers</h3>
+<pre><code class="language-go">func main() {
+    // following code will print 0,1,2,3 and 4, then block for ever
+    for range []int(nil) {
+        fmt.Println(&quot;Hello&quot;) // never print
+    }
+    for range map[string]string(nil) {
+        fmt.Println(&quot;world&quot;) // never print
+    }
+    for i := range (*[5]int)(nil) {
+        fmt.Println(i) // never print
+    }
+    for range chan bool(nil) { // block here
+        fmt.Println(&quot;Bye&quot;)
+    }
+}
+
+</code></pre>
+<h1 id="value-conversion-assignment-and-comparison-rules-in-go">Value Conversion, Assignment and Comparison Rules In Go</h1>
+<h3 id="value-conversion-rules">Value Conversion Rules</h3>
+<ol>
+<li>the apparent conversion rule:</li>
+</ol>
+<p>values of type byte/uint8, rune/int32, []byte/[]uint8 can be converted to each other</p>
+<ol>
+<li>underlying type related conversion rules</li>
+</ol>
+<p>Giving a non-interface value x and a non-interface type T, assume the type of x is Tx</p>
+<ul>
+<li>if Tx and T share the same underlying type (ignoring struct tags), the x can be explicitly converted to T.</li>
+<li>if either Tx or T is a non-defined type and their underlying types are identical(considering struct tags), then x can be implicitly converted to T.</li>
+<li>if Tx and T have different underlying types, but both Tx and T are non-defined pointer types and there base types
+    share the same underlying type(ignoring struct tags), then x can (and must) be explicitly converted to T.</li>
+</ul>
+<p>啥子是 non-defined type: https://keyla.vip/golang/type/introduction/</p>
+<p>类型分为已定义类型（defined type）和未定义类型（non-defined type）。 类型定义的规则如下：</p>
+<ul>
+<li>A defined type is a type defined in a type declaration or an alias of another defined type.</li>
+<li>All basic types are defined.</li>
+<li>A non-defined type must be a composite type.</li>
+</ul>
+<pre><code class="language-go">type A []string     # 依据规则1，A是defined type
+type B = A          # 依据规则1，B是defined type
+type C = []string   # 依据规则2，[]string是non-defined types，所以C是non-defined types
+你可以使用类型声明的语法，定义一个新的类型（也属于defined type）；当你使用类型别名声明时，未必会定义一个新的类型。
+</code></pre>
+<ol>
+<li>channel specific conversion rule</li>
+</ol>
+<p>Assume Tx is a bidirectional channel type, T is also a channel type(bidirectional or not), if Tx and T have the
+identical element type, and either Tx or T is a non-defined type, then x can be implicitly converted to T.</p>
+<ol>
+<li>interface implementation related conversion rules</li>
+</ol>
+<p>x can be implicitly converted to type T if type(or default type) of x is Tx and Tx implements T.</p>
+<ol>
+<li>untyped value conversion rule</li>
+</ol>
+<p>An untyped value can be implicitly converted to type T, if the untyped value can represent as values of type T.</p>
+<ol>
+<li>constants conversion rule</li>
+</ol>
+<p>Given a constant value x and a type T, if x is represent as a value of type T, then x can be explicitly converted to T.
+In particular if x is an untyped value, then x can be implicitly converted to T.</p>
+<ol>
+<li>non-constant number conversion rules
+Non-constant floating-point and integer values can be explicitly converted to any floating-point and integer types.
+Non-constant complex values can be explicitly converted to any complex types.</li>
+</ol>
+<p>注意浮点数到整数的截断问题(the fraction is discarded, truncation towards zero)。</p>
+<ol>
+<li>string related conversion rules</li>
+</ol>
+<p>If the type(or default type) of a value is an integer type, then the value can be explicitly converted to string types.</p>
+<ol>
+<li>unsafe pointers related conversion rules
+A pointer value of any type can be explicitly converted to a type whose underlying type is unsafe.Pointer, and vice versa.</li>
+</ol>
+<p>An uintptr value can be explicitly converted to a type whose underlying type is unsafe.Pointer, and vice versa.</p>
+<h3 id="value-assignment-rules">Value Assignment Rules</h3>
+<p>Assignments can be views as implicit conversions. The destination values in assignment must be addressable values,
+map index expressions , or the blank identifier.</p>
+<p>In an assignment, the source value is <em>copied</em> to the destination value. Precisely speaking, the direct part of the
+source value is copied to the destination value.</p>
+<p>Note, parameter passing and result returning are both value assignments actually.</p>
+<h3 id="value-comparison-rules">Value Comparison Rules</h3>
+<p>In any comparison, the first operand must be assignable to the type of the second operand, or vice versa.</p>
+<p>Note, although value of slice/map/function types don't support comparisons, they can be compared with untyped nil values.</p>
+<p>Note, an untyped nil value can't be compared with another untyped nil value.</p>
+<p>Any comparison results an untyped boolean value.</p>
+<h1 id="syntaxsemantics-exception-in-go">Syntax/Semantics Exception in Go</h1>
+<h3 id="nested-function-calls">Nested function calls</h3>
+<p>return results can be used as the whole arguments of another function call</p>
+<h3 id="select-struct-fields">Select struct fields</h3>
+<ul>
+<li>basic: Pointer values have no fields</li>
+<li>sugar: we can select the fields of a struct through pointers of the struct value</li>
+</ul>
+<pre><code class="language-go">var t T
+var p = &amp;t
+p.x *= 2 // sugar of the following code: (*p).x *= 2
+</code></pre>
+<h3 id="receiver-arguments-of-method-calls">Receiver arguments of method calls</h3>
+<p>Although the methods explicitly defined on type <code>*T</code> are not methods of type T, addressable values of type T can be
+used as the receiver arguments of calls to these methods.</p>
+<h3 id="take-address-of-composite-literal-values">Take address of composite literal values</h3>
+<h3 id="selectors-on-defined-one-level-pointers">Selectors on defined one-Level pointers</h3>
+<h3 id="the-addressability-of-a-container-and-its-elements">The addressability of a container and its elements</h3>
+<ul>
+<li>basic rule: If a container is addressable, then its elements are also addressable.</li>
+<li>exception: Elements of a map are always unaddressable, even if the map itself is addressable.</li>
+<li>sugar: Elements of a slice are always addressable, even if the slice itself is not addressable.</li>
+</ul>
+<h3 id="modify-unaddressable-values">Modify unaddressable values</h3>
+<p>如果一个 map 的值是结构体，你可以整个替换这个值，但是无法直接修改值里的 field。</p>
+<h3 id="generic">Generic</h3>
+<p>Go doesn't support generic. Most built-in and unsafe packages support generic.
+Any type compositions with all kinds of composite types in Go is kinda of generic.</p>
+<h3 id="function-names-in-one-package">Function names in one package</h3>
+<ul>
+<li>basic rule: names of declared functions can't be duplicated in one package</li>
+<li>Excpetion: there can be multiple functions declared with names as init( with prototype func())</li>
+</ul>
+<h3 id="function-calls">Function calls</h3>
+<ul>
+<li>Function whose name are not blank identifier can be called in user code</li>
+<li>init functions can't be called in user code</li>
+</ul>
+<h3 id="functions-being-used-as-values">Functions being used as values</h3>
+<ul>
+<li>Declared functions can be used as function values</li>
+<li>build-in, unsafe, init can not be used as function values</li>
+</ul>
+<pre><code class="language-go">var _ = panic
+var _ = unsafe.Sizeof
+var _ = init
+</code></pre>
+<h3 id="discard-return-values-of-function-calls">Discard return values of function calls</h3>
+<ul>
+<li>basic rule: return values of a function call can be discarded all together</li>
+<li>builtin, unsafe (except copy and recover) can't be discarded</li>
+</ul>
+<h3 id="declared-variables">Declared variables</h3>
+<ul>
+<li>basic rule: Declared variable are always addressable</li>
+<li>predeclared nil variable is not addressable(so nil is immutable variable)</li>
+</ul>
+<h3 id="argument-passing">Argument passing</h3>
+<ul>
+<li>can pass only if assignable to the corresponding function parameter type</li>
+<li>sugar: copy and append if first is a byte slice, second argument can be a string</li>
+</ul>
+<h3 id="comparisons">Comparisons</h3>
+<ul>
+<li>basic: Map/slice/function types don't support comparison</li>
+<li>can be compared to the predeclared untyped nil identifier</li>
+</ul>
+<h3 id="blank-composite-literals">Blank composite literals</h3>
+<ul>
+<li>basic: if the values of a type T can be represented with composite literal, the <code>t{}</code> is its zero value.</li>
+<li>exception: for a map or a slice type T, <code>T{}</code> isn't its zero value. Its zero value is represented with nil.</li>
+</ul>
+<pre><code class="language-go">    type T0 struct {
+        x int
+    }
+    fmt.Println(T0{} == *new(T0)) //true
+    type T1 [5]int
+    fmt.Println(T1{} == *new(T1)) //true
+
+    type T2 []int
+    fmt.Println(T2{} == nil) //false
+    type T3 map[int]int
+    fmt.Println(T3{} == nil) // false
+</code></pre>
+<h3 id="container-element-iterations">Container element iterations</h3>
+<ul>
+<li>the iterated values are runes if the ranged containers are strings, instead of the byte elements of strings</li>
+<li>the element index(order) will not be returned alongside of each iterated element when iterating channels</li>
+<li>array pointers can also be ranged to iterate array elements, though pointers are not containers</li>
+</ul>
+<h3 id="methods-of-built-in-types">Methods of built-in types</h3>
+<ul>
+<li>built-in types have no methods</li>
+<li>exception: error type has a Errro() string method</li>
+</ul>
+<h3 id="types-of-values">Types of values</h3>
+<ul>
+<li>Each value has either a type or a default type</li>
+<li>exception: untyped nil has neither a type nor a default type</li>
+</ul>
+<h3 id="constant-values">Constant values</h3>
+<ul>
+<li>Constant values never change, can be assigned to variables</li>
+<li>exception: iota is a built-in constant which is bound with 0, but its value is not constant</li>
+</ul>
+<h3 id="behavior-change-caused-by-discarding-the-optional-evaluation-results-of-expressions">Behavior change caused by discarding the optional evaluation results of expressions.</h3>
+<ul>
+<li>whether or not the optional evaluation result of an expression is present will not affect program behavior.</li>
+<li>exception: missing the optional result value in a type assertion will make current goroutine panic if type assertion fails</li>
+</ul>
+<pre><code class="language-go">var v interface{} = &quot;abc&quot;
+_, ok = v.(int) // will not panic
+_ = v.(int) // will panic!!!
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../network-programming-with-go/book/" class="btn btn-neutral float-right" title="《Network Programming with go》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../build-web-application-with-golang/" class="btn btn-neutral" title="《Build Web Application With Golang》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../build-web-application-with-golang/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../network-programming-with-go/book/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../../search/main.js" defer></script>
+
+</body>
+</html>

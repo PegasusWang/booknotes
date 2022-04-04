@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>《ES6标准入门》 - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300aES6\u6807\u51c6\u5165\u95e8\u300b";
+    var mkdocs_page_input_path = "frontend/es6\u6807\u51c6\u5165\u95e8.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">调试技术</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../debug/软件调试修炼之道/book/">《软件调试修炼之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../debug/Effective_Debugging/">《Effective Debugging》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis深度历险核心原理和应用实践/book/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/MySQL是怎样运行的从根上理解MySQL/MySQL是怎样运行的从根上理解MySQL/">《MySQL是怎样运行的》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《ES6标准入门》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#let-const">let 和 const 命令</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#let">let</a></li>
+        
+            <li><a class="toctree-l4" href="#const">const</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_1">变量的解构赋值</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_2">数组解构赋值</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">对象解构赋值</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_4">默认参数</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#rest">rest 参数(...变量名)</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">箭头函数</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#symbol">Symbol</a></li>
+    
+
+    <li class="toctree-l3"><a href="#set-map">Set 和 Map 结构</a></li>
+    
+
+    <li class="toctree-l3"><a href="#proxy">Proxy</a></li>
+    
+
+    <li class="toctree-l3"><a href="#promise">Promise 对象</a></li>
+    
+
+    <li class="toctree-l3"><a href="#iterator-forof">Iterator 和 forof 循环</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#forof">for...of 循环</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#generator">Generator 函数语法</a></li>
+    
+
+    <li class="toctree-l3"><a href="#class">Class</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#class_1">class 的继承</a></li>
+        
+            <li><a class="toctree-l4" href="#mixin">Mixin 模式的实现</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#decorator">修饰器 Decorator</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#mixin_1">修饰器实现 Mixin 模式</a></li>
+        
+            <li><a class="toctree-l4" href="#trait">Trait</a></li>
+        
+            <li><a class="toctree-l4" href="#babel">Babel 转码器的支持</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#module">Module 的语法</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#export">export</a></li>
+        
+            <li><a class="toctree-l4" href="#import">import</a></li>
+        
+            <li><a class="toctree-l4" href="#export-default">export default</a></li>
+        
+            <li><a class="toctree-l4" href="#_6">模块可以继承</a></li>
+        
+            <li><a class="toctree-l4" href="#_7">跨常量</a></li>
+        
+            <li><a class="toctree-l4" href="#import_1">import() 函数</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#module_1">Module 的加载实现</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go101/book/">《Go101》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/network-programming-with-go/book/">《Network Programming with go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go_in_action(go语言实战)/">《Go In Action(Go 实战)》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言编程/">《Go语言编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../golang/go语言编程之旅.md">《Go语言编程之旅》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/自控力/">《自控力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/自控力-和压力做朋友/">《自控力:和压力做朋友》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix网络编程卷一/">《unix网络编程卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/深入理解Kafka核心设计与实践原理/深入理解Kafka核心设计与实践原理/">《深入理解Kafka核心技术与实践原理》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">搜索引擎</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../搜索引擎/Elasticsearch实战/book/">《Elasticsearch实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/vim8文本处理实战/vim8文本处理实战/">《Vim8文本处理实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/Mastering_vim/">《Mastering Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/学习力/">《学习力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/微服务实战/">《微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融理财/迈出投资第一步/迈出投资第一步/">《迈出投资第一步》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/定投十年/">《定投十年》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/指数基金投资日志/">《指数基金投资日志》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/聪明的定投/">《聪明的定投》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">写作</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../写作/刷屏文案写作技巧/">《刷屏文案写作技巧》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效清单工作法/">《高效清单工作法》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>前端 &raquo;</li>
+        
+      
+    
+    <li>《ES6标准入门》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="let-const">let 和 const 命令</h1>
+<h3 id="let">let</h3>
+<p>let 声明的变量只在所在的代码块中有效。 let 不存在变量提升，，一定要先声明后使用（暂时性死区）。
+let 实际上为 js 新增了块级作用域，外层作用域无法读取内层作用域的变量。块级作用域的出现使得立即执行表达式不再必要了。
+es5 规定函数不能在块级作用域定义，但是 es6 允许在其中声明函数，但应该尽量避免，而是使用函数表达式。</p>
+<pre><code class="language-js">for (let i = 0; i &lt; 10; i++) {
+    // ...
+}
+console.log(i)  // ReferenceError: i is not defined
+</code></pre>
+<h3 id="const">const</h3>
+<p>const 声明一个只读变量，一旦声明不可变。作用域和 let 相同</p>
+<h1 id="_1">变量的解构赋值</h1>
+<h3 id="_2">数组解构赋值</h3>
+<p>按照『模式匹配』从数组和对象中抽取值。</p>
+<pre><code>let [a, b, c] = [1,2,3];
+
+let [head, ...tail] = [1,2,3,4]
+head // 1
+tail // [2,3,4]
+
+let [x,y, ...z] = ['a']
+x // &quot;a&quot;
+y // undefined, 解构不成功变量的值就是 undefined
+z // []
+
+// 不完全解构也可以成功。事实上，只要具备 Iterator 接口，都可以用数组形式解构赋值
+let [x,y]=[1,2,3]
+x //1
+y //2
+</code></pre>
+<pre><code>function* fibs() {
+  let a=0;
+  let b=1;
+  while (true) {
+    yield a;
+    [a,b] = [b, a+b];
+  }
+}
+</code></pre>
+<pre><code>// es6 内部使用严格相等运算符 ===
+let [x=1] = [undefined];
+x //1
+let [x=1] = [null]
+x //null，以为 null 不是严格等于 undefined，所以可以被赋值
+</code></pre>
+<p>注意如果默认值是一个表达式，他是惰性求值的。</p>
+<h3 id="_3">对象解构赋值</h3>
+<p>先找到同名属性，然后赋值给对应的变量</p>
+<pre><code>let {foo, bar} = {foo:&quot;aa&quot;, bar:&quot;bb&quot;};
+foo // &quot;aa&quot;
+bar // &quot;bb&quot;
+</code></pre>
+<p>用途：</p>
+<ul>
+<li>1.交换变量值</li>
+</ul>
+<pre><code>let x=1;
+let y=2;
+[x, y] = [y, x]
+</code></pre>
+<ul>
+<li>2.从函数返回多个值</li>
+</ul>
+<pre><code>function example() {
+  return [1,2,3]
+}
+let [a,b,c] = example()
+function example() {
+  return {
+    foo: 1,
+    bar: 2
+  }
+}
+let {foo,bar} = example()
+</code></pre>
+<ul>
+<li>3.函数参数定义</li>
+</ul>
+<pre><code>function f([x,y,z]) {...}
+f([1,2,3])
+function f({x,y,z}) {...}
+f({x:1, y:2, z:3})
+</code></pre>
+<ul>
+<li>4.提取 json 数据</li>
+</ul>
+<pre><code>let jsonData = {
+  id: 42,
+  status: &quot;OK&quot;,
+  data: [867, 5309]
+};
+
+let { id, status, data: number } = jsonData;
+
+console.log(id, status, number);
+// 42, &quot;OK&quot;, [867, 5309]
+</code></pre>
+<ul>
+<li>5.参数默认值</li>
+</ul>
+<pre><code>jQuery.ajax = function (url, {
+  async = true,
+  beforeSend = function () {},
+  cache = true,
+  complete = function () {},
+  crossDomain = false,
+  global = true,
+  // ... more config
+}) {
+  // ... do stuff
+};
+</code></pre>
+<ul>
+<li>6.遍历 Map</li>
+</ul>
+<pre><code>var map = new Map();
+map.set('first', 'hello');
+map.set('second', 'world');
+
+for (let [key, value] of map) {
+  console.log(key + &quot; is &quot; + value);
+}
+// first is hello
+// second is world”
+</code></pre>
+<ul>
+<li>7.输入模块的指定方法</li>
+</ul>
+<pre><code>const { SourceMapConsumer, SourceNode } = require(&quot;source-map&quot;);”
+</code></pre>
+<h1 id="_4">默认参数</h1>
+<h3 id="rest">rest 参数(...变量名)</h3>
+<p>用于获取函数的多余参数</p>
+<pre><code>function add(...values) {
+  let sum = 0;
+  for (var val of values) {
+    sum += val
+  }
+  return sum
+}
+add(2, 5, 3)  // 10
+
+const sortNumbers = (...numbers) =&gt; numbers.sort();
+</code></pre>
+<h3 id="_5">箭头函数</h3>
+<p>es6 允许使用 (=&gt;) 定义函数</p>
+<pre><code>var f = v =&gt; v;
+// equal to
+var f = function(v) {
+  return v
+}
+var sum = (num1, num2) =&gt; num1 + num2;
+var sum = (num1, num2) {
+  return num1 + num2;
+}
+
+
+// 如果箭头函数代码块多于一条语句，需要用大括号括起来，并使用 return 返回
+var sum = (num1, num2) =&gt; {return num1 + num2;}
+
+//由于大括号被解释为代码块，所以如果返回一个对象，必须加上括号
+let getTemplItem = id =&gt; ({id:id, name: &quot;Temp&quot;})
+
+const isEven = n =&gt; n%2 == 0;
+const square = n =&gt; n*n;
+
+//一个用途是简化回调
+[1,2,3].map(function(x) {
+  return x * x;
+})
+[1,2,3].map(x =&gt; x * x);
+
+//
+var result = values.sort(function(a,b) {
+  return a-b;
+})
+
+va result = values.sort((a,b) =&gt; a-b)
+</code></pre>
+<h1 id="symbol">Symbol</h1>
+<p>es6 引入了一种新的原始数据类型 Symbol，表示独一无二的值。</p>
+<h1 id="set-map">Set 和 Map 结构</h1>
+<p>set : add, delete, has, clear; keys() values() entries() forEach()</p>
+<pre><code>const s=  new Set();
+[1,2,3,4].forEach(x =&gt; s.add(x));
+for (let i of s) {
+  console.log(i);
+}
+</code></pre>
+<p>WeakSet: 成员只能是对象；其中的对象都是弱引用。适合临时存放一组对象，以及存放跟对象绑定的信息。</p>
+<p>Map: js 对象本质上是键值对的集合(Hash 结构)，但是传统上只能用字符串当做键，使用受限。</p>
+<ul>
+<li>size, set, get, has, delete, clear</li>
+<li>keys(), values(), entries(), forEach()</li>
+</ul>
+<p>WeakMap: 只接受对象作为键名（null除外），WeakMap 键名指向的对象不计入垃圾回收机制。</p>
+<h1 id="proxy">Proxy</h1>
+<p>用于修改某些操作的默认行为，等同于在语言层面修改。属于一种元编程。</p>
+<h1 id="promise">Promise 对象</h1>
+<p>一个容器，保存着某个未来才会结束的事件（通常是一个异步操作的结果）</p>
+<h1 id="iterator-forof">Iterator 和 forof 循环</h1>
+<p>Symbol.iterator 属性。具备原生 iterator 接口的数据结构如下：</p>
+<p>Array, Map, Set, String, TypedArray, 函数的arguments 对象，NodeList 对象</p>
+<pre><code>let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
+
+iter.next() // { value: 'a', done: false }
+iter.next() // { value: 'b', done: false }
+iter.next() // { value: 'c', done: false }
+iter.next() // { value: undefined, done: true }”
+</code></pre>
+<h3 id="forof">for...of 循环</h3>
+<p>一个数据结构只要部署了 Symbol.iterator 属性，就被视为有 iterator接口，就能用
+for...of 遍历它的成员。</p>
+<pre><code>var arr = ['a', 'b', 'c', 'd'];
+
+for (let a in arr) {
+  console.log(a); // 0 1 2 3
+}
+
+for (let a of arr) {
+  console.log(a); // a b c d
+}
+</code></pre>
+<p>for...in 循环读取键名，for...of 循环读取键值。</p>
+<p>Set, Map 原生具有 iterator 接口，可以直接用 for...of</p>
+<pre><code>var engines = new Set([&quot;Gecko&quot;, &quot;Trident&quot;, &quot;Webkit&quot;, &quot;Webkit&quot;]);
+for (var e of engines) {
+  console.log(e);
+}
+// Gecko
+// Trident
+// Webkit
+
+var es6 = new Map();
+es6.set(&quot;edition&quot;, 6);
+es6.set(&quot;committee&quot;, &quot;TC39&quot;);
+es6.set(&quot;standard&quot;, &quot;ECMA-262&quot;);
+for (var [name, value] of es6) {
+  console.log(name + &quot;: &quot; + value);
+}
+// edition: 6
+// committee: TC39
+// standard: ECMA-262”
+
+</code></pre>
+<h1 id="generator">Generator 函数语法</h1>
+<pre><code>function* helloWorldGenerator() {
+  yield 'hello';
+  yield 'world';
+  return 'ending';
+}
+
+var hw = helloWorldGenerator(); //返回遍历器对象
+</code></pre>
+<p>不得不说和 python generator 很像。</p>
+<p>async 函数返回一个 promise 对象。</p>
+<h1 id="class">Class</h1>
+<p>之前 js 通过构造函数编写类，es6 提供了 class 语法糖。</p>
+<pre><code>function Point(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
+Point.prototype.toString = function () {
+  return '(' + this.x + ', ' + this.y + ')';
+};
+
+var p = new Point(1, 2);
+</code></pre>
+<pre><code>class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  toString() {   // 调用实例方法
+    return '(' + this.x + ', ' + this.y + ')';
+  }
+}
+
+class Point {
+  // ...
+}
+
+typeof Point // &quot;function&quot; ，类的数据类型就是函数，类本身就指向构造函数，可以用 new 创建
+Point === Point.prototype.constructor // true”
+</code></pre>
+<p>类和模块的内部默认是严格模式，无需手动指定。es6 实际上把整个语言升级到了严格模式。</p>
+<h3 id="class_1">class 的继承</h3>
+<p>class 可以通过 extends 实现继承。子类必须在 constructor 中调用 super 方法。任何子类都有 constructor 方法（默认添加）。
+调用 super 之后才能使用 this 关键字，否则会报错。</p>
+<pre><code>class Point {
+}
+
+class ColorPoint extends Point {
+}
+</code></pre>
+<h3 id="mixin">Mixin 模式的实现</h3>
+<p>mixin 模式指的是，将多个类的接口『混入』『mix in』另一个类。</p>
+<pre><code>function mix(...mixins) {
+  class Mix {}
+
+  for (let mixin of mixins) {
+    copyProperties(Mix, mixin);
+    copyProperties(Mix.prototype, mixin.prototype);
+  }
+
+  return Mix;
+}
+
+function copyProperties(target, source) {
+  for (let key of Reflect.ownKeys(source)) {
+    if ( key !== &quot;constructor&quot;
+      &amp;&amp; key !== &quot;prototype&quot;
+      &amp;&amp; key !== &quot;name&quot;
+    ) {
+      let desc = Object.getOwnPropertyDescriptor(source, key);
+      Object.defineProperty(target, key, desc);
+    }
+  }
+}
+</code></pre>
+<h1 id="decorator">修饰器 Decorator</h1>
+<pre><code>@testable
+class MyTestClass {
+  //...
+}
+
+function testable(target) {
+  taget.isTestable = true;
+}
+MyTestClass.isTestable // true
+
+
+@decorator
+class A {}
+
+// 等同于
+class A {}
+A  = decorator(A) || A
+</code></pre>
+<p>修饰器只能用于类和类的方法， 无法用于函数，因为存在函数提升。类是不会提升的。
+可以用高阶函数的形式修饰。</p>
+<pre><code>function doSomething(name) {
+  console.log(&quot;Hello&quot; + name);
+}
+
+function loggingDecorator(wrapped) {
+  return function() {
+    console.log(&quot;starting&quot;);
+    const result = wrapped.apply(this, arguments);
+    console.log(&quot;Finished&quot;);
+    return result;
+  };
+}
+const wrapped = loggingDecorator(doSomething);
+</code></pre>
+<p>core-decorator.js 一个第三方模块，提供了几个常见的修饰器。 @autobind， @readonly @override @deprecate, @suppressWarnings</p>
+<h3 id="mixin_1">修饰器实现 Mixin 模式</h3>
+<pre><code>// mixins.js
+export function mixins(...list) {
+  return function(target) {
+    Object.assign(target.prototype, ...list);
+  };
+}
+
+import { mixins } from &quot;./mixins&quot;;
+const Foo = {
+  foo() {
+    console.log(&quot;foo&quot;);
+  }
+};
+@mixins(Foo)
+class MyClass {}
+
+let obj = new MyClass();
+obj.foo();
+</code></pre>
+<h3 id="trait">Trait</h3>
+<p>也是一种修饰器，与Mixin类似，提供更多功能，比如防止同名方法冲突，排除混入某些方法，为混入方法起别名等。
+traits-decorator 第三方模块</p>
+<pre><code>import { traits } from &quot;traits-decorator&quot;;
+
+class TFoo {
+  foo() {
+    console.log(&quot;foo&quot;);
+  }
+}
+
+const TBar = {
+  bar() {
+    console.log(&quot;bar&quot;);
+  }
+};
+
+@traits(TFoo, TBar)
+class MyClass {}
+
+let obj = new MyClass();
+obj.foo();
+obj.bar();
+</code></pre>
+<h3 id="babel">Babel 转码器的支持</h3>
+<p>Babel 已经支持 Decorator。babel-core, babel-plugin-transform-decorators</p>
+<h1 id="module">Module 的语法</h1>
+<p>es6 实现了模块，取代CommonJS 和 AMD 规范(这些是运行时确定)，成为浏览器和服务器通用方案。
+es6 模块不是对象，而是通过export 命令显示指定输出的代码，再通过 import 导入。（编译时加载，静态加载）
+es6 模块自动采用严格模式。</p>
+<ul>
+<li>变量必须声明后再使用</li>
+<li>函数的参数不能有同名属性，否则报错</li>
+<li>不能使用 with 语句</li>
+<li>不能对只读属性赋值，否则报错</li>
+<li>不能使用前缀0表示八进制数，否则报错</li>
+<li>不能删除不可删除的属性，否则报错</li>
+<li>不能删除变量 delete prop ，会报错，只能删除属性 delete global[prop] </li>
+<li>eval 不会在它的外层作用域引入变量</li>
+<li>eval 和 arguments 不能被重新赋值</li>
+<li>arguments 不会自动反映函数参数的变化</li>
+<li>不能使用 arguments.callee </li>
+<li>不能使用 arguments.caller </li>
+<li>禁止 this 指向全局对象</li>
+<li>不能使用 fn.caller 和 fn.arguments 获取函数调用的堆栈</li>
+<li>增加了保留字（比如 protected 、 static 和 interface ）</li>
+</ul>
+<h3 id="export">export</h3>
+<p>export 规定模块的对外接口，import用于输入其他模块提供的功能。
+一个模块是一个独立的文件，内部所有变量外部无法获取。可以使用 as 作为别名。
+export 语句需要放在模块顶层。</p>
+<pre><code>// export 规定的对外接口，必须和模块内部变量建立一一对应关系
+// 三种写法都可以
+
+// 1
+export var m = 1;
+// 2
+var m = 1;
+export {m}
+// 3
+var n = 1;
+export {n as m}
+</code></pre>
+<h3 id="import">import</h3>
+<p>import  .. from '' 后边指定需要导入的位置，可以是相对或者绝对路径，js 后缀可以省略掉。
+import 编译器期间执行的，静态执行所以无法使用表达式和变量。这些是只有运行时才能获得的语法结构。并且是单例的。</p>
+<pre><code>//整体加载。
+import * as circle from './circle';
+
+import { area, circumference } from './circle';
+
+console.log('圆面积：' + area(4));
+console.log('圆周长：' + circumference(14));
+
+// wrong , 不允许运行时改变
+circle.foo = 'hello'
+</code></pre>
+<h3 id="export-default">export default</h3>
+<p>给模块指定默认输出。export default 本质上就是输出一个叫做 default 的变量或者方法，然后系统运行你给它取任意名字。</p>
+<h3 id="_6">模块可以继承</h3>
+<h3 id="_7">跨常量</h3>
+<pre><code>export const A = 1;
+export const B = 1;
+</code></pre>
+<h3 id="import_1">import() 函数</h3>
+<p>实现动态加载</p>
+<h1 id="module_1">Module 的加载实现</h1>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../golang/1_the_go_programming_lauguage/" class="btn btn-neutral float-right" title="《1 The Go Programming Language》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../reactjs_小书/" class="btn btn-neutral" title="《reactjs小书》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../reactjs_小书/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../golang/1_the_go_programming_lauguage/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>

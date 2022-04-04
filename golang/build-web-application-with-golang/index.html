@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>《Build Web Application With Golang》 - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300aBuild Web Application With Golang\u300b";
+    var mkdocs_page_input_path = "golang/build-web-application-with-golang.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">调试技术</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../debug/软件调试修炼之道/book/">《软件调试修炼之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../debug/Effective_Debugging/">《Effective Debugging》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis深度历险核心原理和应用实践/book/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../database/MySQL是怎样运行的从根上理解MySQL/MySQL是怎样运行的从根上理解MySQL/">《MySQL是怎样运行的》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《Build Web Application With Golang》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#2-go">2 Go 基础</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#25">2.5 面向对象</a></li>
+        
+            <li><a class="toctree-l4" href="#26-interface">2.6 接口 interface</a></li>
+        
+            <li><a class="toctree-l4" href="#reflect">反射: 检查程序运行时状态。reflect</a></li>
+        
+            <li><a class="toctree-l4" href="#_1">并发</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#3-web">3 Web基础</a></li>
+    
+
+    <li class="toctree-l3"><a href="#4">4 表单</a></li>
+    
+
+    <li class="toctree-l3"><a href="#5">5 访问数据库</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#51-databasesql">5.1 database/sql 接口</a></li>
+        
+            <li><a class="toctree-l4" href="#52-mysql">5.2 使用 Mysql</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#55-beego-orm">5.5 使用 Beego orm</a></li>
+    
+
+    <li class="toctree-l3"><a href="#56-nosql">5.6 Nosql 数据库使用</a></li>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../go101/book/">《Go101》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network-programming-with-go/book/">《Network Programming with go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../go_in_action(go语言实战)/">《Go In Action(Go 实战)》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../go语言编程/">《Go语言编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../go语言编程之旅.md">《Go语言编程之旅》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/自控力/">《自控力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/自控力-和压力做朋友/">《自控力:和压力做朋友》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../unix_linux/unix网络编程卷一/">《unix网络编程卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式/深入理解Kafka核心设计与实践原理/深入理解Kafka核心设计与实践原理/">《深入理解Kafka核心技术与实践原理》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">搜索引擎</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../搜索引擎/Elasticsearch实战/book/">《Elasticsearch实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/vim8文本处理实战/vim8文本处理实战/">《Vim8文本处理实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/Mastering_vim/">《Mastering Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/学习力/">《学习力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/微服务实战/">《微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../金融理财/迈出投资第一步/迈出投资第一步/">《迈出投资第一步》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/定投十年/">《定投十年》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/指数基金投资日志/">《指数基金投资日志》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../金融理财/聪明的定投/">《聪明的定投》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">写作</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../写作/刷屏文案写作技巧/">《刷屏文案写作技巧》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效15法则/">《高效15法则》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../career/高效清单工作法/">《高效清单工作法》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>golang &raquo;</li>
+        
+      
+    
+    <li>《Build Web Application With Golang》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="2-go">2 Go 基础</h1>
+<p>定义变量:</p>
+<pre><code class="language-go">var varname type
+var name1, name2, name3 type
+var name type = value
+var a,b,c = v1, v2, v3
+a,b,c := v1, v2 ,v3
+_, b = 1, 2
+</code></pre>
+<p>常量：</p>
+<pre><code>const name = value
+const Pi float32 = 3.14
+const i = 100
+</code></pre>
+<p>内置基础类型：</p>
+<pre><code>// Boolean
+var isActive = bool  // default false
+var enabled, disabled = true, false
+valid := false
+
+// 数值类型, rune(int32), int8, int16, int32, int64, byte(uint8), uint8, uint16, uint32, uint64
+// float32, float64(默认)
+// complex64
+
+
+//字符串, go 字符串都是采用UTF8，用 双引号或者反引号括起来定义，类型是 string
+var hello string
+var emptyString = &quot;&quot;
+s := &quot;hello&quot;  // 字符串不可变
+c := []byte(s)  // 把字符串转换为 []byte 类型
+c[0] = 'c'
+s2 := string(c)  // 转为 string
+fmt.Printf(&quot;%s\n&quot;, s2)
+m := `hello
+    world`   // ` 括号来的是Raw string
+</code></pre>
+<p>错误类型：</p>
+<pre><code>// go有一个error 类型，package.errors
+err:=errors.New(&quot;emit macho swarf: elf header corrupted&quot;)
+if err != nil {
+   fmt.Print(err)
+}
+</code></pre>
+<p>分组声明：</p>
+<pre><code>import (
+   &quot;fmt&quot;
+   &quot;os&quot;
+)
+const (
+    i = 100
+    pi = 3.14
+)
+
+var(
+    i int
+    pi float32
+)
+</code></pre>
+<p>iota 枚举：</p>
+<pre><code>const (
+    x = iota  //x==0
+    y = iota  //y==1
+)
+</code></pre>
+<p>设计规则：</p>
+<ul>
+<li>大写开头的变量可以导出（共有变量）</li>
+<li>大写字母开头的函数是共有函数</li>
+</ul>
+<p>array, slice, map</p>
+<pre><code>// array 数组，数组长度也是类型的一部分，[3]int, [4]int 是不同类型
+var arr [n]type
+var arr [10]int
+arr[0] = 42
+arr[1] = 13
+fmt.Printf(&quot;first %d\n&quot;, arr[0])
+
+a := [3]int{1, 2, 3}
+b := [10]int{1, 2, 3}  //其余元素0
+c := [...]int{1,2,3}  //自动计算个数
+doubleArray := [2][4]int{[4]int{1,2,3,4}, [4]int{5,6,7,8}}
+
+
+// slice 动态『数组』，引用类型，指向一个底层 array。实际场景中使用 slice 要比 array 多
+var fslice []int  //声明同数组，只是没有长度
+slice := []byte {'a','b'}
+a := [10]int{1,2,3,4,5,6,7,8,9,10}
+var slice []int
+slice = a[:]
+/*  slice 内置函数
+len 获取长度
+cap 获取最大容量
+append 追加一个或多个元素，返回一个 和 slice 类型一样的slice
+copy 从 源 slice src 中复制元素到目标 dst，返回复制的元素个数
+*/
+
+
+// map，字典的概念。 map[keyType]valueType
+// map 无序，长度不固定，**引用类型**，len(map)返回 key 数量，map 值可以修改。
+// map和其他基本类型不同，不是 thread-safe，多个 go-routine 存取用 mutex lock
+var numers map[string]int
+numbers := make(map[string]int)
+numbers[&quot;one&quot;] = 1
+numbers[&quot;ten&quot;] = 10
+fmt.Println(&quot;one is &quot;, numbers[&quot;three&quot;])
+
+rating := map[string]float32{&quot;c&quot;: 5, &quot;Go&quot;: 4.5}
+goRaking, ok := rating[&quot;Go&quot;]
+if ok {
+fmt.Println(&quot;go rating is &quot;, goRaking)
+} else {
+fmt.Println(&quot;no  go rating&quot;)
+}
+delete(rating, &quot;C&quot;)
+</code></pre>
+<p>make, new 操作：</p>
+<p>make 只能用于 内建类型(map/slice/chanell)的内存分配, new 用于各种类型，new 返回指针。
+make 返回初始化后的（非零）值。</p>
+<p>零值(zero value): 变量未填充之前的默认值，通常是 0</p>
+<pre><code>int,int8,int32,int64 0
+uint 0x0
+rune 0
+byte 0x0
+float32, float64 0
+bool false
+string &quot;&quot;
+</code></pre>
+<p>流程控制:</p>
+<pre><code>// if(不用括号)
+
+if x &gt; 10 {
+   //...
+} else  {
+   //...
+}
+
+if x  := computeValue(); x &gt; 10 {  //允许声明一个变量，但是只在该条件内作用域
+//...
+} else {
+//...
+}
+
+if x == 3 {
+//...
+} else if x &lt; 3 {
+//
+} else {
+
+}
+
+
+
+// goto，还是少用不用吧
+
+
+// for
+sum := 0
+for idx := 0; index &lt; 10; index++ {
+    sum += idx
+}
+sum := 1
+for ; sum &lt; 1000; {
+    sum += sum
+}
+// 实现 while 功能
+sum := 1
+for sum &lt; 1000 {
+    sum += sum
+}
+
+// break/continue
+
+
+// for 配合 range 读取 slice 和 map 数据
+for k,v := range map {
+  fmt.Println(&quot;key, value&quot;, k, v)
+}
+
+
+// switch
+i := 6
+switch i {
+case 4:
+    //
+    fallthrough // 强制执行后边的代码
+}
+</code></pre>
+<p>函数: func 声明</p>
+<pre><code>func funcName(input1 type1, input2 type2) (output1 type1, output2 type2) {
+  //
+  return value1, value2
+}
+func max(a, b int) int {
+    if a &gt; b {
+        return a
+    }
+    return b
+}
+
+
+func SumAndProduct(A, B int) (add int, Multiplied int) {
+    add = A + B
+    Multiplied = A * B
+    return
+}
+
+</code></pre>
+<p>变参：</p>
+<pre><code>func myfunc(arg ...int) {
+    for _, n := range arg {
+        fmt.Printf(&quot;Add the number is :%d\n&quot;, n)
+    }
+} // arg 是一个 int 的 slice
+</code></pre>
+<p>传值和传指针：默认传值，无法修改传入的值。除非使用指针</p>
+<pre><code>func add(a int) int {
+    a = a+1
+    return a
+}
+// 如果需要修改值，我们可以传递指针
+func add_p(a *int) int {
+    *a = *a + 1
+    return *a
+}   // x :=
+
+/*
+传递指针使得多个函数能够操作同一个对象
+传指针比较轻量级（8bytes），只是传内存地址，可以用指针传递大结构体。
+GO中 channel, slice，map 实现机制类似指针，可以直接传递，而不用取地址。（如果需要修改 slice 长度让需要取地址）
+*/
+</code></pre>
+<p>defer: 延迟语句，函数执行到最后时，这些 defer 语句会逆序执行，最后函数返回。用来处理错误，关闭资源</p>
+<pre><code>func ReadWrite() bool {
+    file.Open(&quot;file&quot;)
+    defer file.Close()
+    if failureX {
+        return false
+    }
+    if failureY {
+        return false
+    }
+    return true
+}
+</code></pre>
+<p>函数作为值、类型：go 中函数也是一种变量，可以用 type 定义，类型就是所有拥有相同的参数，相同返回值的一种类型</p>
+<pre><code>// type typeName func(input1 inputType1, intpu2 inputType2 [, ...]) (result1 resultType1 [, ...])
+// 可以把这个类型的函数当做值来传递
+
+package main
+
+import &quot;fmt&quot;
+
+type testInt func(int) bool // 声明一个函数类型
+func isOdd(i int) bool {
+    if i%2 == 0 {
+        return false
+    }
+    return true
+}
+
+func filter(slice []int, f testInt) []int {
+    var result []int
+    for _, value := range slice {
+        if f(value) {
+            result = append(result, value)
+        }
+    }
+    return result
+}
+func main() {
+    slice := []int{1, 2, 3, 4}
+    odd := filter(slice, isOdd)
+    fmt.Println(&quot;Odd:&quot;, odd)
+
+}
+</code></pre>
+<p>Panic/Recover:</p>
+<pre><code>Panic 是一个内建函数，可以中断原有的控制流程，进入一个令人恐慌的流程中。
+当 F 函数调用 panic，F 的执行逻辑被中断，但是 F 中的延迟函数会正常执行，然后 F 返回调用它的地方。
+在调用的地方，F 的行为就像调用了 panic，继续向上直到发生 panic 的 goroutine 中所有调用的函数返回，此时程序退出。
+panic 可以手动或者运行时错误产生（越界数组）
+
+ recover：内建函数，可以让进入恐慌的流程中的 goroutine 回复过来。recover 仅在延迟函数中有效。
+ 正常逻辑调用 recover 返回 nil。当前的 goroutine 先入恐慌可以用 recover 捕获 panic 的输入值，并且回复正常的执行。
+</code></pre>
+<p>main init 函数：</p>
+<p><img alt="" src="../main_init.png" /></p>
+<p>import: 导入包文件</p>
+<pre><code>// 点操作，表示你调用的时候可以省略前缀，比如 fmt.Println(&quot;hello&quot;) 可以写 Println(&quot;Hello&quot;)
+import (
+ . &quot;fmt&quot;
+)
+
+// 别名操作
+import (
+    f &quot;fmt&quot;  //别名，简化调用 f.Println
+    &quot;os&quot;
+)
+
+// _ 操作
+import (
+    _ &quot;github.com/ziutek/mymysql/godrv&quot; //_引入该包，而不直接使用包里的函数，而是调用包里的 init 函数
+)
+</code></pre>
+<p>Struct 类型：属性或者字段容器</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+type Person struct {
+    name string
+    age  int
+}
+
+func Older(p1, p2 Person) (Person, int) {
+    if p1.age &gt; p2.age {
+        return p1, p1.age - p2.age
+    }
+    return p2, p2.age - p1.age
+}
+
+func main() {
+    // 初始化方式
+    var P Person
+    P.name = &quot;Astaxie&quot;
+    P.age = 23
+    p1 := Person{&quot;Tom&quot;, 12}
+    p2 := Person{age: 10, name: &quot;Tom&quot;}
+    p := new(Person) // p 是个指针
+    fmt.Printf(&quot;name is &quot;, P.name)
+}
+</code></pre>
+<h3 id="25">2.5 面向对象</h3>
+<p>method: 带有接受者的函数。method 附属在一个给定的类型上，语法和函数的声明语法几乎一样，只是在函数后加上一个 receiver</p>
+<blockquote>
+<p>A method is a funciton with am inplicit first argument, called a reciver - Rob Pike</p>
+</blockquote>
+<pre><code>/*
+定义： func (r ReceiverType) funcName(parameters) (results)
+虽然 method 名字一样，但是接受者不一样，method 就不一样
+method 里可以访问接受者的字段
+调用 method  通过 . 访问就像 stuct 里访问字段一样
+*/
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math&quot;
+)
+
+type Rectangle struct {
+    width, height float64
+}
+
+type Circle struct {
+    radius float64
+}
+
+func (r Rectangle) area() float64 {
+    return r.width * r.height
+}
+func (c Circle) area() float64 {
+    return c.radius * c.radius * math.Pi
+}
+
+func main() {
+    r1 := Rectangle{12, 1}
+    c1 := Circle{10}
+    fmt.Println(&quot;r1 area&quot;, r1.area())
+    fmt.Println(&quot;r1 area&quot;, c2.area())
+}
+</code></pre>
+<p>指针作为 receiver:</p>
+<pre><code>func (r *Rectangle) setHeight(height float64) {
+    r.height = height //NOTE：注意这里不必非要用 *r.hight = hight，Go 发现参数指针以后帮你自动处理
+}
+</code></pre>
+<p>method 继承：如果匿名字段实现了一个 method，那么包含这个匿名字段的 struct 也能调用该 method</p>
+<p>method 重写：和匿名字段冲突一样的道理，重写就实现了隐藏匿名字段的 method</p>
+<h3 id="26-interface">2.6 接口 interface</h3>
+<p>interface 是一组 method 签名的组合，通过 interface 来定义对象的一组行为，通过 interface 定义对象的一组行为。
+interface 类型定义了一组方法，如果某个对象实现了某个接口的<strong>所有</strong>方法，则此对象实现了这个接口(隐式)。</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+type Human struct {
+    name  string
+    age   int
+    phone string
+}
+
+type Student struct {
+    Human
+    school string
+    loan   float32
+}
+
+type Employee struct {
+    Human
+    company string
+    money   float32
+}
+
+func (h *Human) SayHi() {
+    fmt.Printf(&quot;Hi %s %s&quot;, h.name, h.phone)
+}
+
+func (h *Human) Sing(lyrics string) {
+    fmt.Println(&quot;la la&quot;, lyrics)
+}
+
+func (h *Human) Guzzle(beerStein string) {
+    fmt.Println(&quot;Guzzle&quot;, beerStein)
+}
+
+func (e *Employee) SayHi() {
+    fmt.Printf(&quot;hi I am %s work at %s call me %s\n&quot;, e.name, e.company, e.phone)
+}
+
+func (s *Student) BorrowMoney(amount float32) {
+    s.loan += amount
+}
+
+func (e *Employee) SpendSalary(amount float32) {
+    e.money -= amount
+}
+
+type Men interface {
+    SayHi()
+    Sing(lyrics string)
+    Guzzle(beerStein string)
+}
+type YoungChap interface {
+    SayHi()
+    Sing(song string)
+    BorrowMoney(amount float32)
+}
+
+type ElderyGent interface {
+    SayHi()
+    Sing(song string)
+    SpendSalary(amount float32)
+}
+</code></pre>
+<p>interface 可以被任意对象实现，一个对象也可以实现任意多个 interface。
+任意类型都是现了空 interface (interface{})，也就是包含了0个 method 的interface。</p>
+<p>interface 值：如果定义一个interface的变量，这个变量里可以存实现这个 interface 的任意类型的对象。
+比如定义了一个 Men interface 类型的变量 m，m 可以存 Human, Student, Employee。
+因为 m 可以持有三种对象，可以定一个包含 Men 类型的 slice，它可以倍赋予实现了 Men 接口的任意结构的对象。
+通过这种方式实现了鸭子类型。</p>
+<p>空 interface: 可以存储任意类型数值，类似于 c void*。一个函数把 interface{}
+作为参数，可以接受任意类型。同理也可以返回任意类型。</p>
+<pre><code>    var a interface{}
+    var i int = 5
+    s := &quot;hello&quot;
+    a = i
+    a = s
+</code></pre>
+<p>interface 的函数参数：interface的变量可以持有任意实现该interface 类型的对象。只要实现接口，我们就可以传入</p>
+<p>interface变量存储的类型：如何知道变量里实际存储的类型呢？</p>
+<ul>
+<li>comma-ok</li>
+<li>switch 测试</li>
+</ul>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;strconv&quot;
+)
+
+type Element interface{}
+
+type List []Element
+
+type Person struct {
+    name string
+    age  int
+}
+
+func (p Person) String() string {
+    return &quot;(name:&quot; + p.name + &quot;-age:&quot; + strconv.Itoa(p.age) + &quot;years)&quot;
+}
+
+func main() {
+    list := make(List, 3)
+    list[0] = 1
+    list[1] = &quot;hello&quot;
+    list[3] = Person{&quot;Deniss&quot;, 30}
+    for index, element := range list {
+        switch value := element.(type) {  // element.(type) 只能在 switch 里边使用，外边还是要用 comma-ok
+        case int:
+            fmt.Printf(&quot;int %d %d&quot;, index, value)
+        case string:
+            fmt.Printf(&quot;str %d %d&quot;, index, value)
+        case Person:
+            fmt.Printf(&quot;person %d %d&quot;, index, value)
+        default:
+            fmt.Printf(&quot;list different type %d&quot;, index)
+        }
+    }
+}
+</code></pre>
+<p>嵌入 interface：如果一个 interface1 作为另一个interface2 的嵌入字段，那么interface2 隐式包含了interface1 里的 method</p>
+<h3 id="reflect">反射: 检查程序运行时状态。reflect</h3>
+<pre><code>t := reflect.TypeOf(i)
+v := reflect.ValueOf(i)
+</code></pre>
+<h3 id="_1">并发</h3>
+<p>goroutine: 通过 go 的 runtime 管理的一个线程管理器，通过 go 关键字实现。其实就是一个普通的函数</p>
+<p><code>go hello(a,b,c)</code> 通过 go 关键字启动了一个 goroutine</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+)
+
+func say(s string) {
+    for i := 0; i &lt; 5; i++ {
+
+        runtime.Gosched() //让 cpu 让出时间片，下次某个时间继续恢复执行该 goroutine
+        fmt.Println(s)
+    }
+}
+
+func main() {
+    go say(&quot;world&quot;)
+    say(&quot;hello&quot;)
+}
+</code></pre>
+<p>多个 goroutine 运行在同一个进程里边，共享内存数据。
+不过设计上需要遵循：不要通过共享来通信，通过通信来共享。</p>
+<p>channels：goroutine 共享相同的地址空间，访问共享内存需要做好同步。必须用 make 创建</p>
+<pre><code>    ci := make(chan int)
+    cs := make(chan string)
+    cf := make(chan interface{})
+    ch &lt;- v  //发送数据 v 到 channel ch
+    v:= &lt;-ch  //从 ch 中接受数据，并赋值给v
+</code></pre>
+<p>默认channel接收和发送数据都是阻塞的，除非另一端准备好，这样使得 goroutine 同步变得简单，无需显示 lock。</p>
+<p>buffered channels: 允许指定 channel 缓冲区大小。<code>ch := make(chan type, value)</code>
+当 value =0，channel 是无缓冲区阻塞读写的，当 value&gt;0，channel 是有缓冲、非阻塞的，知道写满 value 个才阻塞写入。</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func sum(a []int, c chan int) {
+    total := 0
+    for _, v := range a {
+        total += v
+    }
+    c &lt;- total
+}
+
+func main() {
+    a := []int{3, 1, 3, 5, 6, 7}
+    c := make(chan int)
+    go sum(a[:len(a)/2], c)
+    go sum(a[len(a)/2:], c)
+    x, y := &lt;-c, &lt;-c // 从 c 接收
+    fmt.Println(x, y, x+y)
+}
+</code></pre>
+<p>Range 和 Close: 通过 range，像操作slice 或者 map 一样操作缓存类型的 channel</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func fibonacci(n int, c chan int) {
+    x, y := 1, 1
+    for i := 0; i &lt; n; i++ {
+        c &lt;- x
+        x, y = y, x+y
+    }
+    close(c) // 应该在生产者里关闭，防止 panic。当你没有任何数据要发送，或者想显示结束 range 调用 close
+}
+func main() {
+    c := make(chan int, 10)
+    go fibonacci(cap(c), c)
+    for i := range c { //不断读取知道 channel 被显示关闭
+        fmt.Println(i)
+    }
+}
+</code></pre>
+<p>Select: 多个 channel 操作。Go提供了select监听 channel 数据流动
+Select: 多个 channel。select 可以监听 channel 上的数据流动。select 默认阻塞，只有当监听的 channel 中有发送或接收可以
+进行时才会运行，当多个 channel 都准备好的时候随机选择一个执行。</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func fibonacci(c, quit chan int) {
+    x, y := 1, 1
+    for {
+        select {
+        case c &lt;- x:
+            x, y = y, x+y
+        case &lt;-quit:
+            fmt.Println(&quot;quit&quot;)
+            return
+    default:
+        // 当监听的 channel 没有准备好的时候默认执行(select不再阻塞等待channel)
+
+        }
+    }
+}
+
+func main() {
+    c := make(chan int)
+    quit := make(chan int)
+    go func() {
+        for i := 0; i &lt; 10; i++ {
+            fmt.Println(&lt;-c)
+        }
+        quit &lt;- 0
+    }()
+    fibonacci(c, quit)
+}
+</code></pre>
+<p>有时候会出现 goroutine 阻塞的情况。还可以设置 select 设置超时。</p>
+<h1 id="3-web">3 Web基础</h1>
+<p>用 go 实现一个 http server 真滴很简单，支持高并发，内部实现是一个单独的 goroutine 处理请求。</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;log&quot;
+    &quot;net/http&quot;
+    &quot;strings&quot;
+)
+
+func sayhelloName(w http.ResponseWriter, r *http.Request) {
+    r.ParseForm()
+    fmt.Println(r.Form)
+    fmt.Println(&quot;path&quot;, r.URL.Path)
+    for k, v := range r.Form {
+        fmt.Println(&quot;key:&quot;, k)
+        fmt.Println(&quot;val:&quot;, strings.Join(v, &quot;&quot;))
+    }
+    fmt.Fprintf(w, &quot;hello&quot;) //输出到客户端
+
+}
+
+func main() {
+    http.HandleFunc(&quot;/&quot;, sayhelloName)
+    err := http.ListenAndServe(&quot;:9090&quot;, nil)
+    if err != nil {
+        log.Fatal(&quot;ListenAndServe: &quot;, err)
+    }
+}
+</code></pre>
+<h1 id="4">4 表单</h1>
+<h1 id="5">5 访问数据库</h1>
+<h3 id="51-databasesql">5.1 database/sql 接口</h3>
+<pre><code>sql.Register
+driver.Driver   // 返回的数据库conn 只能用在一个 goroutine
+driver.Conn
+driver.Stmt  // Stmt 是一种准备好的状态，只能用在一个goroutine中
+driver.Tx  // 事务提交和回滚
+driver.Execer  /// Conn 选择实现的接口
+driver.Result  // 执行 update/insert 等操作返回的结果接口定义
+driver.Rows // 执行查询返回的结果集接口定义
+driver.RowsAffected  // int64别名
+driver.Value //空接口，容纳任何数据
+driver.ValueConverter // 把一个普通值转换成 driver.Value
+driver.Valuer // 定义了返回一个 driver.Value 的方式
+database/sql
+</code></pre>
+<h3 id="52-mysql">5.2 使用 Mysql</h3>
+<p>使用 "github.com/go-sql-driver/mysql" 演示数据库增删改查</p>
+<pre><code>package main
+
+import (
+    &quot;database/sql&quot;
+    &quot;fmt&quot;
+
+    _ &quot;github.com/go-sql-driver/mysql&quot;
+)
+
+func main() {
+    // Open 打开一个注册过的数据库驱动
+    db, err := sql.Open(&quot;mysql&quot;, &quot;root:@/test?charset=utf8&quot;)
+    checkErr(err)
+    // prepare 返回准备要执行的 sql，然后返回准备完毕的执行状态
+    stmt, err := db.Prepare(&quot;INSERT userinfo SET username=?,departname=?,created=?&quot;)
+    checkErr(err)
+
+    //exec  执行 stmt 准备好的 sql 语句
+    res, err := stmt.Exec(&quot;wnn&quot;, &quot;研发&quot;, &quot;2012-12-10&quot;)
+    checkErr(err)
+
+    id, err := res.LastInsertId()
+    checkErr(err)
+
+    fmt.Println(id)
+    stmt, err = db.Prepare(&quot;update userinfo set username=? where uid=?&quot;)
+    checkErr(err)
+
+    res, err = stmt.Exec(&quot;wnnupdate&quot;, id)
+    checkErr(err)
+
+    affect, err := res.RowsAffected()
+    checkErr(err)
+    fmt.Println(affect)
+
+    //query 直接执行 sql 返回 rows 结果
+    rows, err := db.Query(&quot;SELECT * from userinfo&quot;)
+    checkErr(err)
+
+    for rows.Next() {
+        var uid int
+        var username, departname, created string
+        err = rows.Scan(&amp;uid, &amp;username, &amp;departname, &amp;created)
+        checkErr(err)
+        fmt.Println(uid)
+        fmt.Println(username)
+        fmt.Println(departname)
+        fmt.Println(created)
+    }
+    stmt, err = db.Prepare(&quot;delete from userinfo where uid=?&quot;)
+    checkErr(err)
+
+    res, err = stmt.Exec(id)
+    checkErr(err)
+
+    affect, err = res.RowsAffected()
+    checkErr(err)
+    fmt.Println(affect)
+    db.Close()
+}
+
+func checkErr(err error) {
+    if err != nil {
+        panic(err)
+    }
+}
+</code></pre>
+<h1 id="55-beego-orm">5.5 使用 Beego orm</h1>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+
+    &quot;github.com/astaxie/beego/orm&quot;
+    _ &quot;github.com/go-sql-driver/mysql&quot;
+)
+
+// Model Struct
+type User struct {
+    Id   int
+    Name string `orm:&quot;size(100)&quot;`
+}
+
+func init() {
+    orm.RegisterDataBase(&quot;default&quot;, &quot;mysql&quot;, &quot;root:@/test?charset=utf8&quot;, 30)
+    orm.RegisterModel(new(User))
+    orm.RunSyncdb(&quot;default&quot;, false, true)
+    orm.RegisterDriver(&quot;mysql&quot;, orm.DRMySQL)
+}
+
+func main() {
+    o := orm.NewOrm()
+    user := User{Name: &quot;wnn&quot;}
+    id, err := o.Insert(&amp;user)
+    user2 := User{Name: &quot;wnn2&quot;}
+    id, err = o.Insert(&amp;user2)
+    fmt.Printf(&quot;id:%d, err:%v\n&quot;, id, err)
+
+    user.Name = &quot;wnnupdate&quot;
+    num, err := o.Update(&amp;user)
+    fmt.Printf(&quot;Num:%d, err:%v\n&quot;, num, err)
+
+    u := User{Id: user.Id}
+    err = o.Read(&amp;u)
+    fmt.Printf(&quot;err: %v\n&quot;, err)
+
+    num, err = o.Delete(&amp;u)
+    fmt.Printf(&quot;num %d, err:%v\n&quot;, num, err)
+
+}
+</code></pre>
+<h1 id="56-nosql">5.6 Nosql 数据库使用</h1>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../go101/book/" class="btn btn-neutral float-right" title="《Go101》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../3_the_go_programming_lauguage/" class="btn btn-neutral" title="《3 The Go Programming Language》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../3_the_go_programming_lauguage/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../go101/book/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
