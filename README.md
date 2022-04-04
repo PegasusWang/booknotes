@@ -2,7 +2,7 @@
 
 > Stay Hungry Stay Foolish.
 
-看了就忘，还是简单记一点吧。
+看了就忘，还是简单记一点吧。多读几遍计算机领域最经典的好书，比泛泛地翻阅各种杂书效果好(质量胜过数量)。
 
 ### 本电子书制作和写作方式
 使用 mkdocs 和 markdown 构建，vim 编写，使用  Python-Markdown-Math 完成数学公式。
@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 编写并查看：
 ```sh
-mkdocs serve     # 修改自动更新，浏览器打开 http://localhost:8000 访问
+mkdocs serve     # 修改自动刷新浏览器，浏览器打开 http://localhost:8000 访问
 # 数学公式参考 https://www.zybuluo.com/codeep/note/163962
 mkdocs gh-deploy    # 部署到自己的 github pages, 如果是 readthedocs 会自动触发构建
 ```
