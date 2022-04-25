@@ -23,6 +23,7 @@ pip install -r requirements.txt
 ```sh
 mkdocs serve     # 修改自动刷新浏览器，浏览器打开 http://localhost:8000 访问
 # 数学公式参考 https://www.zybuluo.com/codeep/note/163962
+# 图片最好压缩再放到仓库(不过不建议放非文本文件)
 mkdocs gh-deploy    # 部署到自己的 github pages, 如果是 readthedocs 会自动触发构建
 ```
 
