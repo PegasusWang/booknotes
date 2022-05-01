@@ -176,7 +176,7 @@ public class DemoPartitioner implements Partitioner {
   - acks="1" (默认)。生产者发送消息之后，只要分区的 leader副本成功写入消息，那么它就会收到来自服务端的成功响应。
     折中方案。消息写入 leader 副本并 返回成功响应给生产者，且在被其他 follower 副本拉取之前 leader 副本崩溃，那么此 时消息还是会丢失
   - acks="0" 。生产者发送消息之后不需要等待任何服务端的响应。最大吞吐
-  - acks="-1/all"。生产者在消息发送之后，需要等待 ISR 中的所有副本都成功 写入消息之后才能够收到来自服务端的成功响应。(最高可靠)
+  - acks="-1/all"。生产者在消息发送之后，需要等待 ISR 中的所有副本都成功 写入消息之后才能够收到来自服务端的成功响应。(最高可靠,leader宕机也不丢失，生产者收到异常告知此次发送失败)
 - max.request.size: 限制生产者客户端能发送的消息的最大值。默认 1M
 - retries, retry.backoff.ms: 生产者重试次数和间隔。在需要保证消息顺序的场合建议把参数 max.in.flight . requests .per.connection 配置为 1
 - compression.type: 指定消息压缩方式，默认 "none"，还可以配置为 "gzip", "snappy", "lz4"
@@ -580,7 +580,7 @@ private[timer] class TimingWheel(tickMs: Long, wheelSize: Int, startMs: Long, ta
 
 ## 6.3 延时操作
 
-在将 消息写入 leader 副本的本地日志文件之后，Kafka会创建一 个延时的生产操作(DelayedProduce),用来处理消息正常写入所有副本或超时的清况， 
+在将 消息写入 leader 副本的本地日志文件之后，Kafka会创建一 个延时的生产操作(DelayedProduce),用来处理消息正常写入所有副本或超时的清况，
 以返回相应的响应结果给客户端。
 
 ## 6.4 控制器
@@ -606,62 +606,233 @@ broker端没有显式配置 listeners (或 advertised. listeners)使用 IP地址
 
 # 7. 深入客户端
 
-### 7.1 分区分配策略
+## 7.1 分区分配策略
 
-partition.assignment.strategy 设置消费者和订阅主题之间的分区分配策略:
+partition.assignment.strategy 设置消费者和订阅主题之间的分区分配策略，三种分配策略：
 
-- RangeAssignor: 按照消费者总数和分区总数进行整除运算来获得一个跨度，然后将分区按照跨度平均分配
+- RangeAssignor: 按照消费者总数和分区总数进行整除运算来获得一个跨度，然后将分区按照跨度平均分配，尽可能均匀分配给所有消费者
+  - 对于每一个主题，RangeAssignor策略会将消费组内所有订阅这个主题的消费者按照名称的字典序排序，然后为每个消费者划分固定的分区范围，
+    如果不够平均分配，那么字典序靠前的消费者会被多分配一个分区。
 - RoundRobinAssignor: 将消费组内所有消费者和消费者订阅的所有主题的分区按照字典序排序，轮询将分区依次分配给每个消费者
-- StickyAssignor: 目的分区尽可能均匀；尽可能和上次分配一致
+- StickyAssignor: 目的分区尽可能均匀(优先级高)；尽可能和上次分配的保持相同
+  - 优点就是可以使分区重分配具备"黏性"减少不必要的分区移动(即一个分区剥离之前的消费者，转而分配给另一个新的消费者)
 
-### 7.2 消费者协调器和组协调器
+### 7.1.4 自定义分区分配策略
+
+自定义的分配策略必须要实现 org.apache.kafka.clients.consumer.intemals.PartitionAssignor 接口。
+比如可以让消费者和 broker 节点处于同一个机架。
+
+## 7.2 消费者协调器和组协调器
+
+多个消费者之间的分区分配是需要协同的，一切都是交由消费者协调器(ConsumerCoordinator)和组协调器 (GroupCoordinator)来完成的，
+它们之间使用一套组协调协议进行交互。
 
 GroupCoordinator 是 kafka 服务端用于管理消费组的组件，消费者客户端中的 ConsumerCoordinator 组件负责和 GroupCoordinator 交互。
 如果消费者发生变化触发再均衡操作。
 
-### 7.3 __consumer_offsets 剖析
+### 7.2.1 旧版消费者客户端的问题
 
-位移提交最终会保存到 kafka 内部主题 __consumer_offsets 中。
-使用 kafka-console-consumer.sh 查看  __consumer_offsets 中的内容。
+通过ZooKeeper 所提供的Watcher, 每个消费者就可以监听消费组和Kafka集群的状态。这种方式下每个消费者 对ZooKeeper的相关路径分别进行监听，
+当触发再均衡操作时， 一个消费组下的所有消费者会同时进行再均衡操作，而消费者之间并不知道彼此操作的结果，这样可能导致Kafka工作在一个不正确的状态。
+与此同时，这种严重依赖于Zookeeper集群的做法还有两个比较严重的问题 。
 
-### 7.4 事务
+1. 羊群效应(Herd Errect): 指ZooKeeper中一个被监听的节点变化，大量的Watcher通知被发送到客户端，导致在通知期间的其他操作延迟 ，也有可能发生类似死锁的情况 。
+2. 脑裂问题(Split Brain): 消费者进行再均衡操作时每个消费者都与ZooKeeper进行 通信以判断消费者或 broker变化的情况，由于ZooKeeper本身的特性，
+   可能导致在同一时刻各个消费者获取的状态不一致，这样会导致异常问题发生 。
+
+### 7.2.2 再均衡的原理
+新版的消费者客户端对此进行了重新设计，将全部消费组分成多个子集， 每个消费组的子集在服务端对应一个GroupCoordinator对其进行管理
+- GroupCoordinator Kafka 服务端中用于管理消费组的组件
+- 客户端中的 ConsumerCoordinator 组件负责和 GroupCoordinator 交互
+
+触发再均衡操作场景：
+
+- 新消费者加入消费者组
+- 有消费者宕机下线。未必真下线，长时间 GC、网络延迟等长时间未向 GroupCoordinator 发送心跳，会被认为下线
+- 消费者主动退出。发送 LeaveGroupRequest 请求。比如客户端调用 unsubscribe() 取消某些主题订阅
+- 消费组所对应的GroupCoorinator节点发生了变更。
+- 消费组内所订阅的任一主题或者主题的分区数量发生变化 。
+
+以有消费者加入消费组时为例，消费者、消费组及组协调器之间会经历 一 下几个阶段。
+
+1. 第一阶段(FIND_COORDINATOR)
+  - 消费者需要确定所属消费者组对应的 GroupCoordinator 所在的 broker
+  - 如果消费者已经保存了与消费者组对应的 GroupCoordinator 节点信息，并与它网络连接正常，进入第二阶段
+  - 否则，向集群中某个节点(负载最小的节点leastLoadedNode)发送 FindCoordinatorRequest 请求查找对应的 GroupCoordinator
+  -  分区 leader 副本所在的 broker 节点，既扮演 GroupCoordinator 角色，又扮演保存分区分配方案和组内消费者位移的角色
+2. 第二阶段(JOIN_GROUP)
+  - 成功找到 GroupCoordinator 之后进入加入消费组阶段，消费者会向 GroupCoordinator 发送 JoinGroupRequest 请求并处理响应
+  - JoinGroupRequest 中的 group protocols 域为数组类型，取决于消 费者客户端参数 partition.assignment.strategy 的配置。
+  - 消费者在发送 JoinGroupRequest 请求之后会阻塞等待 Kafka 服务端的响应。服务端在收到JoinGroupRequest 请求 后会交由 GroupCoordinator 来进行处理
+    - 选举消费组 leader。选举比较随意：如果是第一个消费者即为 leader，否则从 GroupCoordinator 保存的消费者哈希表中取第一个键值对
+    - 选举分区分配策略。
+      - 每个消费者可以设置自己的分区分配策略，所以根据各个消费者投票来定。(这里投票不会与各个消费者交互，而是根据各个消费者报上来的分配策略实施)
+      - 每个消费者都支持的 candidates 候选里选一个支持最多的策略。(否则抛异常)
+  - 在此之后， Kafka 服务端就要发送 JoinGroupResponse 响应给各个消费者， leader 消费者和 其他普通消费者收到的响应内容并不相同
+    - Kafka 发送给普通消费者的 JoinGroupResponse 中的 members 内容为空，而只有 leader 消 费者的 JoinGroupResponse 中的 members 包含有效数据。
+    - Kafka 把分区分配 的具体分配交还给客户端，自身并不参与具体的分配细节，这样即使以后分区分配的策略发生 了变更，也只需要重启消费端的应用即可，而不需要重启服务端。
+3. 第三阶段(SYNC_GROUP)
+  - leader 消费者根据在第二阶段中选举出来的分区分配策略来实施具体的分区分配，在此之 后需要将分配的方案同步给各个消费者。
+    此时 leader 不直接和其他普通消费者同步分配方案，而是通过 GroupCoordinator 这个中间人负责转发和同步分配方案
+  - 同步阶段， 各个消费者会向 GroupCoordinator 发送 SyncGroupRequest 请求来同步分配方案。 只有 leader 消费者发送的SyncGroupRequest请求中才包含具体的分区分配方案
+  - GroupCoordinator 将从leader消费者发送过来的分配方案提取出来，连同整个消费组的元数据信息一起存入 Kafka 的 consumer offsets 主题中 ，
+    最后发送响应给各个消费者以提供给各个消费者各自所属的分配方案。
+  - 消费者收到所属分配方案后调用PartitionAssignor 中的 onAssignment()方法。随后再调用 ConsumerRebalanceListener 中的 OnPartitionAssigned()方法 。
+    之后开启心跳任务 ，消费者定期向服务端的 GroupCoordinator 发送 HeartbeatRequest 来确定彼此在线。
+4. 第四阶段(HEARTBEAT)
+  - 进入这个阶段之后，消 费组中的所有消费者就会处于正常工作状态。此时消费者可以通过 OffsetFetchRequest 请求获取上次提交的消 费位移并 从此处继续消费 。
+  - 消费者通过向 GroupCoordinator 发送心跳(独立心跳线程)来维持它们与消费组的从属关系，以及它们对分区的所有权关系。
+  - 如果心跳过期，GroupCoordinator 也会认为这个消费者 己经死亡，就会触发一次再均衡行为
+
+## 7.3 `__consumer_offsets` 剖析
+
+位移提交最终会保存到 kafka 内部主题 `__consumer_offsets` 中。
+客户端使用 OffsetCommitRequest 提交消费位移, 在处理完消费位移之后， Kafka返回 OffsetCommitResponse给客户端。
+与消费位移对应的消息也只定义了 key 和 value 字段的具体内容，不依赖具体版本。
+使用 kafka-console-consumer.sh 查看  `__consumer_offsets` 中的内容。
+
+## 7.4 事务
 
 消息传输保障有 3 个层级：
 
 - at most once(至多一次)：消息可能丢失，但是绝对不会重复传输
-- at least once(最少一次)：消息绝不会丢失，但是可能重复传输
+- at least once(最少一次)：消息绝不会丢失，但是可能重复传输。(kafka)
 - exactly once(恰好一次)：每条消息肯定会被传输一次且仅传输一次
+
+kakfa 对应的语义(生产和消费者角度)：
+
+- 由于 kafka 在网络问题中可能无法判断是否提交，生产者可以多次重试，重试过程可能造成消息重复写入，所以这里 kafka 为至少一次。
+- 消费者可能崩溃前没提交位移造成重复消费(at least once)； 或者先提交后处理然后还没处理完崩溃，造成消息丢失(at most once)
+
 
 kafka 从0.11.0.0 版本引入了幂等和事务这两个特性，一次实现 EOS(exactly once semantics)。
 
-幂等：多次调用的结果和调用一次一致。只需要设置客户端参数 `properties.put("enable.idempotence", true);`
-kafka 为了实现生产者幂等，引入了 producer id 和序列号 sequence number 两个概念。
-broker 会在内存中为每一对 <PID, 分区> 维护一个序列号，只有消息序列号的值(SN_new)比 broker 中维护的 SN_old 大 1，
+### 7.4.2 幂等
+
+幂等：多次调用的结果和调用一次一致。
+生产者重试的时候可能重复写入，而用 kafka 幂等功能可以避免。只需要设置客户端参数 `properties.put("enable.idempotence", true);`
+不过如果要确保军等性功能正常，还需要确保生产者客户端的 retries 、 acks 、 max.in. flight.requests.per. connect工on 这几个参数不被配置错。
+
+kafka 为了实现生产者幂等，引入了 producer id(PID) 和序列号 sequence number 两个概念。生产者每发送一 条消息就会将`<PID， 分区>`对应的序列号的值加1。
+broker 会在内存中为每一对 `<PID, 分区>` 维护一个序列号，只有消息序列号的值(SN_new)比 broker 中维护的 SN_old 大 1，
 broker 才会接受。(SN_new=SN_old+1)。
+
+- 如果 `SN_new < SN_old + 1`  说明消息被重复写入，broker 可以直接丢弃它
+- 如果 `SN_new > SN_old + 1`  说明有消息尚未写入，出现乱序暗示消息可能丢失。对生产者抛出一个严重异常(后续操作也会抛) OutOfOrderSequenceException
 
 kafka 幂等只能保证单个生产者会话 (session) 中单分区的幂等。
 
-事务可以保证多个分区写入操作的原子性。通过客户端参数显示设置 `properties.put("transactional.id", "transactionId")`，
-同时也要打开幂等特性。
+### 7.4.3 事务
+
+事务可以弥补幂等性不能跨分区的缺陷。事务可以保证多个分区写入操作的原子性。
+Kafka 中的事务可以使应用程序将消费消息、生产消息 、 提交消费位移当作原子操作来处理，同时成功或失败，即使该生产或消费会跨多个分区 。
+
+为了实现事务，应用程序必须提供唯一的 transactionalld，这个 transactionalld 通过客户端 参数 transactional.id 来显式设置。
+`properties .put (”transactional .id”,”transactionid”),` 。同时也要设置幂等， enable.idempotentce 设置 true。
+
+kafka 提供了和事务相关的 5 个方法。initTransactions()方法用来初始化事务，这个方法能够执行的前提是配置了 transactionalld。
+beginTransaction()方法用来开启 事务: sendOffsetsToTransaction()方法为消费者提供在事务 内的位移提交 的操作;
+commitTransaction()方法用来提交事务 : abortTransaction()方法用来中止 事务 ，类似于事务回滚 。
+
+消费者有一个参数 isolation.level，默认是 read_uncommitted，意思是消费者可以看到(消费到)未提交的事务，当然对于已提交事务
+也是可见的。设置为 read_committed，表示消费端应用不可以看到尚未提交的事务内的消息。
+不过在 KafkaConsumer 内部会缓存这些消息，直到生产者执行 commitTransaction()方法之后它才能将这些消息推送给消费端应用。
+反之，如果生产者执行了 abortTransaction()方法，那么 KafkaConsumer 会将这些缓存的消息丢弃而不推送给消费端应用。
+
+日志文件中有控制消息两种类型: COMMIT和ABORT, 分别用来表征事务已经 成功提交或已经被成功中止。
+KaflcaConsumer可以通过这个控制消息来判断对应的事务是被提 交了还是被中止了，然后结合参数isolation.level配置的隔离级别来决定是否将相应的消
+息返回给消费端应用。
+
+为了实现事务的功能， Kafka还引入了事务协调器(TransactionCoordinator)来负责处理事 务， 这一点可以类比一下组协调器(GroupCoordinator)。
+
+通过 consume-transform-produce 流程（消费-转换-生产）流程看事务实现原理：
+
+1. 查找 TransactionCoordinator
+2. 获取 PID（producer id)
+2. 开启事务。通过 KafkaProducer 的 beginTransaction()
+4. Consume-Transform-Produce
+  - AddPartitionsToTxnRequest 请求。生产者给一个新的分区发送数据前，需要先向 TransactionCoordinator 发请求。
+    - 请求会让TransactionCoordinator将`<transactionld, TopicPartion>`的对应关系存储在主题 `_transaction_state`中，有了这个对照关系之后，我们就可以在后续的步骤中为每个分区设置COMMIT或ABORT标记，
+  - ProduceRequest。发送消息到自定义主题中
+  - AddOffsetsToTxnRequest。通过KafkaProducer的 sendOffsetsToTransaction()方法可以在一个事务批次里处理消息的消费和发送，
+  - TxnOffsetCommitRequest。在处理完AddOffsetsToTxnRequest 之后， 生产者还会发送TxnOffsetCommitRequest请求给GroupCoordinator, 从而将本次事务中 包含的消费位移信息offsets存储到主题`_consumer_offsets`中，
+5. 提交或终止事务。commitTransaction() or abortTransaction
+  - EndTxnRequest。通知提交还是终止事务
+  - WriteTxnMarkersRequest。由 TransactionCoordinator 发给事务中各个分区 leader 节点，节点会在收到之后在相应的分区写入控制消息
+  - 写入最终的 COMPLETE_COMMIT或COMPLETE_ABORT 到 `__transaction_state` 表明事务结束。此时可以删除该主题中所有关于该事务的消息
 
 
 # 8. 可靠性探究
 
-### 8.1 副本剖析
+## 8.1 副本剖析
 
-当 ISR 集合中的一个 follower 副本滞后 leader 副本的时间超过 replica.lag.time.max.ms 指定的值判定为同步失败。
+概念回顾：
 
-### 8.2 日志同步机制
+- 副本。相对于分区而言的，副本是特定分区的副本
+- 一个分区有一个或多个副本，其中一个 leader 副本(对外服务)，其余 follower 副本(只负责数据同步)，各个副本位于不同broker 节点。
+- 分区中所有副本统称为 AR，ISR 指和 leader 副本保持同步状态的副本集合O包括leader)
+- LEO标识每个分区中最后一条消息的下一个位置，分区的每个副本都有自己的LEO, ISR中最小的LEO即为HW, 俗称高水位，消费者只能拉取到HW之前的消息
+
+生产者发送消息首先会被写入分区 leader 副本，不过还需要等待ISR集合中所有follower副本同步完之后才被认为已提交，之后才会更
+新分区的 HW，进而消费者可以消费到这条消息。
+
+### 8.1.1 失效副本
+
+在ISR集合之外，也就是处于同步失效或功能失效(比如副本处于 非存活状态)的副本统称为失效副本，失效副本对应的分区也就称为同步失效分区。
+当 ISR 集合中的一个 follower 副本滞后 leader 副本的时间超过 replica.lag.time.max.ms 指定的值判定为同步失败，需要将其剔除ISR集合。
+
+一般两种情况会导致副本失效：
+
+- follower 副本进程卡住，一段时间内没有想 leader 部分发起同步请求，比如频繁 GC
+- follower 副本进程同步过慢，一段时间内都无法追赶上 leader 副本，比如 IO 开销过大
+
+### 8.1.2 ISR 的伸缩
+
+Kafka 在启动的时候会开启两个与ISR相关的定时任务，名称分别为"isr-expiration"和 isr-change-propagation"。
+isr-expiration任务会周期性地检测每个分区是否需要缩减其ISR集合。
+
+- 检测到 ISR 集合中有实效副本就收缩 ISR 集合。
+  - 如果某个分区的ISR集合 发生变更， 则会将变更后的数据记录到ZooKeeper 对应的`/brokers/topics/<topic>/partition/state`节点中
+- 有副本赶上 leader（副本的 LEO 是否不小于leader的HW)，同样更新 zookeeper
+
+### 8.1.3 LEO 与 HW
+本地副本是指对应的Log分配在当前 的broker节点上，远程副本是指对应的Log分配在其他的 broker节点上。
+leader副本的 HW 很重要，直接影响分区数据对消费者可见性。
+
+### 8.1.4 Leader Epoch 的介入
+leader切换过程可能导致数据丢失或者 leader 和 follower 数据不一致的问题。
+在需要截断数 据的时候使用 leader epoch 作为参考依据而不是原本的 HW。 leader epoch 代表 leader 的纪元信息( epoch)，
+初始值为 0。每当 leader 变更一次， leader epoch 的值就会加 l，相当于为 leader 增设了一个版本号。
+
+- 应对丢失。重启后不是先阶段日志而是发送 OffsetsForLeaderEpochRequest 请求，看作用来查找 follower 副本当前 LeaderEpoch 的 LEO
+- 应对不一致。
+
+### 8.1.5 为什么不支持读写分离
+在Kafka中，生产者写入消息、 消费者读取消息的操作都是与leader副本进行交互的， 从而实现的是一种主写主读的生产消费模型。
+主写从读2 个很明显的缺点：
+
+1. 数据一致性问题
+2. 延时问题。时延敏感场景不太适合主写从读
+
+kafka 主写主读优点：简化代码逻辑；负载粒度细化均摊；没有延时影响；副本稳定的情况下，不会出现数据不一致
+
+## 8.2 日志同步机制
+
+日 志同步机制的一个基本原则就是:如果告知客户端已经成功提交了某条消息，那么即使 leader 宅机，也要保证新选举出来的leader中能够包含这条消息。
 
 kafka 使用的更像是微软的 PacificA 算法。
+在 Kafka 中动态维护着一个 ISR 集合，处千 ISR 集合内的节点保待与 leader 相同的高水位 CHW) , 
+只有位列其中的副本 (unclean.leader.election.enable 配置为 false) 才有 资格被选为新的 leader。
 
-### 8.3 可靠性分析
+## 8.3 可靠性分析
 
 - 副本数：一般设置副本数为 3 可以满足大部分场景对可靠性的要求，国内部分银行会设置副本数为 5 提升可靠性。
-- 客户端 acks 设置。如果 acks=-1 leader 副本在写入本地日志之后还要等待 ISR 中的 follower 副本全部同步完成才告知生产者成功提交
-- 设置同步刷盘策略（一般应该由多副本保证），broker 参数 log.flush.interval.messages 和 log.flush.interval.ms
-  调整同步刷盘策略，不过会比较损耗性能。
-- 开启 enable.auto.commit 自动位移提交功能可能导致 重复消费和消息丢失的问题。
+- 客户端 acks 设置。如果 acks=-1 leader 副本在写入本地日志之后还要等待 ISR 中的 follower 副本全部同步完成才告知生产者成功提交，最大程度提高消息可靠性
+- 设置同步刷盘策略（一般交给操作系统），broker 参数 log.flush.interval.messages 和 log.flush.interval.ms
+  调整同步刷盘策略，不过会比较损耗性能。(一般倾向于通过多副本而不是性能底下的同步刷盘)
+- 开启 enable.auto.commit 自动位移提交功能可能导致 重复消费和消息丢失的问题。对于高可靠性应用应该设置为 false，手动提交位移。
+  - 原则：如果消息没有被成功消费，不能提交对应的消费位移。对高可靠性应用宁可重复消费也不能丢失（可以暂存到死信队列）
+- 消费端可以回溯消费，通过此功能对漏掉的消息回补
 
 
 # 9. Kafka 应用
