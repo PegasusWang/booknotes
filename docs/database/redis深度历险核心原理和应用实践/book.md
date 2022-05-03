@@ -159,7 +159,7 @@ cl.throttle user_id:reply 15 30 60 1
 1 是可选quota, 默认值1
 ```
 
-# 应用8：近水楼台-GeHash
+# 应用8：近水楼台-GeoHash
 
 redis3.2 以后增加了地理位置 GEO，可以实现附近的餐馆这种功能。
 
@@ -198,15 +198,16 @@ redis 使用52位的整数进行编码，放到 zset 里边，value 是元素 ke
 # 应用9：大海捞针-Scan
 
 从海量 key 找出特定前缀的key列表。
-redis keys 简单粗暴列出所有 满足特定正则的key.  `keys codehole*`
+redis keys 简单粗暴列出所有 满足特定正则的key.  `keys codehole*`。
 缺点：
+
 - 没有 limit， offet，刷屏
 - O(n)，千万级别以上的 key导致 redis 卡顿
 
 redis2.8 加入了 scan 用来大海捞针
 
 - 复杂度虽然也是O(n)，但是通过游标分布进行，不会阻塞线程
-- limit 参数，limit 返回的只是 hint，结果可大可小
+- limit 参数，limit 返回的只是 hint，结果可大可小(不是精确的)
 - 同 keys 有模式匹配
 - 返回结构可能重复，需要客户端去重
 - 如果遍历过程期间有修改，改动后的数据能否遍历到不确定
@@ -237,8 +238,8 @@ handle_others() # 处理其他任务，比如定时任务
 redis 为每个客户端维护了一个指令队列，先来先服务
 
 ### 响应队列
-redis 同样也为每个客户端套接字关联一个响应队列，redis服务器通过响应队列来讲指令的结果返回给客户端。
-如果队列为空，意味着连接暂时空闲，不需要获取写17:26:02，可以把当前客户端 socket 从write_fds移出来。
+redis 同样也为每个客户端套接字关联一个响应队列，redis服务器通过响应队列来将指令的结果返回给客户端。
+如果队列为空，意味着连接暂时空闲，不需要获取写入事件，可以把当前客户端 socket 从write_fds移出来。
 等到队列有数据了再放进去，避免select系统调用立即返回写事件，结果发现没什么数据可写，线程飙高 cpu。
 
 ### 定时任务
@@ -331,13 +332,13 @@ Redis重启，先加载 rdb 内容，然后重放增量 AOF 日志就可以完�
 # 原理4：雷厉风行-管道
 管道本质是 client 提供的，不是 redis server.
 
-# 原理5：同舟共济-事务
+# 原理5：同舟共济-事务(隔离性)
 
 redis 事务模型不严格。
 传统事务又 begin,commit,rollback，redis 是 multi,exec,discard，分别是事务开始，执行和丢弃。
 所有指令在 exec 之前不执行，而是缓存在服务器的一个事务队列中，服务器一旦收到 exec，
 开始执行整个事务队列，并且期间不会被其他指令打扰。
-如果遇到一个失败了，后续指令还是会继续执行，不能算是原子性，仅仅是满足了事务的隔离性。
+如果遇到一个失败了，后续指令还是会继续执行，不能算是原子性，仅仅是满足了事务的**隔离性**。
 
 discard 用于丢弃事务缓冲队列种的所有指令，在 exec 执行之前。
 通常结合 pipeline 使用减少网络IO。
@@ -424,7 +425,7 @@ redis5.0 加入了 stream 数据结构，给redis 带来了持久化消息队列
 内存分配算法：redis 将内存分配细节丢给了第三方，目前可以用 jemalloc(facebook)库来管理内存，
 或者切换到tcmalloc(google)，默认 redis 使用了性能更好的 jemalloc。
 
-info memory 命令查看redis 内存信息。
+info memory 命令查看redis 内存信息。试了一下返回：`mem_allocator:jemalloc-3.6.0`
 
 
 # 原理8：有备无患-主从同步
@@ -558,7 +559,7 @@ redis 作者发明了 redlock 算法解决这个问题。 redlock-py
 ### 过期的 key 集合
 
 redis 会将每个设置了过期时间的 key 放到一个单独的字典中，以后会定时遍历这个字典来删除过期 key。
-出了定时遍历，还会使用惰性删除策略来删除过期 key，即访问 key 才对 key 过期时间进行检查，
+除了定时遍历，还会使用惰性删除策略来删除过期 key，即访问 key 才对 key 过期时间进行检查，
 如果过期了就立刻删除。
 
 注意：开发人员要注意避免有大量 key 同时过期，最好设置一个随机范围。否则可能会有卡顿报警现象。
@@ -653,7 +654,7 @@ struct RedisObject {
 
 # 源码2：探索字典内部
 
-字典使用两个 hashtable，通常只有一个有值，但是当 dict 扩容缩容时，需要分配薪的 hashtable，然后渐进式搬迁，
+字典使用两个 hashtable，通常只有一个有值，但是当 dict 扩容缩容时，需要分配新的 hashtable，然后渐进式搬迁，
 这时两个 hashtable 分别存储旧的和新的 hashtable。搬迁结束后，旧的 hashtable 被删除，新的 hashtable 取而代之。
 
 hashtable 和 java HashMap 类似，通过分桶的方式解决冲突，第一维是数组，第二维是链表。
@@ -695,7 +696,7 @@ siphash在输入 key 很小的情况下，也能产生随机性很好的输出�
 
 正常情况下当 hash 表中的元素个数等于第一维数组长度就会扩容到原来的两倍。
 不过 redis 做 bgsave时，为了减少内存页过多分离(Copy On Write)，redis 尽量不去扩容(dict_can_resize)，
-但是如果 hash 表元素个数已经达到了第一纬数组5倍(dict_force_resize_ratio)，会强制扩容。
+但是如果 hash 表元素个数已经达到了第一维数组5倍(dict_force_resize_ratio)，会强制扩容。
 
 ### 缩容
 
@@ -737,13 +738,13 @@ redis 早期存储 list 使用 ziplist 和 linkedlist，元素少时用 ziplist�
 
 默认 压缩深度0也就是不压缩，由 list-compress-depth 确定。
 为了支持快速 push/pop，quicklist 首尾两个 ziplist 不压缩，此时深度就是1。
-如果深度为2，就表示 quicklist 的首尾第一个 ziplist 和收尾第 2 个都不压缩。
+如果深度为2，就表示 quicklist 的首尾第一个 ziplist 和首尾第 2 个都不压缩。
 
 
 # 探索跳跃列表内部
 
 zset 是一个复合结构，需要一个 hash 来存储 value 和 score 的对应关系。
-score 排序和根据指定的 score 范围获取 value 列表的功能，需要另一个结构 siplist.
+score 排序和根据指定的 score 范围获取 value 列表的功能，需要另一个结构 ziplist.
 
 ![skiplist](./skiplist.png)
 

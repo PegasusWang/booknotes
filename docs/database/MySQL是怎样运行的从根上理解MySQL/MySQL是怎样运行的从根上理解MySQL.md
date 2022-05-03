@@ -1385,7 +1385,7 @@ MySQL 锁分了个类:
 #### 25.1.2.2 锁定读的语句
 
 - 对读取的记录加 S锁 : `SELECT ... LOCK IN SHARE MODE;`
-- 对读取的记录加 X锁 : `SELECT ... FOR UPDATE;`
+- 对读取的记录加 X锁 : `SELECT ... FOR UPDATE;`  select 加排他锁
 
 ### 25.1.3 写操作
 

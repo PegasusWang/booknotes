@@ -386,8 +386,8 @@ def acquire_semaphore_with_lock(conn, semname, limit, timeout=10):
 
 ### 6.4 任务队列
 
-FIFO 队列：借助 redis list 的 blpop rpush 来实现一个队列
-延迟任务：借助 redis zset 实现
+- FIFO 队列：借助 redis list 的 blpop rpush 来实现一个队列
+- 延迟任务：借助 redis zset 实现
 
 ### 6.5 消息拉取
 
@@ -474,8 +474,8 @@ hash 存储状态消息： 'status:id' {'id': message, posted, id, uid, login}
 redis为列表、集合、散列和有序集合提供了可以配置选项，让 redis 以更节约控件的的方式存储长度较短的结构（短结构）
 在列表(双链表)、散列(散列表)和有序集合(散列表+跳跃表)长度较短或者体积较小的时候，redis 可以选择使用 压缩列表(ziplist)的紧凑存储方式存储这些结构。
 
-list-max-zip-entries 512
-list-max-zip-value 64
+- list-max-zip-entries 512
+- list-max-zip-value 64
 
 可以用 DEBUG OBJECT 来观察
 
