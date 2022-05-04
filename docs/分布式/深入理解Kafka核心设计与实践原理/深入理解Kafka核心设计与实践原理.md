@@ -114,7 +114,7 @@ public class KafkaProducerAnalysis {
 
 ### 2.1.4 分区器
 
-消息在通过send()方法发往broker 的过程中， 有可能需要经过拦截器(Interceptor)、 序列 化器(Serializer)和分区器(Part山oner)的一 系列作用之后才能被真正地发往 broker。
+消息在通过send()方法发往broker 的过程中， 有可能需要经过拦截器(Interceptor)、 序列化器(Serializer)和分区器(Partitioner)的一系列作用之后才能被真正地发往 broker。
 如果 key 不为 null，那 么默认的分区器会对 key 进行哈 希(采 用 MurmurHash2 算法 ，具备高运算性能及低碰撞率)，
 最终根据得到 的哈希值来计算分区号， 拥有相同 key 的消息会被写入同一个分区 。 如果 key 为 null，那么消息将会以轮询的方式发往主题内的各个可用分区。
 
@@ -410,8 +410,8 @@ public class KafkaAdminConfigOperation {
 不推荐自动执行(auto.leader.rebalance.enable 设置成 true)。
 
 Kafka中kafka-perferred-replica-election.sh脚本提供了对分区leader副本进行重新平衡的功能。优先副本的选举过程是一个安全的过程，Kafka客户端 可以自动感知分区leader副本的变更。
-在实际生产环境中， 一 般使用path-to-json-file参数来分批、 手动地执行优先副本 的选举操作。 尤其是在应对大规模的Kafka集群时， 理应杜绝采用非path-to-json-file
-参数的选举操作方式。 同时，优先副本的选举操作也要注意避开业务高峰期， 以免带来性能方 面的负面影响。
+在实际生产环境中， 一般使用path-to-json-file参数来分批、 手动地执行优先副本 的选举操作。 尤其是在应对大规模的Kafka集群时， 理应杜绝采用非path-to-json-file
+参数的选举操作方式。 同时，优先副本的选举操作也要注意避开业务高峰期， 以免带来性能方面的负面影响。
 
 ### 4.3.2 分区重分配
 Kafka提供了kafka-reassign-partitions.sh脚本来执行分区重分配的工作， 它可以在集群扩容、broker 节点失效时对分区进行迁移。
@@ -537,7 +537,7 @@ FileChannal.transferTo()方法的底层实现就是 sendfile()方法。
 ![](./5-23非零拷贝技术.png)
 
 零拷贝技术可以直接请求内核把磁盘中的数据传输给 socket。零拷贝技术通过DMA (DirectMemoryAccess) 技术将文件内容复制到内核模式下的Read Buffer 中。
-不过没有数据被复制到 Socket Buffer, 相反只有包含数据的位置和长度的信息的文 件描述符被加到 Socket Buffer 中。 DMA 引擎直接将数据从内核模式中传递到网卡设备(协议引擎)。
+不过没有数据被复制到 Socket Buffer, 相反只有包含数据的位置和长度的信息的文件描述符被加到 Socket Buffer 中。 DMA 引擎直接将数据从内核模式中传递到网卡设备(协议引擎)。
 
 ![](./5-24零拷贝技术.png)
 
@@ -642,6 +642,7 @@ GroupCoordinator 是 kafka 服务端用于管理消费组的组件，消费者�
 
 ### 7.2.2 再均衡的原理
 新版的消费者客户端对此进行了重新设计，将全部消费组分成多个子集， 每个消费组的子集在服务端对应一个GroupCoordinator对其进行管理
+
 - GroupCoordinator Kafka 服务端中用于管理消费组的组件
 - 客户端中的 ConsumerCoordinator 组件负责和 GroupCoordinator 交互
 
@@ -658,8 +659,8 @@ GroupCoordinator 是 kafka 服务端用于管理消费组的组件，消费者�
 1. 第一阶段(FIND_COORDINATOR)
   - 消费者需要确定所属消费者组对应的 GroupCoordinator 所在的 broker
   - 如果消费者已经保存了与消费者组对应的 GroupCoordinator 节点信息，并与它网络连接正常，进入第二阶段
-  - 否则，向集群中某个节点(负载最小的节点leastLoadedNode)发送 FindCoordinatorRequest 请求查找对应的 GroupCoordinator
-  -  分区 leader 副本所在的 broker 节点，既扮演 GroupCoordinator 角色，又扮演保存分区分配方案和组内消费者位移的角色
+  - 否则，向集群中某个节点(负载最小的节点leastLoadedNode)发送 FindCoordinatorRequest 请求查找对应的 GroupCoordinator,如果找到对应的GroupCoordinator则会返回其相对应的 node_id、host和port信息。
+  - 分区 leader 副本所在的 broker 节点，既扮演 GroupCoordinator 角色，又扮演保存分区分配方案和组内消费者位移的角色
 2. 第二阶段(JOIN_GROUP)
   - 成功找到 GroupCoordinator 之后进入加入消费组阶段，消费者会向 GroupCoordinator 发送 JoinGroupRequest 请求并处理响应
   - JoinGroupRequest 中的 group protocols 域为数组类型，取决于消 费者客户端参数 partition.assignment.strategy 的配置。
@@ -711,7 +712,7 @@ kafka 从0.11.0.0 版本引入了幂等和事务这两个特性，一次实现 E
 
 幂等：多次调用的结果和调用一次一致。
 生产者重试的时候可能重复写入，而用 kafka 幂等功能可以避免。只需要设置客户端参数 `properties.put("enable.idempotence", true);`
-不过如果要确保军等性功能正常，还需要确保生产者客户端的 retries 、 acks 、 max.in. flight.requests.per. connect工on 这几个参数不被配置错。
+不过如果要确保军等性功能正常，还需要确保生产者客户端的 retries 、 acks 、 max.inflight.requests.per.connection 这几个参数不被配置错。
 
 kafka 为了实现生产者幂等，引入了 producer id(PID) 和序列号 sequence number 两个概念。生产者每发送一 条消息就会将`<PID， 分区>`对应的序列号的值加1。
 broker 会在内存中为每一对 `<PID, 分区>` 维护一个序列号，只有消息序列号的值(SN_new)比 broker 中维护的 SN_old 大 1，
@@ -804,7 +805,7 @@ leader切换过程可能导致数据丢失或者 leader 和 follower 数据不�
 在需要截断数 据的时候使用 leader epoch 作为参考依据而不是原本的 HW。 leader epoch 代表 leader 的纪元信息( epoch)，
 初始值为 0。每当 leader 变更一次， leader epoch 的值就会加 l，相当于为 leader 增设了一个版本号。
 
-- 应对丢失。重启后不是先阶段日志而是发送 OffsetsForLeaderEpochRequest 请求，看作用来查找 follower 副本当前 LeaderEpoch 的 LEO
+- 应对丢失。重启后不是先截断日志而是发送 OffsetsForLeaderEpochRequest 请求，看作用来查找 follower 副本当前 LeaderEpoch 的 LEO
 - 应对不一致。
 
 ### 8.1.5 为什么不支持读写分离
