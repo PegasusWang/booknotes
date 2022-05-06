@@ -1301,7 +1301,7 @@ SHOW VARIABLES LIKE 'transaction_isolation';
 对于使用 SERIALIZABLE 隔离级别的事务来说，InnoDB 使用加锁的方式来访 问记录;
 对于使用 READ COMMITTED 和 REPEATABLE READ 隔离级别的事务来说，都必须保证读到已经提交了的事务修改过的记录，
 也就是说假如另一个事务已经修改了记录但是尚未提交，是不能直接读取最新版本的记录的，核心问题就是:需要判断一下版本链中的哪个版本是当前事务可见的。
-InnoDB 剔除了ReadView 的概念，包含4 个比较重要内容：
+InnoDB 提出了ReadView 的概念，包含4 个比较重要内容：
 
 - m_ids :表示在生成 ReadView 时当前系统中活跃的读写事务的 事务id 列表。
 - min_trx_id :表示在生成 ReadView 时当前系统中活跃的读写事务中最小的 事务id ，也就是 m_ids 中的最小值。
