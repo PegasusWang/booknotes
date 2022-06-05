@@ -160,6 +160,20 @@
     <a class="current" href="./">《MySQL是怎样运行的》</a>
     <ul class="subnav">
             
+    <li class="toctree-l3"><a href="#1-1-mysql">1 第1章 装作自己是个小白-重新认识MySQL</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#16">1.6 服务器处理客户端请求</a></li>
+        
+            <li><a class="toctree-l4" href="#17">1.7 常用存储引擎</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#2-2-mysql-">2 第2章 MySQL的调控按钮-启动选项和系统变量</a></li>
+    
+
     <li class="toctree-l3"><a href="#3-3-">3 第3章 乱码的前世今生-字符集和比较规则</a></li>
     
 
@@ -711,6 +725,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">系统设计</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../系统设计system_design/Grokking_System_Design/Grokking_System_Design/">《Grokking System Design》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">搜索引擎</span>
     <ul class="subnav">
                 <li class="">
@@ -1080,7 +1105,33 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="3-3-">3 第3章 乱码的前世今生-字符集和比较规则</h1>
+                <h1 id="1-1-mysql">1 第1章 装作自己是个小白-重新认识MySQL</h1>
+<h2 id="16">1.6 服务器处理客户端请求</h2>
+<p><img alt="" src="../1-6Mysql服务器处理客户端请求.png" /></p>
+<h3 id="161">1.6.1 连接管理</h3>
+<p>每当有一个客户端进程连接到服务器进程时，服务器进程都会创建一个线程来专门处理与这个 客户端的交互，
+当该客户端退出时会与服务器断开连接，服务器并不会立即把与该客户端交互的线程销毁掉，而 是把它缓存起来，
+在另一个新的客户端再进行连接时，把这个缓存的线程分配给该新客户端。</p>
+<h3 id="162">1.6.2 解析与优化</h3>
+<ul>
+<li>查询缓存。如果两个请求任何字符不同都不会命中。mysql 监测到表被修改，那使用该表的所有高速缓存查询都将变为无效并从高速缓存中删除<ul>
+<li>从MySQL 5.7.20 开始，不推荐使用查询缓存，并在MySQL 8.0中删除。</li>
+</ul>
+</li>
+<li>语法解析。</li>
+<li>查询优化。 MySQL 的优化程序会对我们的语句做一些优化，如外连接转换为内连接、表达式简化、子查询转为连接等，生成执行计划</li>
+</ul>
+<h3 id="163">1.6.3 存储引擎</h3>
+<p>为了管理方便，人们把连接管理 、 查询缓存 、 语法解析 、 查询优化 这些并不涉及真实数据存储的功能划分 为 MySQL server 的功能，
+把真实存取数据的功能划分为存储引擎功能。</p>
+<h2 id="17">1.7 常用存储引擎</h2>
+<ul>
+<li>InnoDB: 具备外键支持功能的事务存储引擎</li>
+<li>MEMORY: 置于内存的表</li>
+<li>MyISAM: 主要的非事务处理存储引擎</li>
+</ul>
+<h1 id="2-2-mysql-">2 第2章 MySQL的调控按钮-启动选项和系统变量</h1>
+<h1 id="3-3-">3 第3章 乱码的前世今生-字符集和比较规则</h1>
 <p>(看书的时候把书中的 mysql 命令找一个测试的 mysql 自己尝试一下)</p>
 <ul>
 <li>utf8mb3 :阉割过的 utf8 字符集，只使用1~3个字节表示字符。 (mysql中 utf8 就是 utf8mb3 的别名)</li>
@@ -2080,7 +2131,7 @@ SHOW VARIABLES LIKE 'transaction_isolation';
 对于使用 SERIALIZABLE 隔离级别的事务来说，InnoDB 使用加锁的方式来访 问记录;
 对于使用 READ COMMITTED 和 REPEATABLE READ 隔离级别的事务来说，都必须保证读到已经提交了的事务修改过的记录，
 也就是说假如另一个事务已经修改了记录但是尚未提交，是不能直接读取最新版本的记录的，核心问题就是:需要判断一下版本链中的哪个版本是当前事务可见的。
-InnoDB 剔除了ReadView 的概念，包含4 个比较重要内容：</p>
+InnoDB 提出了ReadView 的概念，包含4 个比较重要内容：</p>
 <ul>
 <li>m_ids :表示在生成 ReadView 时当前系统中活跃的读写事务的 事务id 列表。</li>
 <li>min_trx_id :表示在生成 ReadView 时当前系统中活跃的读写事务中最小的 事务id ，也就是 m_ids 中的最小值。</li>
@@ -2148,7 +2199,7 @@ MySQL 锁分了个类:</p>
 <h4 id="25122">25.1.2.2 锁定读的语句</h4>
 <ul>
 <li>对读取的记录加 S锁 : <code>SELECT ... LOCK IN SHARE MODE;</code></li>
-<li>对读取的记录加 X锁 : <code>SELECT ... FOR UPDATE;</code></li>
+<li>对读取的记录加 X锁 : <code>SELECT ... FOR UPDATE;</code>  select 加排他锁</li>
 </ul>
 <h3 id="2513">25.1.3 写操作</h3>
 <ul>

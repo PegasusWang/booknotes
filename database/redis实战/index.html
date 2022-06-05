@@ -566,6 +566,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">系统设计</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../系统设计system_design/Grokking_System_Design/Grokking_System_Design/">《Grokking System Design》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">搜索引擎</span>
     <ul class="subnav">
                 <li class="">
@@ -1252,8 +1263,10 @@ def release_faire_semaphore(conn, semname, identifier):
 </code></pre>
 <p>信号量可以用来限制同时可运行的 api 调用数量，针对数据库的并发请求等。</p>
 <h3 id="64">6.4 任务队列</h3>
-<p>FIFO 队列：借助 redis list 的 blpop rpush 来实现一个队列
-延迟任务：借助 redis zset 实现</p>
+<ul>
+<li>FIFO 队列：借助 redis list 的 blpop rpush 来实现一个队列</li>
+<li>延迟任务：借助 redis zset 实现</li>
+</ul>
 <h3 id="65">6.5 消息拉取</h3>
 <p>使用 Redis 的 PUBLISH SUBSCRIBE 的问题时，如果客户端因为某些原因无法一直在线，消息推送可能会出问题。
 可以采用拉取模式</p>
@@ -1307,8 +1320,10 @@ hash 存储状态消息： 'status:id' {'id': message, posted, id, uid, login}</
 <h3 id="91">9.1 使用短结构</h3>
 <p>redis为列表、集合、散列和有序集合提供了可以配置选项，让 redis 以更节约控件的的方式存储长度较短的结构（短结构）
 在列表(双链表)、散列(散列表)和有序集合(散列表+跳跃表)长度较短或者体积较小的时候，redis 可以选择使用 压缩列表(ziplist)的紧凑存储方式存储这些结构。</p>
-<p>list-max-zip-entries 512
-list-max-zip-value 64</p>
+<ul>
+<li>list-max-zip-entries 512</li>
+<li>list-max-zip-value 64</li>
+</ul>
 <p>可以用 DEBUG OBJECT 来观察</p>
 <p>当整数包含的成员都能解释成十进制整数，并且又处于平台的有符号整数范围之内，集合使用『整数集合(intset)』，有有序数组方式存储集合。</p>
 <p>尽量减少键的长度</p>

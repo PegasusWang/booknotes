@@ -1,0 +1,2431 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>《Grokking System Design》 - PegasusWang的读书笔记</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u300aGrokking System Design\u300b";
+    var mkdocs_page_input_path = "\u7cfb\u7edf\u8bbe\u8ba1system_design/Grokking_System_Design/Grokking_System_Design.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> PegasusWang的读书笔记</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../..">简介</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">代码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../code/work_with_legacy_code/">《Work with legacy code》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码大全/">《代码大全》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/代码的未来/">《代码的未来》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/基本功/">《基本功》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/敏捷技能修炼/">《敏捷技能修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/程序员应该知道的97件事/">《程序员应该知道的97件事》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编写可读代码的艺术/">《编写可读代码的艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/编程匠艺/">《编程匠艺》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../code/领域驱动设计/">《领域驱动设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">调试技术</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../debug/软件调试修炼之道/book/">《软件调试修炼之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../debug/Effective_Debugging/">《Effective Debugging》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">数据库</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../database/getting_started_with_impala/">《Getting started with impala》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql必知必会/">《mysql必知必会》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/mysql性能调优与架构实践/">《mysql性能调优与架构实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/Mysql技术内幕InnoDB存储引擎/">《Mysql技术内幕InnoDB存储引擎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis实战/">《Redis实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis深度历险核心原理和应用实践/book/">《Redis深度历险核心原理和应用实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/redis设计与实现/">《redis设计与实现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/七周七数据库/">《七周七数据库》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/深入浅出mysql/">《深入浅出mysql》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/高性能mysql第三版/">《高性能mysql第三版》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../database/MySQL是怎样运行的从根上理解MySQL/MySQL是怎样运行的从根上理解MySQL/">《MySQL是怎样运行的》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">前端</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../frontend/CSS_The_Missing_Manual/">《CSS_The_Missing_Manual》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/reactjs_小书/">《reactjs小书》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../frontend/es6标准入门/">《ES6标准入门》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">golang</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../golang/1_the_go_programming_lauguage/">《1 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/2_the_go_programming_lauguage/">《2 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/3_the_go_programming_lauguage/">《3 The Go Programming Language》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/build-web-application-with-golang/">《Build Web Application With Golang》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go101/book/">《Go101》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/network-programming-with-go/book/">《Network Programming with go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/building-microservices-with-go/book/">《Building Microservices With Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/building_restful_web_services_with_go/book/">《Building Restful Web Services with Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/concurrency-in-go/concurrency_in_go/">《Concurrency In Go》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go_in_action(go语言实战)/">《Go In Action(Go 实战)》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言学习笔记语言详解/">《Go学习笔记语言详解》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言学习笔记源码剖析/">《Go学习笔记源码剖析》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言编程/">《Go语言编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../golang/go语言编程之旅.md">《Go语言编程之旅》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">java</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../java/java-basic-introduction/">《java basic introduction》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网络</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../network/tcp_ip详解卷一/tcp_ip详解卷一/">《TCP IP详解卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">心理学</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../psychology/一切都是童年的错吗/">《一切都是童年的错吗》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/亲密关系/">《亲密关系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/情商/">《情商》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/拖延心理学/">《拖延心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/积极心理学/">《积极心理学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/自控力/">《自控力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/自控力-和压力做朋友/">《自控力:和压力做朋友》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/活出最乐观的自己/">《活出最乐观的自己》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/改变心理学的40项研究/">《改变心理学的40项研究》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/超越自卑/">《超越自卑》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../psychology/反脆弱/">《反脆弱》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">python</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../python/fluent_python/">《Fluent Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/Python_Microservices_Development/">《Python Microservices Development》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/high_performance_python/">《High Performance Python》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../python/python_网络编程/">《Python网络编程》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">创业</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../startup/hello_startup/">《Hello Startup》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/斯坦福公开课-如何创业/">《斯坦福公开课如何创业》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../startup/运营其实很简单/">《运营其实很简单》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">unix/linux</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/Linux高性能服务器编程/Linux高性能服务器编程/">《Linux高性能服务器编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/unix编程艺术/">《unix编程艺术》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../unix_linux/unix网络编程卷一/">《unix网络编程卷一》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">分布式</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../分布式/Kafka权威指南/">《Kafka 权威指南》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/分布式框架原理与应用/">《分布式框架原理与应用》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/大规模分布式存储系统/">《大规模分布式存储系统》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/深入分布式缓存从原理到实践/">《深入分布式缓存从原理到实践》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../分布式/深入理解Kafka核心设计与实践原理/深入理解Kafka核心设计与实践原理/">《深入理解Kafka核心技术与实践原理》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">系统设计</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">《Grokking System Design》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#load-balancing">Load Balancing</a></li>
+    
+
+    <li class="toctree-l3"><a href="#caching">Caching</a></li>
+    
+
+    <li class="toctree-l3"><a href="#sharding-or-data-partitoining">Sharding or Data Partitoining</a></li>
+    
+
+    <li class="toctree-l3"><a href="#indexes">Indexes(索引)</a></li>
+    
+
+    <li class="toctree-l3"><a href="#proxies">Proxies</a></li>
+    
+
+    <li class="toctree-l3"><a href="#queues">Queues</a></li>
+    
+
+    <li class="toctree-l3"><a href="#redundancy-and-replciation">Redundancy and Replciation</a></li>
+    
+
+    <li class="toctree-l3"><a href="#sql-vs-nosql">SQL vs NoSQL</a></li>
+    
+
+    <li class="toctree-l3"><a href="#cap-theorem">CAP Theorem</a></li>
+    
+
+    <li class="toctree-l3"><a href="#consistent-hashing">Consistent Hashing</a></li>
+    
+
+    <li class="toctree-l3"><a href="#long-polling-vs-websockets-vs-server-sent-events">Long-Polling vs Websockets vs Server-Sent Events</a></li>
+    
+
+    <li class="toctree-l3"><a href="#system-design-interviewssdi-a-step-by-step-guide">System Design Interviews(SDI): A step by step guide (系统设计步骤)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-requirements-clarifications">1. Requirements clarifications (需求陈述)</a></li>
+        
+            <li><a class="toctree-l4" href="#2-system-interface-definition">2. System interface definition (系统接口定义)</a></li>
+        
+            <li><a class="toctree-l4" href="#3-back-of-the-envelope-estimationa">3. Back-of-the-envelope estimationA (粗略估算)</a></li>
+        
+            <li><a class="toctree-l4" href="#4-defining-data-model">4. Defining data model (数据模型定义)</a></li>
+        
+            <li><a class="toctree-l4" href="#5-high-level-design">5. High-level design (高层设计)</a></li>
+        
+            <li><a class="toctree-l4" href="#6-detailed-design">6. Detailed design (细节设计)</a></li>
+        
+            <li><a class="toctree-l4" href="#7-identifying-and-resolving-bottlenecks">7. Identifying and resolving bottlenecks (识别改善瓶颈)</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-a-url-shortening-service-like-tinyurl">Designing a URL Shortening service like TinyURL (短网址系统)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-why-do-we-need-url-shortening">1. Why do we need URL shortening?</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-capacity-estimation-and-constraints">3. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#4-system-apis">4. System APIs</a></li>
+        
+            <li><a class="toctree-l4" href="#5-database-design">5. Database Design</a></li>
+        
+            <li><a class="toctree-l4" href="#6-basic-system-design-and-algorithm">6. Basic System Design and Algorithm</a></li>
+        
+            <li><a class="toctree-l4" href="#7-data-partitioning-and-replication">7. Data Partitioning and Replication</a></li>
+        
+            <li><a class="toctree-l4" href="#8-cache">8. Cache</a></li>
+        
+            <li><a class="toctree-l4" href="#9-load-balancerlb">9. Load Balancer(LB)</a></li>
+        
+            <li><a class="toctree-l4" href="#10-purging-or-db-cleanup">10. Purging or DB cleanup</a></li>
+        
+            <li><a class="toctree-l4" href="#11-telemetry">11 .Telemetry</a></li>
+        
+            <li><a class="toctree-l4" href="#12-security-and-permissioins">12. Security and Permissioins</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-instagram">Designing Instagram (图片分享服务)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-why-instagram">1. Why Instagram?</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_1">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-some-design-considerations">3. Some Design Considerations</a></li>
+        
+            <li><a class="toctree-l4" href="#4-capacity-estimation-and-constraints">4. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#5-high-level-system-design">5. High Level System Design</a></li>
+        
+            <li><a class="toctree-l4" href="#6-database-schema">6. Database Schema</a></li>
+        
+            <li><a class="toctree-l4" href="#7-component-design">7 Component Design</a></li>
+        
+            <li><a class="toctree-l4" href="#8-reliability-and-redundancy">8 Reliability and Redundancy</a></li>
+        
+            <li><a class="toctree-l4" href="#9-data-sharding">9. Data Sharding</a></li>
+        
+            <li><a class="toctree-l4" href="#10-ranking-and-timeline-generation">10. Ranking and Timeline Generation</a></li>
+        
+            <li><a class="toctree-l4" href="#11-timeline-creation-with-sharded-data">11. Timeline Creation with Sharded Data</a></li>
+        
+            <li><a class="toctree-l4" href="#12-cache-and-load-balancing">12 Cache and Load balancing</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-dropbox">Designing Dropbox (文件存储)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-why-cloud-storage">1. Why Cloud Storage</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_2">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-some-design-considerations_1">3. Some Design Considerations</a></li>
+        
+            <li><a class="toctree-l4" href="#4-capacity-estimation-and-constraints_1">4. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#5-high-level-design_1">5. High Level Design</a></li>
+        
+            <li><a class="toctree-l4" href="#6-component-design">6. Component Design</a></li>
+        
+            <li><a class="toctree-l4" href="#7-file-processing-workflow">7. File Processing Workflow</a></li>
+        
+            <li><a class="toctree-l4" href="#8-data-deduplication">8. Data Deduplication(去重)</a></li>
+        
+            <li><a class="toctree-l4" href="#9-metadata-partitioning">9. Metadata Partitioning</a></li>
+        
+            <li><a class="toctree-l4" href="#10-caching">10. Caching</a></li>
+        
+            <li><a class="toctree-l4" href="#11-load-balancerlb">11. Load Balancer(LB)</a></li>
+        
+            <li><a class="toctree-l4" href="#12-security-and-permissioins_1">12. Security and Permissioins</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-facebook-messenger">Designing Facebook Messenger</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-what-is-facebook-messenger">1. What is Facebook Messenger?</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_3">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-capacity-estimation-and-constraints_1">3. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#4-high-level-design">4. High Level Design</a></li>
+        
+            <li><a class="toctree-l4" href="#5-detailed-component-design">5 Detailed Component Design</a></li>
+        
+            <li><a class="toctree-l4" href="#6-data-partitioning">6. Data partitioning</a></li>
+        
+            <li><a class="toctree-l4" href="#7-cache">7. Cache</a></li>
+        
+            <li><a class="toctree-l4" href="#8-load-balancing">8. Load balancing</a></li>
+        
+            <li><a class="toctree-l4" href="#9-fault-tolerance-and-replication">9. Fault tolerance and Replication</a></li>
+        
+            <li><a class="toctree-l4" href="#10-extended-requirements">10. Extended Requirements</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-twitter">Designing Twitter (微博)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-what-is-twitter">1. What is Twitter?</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_4">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-capacity-estimation-and-constraints_2">3. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#4-system-apis_1">4. System APIs</a></li>
+        
+            <li><a class="toctree-l4" href="#5-high-level-design_2">5. High-level design</a></li>
+        
+            <li><a class="toctree-l4" href="#6-database-schema_1">6. Database Schema</a></li>
+        
+            <li><a class="toctree-l4" href="#7-data-sharding">7. Data Sharding</a></li>
+        
+            <li><a class="toctree-l4" href="#8-cache_1">8. Cache</a></li>
+        
+            <li><a class="toctree-l4" href="#9-timeline-generation">9. Timeline Generation</a></li>
+        
+            <li><a class="toctree-l4" href="#10-replcation-and-fault-tolerance">10. Replcation and Fault Tolerance</a></li>
+        
+            <li><a class="toctree-l4" href="#11-load-balancing">11. Load Balancing</a></li>
+        
+            <li><a class="toctree-l4" href="#12-monitoring">12. Monitoring</a></li>
+        
+            <li><a class="toctree-l4" href="#13-extended-requirements">13. Extended Requirements</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-youtube-or-netflix">Designing Youtube or Netflix (视频分享网站)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-why-youtube">1. Why Youtube</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_5">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-capacity-estimation-and-constraints_3">3. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#4-system-apis_2">4. System APIs</a></li>
+        
+            <li><a class="toctree-l4" href="#5-hign-level-design">5. Hign Level Design</a></li>
+        
+            <li><a class="toctree-l4" href="#6-database-schema_2">6. Database Schema</a></li>
+        
+            <li><a class="toctree-l4" href="#7-detailed-component-design">7. Detailed Component Design</a></li>
+        
+            <li><a class="toctree-l4" href="#8-metadata-sharding">8. Metadata sharding</a></li>
+        
+            <li><a class="toctree-l4" href="#9-video-deduplication">9. Video Deduplication</a></li>
+        
+            <li><a class="toctree-l4" href="#10-load-balancing">10. Load Balancing</a></li>
+        
+            <li><a class="toctree-l4" href="#11-cache">11. Cache</a></li>
+        
+            <li><a class="toctree-l4" href="#12-content-delivery-network-cdn">12. Content Delivery Network (CDN)</a></li>
+        
+            <li><a class="toctree-l4" href="#13-fault-tolerance">13. Fault Tolerance</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-typeahead-suggestion">Designing Typeahead Suggestion (实时补全)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-what-is-typeahead-suggestions">1. What is Typeahead Suggestions?</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_6">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-basic-system-design-and-algorithm">3. Basic System Design and Algorithm</a></li>
+        
+            <li><a class="toctree-l4" href="#4-permanent-storage-of-the-trie">4. Permanent Storage of the Trie</a></li>
+        
+            <li><a class="toctree-l4" href="#5-scale-estimation">5. Scale Estimation</a></li>
+        
+            <li><a class="toctree-l4" href="#6-data-partition">6. Data Partition</a></li>
+        
+            <li><a class="toctree-l4" href="#7-cache_1">7. Cache</a></li>
+        
+            <li><a class="toctree-l4" href="#9-fault-tolerance">9. Fault Tolerance</a></li>
+        
+            <li><a class="toctree-l4" href="#10-typeahead-client">10 Typeahead Client</a></li>
+        
+            <li><a class="toctree-l4" href="#11-personalization">11 Personalization</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-twitter-search">Designing Twitter Search</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-what-is-twitter-search">1. What is Twitter Search</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_7">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-capacity-estimation-and-constraints_4">3. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#4-system-apis_3">4. System APIs</a></li>
+        
+            <li><a class="toctree-l4" href="#5-high-level-system-design_1">5. High Level System Design</a></li>
+        
+            <li><a class="toctree-l4" href="#6-detailed-component-design">6. Detailed Component Design</a></li>
+        
+            <li><a class="toctree-l4" href="#7-fault-tolerance">7. Fault Tolerance</a></li>
+        
+            <li><a class="toctree-l4" href="#8-cache_2">8. Cache</a></li>
+        
+            <li><a class="toctree-l4" href="#9-load-balancing">9. Load Balancing</a></li>
+        
+            <li><a class="toctree-l4" href="#10-ranking">10. Ranking</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-a-web-crawler">Designing a Web Crawler</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-what-is-a-web-crawler">1. What is a Web Crawler</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_8">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-some-design-considerations_2">3. Some Design Considerations</a></li>
+        
+            <li><a class="toctree-l4" href="#4-capacity-estimation-and-constraints_2">4. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#5-high-level-design_3">5. High Level design</a></li>
+        
+            <li><a class="toctree-l4" href="#6-detailed-component-design_1">6. Detailed Component Design</a></li>
+        
+            <li><a class="toctree-l4" href="#7-fault-tolerance_1">7. Fault tolerance</a></li>
+        
+            <li><a class="toctree-l4" href="#8-data-partitioning">8. Data Partitioning</a></li>
+        
+            <li><a class="toctree-l4" href="#9-crawler-traps">9. Crawler Traps</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-facebooks-newsfeed">Designing Facebook's Newsfeed (信息流)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-what-is-facebooks-newsfeed">1. What is Facebook's newsfeed?</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_9">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-capacity-estimation-and-constraints_5">3. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#4-system-apis_4">4. System APIs</a></li>
+        
+            <li><a class="toctree-l4" href="#5-database-design_1">5. Database Design</a></li>
+        
+            <li><a class="toctree-l4" href="#6-high-level-system-design">6. High Level System Design</a></li>
+        
+            <li><a class="toctree-l4" href="#7-detailed-component-design_1">7. Detailed Component Design</a></li>
+        
+            <li><a class="toctree-l4" href="#8-feed-ranking">8. Feed Ranking</a></li>
+        
+            <li><a class="toctree-l4" href="#9-data-partitioning">9. Data Partitioning</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-yelp-or-newarby-friends">Designing Yelp or Newarby Friends</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-why-yelp-or-proximity-server">1. Why Yelp or Proximity Server?</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_10">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-scale-estimation">3. Scale Estimation</a></li>
+        
+            <li><a class="toctree-l4" href="#4-database-schema">4. Database Schema</a></li>
+        
+            <li><a class="toctree-l4" href="#5-system-apis">5. System APIs</a></li>
+        
+            <li><a class="toctree-l4" href="#6-basic-system-design-and-algorithm_1">6. Basic System Design and Algorithm</a></li>
+        
+            <li><a class="toctree-l4" href="#7-data-partitioning">7. Data Partitioning</a></li>
+        
+            <li><a class="toctree-l4" href="#8-replication-and-fault-tolerance">8. Replication and Fault Tolerance</a></li>
+        
+            <li><a class="toctree-l4" href="#9-cache">9. Cache</a></li>
+        
+            <li><a class="toctree-l4" href="#10-load-balancinglb">10. Load Balancing(LB)</a></li>
+        
+            <li><a class="toctree-l4" href="#11-ranking">11. Ranking</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#designing-uber-backend">Designing Uber backend (打车服务)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-whaat-is-uber">1. Whaat is Uber?</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_11">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-capacity-estimation-and-constraints_6">3. Capacity Estimation and Constraints</a></li>
+        
+            <li><a class="toctree-l4" href="#4-basic-system-design-and-algorithm">4. Basic System Design and Algorithm</a></li>
+        
+            <li><a class="toctree-l4" href="#5-fault-tolerance-and-replication">5. Fault Tolerance and Replication</a></li>
+        
+            <li><a class="toctree-l4" href="#6-ranking">6. Ranking</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#design-bookmyshow">Design BookMyShow (在线订票服务)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-what-is-an-online-movie-ticket-booking-system">1. What is an online movie ticket booking system?</a></li>
+        
+            <li><a class="toctree-l4" href="#2-requirements-and-goals-of-the-system_12">2. Requirements and Goals of the System</a></li>
+        
+            <li><a class="toctree-l4" href="#3-some-design-considerations_3">3. Some Design Considerations</a></li>
+        
+            <li><a class="toctree-l4" href="#4-capacity-estimation">4. Capacity Estimation</a></li>
+        
+            <li><a class="toctree-l4" href="#5-system-apis_1">5. System APIs</a></li>
+        
+            <li><a class="toctree-l4" href="#6-database-design">6. Database Design</a></li>
+        
+            <li><a class="toctree-l4" href="#7-high-level-design">7. High Level Design</a></li>
+        
+            <li><a class="toctree-l4" href="#9-concurrency">9. Concurrency</a></li>
+        
+            <li><a class="toctree-l4" href="#10-fault-tolerance">10. Fault Tolerance</a></li>
+        
+            <li><a class="toctree-l4" href="#11-data-partitioning">11. Data Partitioning</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">搜索引擎</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../搜索引擎/Elasticsearch实战/book/">《Elasticsearch实战》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">开发工具</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/practical_vim/practical_vim/">《Practical Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/vim8文本处理实战/vim8文本处理实战/">《Vim8文本处理实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/learn_vim_the_hard_way/">《Learn vim scrpt the hard way》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/pro_git/">《Pro Git》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/Mastering_vim/">《Mastering Vim》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../开发工具/mastering_vim_quickly/">《Mastering Vim Quickly》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">思维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/专注力_化繁为简的惊人力量/">《专注力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/为什么精英这样用脑不会累/">《为什么精英这样用脑不会累》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/刻意练习/">《刻意练习》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/如何想到又做到/">《如何想到又做到》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习之道/">《学习之道》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/学习力/">《学习力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/批判性思维工具/">《批判性思维工具》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/程序员的思维修炼(开发认知潜能的九堂课)/">《程序员的思维修炼》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/认知天性/">《认知天性》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/超效率手册/">《超效率手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../思维认知/高效程序员的45个习惯/">《高效程序员的45个习惯》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">源码</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../源码阅读_sourcecode/">《源码阅读》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">网站架构微服务</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/microservices_patterns_微服务架构设计模式/book/">《微服务架构设计模式》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/从0开始学架构/从0开始学架构/">《从0开始学架构》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/web_scalavility_for_startup_engineers/">《web scalavility for startup engineers》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/design_data_instensive_application/">《design_data_instensive_application》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/clean_architecture/">《clean_architecture》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/微服务实战/">《微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../网站架构微服务/微服务设计/">《微服务设计》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">软件工程/项目管理</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/人月神话/">《人月神话》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/代码之殇/">《代码之殇》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/解析极限编程-拥抱变化/">《解析极限编程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/构建之法:现代软件工程/">《构建之法:现代软件工程》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../软件工程_项目管理/项目管理修炼之道/">《项目管理修炼之道》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">运维</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../运维/linux集群和自动化运维/">《linux集群和自动化运维》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../运维/python自动化运维/">《python自动化运维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">金融理财</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/迈出投资第一步/迈出投资第一步/">《迈出投资第一步》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/定投十年/">《定投十年》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/指数基金投资日志/">《指数基金投资日志》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/穷查理宝典/">《穷查理宝典》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../金融理财/聪明的定投/">《聪明的定投》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">写作</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../写作/刷屏文案写作技巧/">《刷屏文案写作技巧》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">互联网</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../互联网/我的互联网方法论-周鸿祎/">《我的互联网方法论-周鸿祎》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../互联网/用户思维/">《用户思维》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">区块链</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../区块链/区块链技术指南(blockchain_guide)/">《区块链技术指南》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">技术演讲</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/哔哩哔哩的go微服务实战/note/">《哔哩哔哩的go微服务实战》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/Go_Error/go业务基础库之Error&Context/">《go业务基础库之Error&Context》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../lecture/Gopher/Go同步和并发设计模式/note/">《Go同步和并发设计模式》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">职场</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../career/give_and_take/">《give and take》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/the_effective_engineer/">《the_effective_engineer》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/光速成长/">《光速成长》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/向上管理/">《向上管理》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/成功动机与目标/">《成功动机与目标》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/番茄工作法/">《番茄工作法》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知乎职人觉醒/">《知乎职人觉醒》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/知识变现/">《知识变现》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/聆听沟通学/">《聆听沟通学》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场动物进化手册/">《职场动物进化手册》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/职场解释系/">《职场解释系》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/请停止无效努力/">《请停止无效努力》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/软技能/">《软技能》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效15法则/">《高效15法则》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../../career/高效清单工作法/">《高效清单工作法》</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">PegasusWang的读书笔记</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>系统设计 &raquo;</li>
+        
+      
+    
+    <li>《Grokking System Design》</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>《Grokking System Design》 讲后端系统设计的一本书</p>
+<h1 id="load-balancing">Load Balancing</h1>
+<p>负载均衡，剔除异常节点等。 (random, round-robin, random with weighting for memory or cpu ulilization)</p>
+<ul>
+<li>Between user and web server</li>
+<li>Between web servers and internal platform layer</li>
+<li>Between internal platform layer and databases</li>
+</ul>
+<p>ways to implement load balancing:</p>
+<ol>
+<li>Smart clients</li>
+<li>Hardware Load Balancers (设备一般比较贵)</li>
+<li>Sofrware Load Balancers (HAproxy, Nginx)</li>
+</ol>
+<h1 id="caching">Caching</h1>
+<ol>
+<li>Application server cache (应用层缓存)</li>
+<li>Distributed cache (每个节点缓存部分数据)</li>
+<li>Global cache</li>
+<li>Content Distribution Network(CDN) 静态文件</li>
+</ol>
+<p>Cache Invalidation: 缓存失效。解决缓存一直性问题</p>
+<ul>
+<li>Write-through cache: 数据同时写入缓存和数据库。如果写入量大太高有延迟</li>
+<li>Write-around cache: 旁路写入缓存。可能有缓存失效(cache miss)问题</li>
+<li>Write-back cache: 直接写缓存就返回，之后定期或者条件触发写入到数据库。支持高并发写入，但是可能数据会丢失</li>
+</ul>
+<p>Cache eviction policies: (缓存剔除)</p>
+<ul>
+<li>First In First Out(FIFO)</li>
+<li>Last in First Out(LIFO)</li>
+<li>Least Recently Used(LRU)</li>
+<li>Most Recently Used(MRU)</li>
+<li>Least Frequently Used(LFU)</li>
+<li>Random Replacement(RR)</li>
+</ul>
+<h1 id="sharding-or-data-partitoining">Sharding or Data Partitoining</h1>
+<ol>
+<li>Partitioning Methods</li>
+</ol>
+<ul>
+<li>Horizontal partitioning</li>
+<li>Vertical Partitioning</li>
+<li>Directory Based Partitioning: create a lookup service, map between key to its DB server</li>
+</ul>
+<ol>
+<li>Partitioning Criteria</li>
+</ol>
+<ul>
+<li>Key or hash-based partitioning</li>
+<li>List partitioning</li>
+<li>Round-robing partitioning</li>
+<li>Composite partitioning</li>
+</ul>
+<ol>
+<li>Common Problems of Sharding</li>
+</ol>
+<ul>
+<li>Joins and Denormalication。比如通过数据冗余避免 join</li>
+<li>Referential integrity。避免外键约束，业务层做</li>
+<li>Rebalancing</li>
+</ul>
+<h1 id="indexes">Indexes(索引)</h1>
+<p>rapid random lookups and efficient access of ordered records</p>
+<ul>
+<li>数据库索引 (B+树形结构)</li>
+<li>hash 索引 (kv存储)</li>
+<li>倒排索引 (ElasticSearch搜索引擎)</li>
+</ul>
+<h1 id="proxies">Proxies</h1>
+<p>A proxy server is an intermediary piece of hardware/software that sits between the client and the back-end server.
+It receives requests from clients and relays them to the origin servers. Typically, proxies are used to filter requests or log requests,
+or sometimes transform requests (by adding/removing headers, encrypting/decrypting, or compression).
+Another advantage of a proxy server is that its cache can serve a lot of requests. If multiple clients access a particular resource, the proxy server can cache it and serve all clients without going to the remote server.</p>
+<p>(batch several request into one)</p>
+<h1 id="queues">Queues</h1>
+<ul>
+<li>削峰填谷</li>
+<li>解耦</li>
+</ul>
+<h1 id="redundancy-and-replciation">Redundancy and Replciation</h1>
+<ul>
+<li>避免单点故障。出故障 failover 转移</li>
+<li>shared-nothing architecture</li>
+</ul>
+<h1 id="sql-vs-nosql">SQL vs NoSQL</h1>
+<ul>
+<li>SQL: store data in rows and columns. Mysql, Postgres, SQLite</li>
+<li>Nosql:<ul>
+<li>key-value stores: Redis,Dynamo</li>
+<li>Document Database: MongoDB, CouchDB</li>
+<li>Wide-Column Database: 列式存储。大数据集分析。HBase, Cassandra</li>
+<li>Graph Database: 地理位置存储。 Neo4J, InfiniteGraph</li>
+</ul>
+</li>
+</ul>
+<p>区别：</p>
+<ul>
+<li>Schema: sql需要固定的 schema，nosql 可以不需要</li>
+<li>Querying: SQL vs UnQL(unstructured query language)</li>
+<li>Scalability: nosql 方便水平扩展</li>
+<li>Reliablility or ACID。 nosql 为了性能和扩展性牺牲了 ACID 特性</li>
+</ul>
+<p>Reasons to use SQL database:</p>
+<ul>
+<li>保证 ACID ，比如金融和财务场景</li>
+<li>数据是结构化和非易变的</li>
+</ul>
+<p>Reasons to use NoSQL database:</p>
+<ul>
+<li>大数据量无结构</li>
+<li>云端计算和存储</li>
+<li>快速开发</li>
+</ul>
+<h1 id="cap-theorem">CAP Theorem</h1>
+<p>三者最多只能满足两个</p>
+<ul>
+<li>Consistency: All nodes see the same data at the same time. Consistency is achieved by updating several nodes before allowing further reads.</li>
+<li>Availability: Every request gets a response on success/failure. Availability is achieved by replicating the data across different servers.</li>
+<li>Partition tolerance: System continues to work despite message loss or partial failure. A system that is partition-tolerant can
+  sustain any amount of network failure that doesn’t result in a failure of the entire network.
+  Data is sufficiently replicated across combinations of nodes and networks to keep the system up through intermittent outages.</li>
+</ul>
+<h1 id="consistent-hashing">Consistent Hashing</h1>
+<p>普通的 hash 有什么缺点：</p>
+<ul>
+<li>不是水平扩展的。增加或者删除节点导致之前映射失效</li>
+<li>无法负载均衡，有数据倾斜问题</li>
+</ul>
+<p>一致性哈希可以降低增删节点时候的映射重新分配，更容易扩缩容。</p>
+<p>As a typical hash function, consistent hashing maps a key to an integer. Suppose the output of the hash function is in the range of [0, 256).
+Imagine that the integers in the range are placed on a ring such that the values are wrapped around.</p>
+<p>Here’s how consistent hashing works:
+1. Given a list of cache servers, hash them to integers in the range.
+2. To map a key to a server,
+    - Hash it to a single integer.
+    - Move clockwise on the ring until finding the first cache it encounters.
+    - That cache is the one that contains the key. See animation below as an example: key1 maps to cache A; key2 maps to cache C.</p>
+<p>为了防止数据倾斜，一致性哈希引入了"vritual replicas" 虚拟节点，让一个机器节点映射到多个虚拟节点上。</p>
+<h1 id="long-polling-vs-websockets-vs-server-sent-events">Long-Polling vs Websockets vs Server-Sent Events</h1>
+<ul>
+<li>Long-Polling: ajax 轮询</li>
+<li>Websockets: 全双工</li>
+<li>Server-Sent (SSEs)</li>
+</ul>
+<h1 id="system-design-interviewssdi-a-step-by-step-guide">System Design Interviews(SDI): A step by step guide (系统设计步骤)</h1>
+<p>高并发、高性能、高可用</p>
+<h3 id="1-requirements-clarifications">1. Requirements clarifications (需求陈述)</h3>
+<ul>
+<li>Here are some questions for designing Twitter that should be answered before moving on to next steps:</li>
+<li>Will users of our service be able to post tweets and follow other people? Should we also design to create and display user’s timeline?</li>
+<li>Will tweets contain photos and videos?</li>
+<li>Are we focusing on backend only or are we developing front-end too? Will users be able to search tweets?</li>
+<li>Do we need to display hot trending topics?</li>
+<li>Would there be any push notification for new (or important) tweets?</li>
+</ul>
+<h3 id="2-system-interface-definition">2. System interface definition (系统接口定义)</h3>
+<p>确保需求和理解一致，并定义好接口</p>
+<ul>
+<li>postTweet(user_id, tweet_data, tweet_location, user_location, timestamp, ...)</li>
+<li>generateTimeline(user_id, current_time, user_location, ...)</li>
+<li>markTweetFavorite(user_id, tweet_id, timestamp, ...)</li>
+</ul>
+<h3 id="3-back-of-the-envelope-estimationa">3. Back-of-the-envelope estimationA (粗略估算)</h3>
+<p>估算系统的扩展性</p>
+<ul>
+<li>What scale is expected from the system (e.g., number of new tweets, number of tweet views, how many timeline generations per sec., etc.)?</li>
+<li>How much storage would we need? We’ll have different numbers if users can have photos and videos in their tweets.</li>
+<li>What network bandwidth usage are we expecting? This would be crucial in deciding how would we manage traffic and balance load between servers.</li>
+</ul>
+<h3 id="4-defining-data-model">4. Defining data model (数据模型定义)</h3>
+<p>比如类似推特的服务设计：</p>
+<ul>
+<li>User: UserID, Name, Email, DoB, CreationData, LastLogin, etc.</li>
+<li>Tweet: TweetID, Content, TweetLocation, NumberOfLikes, TimeStamp, etc.</li>
+<li>UserFollowos: UserdID1, UserID2</li>
+<li>FavoriteTweets: UserID, TweetID, TimeStamp</li>
+</ul>
+<p>考虑应该用 sql 还是 nosql 等存储？</p>
+<h3 id="5-high-level-design">5. High-level design (高层设计)</h3>
+<p>画出来系统设计图，大概 5-6 个盒子图表示关键组件(服务、数据库、缓存等交互)。</p>
+<h3 id="6-detailed-design">6. Detailed design (细节设计)</h3>
+<p>优缺点、技术选型，挑选两三个组件详细介绍</p>
+<ul>
+<li>Since we’ll be storing a huge amount of data, how should we partition our data to distribute it to multiple databases? Should we try to store all the data of a user on the same database? What issue can it cause?</li>
+<li>How would we handle hot users, who tweet a lot or follow lots of people?</li>
+<li>Since user’s timeline will contain most recent (and relevant) tweets, should we try to store our data in such a way that is optimized to scan latest tweets?</li>
+<li>How much and at which layer should we introduce cache to speed things up?</li>
+<li>What components need better load balancing?</li>
+</ul>
+<h3 id="7-identifying-and-resolving-bottlenecks">7. Identifying and resolving bottlenecks (识别改善瓶颈)</h3>
+<p>单点故障、副本、监控等维度。</p>
+<ul>
+<li>Is there any single point of failure in our system? What are we doing to mitigate it?</li>
+<li>Do we’ve enough replicas of the data so that if we lose a few servers, we can still serve our users?</li>
+<li>Similarly, do we’ve enough copies of different services running, such that a few failures will not cause total system shutdown?</li>
+<li>How are we monitoring the performance of our service? Do we get alerts whenever critical components fail or their performance degrade?</li>
+</ul>
+<h1 id="designing-a-url-shortening-service-like-tinyurl">Designing a URL Shortening service like TinyURL (短网址系统)</h1>
+<h3 id="1-why-do-we-need-url-shortening">1. Why do we need URL shortening?</h3>
+<p>缩短网址、追踪用户访问、网址隐藏</p>
+<h3 id="2-requirements-and-goals-of-the-system">2. Requirements and Goals of the System</h3>
+<p>Functional Requirements:</p>
+<ol>
+<li>Given a URL, our service should generate a shorter and unique alias of it.</li>
+<li>When users access a shorter URL, our service should redirect them to the original link.</li>
+<li>Users should optionally be able to pick a custom alias for their URL.</li>
+<li>Links will expire after a specific timespan automatically; users should also be able to specify expiration time.</li>
+</ol>
+<p>Non-Functional Requirements:</p>
+<ol>
+<li>The system should be highly available. This is required because if our service is down, all the URL redirections will start failing.</li>
+<li>URL redirection should happen in real-time with minimum latency.</li>
+<li>Shortened links should not be guessable (not predictable).</li>
+</ol>
+<p>Extended Requirements:</p>
+<ol>
+<li>Analytics, e.g., how many times a redirection happened?</li>
+<li>Our service should also be accessible through REST APIs by other services.</li>
+</ol>
+<h3 id="3-capacity-estimation-and-constraints">3. Capacity Estimation and Constraints</h3>
+<ul>
+<li>Traffic estimates: 500 million / (30 days * 24 hours * 3600 seconds) ~= 200 URLs/s; 50 billion / (30 days * 24 hours * 3600 sec) ~= 19K/s</li>
+<li>Storage estimates: 500 million * 5 years * 12 months = 30 billion; 30 billion * 500 bytes = 15 TB</li>
+<li>Bandwidth estimates: 200 * 500 bytes = 100 KB/s; 19K * 500 bytes ~= 9 MB/s</li>
+<li>Memory estimates: 19K * 500 bytes ~= 9 MB/s;  缓存20% 0.2 * 1.7 billion * 500 bytes ~= 170GB</li>
+</ul>
+<p>Assuming 500 million new URLs per month and 100:1 read:write ratio, following is the summary of the high level estimates for our service: 上边的列个表格</p>
+<h3 id="4-system-apis">4. System APIs</h3>
+<pre><code>creatURL(api_dev_key, original_url, custom_alias=None user_name=None, expire_date=None)
+deleteURL(api_dev_key, url_key)
+</code></pre>
+<h3 id="5-database-design">5. Database Design</h3>
+<p>URL表(URL)： OriginURL(varchar 512), CreationDate(datetime), ExpirationDate(datetime), UserID(int)</p>
+<p>用户表(User): Name(varchar 20), Email(varchar 32), CreationDate(datetime), LastLogin(datetime)</p>
+<p>可以用 nosql (Dynamo or Cassandra)，用 nosql 不要直接在 URL 表存用户 id，单独一个表存关系。</p>
+<h3 id="6-basic-system-design-and-algorithm">6. Basic System Design and Algorithm</h3>
+<p>如何生成短网址的最后 6 位。 比如 http://tinyurl.com/jlg8zpc。 提供两种方式：</p>
+<ol>
+<li>
+<p>先计算唯一 hash，不如md5，之后编码base62/base64等。这里可以用 md5 + base64 之后取前面 6 位，如果冲突了可以取别的位置
+   或者交换字符。</p>
+</li>
+<li>
+<p>Generateing keys offline。预计算好放到库里。</p>
+</li>
+</ol>
+<h3 id="7-data-partitioning-and-replication">7. Data Partitioning and Replication</h3>
+<ul>
+<li>range based partitioning</li>
+<li>hash based partitioning</li>
+</ul>
+<h3 id="8-cache">8. Cache</h3>
+<p>Memcache 缓存经常访问的 url。LRU 剔除算法比较好。</p>
+<h3 id="9-load-balancerlb">9. Load Balancer(LB)</h3>
+<p>简单的 round robin 就可以，更好的是根据机器负载智能做均衡</p>
+<h3 id="10-purging-or-db-cleanup">10. Purging or DB cleanup</h3>
+<ul>
+<li>惰性删除过期的 url。</li>
+<li>定期删除</li>
+<li>所有 url 加上固定的 2 年默认过期</li>
+</ul>
+<h3 id="11-telemetry">11 .Telemetry</h3>
+<p>根据用户、访问时间、地理位置等做分析。</p>
+<h3 id="12-security-and-permissioins">12. Security and Permissioins</h3>
+<p>设置不同用户的访问策略</p>
+<h1 id="designing-instagram">Designing Instagram (图片分享服务)</h1>
+<h3 id="1-why-instagram">1. Why Instagram?</h3>
+<p>支持上传分享图片和视频，关注他人。每个用户时间线(timeline)包括其关注的高热度图片。</p>
+<h3 id="2-requirements-and-goals-of-the-system_1">2. Requirements and Goals of the System</h3>
+<p>Functional Requirements</p>
+<ol>
+<li>Users should be able to upload/download/view photos.</li>
+<li>Users can perform searches based on photo/video titles.</li>
+<li>Users can follow other users.</li>
+<li>The system should be able to generate and display a user’s timeline consisting of top photos from all the people the user follows.</li>
+</ol>
+<p>Non-functional Requirements</p>
+<ol>
+<li>Our service needs to be highly available.</li>
+<li>The acceptable latency of the system is 200ms for timeline generation.</li>
+<li>Consistency can take a hit (in the interest of availability), if a user doesn’t see a photo for a while, it should be fine.</li>
+<li>The system should be highly reliable, any photo/video uploaded should not be lost.</li>
+</ol>
+<h3 id="3-some-design-considerations">3. Some Design Considerations</h3>
+<p>The system would be read-heavy, so we will focus on building a system that can retrieve photos quickly.</p>
+<ol>
+<li>Practically users can upload as many photos as they like. Efficient management of storage should be a crucial factor while designing this system.</li>
+<li>Low latency is expected while reading images.</li>
+<li>Data should be 100% reliable. If a user uploads an image, the system will guarantee that it will never be lost.</li>
+</ol>
+<h3 id="4-capacity-estimation-and-constraints">4. Capacity Estimation and Constraints</h3>
+<ul>
+<li>Let’s assume we have 300M total users, with 1M daily active users.</li>
+<li>2M new photos every day, 23 new photos every second.</li>
+<li>Average photo file size =&gt; 200KB</li>
+<li>Total space required for 1 day of photos 2M * 200KB =&gt; 400 GB</li>
+<li>Total space required for 5 years: 400GB * 365 (days a year) * 5 (years) ~= 712 TB</li>
+</ul>
+<h3 id="5-high-level-system-design">5. High Level System Design</h3>
+<p>Image Hosting System, Image Storage, Image Metadata</p>
+<h3 id="6-database-schema">6. Database Schema</h3>
+<p><img alt="" src="../instagram_db.png" /></p>
+<p>图片可以存储在 HDFS or S3(亚马逊云)</p>
+<h3 id="7-component-design">7 Component Design</h3>
+<p>图片读取和写入分离。</p>
+<h3 id="8-reliability-and-redundancy">8 Reliability and Redundancy</h3>
+<p>通过冗余避免单点失败</p>
+<h3 id="9-data-sharding">9. Data Sharding</h3>
+<ul>
+<li>Partitioning based on userID</li>
+<li>Partitioning based on photoID</li>
+</ul>
+<h3 id="10-ranking-and-timeline-generation">10. Ranking and Timeline Generation</h3>
+<p>需要把用户关注的最新和最热的相关图片生成时间线。</p>
+<ul>
+<li>预先计算。专用服务持续生成用户的时间线然后存在 UserTimeline 表，只需要查询这张表即可。</li>
+</ul>
+<ol>
+<li>pull。客户端拉取时间线，大部分时间如果没有更新就拉取了空数据</li>
+<li>push。服务端推送数据。用户关注太多会比较耗时</li>
+<li>hybrid。推拉结合</li>
+</ol>
+<h3 id="11-timeline-creation-with-sharded-data">11. Timeline Creation with Sharded Data</h3>
+<p>photoID 包含时间信息方便排序</p>
+<h3 id="12-cache-and-load-balancing">12 Cache and Load balancing</h3>
+<p>cdn + lru cache</p>
+<h1 id="designing-dropbox">Designing Dropbox (文件存储)</h1>
+<h3 id="1-why-cloud-storage">1. Why Cloud Storage</h3>
+<p>方便跨设备和系统同步</p>
+<ul>
+<li>availability</li>
+<li>reliablility and durability</li>
+<li>scalability</li>
+</ul>
+<h3 id="2-requirements-and-goals-of-the-system_2">2. Requirements and Goals of the System</h3>
+<p>What do we wish to achieve from a Cloud Storage system? Here are the top-level requirements for our system:</p>
+<ol>
+<li>Users should be able to upload and download their files/photos from any device.</li>
+<li>Users should be able to share files or folders with other users.</li>
+<li>Our service should support automatic synchronization between devices, i.e., after updating a file on one device, it should get synchronized on all devices.</li>
+<li>The system should support storing large files up to a GB.</li>
+<li>ACID-ity is required. Atomicity, Consistency, Isolation and Durability of all file operations should be guaranteed.</li>
+<li>Our system should support offline editing. Users should be able to add/delete/modify files while offline, and as soon as they come online, all their changes should be synced to the remote servers and other online devices.</li>
+</ol>
+<p>Extended Requirements</p>
+<ul>
+<li>The system should support snapshotting of the data, so that users can go back to any version of the files.</li>
+</ul>
+<h3 id="3-some-design-considerations_1">3. Some Design Considerations</h3>
+<ul>
+<li>We should expect huge read and write volumes.</li>
+<li>Read to write ratio is expected to be nearly the same.</li>
+<li>Internally, files can be stored in small parts or chunks (say 4MB), this can provide a lot of benefits e.g. all failed operations shall only be retried for smaller parts of a file. If a user fails to upload a file, then only the failing chunk will be retried.</li>
+<li>We can reduce the amount of data exchange by transferring updated chunks only.</li>
+<li>By removing duplicate chunks, we can save storage space and bandwidth usage.</li>
+<li>Keeping a local copy of the metadata (file name, size, etc.) with the client can save us a lot of round trips to the server.</li>
+<li>For small changes, clients can intelligently upload the diffs instead of the whole chunk.</li>
+</ul>
+<h3 id="4-capacity-estimation-and-constraints_1">4. Capacity Estimation and Constraints</h3>
+<ul>
+<li>Let’s assume that we have 500M total users, and 100M daily active users (DAU).</li>
+<li>Let’s assume that on average each user connects from three different devices.</li>
+<li>On average if a user has 200 files/photos, we will have 100 billion total files.</li>
+<li>Let’s assume that average file size is 100KB, this would give us ten petabytes of total storage. 100B * 100KB =&gt; 10PB</li>
+<li>Let’s also assume that we will have one million active connections per minute.</li>
+</ul>
+<h3 id="5-high-level-design_1">5. High Level Design</h3>
+<ul>
+<li>client</li>
+<li>block server -&gt; cloud storage</li>
+<li>metadata serve -&gt; metadata storage</li>
+<li>synchronization server</li>
+</ul>
+<h3 id="6-component-design">6. Component Design</h3>
+<h4 id="a-client">a. client</h4>
+<p>- upload and download files
+  - detect fiel changes in the workspace folder
+  - handle conflict due to offline or ocncurrent updates</p>
+<p>优化：</p>
+<ul>
+<li>如何高效传输？文件分块，部分更新的话可以节省带宽</li>
+<li>本地需要保存远信息么？需要，可以离线更新</li>
+<li>客户端如何监听其他客户端更新。http 长轮询</li>
+</ul>
+<p>可以把客户端分成 4 个部分：</p>
+<ul>
+<li>internal metadata database</li>
+<li>chunker</li>
+<li>watcher</li>
+<li>indexer</li>
+</ul>
+<h4 id="b-metadata-database">b. metadata database</h4>
+<p>存储四个对象信息：chunks, files, users, devices</p>
+<h4 id="c-synchronization-service">c. synchronization service</h4>
+<p>同步其他客户端和 server 信息。</p>
+<h4 id="d-message-queing-service">d. message queing service</h4>
+<ul>
+<li>request queue: clients requests to update metadata database sent to request queue first</li>
+<li>response queue: delivering the update messages to each client</li>
+</ul>
+<h4 id="e-cloudblock-storage">e. cloud/block storage</h4>
+<p>stores chunks of files uploaded by the users</p>
+<h3 id="7-file-processing-workflow">7. File Processing Workflow</h3>
+<ol>
+<li>Client A uploads chunks to cloud storage.</li>
+<li>Client A updates metadata and commits changes.</li>
+<li>Client A gets confirmation, and notifications are sent to Clients B and C about the changes.</li>
+<li>Client B and C receive metadata changes and download updated chunks.</li>
+</ol>
+<h3 id="8-data-deduplication">8. Data Deduplication(去重)</h3>
+<ul>
+<li>post-process deduplication</li>
+<li>inline deduplication (计算 chunk md5)</li>
+</ul>
+<h3 id="9-metadata-partitioning">9. Metadata Partitioning</h3>
+<ul>
+<li>vertical partitioning</li>
+<li>range based partitioning</li>
+<li>hash-based partitioning</li>
+</ul>
+<h3 id="10-caching">10. Caching</h3>
+<p>hot files/chunks, use memcache and lru</p>
+<h3 id="11-load-balancerlb">11. Load Balancer(LB)</h3>
+<ul>
+<li>clients and block server</li>
+<li>clients and metadata servers</li>
+</ul>
+<h3 id="12-security-and-permissioins_1">12. Security and Permissioins</h3>
+<p>storing permissions of each file in our metadata DB to reflect what files are visible or modifiable by user</p>
+<h1 id="designing-facebook-messenger">Designing Facebook Messenger</h1>
+<h3 id="1-what-is-facebook-messenger">1. What is Facebook Messenger?</h3>
+<p>基于文本的实时消息服务</p>
+<h3 id="2-requirements-and-goals-of-the-system_3">2. Requirements and Goals of the System</h3>
+<p>Functional Requirements:</p>
+<ol>
+<li>Messenger should support one-on-one conversations between users.</li>
+<li>Messenger should keep track of online/offline statuses of its users.</li>
+<li>Messenger should support persistent storage of chat history.</li>
+</ol>
+<p>Non-functional Requirements:</p>
+<ol>
+<li>Users should have real-time chat experience with minimum latency.</li>
+<li>Our system should be highly consistent; users should be able to see the same chat history on all their devices.</li>
+<li>Messenger’s high availability is desirable; we can tolerate lower availability in the interest of consistency.</li>
+</ol>
+<p>Extended Requirements:</p>
+<ul>
+<li>Group Chats: Messenger should support multiple people talking to each other in a group.</li>
+<li>Push notifications: Messenger should be able to notify users of new messages when they are offline.</li>
+</ul>
+<h3 id="3-capacity-estimation-and-constraints_1">3. Capacity Estimation and Constraints</h3>
+<p>假设500万用户每天发 40 条消息</p>
+<ul>
+<li>Storage Estimation: 20 billion messages * 100 bytes =&gt; 2 TB/day, 2 TB * 365 days * 5 years ~= 3.6 PB</li>
+<li>Bandwidth Estimation: 2 TB / 86400 sec ~= 25 MB/s</li>
+</ul>
+<h3 id="4-high-level-design">4. High Level Design</h3>
+<ul>
+<li>chat server</li>
+<li>data storage</li>
+</ul>
+<p>流程:</p>
+<ol>
+<li>User-A sends a message to User-B through the chat server.</li>
+<li>The server receives the message and sends an acknowledgment to User-A.</li>
+<li>The server stores the message in its database and sends the message to User-B.</li>
+<li>User-B receives the message and sends the acknowledgment to the server.</li>
+<li>The server notifies User-A that the message has been delivered successfully to User-B.</li>
+</ol>
+<h3 id="5-detailed-component-design">5 Detailed Component Design</h3>
+<h4 id="a-messages-handling">a. Messages Handling</h4>
+<ul>
+<li>pull model</li>
+<li>push model (http long polling or websocket)</li>
+</ul>
+<p>问题：</p>
+<ul>
+<li>如何和服务端连接： http long polling or websocket</li>
+<li>server 如何转发链接：维护 hash table, user id to connection object</li>
+<li>server 收到一个下线的消息怎么办：客户端底层实现重试</li>
+<li>需要多少server： 500万用户，单机 50K 并发连接需要 10k server</li>
+<li>哪个服务器保持了对哪个用户的连接：load balancer in front of chat servers</li>
+<li>how should the server process a "deliver message" rquest:<ul>
+<li>store message in database</li>
+<li>send the message to receiver</li>
+<li>send ack to sender</li>
+</ul>
+</li>
+<li>对每个 client，消息带上序列号</li>
+</ul>
+<h4 id="b-storing-and-retrieving-the-messages-from-database">b. Storing and retrieving the messages from database</h4>
+<ul>
+<li>sql or nosql: wide-column database like HBase. (关系数据库或者 mongodb 这种不适合)<ul>
+<li>quick small updates; and range based searches</li>
+</ul>
+</li>
+<li>how should clients efficiently fetch data from server: 分页查询</li>
+</ul>
+<h4 id="c-managing-users-status">c. Managing user's status</h4>
+<ol>
+<li>Whenever a client starts the app, it can pull current status of all users in their friends’ list.</li>
+<li>Whenever a user sends a message to another user that has gone offline, we can send a failure to the sender and update the status on the client.</li>
+<li>Whenever a user comes online, the server can always broadcast that status with a delay of few seconds to see if the user does not go offline immediately.</li>
+<li>Client’s can pull the status from the server about those users that are being shown on the user’s viewport. This should not be a frequent operation, as the server is broadcasting the online status of users and we can live with the stale offline status of users for a while.</li>
+<li>Whenever the client starts a new chat with another user, we can pull the status at that time.</li>
+</ol>
+<h3 id="6-data-partitioning">6. Data partitioning</h3>
+<ul>
+<li>partitioning based on userID (not messageId)</li>
+</ul>
+<h3 id="7-cache">7. Cache</h3>
+<p>We can cache a few recent messages (say last 15) in a few recent conversations that are visible in user’s viewport (say last 5). Since we decided to store all of the user’s messages on one shard, cache for a user should completely reside on one machine too.</p>
+<h3 id="8-load-balancing">8. Load balancing</h3>
+<p>LB in front of chat servers.</p>
+<h3 id="9-fault-tolerance-and-replication">9. Fault tolerance and Replication</h3>
+<ul>
+<li>when chat server fails: client automatically reconnect if connection is lost</li>
+<li>消息需要副本存储么 Reed-Solomon encoding</li>
+</ul>
+<h3 id="10-extended-requirements">10. Extended Requirements</h3>
+<ul>
+<li>group chat。GroupChatID</li>
+<li>Push notifications. Notification server</li>
+</ul>
+<h1 id="designing-twitter">Designing Twitter (微博)</h1>
+<h3 id="1-what-is-twitter">1. What is Twitter?</h3>
+<p>社交网络支持发帖，关注等</p>
+<h3 id="2-requirements-and-goals-of-the-system_4">2. Requirements and Goals of the System</h3>
+<p>Functional Requirements</p>
+<ol>
+<li>Users should be able to post new tweets.</li>
+<li>A user should be able to follow other users.</li>
+<li>Users should be able to mark tweets favorite.</li>
+<li>The service should be able to create and display user’s timeline consisting of top tweets from all the people the user follows.</li>
+<li>Tweets can contain photos and videos.</li>
+</ol>
+<p>Non-functional Requirements</p>
+<ol>
+<li>Our service needs to be highly available.</li>
+<li>Acceptable latency of the system is 200ms for timeline generation.</li>
+<li>Consistency can take a hit (in the interest of availability), if a user doesn’t see a tweet for a while, it should be fine.</li>
+</ol>
+<p>Extended Requirements</p>
+<ol>
+<li>Searching tweets.</li>
+<li>Reply to a tweet.</li>
+<li>Trending topics – current hot topics/searches.</li>
+<li>Tagging other users.</li>
+<li>Tweet Notification.</li>
+<li>Who to follow? Suggestions?</li>
+<li>Moments.</li>
+</ol>
+<h3 id="3-capacity-estimation-and-constraints_2">3. Capacity Estimation and Constraints</h3>
+<p>假设 200 万日过，每天发帖100 million (1亿)，每个用户平均关注 200 人，注册用户10 亿</p>
+<ul>
+<li>每天产生推特数：200M DAU * ((2 + 5) * 20 tweets) =&gt; 28B/day</li>
+<li>Storage Estimation: 100M * (280 + 30) bytes =&gt; 30GB/day (每个推特 30 字节); (100M/5 photos * 200KB) + (100M/10 videos * 2MB) ~= 24TB/day</li>
+<li>Bandwidth Estimation: since total ingress is 24TB per day, this would translate into 290MB/sec.</li>
+</ul>
+<h3 id="4-system-apis_1">4. System APIs</h3>
+<pre><code># 发帖
+tweet(api_dev_key, tweet_data, tweet_location, user_location, media_ids,
+</code></pre>
+<h3 id="5-high-level-design_2">5. High-level design</h3>
+<p>clients -&gt; load balancer -&gt; app server -&gt; DB and File storage</p>
+<h3 id="6-database-schema_1">6. Database Schema</h3>
+<p><img alt="" src="../twitter_schema.png" /></p>
+<h3 id="7-data-sharding">7. Data Sharding</h3>
+<ul>
+<li>sharding based on userID</li>
+<li>combine sharding by TweetID and Tweet creation time (推特 id 需要包含时间信息)</li>
+</ul>
+<h3 id="8-cache_1">8. Cache</h3>
+<ul>
+<li>caceh hot tweets and users (LRU)</li>
+<li>use lined list cache user recent tweets (3days)</li>
+</ul>
+<h3 id="9-timeline-generation">9. Timeline Generation</h3>
+<p>参考 Facebook Newsfeed</p>
+<h3 id="10-replcation-and-fault-tolerance">10. Replcation and Fault Tolerance</h3>
+<p>主从复制</p>
+<h3 id="11-load-balancing">11. Load Balancing</h3>
+<ul>
+<li>Between Clients and Application servers</li>
+<li>Between Application servers and database replication servers and</li>
+<li>Between Aggregation servers and Cache server.</li>
+</ul>
+<h3 id="12-monitoring">12. Monitoring</h3>
+<p>指标收集：</p>
+<ol>
+<li>New tweets per day/second, what is the daily peak?</li>
+<li>Timeline delivery stats, how many tweets per day/second our service is delivering.</li>
+<li>Average latency that is seen by the user to refresh timeline.</li>
+</ol>
+<h3 id="13-extended-requirements">13. Extended Requirements</h3>
+<ul>
+<li>how to serve feeds: 预生成 feed</li>
+<li>Retweet: 转发可以只保存原推特 id</li>
+<li>tranding topics: 查询、搜索、转发、点赞热度作为权重</li>
+</ul>
+<h1 id="designing-youtube-or-netflix">Designing Youtube or Netflix (视频分享网站)</h1>
+<h3 id="1-why-youtube">1. Why Youtube</h3>
+<p>上传、查看、分享视频等</p>
+<h3 id="2-requirements-and-goals-of-the-system_5">2. Requirements and Goals of the System</h3>
+<p>Functional Requirements:</p>
+<ol>
+<li>Users should be able to upload videos.</li>
+<li>Users should be able to share and view videos.</li>
+<li>Users can perform searches based on video titles.</li>
+<li>Our services should be able to record stats of videos, e.g., likes/dislikes, total number of views, etc.</li>
+<li>Users should be able to add and view comments on videos.</li>
+</ol>
+<p>Non-Functional Requirements:</p>
+<ol>
+<li>The system should be highly reliable, any video uploaded should not be lost.</li>
+<li>The system should be highly available. Consistency can take a hit (in the interest of availability), if a user doesn’t see a video for a while, it should be fine.</li>
+<li>Users should have real time experience while watching videos and should not feel any lag.</li>
+</ol>
+<h3 id="3-capacity-estimation-and-constraints_3">3. Capacity Estimation and Constraints</h3>
+<ul>
+<li>Storage Estimation: 500 hours * 60 min * 50MB =&gt; 1500 GB/min (25 GB/sec)</li>
+<li>Bandwidth estimates: 500 hours * 60 mins * 10MB =&gt; 300GB/min (5GB/sec)</li>
+</ul>
+<h3 id="4-system-apis_2">4. System APIs</h3>
+<pre><code>uploadVideo(api_dev_key, video_title, vide_description, tags[], category_id, default_language, recording_details, video_contents)
+searchVideo(api_dev_key, search_query, user_location, maximum_videos_to_return, page_token)
+</code></pre>
+<h3 id="5-hign-level-design">5. Hign Level Design</h3>
+<ol>
+<li>Processing Queue: 视频处理队列。视频转码、封面生成、存储</li>
+<li>Encoder: 转码多种格式</li>
+<li>Thumbnails generator: 封面生成</li>
+<li>Video and Thumbnails storage: distributed file storage</li>
+<li>User Database</li>
+<li>Video metadata storage</li>
+</ol>
+<h3 id="6-database-schema_2">6. Database Schema</h3>
+<p>Videos metadata can be stored in a SQL database. Following information should be stored with each video:</p>
+<ul>
+<li>VideoID</li>
+<li>Title</li>
+<li>Description</li>
+<li>Size</li>
+<li>Thumbnail</li>
+<li>Uploader/User</li>
+<li>Total number of likes</li>
+<li>Total number of dislikes</li>
+<li>Total number of views</li>
+</ul>
+<p>For each video comment, we need to store following information:</p>
+<ul>
+<li>CommentID</li>
+<li>VideoID</li>
+<li>UserID</li>
+<li>Comment</li>
+<li>TimeOfCreation</li>
+</ul>
+<p>User data storage - MySql</p>
+<ul>
+<li>UserID, Name, email, address, age, registration details etc.</li>
+</ul>
+<h3 id="7-detailed-component-design">7. Detailed Component Design</h3>
+<ul>
+<li>where videos store : HDFS or GlusterFS (现在一般都是用云服务存储文件)</li>
+<li>read traffic: 读写分离</li>
+<li>thumbnails store: BigTable。 （云服务存储）</li>
+<li>video uploads: 支持断点续传</li>
+<li>video encoding: 处理队列</li>
+</ul>
+<h3 id="8-metadata-sharding">8. Metadata sharding</h3>
+<ul>
+<li>based on userID</li>
+<li>based on videoID</li>
+</ul>
+<h3 id="9-video-deduplication">9. Video Deduplication</h3>
+<p>video matching algorithms (Block Matching, Phase Correlation) 查重</p>
+<h3 id="10-load-balancing">10. Load Balancing</h3>
+<p>use consistent hashing amoung cache servers</p>
+<h3 id="11-cache">11. Cache</h3>
+<p>We can introduce a cache for metadata servers to cache hot database rows. Using Memcache to cache the data and
+Application servers before hitting database can quickly check if the cache has the desired rows.
+Least Recently Used (LRU) can be a reasonable cache eviction policy for our system. Under this policy, we discard the least recently viewed row first.</p>
+<h3 id="12-content-delivery-network-cdn">12. Content Delivery Network (CDN)</h3>
+<ul>
+<li>CDNs replicate content in multiple places. There’s a better chance of videos being closer to the user and with fewer hops, videos will stream from a friendlier network.</li>
+<li>CDN machines make heavy use of caching and can mostly serve videos out of memory.</li>
+</ul>
+<h3 id="13-fault-tolerance">13. Fault Tolerance</h3>
+<p>一致性哈希</p>
+<h1 id="designing-typeahead-suggestion">Designing Typeahead Suggestion (实时补全)</h1>
+<h3 id="1-what-is-typeahead-suggestions">1. What is Typeahead Suggestions?</h3>
+<p>实时补全查询</p>
+<h3 id="2-requirements-and-goals-of-the-system_6">2. Requirements and Goals of the System</h3>
+<p>Functional Requirements: As the user types in their query, our service should suggest top 10 terms starting with whatever user has typed.
+Non-function Requirements: The suggestions should appear in real-time. The user should be able to see the suggestions within 200ms.</p>
+<h3 id="3-basic-system-design-and-algorithm">3. Basic System Design and Algorithm</h3>
+<p>匹配给定前缀; 内存存储提高性能； 数据结构(Trie前缀树)</p>
+<ul>
+<li>大小写敏感：为了简化假设不区分大小写</li>
+<li>find top suggestions: 可以根据每个单词被搜索次数作为权重</li>
+<li>遍历子树要多久：注意层数太深</li>
+<li>can store top suggestions with each node: store top 10 suggestions at each node that can return to the user</li>
+<li>how would build this trie: bottom up</li>
+<li>how to update trie: 离线定期更新</li>
+<li>update frequencies of typeahead suggestions: add and substract frequencies based on Exponential Moving Average(EMA)</li>
+<li>remove a term from the trie: remove when regular updates , add filtering layter on each server</li>
+<li>different ranking criteria for suggestions: 其他因子：哦用户位置，语言、统计数据、搜索历史等</li>
+</ul>
+<h3 id="4-permanent-storage-of-the-trie">4. Permanent Storage of the Trie</h3>
+<p>定期快照 trie 存在文件里，防止机器重启丢失</p>
+<h3 id="5-scale-estimation">5. Scale Estimation</h3>
+<p>假设每秒 60k 请求</p>
+<ul>
+<li>Storage Estimation: 100 million * 30 bytes =&gt; 3 GB</li>
+</ul>
+<h3 id="6-data-partition">6. Data Partition</h3>
+<ul>
+<li>range based partitioning</li>
+<li>based on the maximum capacity of the server</li>
+<li>based on the hash of the term</li>
+</ul>
+<h3 id="7-cache_1">7. Cache</h3>
+<p>cache top search items</p>
+<h3 id="9-fault-tolerance">9. Fault Tolerance</h3>
+<p>主从复制</p>
+<h3 id="10-typeahead-client">10 Typeahead Client</h3>
+<ol>
+<li>The client should only try hitting the server if the user has not pressed any key for 50ms.</li>
+<li>If the user is constantly typing, the client can cancel the in-progress requests.</li>
+<li>Initially, the client can wait until the user enters a couple of characters.</li>
+<li>Clients can pre-fetch some data from the server to save future requests.</li>
+<li>Clients can store the recent history of suggestions locally. Recent history has a very high rate of being reused.</li>
+<li>Establishing an early connection with server turns out to be one of the most important factors. As soon as the user opens the search engine website, the client can open a connection with the server. So when user types in the first character, client doesn’t waste time in establishing the connection.</li>
+<li>The server can push some part of their cache to CDNs and Internet Service Providers (ISPs) for efficiency.</li>
+</ol>
+<h3 id="11-personalization">11 Personalization</h3>
+<p>记录用户个性化请求并优先返回</p>
+<h1 id="designing-twitter-search">Designing Twitter Search</h1>
+<h3 id="1-what-is-twitter-search">1. What is Twitter Search</h3>
+<p>推特用户可以更新他们的状态，每个状态包含纯本文。设计系统支持所有用户状态的搜索</p>
+<h3 id="2-requirements-and-goals-of-the-system_7">2. Requirements and Goals of the System</h3>
+<ul>
+<li>Let’s assume Twitter has 1.5 billion total users with 800 million daily active users.</li>
+<li>On the average Twitter gets 400 million status updates every day.</li>
+<li>Average size of a status is 300 bytes.</li>
+<li>Let’s assume there will be 500M searches every day.</li>
+<li>The search query will consist of multiple words combined with AND/OR. We need to design a system that can efficiently store and query user statuses.</li>
+</ul>
+<h3 id="3-capacity-estimation-and-constraints_4">3. Capacity Estimation and Constraints</h3>
+<ul>
+<li>Storage Capacity: 400M*300 = 112GB/day</li>
+</ul>
+<h3 id="4-system-apis_3">4. System APIs</h3>
+<pre><code>search(api_dev_key, search_terms, maximum_results_to_return, sort, page_token)
+</code></pre>
+<h3 id="5-high-level-system-design_1">5. High Level System Design</h3>
+<p>clients -&gt; app server -&gt; storage server and index server</p>
+<h3 id="6-detailed-component-design">6. Detailed Component Design</h3>
+<ul>
+<li>Storage: 112GB * 365days * 5 = 200 TB</li>
+<li>Index。大的 hash table，倒排索引。 word -&gt; [pids]</li>
+<li>sharding based on words (扩容可能需要重分配或者一致性哈希)</li>
+<li>based on the status id: 需要聚合服务器聚合结果</li>
+</ul>
+<h3 id="7-fault-tolerance">7. Fault Tolerance</h3>
+<p>index server 数据主从复制</p>
+<h3 id="8-cache_2">8. Cache</h3>
+<p>hot status objects in memory (LRU)</p>
+<h3 id="9-load-balancing">9. Load Balancing</h3>
+<ul>
+<li>clients and app server</li>
+<li>app server and backend server</li>
+</ul>
+<h3 id="10-ranking">10. Ranking</h3>
+<p>通过社交图距离、流行度和相关性排序？计算分数并且和 index 存储到一起</p>
+<h1 id="designing-a-web-crawler">Designing a Web Crawler</h1>
+<h3 id="1-what-is-a-web-crawler">1. What is a Web Crawler</h3>
+<p>爬虫系统</p>
+<ul>
+<li>To test web pages and links for valid syntax and structure.</li>
+<li>To monitor sites to see when their structure or contents change.</li>
+<li>To maintain mirror sites for popular Web sites.</li>
+<li>To search for copyright infringements.</li>
+<li>To build a special-purpose index, e.g., one that has some understanding of the content stored in multimedia files on the Web.</li>
+</ul>
+<h3 id="2-requirements-and-goals-of-the-system_8">2. Requirements and Goals of the System</h3>
+<ul>
+<li>Scalability: Our service needs to be scalable such that it can crawl the entire Web, and can be used to fetch hundreds of millions of Web documents.</li>
+<li>Extensibility: Our service should be designed in a modular way, with the expectation that new functionality will be added to it. There could be newer document types that needs to be downloaded and processed in the future.</li>
+</ul>
+<h3 id="3-some-design-considerations_2">3. Some Design Considerations</h3>
+<ul>
+<li>only for html: 本设计暂时只支持 html，支持扩展支持其他媒体类型(比如图片，视频)</li>
+<li>页面数：15亿左右页面</li>
+<li>robots协议: robot.txt 遵守协议</li>
+</ul>
+<h3 id="4-capacity-estimation-and-constraints_2">4. Capacity Estimation and Constraints</h3>
+<p>四周之类抓取 15 亿页面。</p>
+<ul>
+<li>speed: 15B / (4 weeks * 7 days * 86400 sec) ~= 6200 pages/sec</li>
+<li>storage: 15B * (100KB + 500) ~= 1.5 petabytes。1.5 petabytes / 0.7 ~= 2.14 petabytes (30%冗余)</li>
+</ul>
+<h3 id="5-high-level-design_3">5. High Level design</h3>
+<ol>
+<li>Pick a URL from the unvisited URL list.</li>
+<li>Determine the IP Address of its host-name.</li>
+<li>Establishing a connection to the host to download the corresponding document.</li>
+<li>Parse the document contents to look for new URLs.</li>
+<li>Add the new URLs to the list of unvisited URLs.</li>
+<li>Process the downloaded document, e.g., store it or index its contents, etc.</li>
+<li>Go back to step 1</li>
+</ol>
+<ul>
+<li>breadth first or depth first: 通常广度优先，针对单个网址的可以深度优先</li>
+<li>path-ascending crawling</li>
+</ul>
+<p>实现爬虫的难点：</p>
+<ol>
+<li>大容量页面。页面内容可能很多，需要优先级判断抓取那些部分</li>
+<li>页面变化频率。抓取之后页面可能很快变化了</li>
+</ol>
+<p>一个最小的爬虫需要包含以下组件：</p>
+<ul>
+<li>URL frontier: 存储 url 列表和优先级</li>
+<li>HTTP Fetcher: 抓取页面</li>
+<li>Extractor: 从 html 提取数据</li>
+<li>Duplicate Eliminator: 确保内容不会被提取重复</li>
+<li>Datastore: 存储抓取的页面、url 和其他元信息</li>
+</ul>
+<h3 id="6-detailed-component-design_1">6. Detailed Component Design</h3>
+<p><img alt="" src="../crawler_system.png" /></p>
+<ol>
+<li>
+<p>URL frontier: 存储 url 列表和优先级</p>
+<ul>
+<li>每个机器放 url 子队列</li>
+<li>大量链接存储到磁盘，增加一个 buffer 提供入队和出队</li>
+</ul>
+</li>
+<li>
+<p>HTTP Fetcher: 抓取页面</p>
+<ul>
+<li>缓存域名对应的 robots 协议文件</li>
+</ul>
+</li>
+<li>
+<p>Document input stream(DIS): 方便多个模块处理</p>
+</li>
+<li>
+<p>Document Dedupe test: 64bit checksum, MD5 or SHA</p>
+</li>
+<li>
+<p>Url filters: 黑名单等。比如根据域名、前缀、协议</p>
+</li>
+<li>
+<p>Domain name resolution: caching dns results by building local DNS server</p>
+</li>
+<li>
+<p>url dedupe test: store url fixed checksum; 布隆过滤器；</p>
+</li>
+<li>
+<p>checkpointing: 快照。如果失败了可以从上一个检查点重启</p>
+</li>
+</ol>
+<h3 id="7-fault-tolerance_1">7. Fault tolerance</h3>
+<p>一致性哈希用来分配负载。</p>
+<h3 id="8-data-partitioning">8. Data Partitioning</h3>
+<p>Since we are distributing URLs based on the hostnames, we can store these data on the same host.
+So, each host will store its set of URLs that need to be visited, checksums of all the previously visited URLs and checksums of all the downloaded documents.
+Since we will be using extended hashing, we can assume that URLs will be redistributed from overloaded hosts.</p>
+<h3 id="9-crawler-traps">9. Crawler Traps</h3>
+<p>AOPIC algorithm (Adaptive Online Page Importance Computation), can help mitigating common types of bot- traps. AOPIC solves this problem by using a credit system.</p>
+<ol>
+<li>Start with a set of N seed pages.</li>
+<li>Before crawling starts, allocate a fixed X amount of credit to each page.</li>
+<li>Select a page P with the highest amount of credit (or select a random page if all pages have the same amount of credit).</li>
+<li>Crawl page P (let’s say that P had 100 credits when it was crawled).</li>
+<li>Extract all the links from page P (let’s say there are 10 of them).</li>
+<li>Set the credits of P to 0.</li>
+<li>Take a 10% “tax” and allocate it to a Lambda page.</li>
+<li>Allocate an equal amount of credits each link found on page P from P’s original credit after subtracting the tax, so: (100 (P credits) - 10 (10% tax))/10 (links) = 9 credits per each link.</li>
+<li>Repeat from step 3.</li>
+</ol>
+<h1 id="designing-facebooks-newsfeed">Designing Facebook's Newsfeed (信息流)</h1>
+<h3 id="1-what-is-facebooks-newsfeed">1. What is Facebook's newsfeed?</h3>
+<p>包括一系列更新行为，比如状态更新，其他用户动态（用户关注的）。</p>
+<p>In other words, it’s a compilation of a complete scrollable version of your and your friends’ life story from photos, videos, locations, status updates and other activities.</p>
+<h3 id="2-requirements-and-goals-of-the-system_9">2. Requirements and Goals of the System</h3>
+<p>Functional requirements:</p>
+<ol>
+<li>Newsfeed will be generated based on the posts from the people, pages, and groups that a user follows.</li>
+<li>A user may have many friends and follow a large number of pages/groups.</li>
+<li>Feeds may contain images, videos or just text.</li>
+<li>Our service should support appending new posts, as they arrive, to the newsfeed for all active users.</li>
+</ol>
+<p>Non-functional requirements:</p>
+<ol>
+<li>Our system should be able to generate any user’s newsfeed in real-time - maximum latency seen by the end user could be 2s.</li>
+<li>A post shouldn’t take more than 5s to make it to a user’s feed assuming a new newsfeed request comes in.</li>
+</ol>
+<h3 id="3-capacity-estimation-and-constraints_5">3. Capacity Estimation and Constraints</h3>
+<p>假设一个用户拥有 300 好友，关注200 页面。</p>
+<ul>
+<li>Traffic estimates: Let’s assume 300M daily active users, with each user fetching their timeline an average of five times a day. This will result in 1.5B newsfeed requests per day or approximately 17,500 requests per second.</li>
+<li>Storage estimates: On average, let’s assume, we would need to have around 500 posts in every user’s feed that we want
+  to keep in memory for a quick fetch. Let’s also assume that on average each post would be 1KB in size.
+  This would mean that we need to store roughly 500KB of data per user. To store all this data for all the active users, we would need 150TB of memory. If a server can hold 100GB, we would need around 1500 machines to keep the top 500 posts in memory for all active users.</li>
+</ul>
+<h3 id="4-system-apis_4">4. System APIs</h3>
+<pre><code>getUserFeed(api_dev_key, user_id, since_id, count, max_id, exclude_replies)
+</code></pre>
+<h3 id="5-database-design_1">5. Database Design</h3>
+<p>User表，Entity表(page,group)， FeedItem(or Post表)</p>
+<ul>
+<li>A User can follow entities and can become friends with other users.</li>
+<li>Both users and entities can post FeedItems which can contain text, images or videos.</li>
+<li>Each FeedItem will have a UserID which would point to the User who created it. For simplicity, let’s assume that only users can create feed items, although on Facebook, Pages can post feed item too.</li>
+<li>Each FeedItem can optionally have an EntityID pointing to the page or the group where that post was created.</li>
+</ul>
+<h3 id="6-high-level-system-design">6. High Level System Design</h3>
+<p>Feed generation: Newsfeed is generated from the posts (or feed items) of users and entities (pages and groups) that a user follows. So, whenever our system receives a request to generate the feed for a user (say Jane), we will perform following steps:</p>
+<ol>
+<li>Retrieve IDs of all users and entities that Jane follows.</li>
+<li>Retrieve latest, most popular and relevant posts for those IDs. These are the potential posts that we can show in Jane’s newsfeed.</li>
+<li>Rank these posts, based on the relevance to Jane. This represents Jane’s current feed.</li>
+<li>Store this feed in the cache and return top posts (say 20) to be rendered on Jane’s feed.</li>
+<li>On the front-end when Jane reaches the end of her current feed, she can fetch next 20 posts from the server and so on.</li>
+</ol>
+<p>Feed publishing: Whenever Jane loads her newsfeed page, she has to request and pull feed items from the server.
+When she reaches the end of her current feed, she can pull more data from the server. For newer items either the server can notify Jane and then she can pull,
+or the server can push these new posts. We will discuss these options in detail later.</p>
+<ol>
+<li>Web servers:To maintaina connection with theu ser.This connection will be used to transfer data between the user and the server.</li>
+<li>Application server:To execute the workflows of storing new posts in the database servers.We would also need some application servers to retrieve and push the newsfeed to the end user.</li>
+<li>Metadata database and cache:To store the metadata about Users,Pages and Groups.</li>
+<li>Posts database and cache:To store metadata about posts and their contents.</li>
+<li>Video and photo storage,and cache:Blob storage,to store all the media included in the posts.</li>
+<li>Newsfeed generation service:To gather and rank all the relevant posts for a user to generate newsfeed and store in the cache. This service would also receive live updates and will add these newer feed items to any user’s timeline.</li>
+<li>Feed notification service:To notify the user that there are newer items available for their newsfeed.</li>
+</ol>
+<p><img alt="" src="../newsfeed_system.png" /></p>
+<h3 id="7-detailed-component-design_1">7. Detailed Component Design</h3>
+<h4 id="a-feed-generation">a. Feed generation</h4>
+<ul>
+<li>offline generation for newsfeed。专用服务不断生成用户newsfeed存储在内存 (linked hash map)。使用 redis 的话 zset</li>
+<li>how many feed items for a user's feed in memory: 500 根据用户调整</li>
+<li>should generate newsfeed for all users: 根据用户登录行为</li>
+</ul>
+<h4 id="b-feed-publishing">b. Feed Publishing</h4>
+<p>fanout: the process of pushing a post to all the followers is called a fanout.
+the push approach is called fanout-on-write, while the pull approach is called fanout-on-load.</p>
+<ol>
+<li>pull model or fan-out-on-load: 最近 feed 放到内存客户端拉取。不好确定拉取节奏，拉到空数据</li>
+<li>push model or fan-out-on-write: 写扩散到所有关注者的 feed。缺点是大 v 用户有太多用户需要推送</li>
+<li>hybrid (推拉结合)<ul>
+<li>只 push 那些关注者只有几百几千的用户</li>
+<li>对于大 v 用户，让关注者去拉取</li>
+<li>或者对于 fan out，只去 push 到那些在线用户，离线用户可以之后处理</li>
+</ul>
+</li>
+</ol>
+<p>问题：</p>
+<ul>
+<li>how many feed items each request:  根据移动还是网页端，让 client 决定并且给一个最大 limit 限制(比如 20)</li>
+<li>should notify user if new posts avaiable: 对于移动设备可以用 pull to refresh 获取新的 posts</li>
+</ul>
+<h3 id="8-feed-ranking">8. Feed Ranking</h3>
+<p>最直接的方式是根据创建时间。如今的 ranking 算法会把重要的 post 排序到最前面。
+根据点赞数、评论、分享、更新、图片视频等构建一个简单的 ranking 系统排序，可能要包括用户粘性、留存、广告收益等。</p>
+<h3 id="9-data-partitioning">9. Data Partitioning</h3>
+<ul>
+<li>sharding posts and metadata</li>
+<li>sharding feed data: based on userID </li>
+</ul>
+<h1 id="designing-yelp-or-newarby-friends">Designing Yelp or Newarby Friends</h1>
+<h3 id="1-why-yelp-or-proximity-server">1. Why Yelp or Proximity Server?</h3>
+<p>用可以搜索附近的餐厅、商场等。</p>
+<h3 id="2-requirements-and-goals-of-the-system_10">2. Requirements and Goals of the System</h3>
+<p>Functional Requirements:</p>
+<ol>
+<li>Users should be able to add/delete/update Places.</li>
+<li>Given their location (longitude/latitude), users should be able to find all nearby places within a given radius.</li>
+<li>Users should be able to add feedback/review about a place. The feedback can have pictures, text, and a rating.</li>
+</ol>
+<p>Non-functional Requirements:</p>
+<ol>
+<li>Users should have real-time search experience with minimum latency.</li>
+<li>Our service should support a heavy search load. There will be a lot of search requests compared to adding a new place.</li>
+</ol>
+<h3 id="3-scale-estimation">3. Scale Estimation</h3>
+<p>500M places and 100K qps</p>
+<h3 id="4-database-schema">4. Database Schema</h3>
+<p>Each location can have following fields:</p>
+<ol>
+<li>LocationID (8 bytes): Uniquely identifies a location.</li>
+<li>Name (256 bytes)</li>
+<li>Latitude (8 bytes)</li>
+<li>Longitude (8 bytes)</li>
+<li>Description (512 bytes)</li>
+<li>Category (1 byte): E.g., coffee shop, restaurant, theater, etc.</li>
+</ol>
+<p>We also need to store reviews, photos, and ratings of a Place. We can have a separate table to store reviews for Places:</p>
+<ol>
+<li>LocationID (8 bytes)</li>
+<li>ReviewID (4 bytes): Uniquely identifies a review, assuming any location will not have more than 2^32 reviews.</li>
+<li>ReviewText (512 bytes)</li>
+<li>Rating (1 byte): how many stars a place gets out of ten.</li>
+</ol>
+<h3 id="5-system-apis">5. System APIs</h3>
+<pre><code>search(api_dev_key, search_terms, user_location, radius_filter, maximum_results_to_return, category_filter, sort, page_token)
+</code></pre>
+<h3 id="6-basic-system-design-and-algorithm_1">6. Basic System Design and Algorithm</h3>
+<p>地点对应的位置是不常变化的。</p>
+<h4 id="a-sql-solution">a. SQL solution</h4>
+<p><code>Select * from Places where Latitude between X-D and X+D and Longitude between Y-D and Y+D</code></p>
+<h4 id="b-grids">b. Grids</h4>
+<p>We can divide the whole map into smaller grids to group locations into smaller sets. Each grid will store all the Places residing within a certain range of longitude and latitude.</p>
+<ul>
+<li>What could be a reasonable grid size? Grid size could be equal to the distance we would like to query since we also want to reduce the number of grids</li>
+</ul>
+<p><code>Select * from Places where Latitude between X-D and X+D and Longitude between Y-D and Y+D and GridID in (GridID, GridID1, GridID2, ..., GridID8)</code></p>
+<ul>
+<li>Should we keep our index in memory?  key: gridid, value: places in grid</li>
+<li>How much memory will we need to store the index? 10miles, 20 million grids need 4GB</li>
+</ul>
+<h4 id="c-dynamic-size-grids">c. Dynamic size grids</h4>
+<ul>
+<li>What data-structure can hold this information? (QuadTree)A tree in which each node has four children can serve our purpose.</li>
+<li>How will we build QuadTree? We will start with one node that would represent the whole world in one grid.</li>
+<li>How will we find the grid for a given location? We will start with the root node and search downward to find our required node/grid.</li>
+<li>How will we find neighboring grids of a given grid? Since only leaf nodes contain a list of locations, we can connect all leaf nodes with a doubly linked list.</li>
+<li>What will be the search workflow? We will first find the node that contains the user’s location. If that node has enough desired places, we can return them to the user. If not, we will keep expanding to the neighboring nodes </li>
+<li>How much memory will be needed to store the QuadTree? For each Place, if we cache only LocationID and Lat/Long, we would need 12GB to store all places.</li>
+<li>How would we insert a new Place into our system? Whenever a new Place is added by a user, we need to insert it into the databases, as well as, in the QuadTree. </li>
+</ul>
+<h3 id="7-data-partitioning">7. Data Partitioning</h3>
+<ul>
+<li>sharding based on regions (zip code)</li>
+<li>based on locationID (需要聚合多个服务器结果)</li>
+</ul>
+<h3 id="8-replication-and-fault-tolerance">8. Replication and Fault Tolerance</h3>
+<p>主从复制 failover.</p>
+<ul>
+<li>What if both primary and secondary servers die at the same time? We have to allocate a new server and rebuild the same QuadTree on it.</li>
+<li>How can we efficiently retrieve a mapping between Places and QuadTree server? We have to build a reverse index that will map all the Places to their QuadTree server.</li>
+</ul>
+<h3 id="9-cache">9. Cache</h3>
+<p>hot places lru cache</p>
+<h3 id="10-load-balancinglb">10. Load Balancing(LB)</h3>
+<ul>
+<li>client and app server</li>
+<li>app server and backend server</li>
+</ul>
+<h3 id="11-ranking">11. Ranking</h3>
+<p>rank 信息同时存到 db 和 QuadTree, QuadTree 可以在系统负载低的时候低频更新。</p>
+<h1 id="designing-uber-backend">Designing Uber backend (打车服务)</h1>
+<p>ride-sharing service like Uber.</p>
+<h3 id="1-whaat-is-uber">1. Whaat is Uber?</h3>
+<p>打车服务</p>
+<h3 id="2-requirements-and-goals-of-the-system_11">2. Requirements and Goals of the System</h3>
+<p>There are two kinds of users in our system 1) Drivers 2) Customers.</p>
+<ul>
+<li>Drivers need to regularly notify the service about their current location and their availability to pick passengers.</li>
+<li>Passengers get to see all the nearby available drivers.</li>
+<li>Customer can request a ride; nearby drivers are notified that a customer is ready to be picked up.</li>
+<li>Once a driver and customer accept a ride, they can constantly see each other’s current location, until the trip finishes.</li>
+<li>Upon reaching the destination, the driver marks the journey complete to become available for the next ride.</li>
+</ul>
+<h3 id="3-capacity-estimation-and-constraints_6">3. Capacity Estimation and Constraints</h3>
+<ul>
+<li>Let’s assume we have 300M customer and 1M drivers, with 1M daily active customers and 500K daily active drivers.</li>
+<li>Let’s assume 1M daily rides.</li>
+<li>Let’s assume that all active drivers notify their current location every three seconds.</li>
+<li>Once a customer puts a request for a ride, the system should be able to contact drivers in real-time.</li>
+</ul>
+<h3 id="4-basic-system-design-and-algorithm">4. Basic System Design and Algorithm</h3>
+<p>为了避免 QuadTree 频繁更新，使用一个 hash 存储司机最后一次位置。</p>
+<p>maintain a hash table that will store the current location reported by drivers; let’s call this DriverLocationHT.</p>
+<ul>
+<li>distribute hash table to multiple servers (for scalability, performance, and fault tolerance)</li>
+<li>How can we efficiently broadcast driver’s location to customers? We can have a Push Model, where the server will push the positions to all the relevant users.</li>
+<li>How much memory we need to store all these subscriptions? As we have estimated above we will have 1M daily active customers and 500K daily active drivers。 (500K * 3) + (500K * 5 * 8 ) ~= 21 MB</li>
+<li>How much bandwidth we need to broadcast the driver’s location to customers? 2.5M * 19 bytes =&gt; 47.5 MB/s</li>
+<li>How can we efficiently implement Notification service? We can either use HTTP long polling or push notifications.</li>
+<li>How about if clients pull information about nearby drivers from the server? 拉取模型更简单</li>
+</ul>
+<p>How would “Request Ride” use case work?</p>
+<ol>
+<li>The customer will put a request for a ride.</li>
+<li>One of the Aggregator servers will take the request and asks QuadTree servers to return nearby drivers.</li>
+<li>The Aggregator server collects all the results and sorts them by ratings.</li>
+<li>The Aggregator server will send a notification to the top (say three) drivers simultaneously, whichever driver accepts the request first will be assigned the ride. The other drivers will receive a cancellation request. If none of the three drivers respond, the Aggregator will request a ride from the next three drivers from the list.</li>
+<li>Once a driver accepts a request, the customer is notified.</li>
+</ol>
+<h3 id="5-fault-tolerance-and-replication">5. Fault Tolerance and Replication</h3>
+<p>What if a Driver Location server or Notification server dies? We would need replicas of these servers, so that if the primary dies the secondary can take control.
+Also, we can store this data in some persistent storage like SSDs that can provide fast IOs; this will ensure that if both primary and secondary servers die we can recover the data from the persistent storage.</p>
+<h3 id="6-ranking">6. Ranking</h3>
+<p>While searching for top 10 drivers within a given radius, we can ask each partition of the QuadTree to return top 10 drivers with maximum rating. 
+The aggregator server can then determine top 10 drivers among all the drivers returned by different partitions.</p>
+<h1 id="design-bookmyshow">Design BookMyShow (在线订票服务)</h1>
+<h3 id="1-what-is-an-online-movie-ticket-booking-system">1. What is an online movie ticket booking system?</h3>
+<p>在线购买电影票</p>
+<h3 id="2-requirements-and-goals-of-the-system_12">2. Requirements and Goals of the System</h3>
+<p>Functional Requirements:</p>
+<ol>
+<li>Our ticket booking service should be able to list down different cities where its affiliate cinemas are located.</li>
+<li>Once the user selects the city, the service should display the movies released in that particular city.</li>
+<li>Once the user selects the movie, the service should display the cinemas running that movie and its available shows.</li>
+<li>The user should be able to select the show at a particular cinema and book their tickets.</li>
+<li>The service should be able to show the user the seating arrangement of the cinema hall. The user should be able to select multiple seats according to their preference.</li>
+<li>The user should be able to distinguish available seats from the booked ones.</li>
+<li>Users should be able to put a hold on the seats for five minutes before they make a payment to finalize the booking.</li>
+<li>The user should be able to wait if there is a chance that seats might become available – e.g. when holds by other users expire.</li>
+<li>Waiting customers should be serviced fairly in a first come first serve manner.</li>
+</ol>
+<p>Non-Functional Requirements:</p>
+<ol>
+<li>The system would need to be highly concurrent. There will be multiple booking requests for the same seat at any particular point in time. The service should handle this gracefully and fairly.</li>
+<li>The core thing of the service is ticket booking which means financial transactions. This means that the system should be secure and the database ACID compliant.</li>
+</ol>
+<h3 id="3-some-design-considerations_3">3. Some Design Considerations</h3>
+<ol>
+<li>For simplicity, let’s assume our service doesn’t require user authentication.</li>
+<li>The system will not handle partial ticket orders. Either user gets all the tickets they want, or they get nothing.</li>
+<li>Fairness is mandatory for the system.</li>
+<li>To stop system abuse, we can restrict users not to book more than ten seats.</li>
+<li>We can assume that traffic would spike on popular/much-awaited movie releases, and the seats fill up pretty fast. The system should be scalable, highly available to cope up with the surge in traffic.</li>
+</ol>
+<h3 id="4-capacity-estimation">4. Capacity Estimation</h3>
+<ul>
+<li>Traffic estimates: 3 billion page per month and sells 10 million tickets a month</li>
+<li>Storage estimates: 500 cities * 10 cinemas * 2000 seats * 2 shows * (50+50) bytes = 2GB / day bytes = 1GB</li>
+</ul>
+<h3 id="5-system-apis_1">5. System APIs</h3>
+<pre><code>SearchMovies(api_dev_key, keyword, city, lat_long, radius, start_datetime, end_datetime, postal_code, includeSpellcheck, results_per_page, sorting_order)
+</code></pre>
+<h3 id="6-database-design">6. Database Design</h3>
+<p>Here are a few observations about the data we are going to store: </p>
+<ol>
+<li>Each City can have multiple Cinemas.</li>
+<li>Each Cinema will have multiple halls.</li>
+<li>Each Movie will have many Shows, and each Show will have multiple Bookings.</li>
+<li>A user can have multiple bookings.</li>
+</ol>
+<h3 id="7-high-level-design">7. High Level Design</h3>
+<p>At a high level, our web servers will manage Users’ sessions, and application servers will handle all the ticket management, 
+storing data in the databases and work with cache servers to process reservations.</p>
+<p>ticket booking workflow</p>
+<p><img alt="" src="../ticket_book.png" /></p>
+<p>We need two daemon services, one to keep track of all active reservations and to remove any expired reservation from the system, 
+let’s call it ActiveReservationService. The other service would be keeping track of all the waiting user requests, 
+and as soon as the required number of seats become available, it’ll notify the (the longest waiting) user to choose the seats, let’s call it WaitingUserService.</p>
+<h4 id="a-activereservationservice">a. ActiveReservationService (预定)</h4>
+<p>memory linked hashmap</p>
+<h4 id="b-waitinguserservice">b. WaitingUserService</h4>
+<p>keep all the waiting users of a show in memory in a linked hashmap。
+Clients can use Long Polling for keeping themselve updated for their reservation status. Whenever seats become available, the server can use this request to notify the user.</p>
+<h3 id="9-concurrency">9. Concurrency</h3>
+<p>如何防止两个用户购买了同一张票？ mysql lock rows before we can update them (互斥锁)。
+其使用 redis 防止超卖或者放到队列串行化比较好，mysql 并发高了性能有问题。</p>
+<h3 id="10-fault-tolerance">10. Fault Tolerance</h3>
+<p>主从复制</p>
+<h3 id="11-data-partitioning">11. Data Partitioning</h3>
+<ul>
+<li>based on showID is better than movieID</li>
+<li>ActiveReservationService and WaitingUserService partitioning: Our web servers will manage all the active users’ sessions and handle all the communication with the users. 
+  We can use Consistent Hashing to allocate application servers for both ActiveReservationService and WaitingUserService based upon the ‘ShowID’. </li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../搜索引擎/Elasticsearch实战/book/" class="btn btn-neutral float-right" title="《Elasticsearch实战》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../../分布式/深入理解Kafka核心设计与实践原理/深入理解Kafka核心设计与实践原理/" class="btn btn-neutral" title="《深入理解Kafka核心技术与实践原理》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../../分布式/深入理解Kafka核心设计与实践原理/深入理解Kafka核心设计与实践原理/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../../搜索引擎/Elasticsearch实战/book/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../../../search/main.js" defer></script>
+
+</body>
+</html>

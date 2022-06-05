@@ -161,7 +161,7 @@
     <li class="toctree-l3"><a href="#7-">应用7：一毛不拔-漏斗限流</a></li>
     
 
-    <li class="toctree-l3"><a href="#8-gehash">应用8：近水楼台-GeHash</a></li>
+    <li class="toctree-l3"><a href="#8-geohash">应用8：近水楼台-GeoHash</a></li>
     
         <ul>
         
@@ -213,7 +213,7 @@
     <li class="toctree-l3"><a href="#4-">原理4：雷厉风行-管道</a></li>
     
 
-    <li class="toctree-l3"><a href="#5-">原理5：同舟共济-事务</a></li>
+    <li class="toctree-l3"><a href="#5-">原理5：同舟共济-事务(隔离性)</a></li>
     
         <ul>
         
@@ -639,6 +639,17 @@
                 <li class="">
                     
     <a class="" href="../../../分布式/深入理解Kafka核心设计与实践原理/深入理解Kafka核心设计与实践原理/">《深入理解Kafka核心技术与实践原理》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">系统设计</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../系统设计system_design/Grokking_System_Design/Grokking_System_Design/">《Grokking System Design》</a>
                 </li>
     </ul>
 	    </li>
@@ -1138,7 +1149,7 @@ cl.throttle user_id:reply 15 30 60 1
 30 operations/60seconds 漏水速率
 1 是可选quota, 默认值1
 </code></pre>
-<h1 id="8-gehash">应用8：近水楼台-GeHash</h1>
+<h1 id="8-geohash">应用8：近水楼台-GeoHash</h1>
 <p>redis3.2 以后增加了地理位置 GEO，可以实现附近的餐馆这种功能。</p>
 <p>地图元素的位置数据使用二维经纬度表示，经度范围(-180, 180]，纬度范围（-90，90]</p>
 <p>比如指定一个半径r，使用 sql 可以圈出来。如果用户不满意，可以扩大半径继续筛选。</p>
@@ -1167,14 +1178,16 @@ cl.throttle user_id:reply 15 30 60 1
 可以根据国家，省份，市区等进行拆分，显著降低 zset 集合大小</p>
 <h1 id="9-scan">应用9：大海捞针-Scan</h1>
 <p>从海量 key 找出特定前缀的key列表。
-redis keys 简单粗暴列出所有 满足特定正则的key.  <code>keys codehole*</code>
-缺点：
-- 没有 limit， offet，刷屏
-- O(n)，千万级别以上的 key导致 redis 卡顿</p>
+redis keys 简单粗暴列出所有 满足特定正则的key.  <code>keys codehole*</code>。
+缺点：</p>
+<ul>
+<li>没有 limit， offet，刷屏</li>
+<li>O(n)，千万级别以上的 key导致 redis 卡顿</li>
+</ul>
 <p>redis2.8 加入了 scan 用来大海捞针</p>
 <ul>
 <li>复杂度虽然也是O(n)，但是通过游标分布进行，不会阻塞线程</li>
-<li>limit 参数，limit 返回的只是 hint，结果可大可小</li>
+<li>limit 参数，limit 返回的只是 hint，结果可大可小(不是精确的)</li>
 <li>同 keys 有模式匹配</li>
 <li>返回结构可能重复，需要客户端去重</li>
 <li>如果遍历过程期间有修改，改动后的数据能否遍历到不确定</li>
@@ -1199,8 +1212,8 @@ handle_others() # 处理其他任务，比如定时任务
 <h3 id="_1">指令队列</h3>
 <p>redis 为每个客户端维护了一个指令队列，先来先服务</p>
 <h3 id="_2">响应队列</h3>
-<p>redis 同样也为每个客户端套接字关联一个响应队列，redis服务器通过响应队列来讲指令的结果返回给客户端。
-如果队列为空，意味着连接暂时空闲，不需要获取写17:26:02，可以把当前客户端 socket 从write_fds移出来。
+<p>redis 同样也为每个客户端套接字关联一个响应队列，redis服务器通过响应队列来将指令的结果返回给客户端。
+如果队列为空，意味着连接暂时空闲，不需要获取写入事件，可以把当前客户端 socket 从write_fds移出来。
 等到队列有数据了再放进去，避免select系统调用立即返回写事件，结果发现没什么数据可写，线程飙高 cpu。</p>
 <h3 id="_3">定时任务</h3>
 <p>redis定时任务记录在一个最小堆。快要执行的任务放在堆顶，每个循环周期，redis 都会把最小堆里已经到点的任务
@@ -1285,12 +1298,12 @@ if pid &lt; 0:
 <p>Redis重启，先加载 rdb 内容，然后重放增量 AOF 日志就可以完全替代之前的 AOF 全量文件重放，大幅提升重启效率。</p>
 <h1 id="4-">原理4：雷厉风行-管道</h1>
 <p>管道本质是 client 提供的，不是 redis server.</p>
-<h1 id="5-">原理5：同舟共济-事务</h1>
+<h1 id="5-">原理5：同舟共济-事务(隔离性)</h1>
 <p>redis 事务模型不严格。
 传统事务又 begin,commit,rollback，redis 是 multi,exec,discard，分别是事务开始，执行和丢弃。
 所有指令在 exec 之前不执行，而是缓存在服务器的一个事务队列中，服务器一旦收到 exec，
 开始执行整个事务队列，并且期间不会被其他指令打扰。
-如果遇到一个失败了，后续指令还是会继续执行，不能算是原子性，仅仅是满足了事务的隔离性。</p>
+如果遇到一个失败了，后续指令还是会继续执行，不能算是原子性，仅仅是满足了事务的<strong>隔离性</strong>。</p>
 <p>discard 用于丢弃事务缓冲队列种的所有指令，在 exec 执行之前。
 通常结合 pipeline 使用减少网络IO。</p>
 <pre><code>pipe = redis.pipeline(transaction=True)
@@ -1356,7 +1369,7 @@ print(double_account(client, user_id))
 如果这个页上只要有一个 key 还在使用，那么它就不能被回收。但是 Redis 会对这些内存重用。</p>
 <p>内存分配算法：redis 将内存分配细节丢给了第三方，目前可以用 jemalloc(facebook)库来管理内存，
 或者切换到tcmalloc(google)，默认 redis 使用了性能更好的 jemalloc。</p>
-<p>info memory 命令查看redis 内存信息。</p>
+<p>info memory 命令查看redis 内存信息。试了一下返回：<code>mem_allocator:jemalloc-3.6.0</code></p>
 <h1 id="8-">原理8：有备无患-主从同步</h1>
 <p>增量同步：同步指令流，主节点会把那些对自己的状态产生修改性影响的指令记录在本地内存 buffer，
 然后异步将 buffer 中的指令同步到从节点。使用的 buffer 是环形 buffer，存在覆盖丢失数据危险</p>
@@ -1444,7 +1457,7 @@ redis-cli info stats | grep sync # 通过sync_partial_err(主从半同步复制�
 <h1 id="4">扩展4：过期策略</h1>
 <h3 id="key">过期的 key 集合</h3>
 <p>redis 会将每个设置了过期时间的 key 放到一个单独的字典中，以后会定时遍历这个字典来删除过期 key。
-出了定时遍历，还会使用惰性删除策略来删除过期 key，即访问 key 才对 key 过期时间进行检查，
+除了定时遍历，还会使用惰性删除策略来删除过期 key，即访问 key 才对 key 过期时间进行检查，
 如果过期了就立刻删除。</p>
 <p>注意：开发人员要注意避免有大量 key 同时过期，最好设置一个随机范围。否则可能会有卡顿报警现象。</p>
 <h3 id="_10">从库过期策略</h3>
@@ -1507,7 +1520,7 @@ struct RedisObject {
 } robj; // 一个RedisObject 对象头占用16 byte
 </code></pre>
 <h1 id="2">源码2：探索字典内部</h1>
-<p>字典使用两个 hashtable，通常只有一个有值，但是当 dict 扩容缩容时，需要分配薪的 hashtable，然后渐进式搬迁，
+<p>字典使用两个 hashtable，通常只有一个有值，但是当 dict 扩容缩容时，需要分配新的 hashtable，然后渐进式搬迁，
 这时两个 hashtable 分别存储旧的和新的 hashtable。搬迁结束后，旧的 hashtable 被删除，新的 hashtable 取而代之。</p>
 <p>hashtable 和 java HashMap 类似，通过分桶的方式解决冲突，第一维是数组，第二维是链表。
 数组中存储的是第二维链表的第一个元素的指针。</p>
@@ -1536,7 +1549,7 @@ siphash在输入 key 很小的情况下，也能产生随机性很好的输出�
 <h3 id="_14">扩容</h3>
 <p>正常情况下当 hash 表中的元素个数等于第一维数组长度就会扩容到原来的两倍。
 不过 redis 做 bgsave时，为了减少内存页过多分离(Copy On Write)，redis 尽量不去扩容(dict_can_resize)，
-但是如果 hash 表元素个数已经达到了第一纬数组5倍(dict_force_resize_ratio)，会强制扩容。</p>
+但是如果 hash 表元素个数已经达到了第一维数组5倍(dict_force_resize_ratio)，会强制扩容。</p>
 <h3 id="_15">缩容</h3>
 <p>元素个数低于数组长度的 10%，缩容不会考虑 redis 是否在做 bgsave.</p>
 <h3 id="set">set 结构</h3>
@@ -1559,10 +1572,10 @@ siphash在输入 key 很小的情况下，也能产生随机性很好的输出�
 <p>每个 ziplist 默认 8k 字节，超过了这个字节数，会新起一个 ziplist。ziplist 长度由 list-max-ziplist-size 决定</p>
 <p>默认 压缩深度0也就是不压缩，由 list-compress-depth 确定。
 为了支持快速 push/pop，quicklist 首尾两个 ziplist 不压缩，此时深度就是1。
-如果深度为2，就表示 quicklist 的首尾第一个 ziplist 和收尾第 2 个都不压缩。</p>
+如果深度为2，就表示 quicklist 的首尾第一个 ziplist 和首尾第 2 个都不压缩。</p>
 <h1 id="_18">探索跳跃列表内部</h1>
 <p>zset 是一个复合结构，需要一个 hash 来存储 value 和 score 的对应关系。
-score 排序和根据指定的 score 范围获取 value 列表的功能，需要另一个结构 siplist.</p>
+score 排序和根据指定的 score 范围获取 value 列表的功能，需要另一个结构 ziplist.</p>
 <p><img alt="skiplist" src="../skiplist.png" /></p>
 <pre><code>struct zslnode {
     string value;

@@ -567,6 +567,17 @@
           
             <li class="toctree-l1">
 		
+    <span class="caption-text">系统设计</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../系统设计system_design/Grokking_System_Design/Grokking_System_Design/">《Grokking System Design》</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <span class="caption-text">搜索引擎</span>
     <ul class="subnav">
                 <li class="">
@@ -984,7 +995,7 @@ typedef struct dictht {
     uint64_tu64;
     int64_ts64;
   }v;
-  struct dictEntry *next;  // 解决key 冲突问题
+  struct dictEntry *next;  // 解决key 冲突问题(链接法通过链表解决哈希冲突)
 }dictEntry;
 </code></pre>
 <p>字典的定义：</p>
@@ -992,7 +1003,7 @@ typedef struct dictht {
   dictType *type; // dictType 保存了用于操作特定类型键值对的函数,redis为不用的字典设置不同的类型特定函数
   void *privdata; //保存需要传给特定类型特定函数的可选参数
   dictht ht[2]; //ht属性是一个包含两个项的数组，数组中的每个项都是一个dictht哈希表，一般情况下，字典只使用ht[0]哈希表，ht[1]哈希表只会在对ht[0]哈希表进行rehash时使用。
-  in trehashidx; //它记录了rehash目前的进度，如果目前没有在进行rehash，那么它的值为-1。
+  int trehashidx; //它记录了rehash目前的进度，如果目前没有在进行rehash，那么它的值为-1。
 }
 </code></pre>
 <pre><code class="language-c">typedef struct dictType {
@@ -1061,9 +1072,11 @@ typedef struct intset {
 </code></pre>
 <p>升级操作：
 每当我们要将一个新元素添加到整数集合里面，并且新元素的类型比整数集合现有所有元素的类型都要长时，整数集合需要先进行升级（upgrade），然后才能将新元素添加到整数集合里面。</p>
-<p>升级操作的好处：
-- 提升灵活性: 避免类型错误
-- 节省内存: 需要的时候才升级</p>
+<p>升级操作的好处：</p>
+<ul>
+<li>提升灵活性: 避免类型错误</li>
+<li>节省内存: 需要的时候才升级</li>
+</ul>
 <p>intset 不支持降级操作
 insert 操作是 O(N)，find 操作是 O(logN)</p>
 <h1 id="7">7. 压缩列表</h1>
@@ -1246,18 +1259,28 @@ PEXPIREAT 和 PERSIST  可以设置和移除键过期时间</p>
  dict *expires;
 }redisDb;
 </code></pre>
-<p>如果一个键过期了，它什么时候会被删除呢？
-- 定时删除: 设置过期实践的同时创建一个定时器。
-  - 内存友好但是cpu时间不友好
-  - redis 依赖服务器的时间事件处理，当前事件时间由无序链表实现，查找一个事件O(n)，不能高效处理大量事件。不现实</p>
+<p>如果一个键过期了，它什么时候会被删除呢？</p>
 <ul>
-<li>惰性删除：放任过期键不管，每次从键空间获取键时，检查是否过期，过期就删除，否则返回该键<ul>
+<li>
+<p>定时删除: 设置过期实践的同时创建一个定时器。</p>
+<ul>
+<li>内存友好但是cpu时间不友好</li>
+<li>redis 依赖服务器的时间事件处理，当前事件时间由无序链表实现，查找一个事件O(n)，不能高效处理大量事件。不现实</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>
+<p>惰性删除：放任过期键不管，每次从键空间获取键时，检查是否过期，过期就删除，否则返回该键</p>
+<ul>
 <li>cpu 时间最友好，内存不友好。可能出现『泄露』现象</li>
 </ul>
 </li>
 </ul>
 <ul>
-<li>定期删除(被动策略)：每个一段时间程序对数据库进行一次检查，删除里面过期的键。由算法决定检查多少个数据库删除多少个键<ul>
+<li>
+<p>定期删除(被动策略)：每个一段时间程序对数据库进行一次检查，删除里面过期的键。由算法决定检查多少个数据库删除多少个键</p>
+<ul>
 <li>折衷策略。难点是如何确定执行的时长和频率</li>
 </ul>
 </li>
@@ -1270,9 +1293,11 @@ PEXPIREAT 和 PERSIST  可以设置和移除键过期时间</p>
 <h1 id="10-rdb">10 RDB 持久化</h1>
 <p>数据库状态：将服务器中的非空数据库以及他们的键值对统称为数据库状态。
 RDB 持久化生成的 RDB 文件是一个经过压缩的二进制文件，通过该文件可以还原RDB 文件时的数据库状态。</p>
-<p>RDB 文件的创建和载入(rdb.c/rdbSave)：
-- SAVE: 阻塞 redis 服务器进程，知道 RDB 文件创建完毕为止，期间无法处理任何请求命令
-- BGSAVE: 派生一个子进程负责创建RDB文件，父进程继续处理命令请求</p>
+<p>RDB 文件的创建和载入(rdb.c/rdbSave)：</p>
+<ul>
+<li>SAVE: 阻塞 redis 服务器进程，知道 RDB 文件创建完毕为止，期间无法处理任何请求命令</li>
+<li>BGSAVE: 派生一个子进程负责创建RDB文件，父进程继续处理命令请求</li>
+</ul>
 <p>RDB的载入是自动进行的，没有对应的命令，启动检测RDB文件存在就载入，载入期间处理阻塞状态。</p>
 <p>另外值得一提的是，因为AOF文件的更新频率通常比RDB文件的更新频率高，所以：</p>
 <p>·如果服务器开启了AOF持久化功能，那么服务器会优先使用AOF文件来还原数据库状态。</p>
@@ -1283,12 +1308,14 @@ RDB 持久化生成的 RDB 文件是一个经过压缩的二进制文件，通�
 <p>可以使用 od 命令来分析 RDB 文件。redis-check-dump 工具</p>
 <h1 id="11-aof">11 AOF 持久化</h1>
 <p>Append Only File，通过保存redis 执行的写命令来记录数据库状态的</p>
-<p>AOF 持久化功能可以分为:
-- 命令追加(append): AOF功能打开时，服务器在执行完一个写命令后，会以协议格式将被执行的写命令追加到服务器状态的aof_buf
-  缓冲区末尾
-- 文件写入: redis服务器进程就是个事件循环，服务器每次结束一个事件循环之前，都会调用flushAppendOnlyFile
-  函数，考虑是否将aof_buf缓冲区中的内容写入和保存到 AOF 文件里面
-- 文件同步(sync): appendfsync 可以配置</p>
+<p>AOF 持久化功能可以分为:</p>
+<ul>
+<li>命令追加(append): AOF功能打开时，服务器在执行完一个写命令后，会以协议格式将被执行的写命令追加到服务器状态的aof_buf
+  缓冲区末尾</li>
+<li>文件写入: redis服务器进程就是个事件循环，服务器每次结束一个事件循环之前，都会调用flushAppendOnlyFile
+  函数，考虑是否将aof_buf缓冲区中的内容写入和保存到 AOF 文件里面</li>
+<li>文件同步(sync): appendfsync 可以配置</li>
+</ul>
 <p>AOF 文件重写：
 将一个新的AOF文件替代现有的，新旧两个AOF文件所保存的数据库状态相同。不需要对现有aof文件进行读取，而是通过当前数据库状态实现的。</p>
 <p>实现原理：首先从数据库读取键现在的值，然后用一条命去记录键值对，替代之前记录这个键值对的多条命令。新的aof文件只包含当前数据库状态所必须的命令，
@@ -1297,9 +1324,11 @@ RDB 持久化生成的 RDB 文件是一个经过压缩的二进制文件，通�
 AOF 重写缓冲区，这个缓冲区在服务器创建子进程之后开始使用，当redis服务器执行完一个写命令后，
 它会同时将这个写命令发送给AOF缓冲区和AOF重写缓冲区。也就是 BGREWRITEAOF 命令的实现原理。</p>
 <h1 id="12">12 事件</h1>
-<p>redis服务器是一个事件驱动程序，服务器需要处理两类事件：
-- 文件事件(file event): redis通过套接字进行连接，而文件事件就是服务器对套接字操作的抽象
-- 时间事件(time event): Redis 服务器中的一些操作(serverCron)需要在给定的时间点执行，时间事件就是对这类定时操作的抽象。</p>
+<p>redis服务器是一个事件驱动程序，服务器需要处理两类事件：</p>
+<ul>
+<li>文件事件(file event): redis通过套接字进行连接，而文件事件就是服务器对套接字操作的抽象</li>
+<li>时间事件(time event): Redis 服务器中的一些操作(serverCron)需要在给定的时间点执行，时间事件就是对这类定时操作的抽象。</li>
+</ul>
 <h3 id="_10">文件事件</h3>
 <p>Redis基于Reactor模式开发了自己的网络事件处理器：这个处理器被称为文件事件处理器（file event handler）：</p>
 <p>·文件事件处理器使用I/O多路复用（multiplexing）程序来同时监听多个套接字，并根据套接字目前执行的任务来为套接字关联不同的事件处理器。</p>
@@ -1375,15 +1404,21 @@ typedef struct  redisClient {
 <h3 id="_13">旧版复制功能的实现</h3>
 <p>redis 复制功能分为 同步（sync）和命令传播（command propagate）</p>
 <h3 id="_14">新版复制功能的实现</h3>
-<p>2.8 开始引入 PSYNC 命令代替SYNC 执行复制时候的同步操作：
-- 完整重同步(full resynchronization): 处理初次复制的情况
-- 部分重同步(partial resynchronization): 处理断线后重复值的情况。只接收缺少的写命令</p>
-<p>实现：
-- 主服务器的复制偏移量和从服务器的复制偏移量。偏移量一致状态相同
-- 主服务器的复制积压缓冲区。主服务器维护的一个固定大长度的先进先出队列，默认大小1M。根据偏移后的数据是否在积压缓冲区决定是否执行部分或者完整同步。
-复制积压缓冲区大小可以根据 second * write_size_per_second 估算。second 平均重连接服务器的时间，write_size_per_second是
-主服务器平均每秒写入命令数据量(协议格式的写命令长度总和)。 repl-backlog-size
-- 服务器的运行 ID。40个随机的十六进制字符</p>
+<p>2.8 开始引入 PSYNC 命令代替SYNC 执行复制时候的同步操作：</p>
+<ul>
+<li>完整重同步(full resynchronization): 处理初次复制的情况</li>
+<li>部分重同步(partial resynchronization): 处理断线后重复值的情况。只接收缺少的写命令</li>
+</ul>
+<p>实现：</p>
+<ul>
+<li>主服务器的复制偏移量和从服务器的复制偏移量。偏移量一致状态相同</li>
+<li>主服务器的复制积压缓冲区。主服务器维护的一个固定大长度的先进先出队列，默认大小1M。根据偏移后的数据是否在积压缓冲区决定是否执行部分或者完整同步。</li>
+</ul>
+<p>复制积压缓冲区大小可以根据 second * write_size_per_second 估算。second 平均重连接服务器的时间，write_size_per_second是
+主服务器平均每秒写入命令数据量(协议格式的写命令长度总和)。 repl-backlog-size</p>
+<ul>
+<li>服务器的运行 ID。40个随机的十六进制字符</li>
+</ul>
 <h3 id="_15">心跳检测</h3>
 <p>命令传播阶段，从服务器会以每秒一次的频率，向主服务器发送命令：</p>
 <p><code>REPLCONF ACK &lt;replication_offset&gt;</code>, 其中replication_offset 是从服务器当前的复制偏移量。</p>
@@ -1418,19 +1453,23 @@ typedef struct  redisClient {
 <h3 id="_22">模式的订阅与退订</h3>
 <p>模式可以匹配多个频道，实现多个订阅。</p>
 <h3 id="_23">发送消息</h3>
-<p>执行 PUBLISH 需要两个动作：
-- 将消息 message 发送给 channel 频道的所有订阅者
-- 如果有一个或者多个 patern 与频道的 channel 匹配，将 message 发送给 pattern 模式的订阅者</p>
+<p>执行 PUBLISH 需要两个动作：</p>
+<ul>
+<li>将消息 message 发送给 channel 频道的所有订阅者</li>
+<li>如果有一个或者多个 patern 与频道的 channel 匹配，将 message 发送给 pattern 模式的订阅者</li>
+</ul>
 <h3 id="_24">查看订阅信息</h3>
 <p>PUBSUB 查看频道或者模式的相关信息，比如某个频道有多少订阅者，某个模式有多少订阅者</p>
 <h1 id="19">19 事务</h1>
 <p>redis 通过 MULTI, EXEC, WATCH 等命令实现事务功能，事务提供了一种将多个请求命令打包，然后一次性、按顺序执行
 多个命令的机制，并且事务执行期间，服务器不会中断事务而改去执行其他客户端的命令请求。</p>
 <h3 id="_25">事务实现</h3>
-<p>三阶段：
-- 开始: MULTI 命令
-- 命令入队: EXEC, DISCARD, WATCH, MULTI 四个之外的命令都会放到事务队列里。
-- 事务执行: EXEC</p>
+<p>三阶段：</p>
+<ul>
+<li>开始: MULTI 命令</li>
+<li>命令入队: EXEC, DISCARD, WATCH, MULTI 四个之外的命令都会放到事务队列里。</li>
+<li>事务执行: EXEC</li>
+</ul>
 <h3 id="watch">WATCH 的实现</h3>
 <p>WATCH 命令是一个乐观锁，它可以在 EXEC 执行之前，监视任意数量的数据库键，并在EXEC 命令执行时，检查被监视的键
 是否至少有一个已经被修改过了，如果是的话，服务器将拒绝执行事务，并向客户端返回代表事务执行失败的空恢复。</p>
@@ -1462,8 +1501,8 @@ typedef struct  redisClient {
 <h1 id="22">22 二进制位数组</h1>
 <p>redis 提供了 SETBIT, GETBIT, BITCOUNT, BITOP 四个命令用于处理二进制位数组(bit array)</p>
 <p>redis 使用 SDS 结构保存位数组，但是 buf 保存的位数组的顺序和我们平时书写的顺序是相反的。</p>
-<p>二进制位统计算法： variable-precision SWAR 算法
-BITCOUNT 要解决的问题-统一一个位数组中非0二进制位的数量，数学上称之为 "计算汉明重量(Hamming Weight)"
+<p>二进制位统计算法： variable-precision SWAR 算法</p>
+<p>BITCOUNT 要解决的问题-统一一个位数组中非0二进制位的数量，数学上称之为 "计算汉明重量(Hamming Weight)"
 通过一系列位移和位运算操作，可以在常数时间内计算多个字节的汉明重量，并且无需额外内存。</p>
 <p>redis 的BITCOUNT实现使用了 查表和 variable-precision 两种算法。</p>
 <p>BITOP 直接基于 C 语言的逻辑操作符实现。</p>
