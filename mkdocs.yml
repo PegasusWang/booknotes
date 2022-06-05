@@ -89,6 +89,8 @@ pages:
       - 《大规模分布式存储系统》: '分布式/大规模分布式存储系统.md'
       - 《深入分布式缓存从原理到实践》: '分布式/深入分布式缓存从原理到实践.md'
       - 《深入理解Kafka核心技术与实践原理》: '分布式/深入理解Kafka核心设计与实践原理/深入理解Kafka核心设计与实践原理.md'
+    - 系统设计:
+      - 《Grokking System Design》:  '系统设计system_design/Grokking_System_Design/Grokking_System_Design.md'
     - 搜索引擎:
       - 《Elasticsearch实战》: '搜索引擎/Elasticsearch实战/book.md'
     - 开发工具:
