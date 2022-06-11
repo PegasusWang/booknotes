@@ -144,11 +144,11 @@ pages:
       - 《用户思维》: '互联网/用户思维.md'
     - 区块链:
       - 《区块链技术指南》: '区块链/区块链技术指南(blockchain_guide).md'
-    - 技术演讲:
+    - 技术演讲网课:
       - 《哔哩哔哩的go微服务实战》: 'lecture/Gopher/哔哩哔哩的go微服务实战/note.md'
       - 《go业务基础库之Error&Context》: 'lecture/Gopher/Go_Error/go业务基础库之Error&Context.md'
       - 《Go同步和并发设计模式》: 'lecture/Gopher/Go同步和并发设计模式/note.md'
-
+      - 《300分钟吃透分布式缓存》: 'lecture/网课/300分钟吃透分布式缓存/300分钟吃透分布式缓存.md'
     - 职场:
       - 《give and take》: 'career/give_and_take.md'
       - 《the_effective_engineer》: 'career/the_effective_engineer.md'
