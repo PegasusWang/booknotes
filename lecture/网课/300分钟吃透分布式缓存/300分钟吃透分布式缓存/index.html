@@ -955,6 +955,18 @@
 
     </ul>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式技术原理与实战45讲/分布式技术原理与实战/">《分布式技术原理与实战45讲》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../架构设计面试精讲/架构设计面试精讲/">《架构设计面试精讲》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../高并发系统设计40问/高并发系统设计40问/">《高并发系统设计40问》</a>
+                </li>
     </ul>
 	    </li>
           
@@ -1192,6 +1204,7 @@
 <li>1.如果数据存在 Mc 中，可以设计一个缓存阀值，当 value 的长度超过阀值，则对内容启用压缩，让 KV 尽量保持小的 size，其次评估大 key 所占的比例，在 Mc 启动之初，就立即预写足够数据的大 key，让 Mc 预先分配足够多的 trunk size 较大的 slab。</li>
 <li>2.比如redis set, 扩展新的数据结构，同时让 client 在这些大 key 写缓存之前，进行序列化构建，然后通过 restore 一次性写入</li>
 <li>3.将大 key 分拆为多个 key，尽量减少大 key 的存在。同时由于大 key 一旦穿透到 DB，加载耗时很大，所以可以对这些大 key 进行特殊照顾，比如设置较长的过期时间，比如缓存内部在淘汰 key 时，同等条件下，尽量不淘汰这些大 key。</li>
+<li>4.冷热分离。比如排行榜之类的数据，可以把高频热数据放到 redis，把后面的冷数据落到 mysql。</li>
 </ul>
 </li>
 </ul>
@@ -1418,16 +1431,8 @@ ziplist 的结构如图所示，主要包括 5 个部分。</p>
 <h3 id="_10">淘汰原理</h3>
 <p>Redis 会在 2 种场景下对 key 进行淘汰:</p>
 <ul>
-<li>
-<ol>
-<li>定期执行 serverCron 时，检查淘汰 key</li>
-</ol>
-</li>
-<li>
-<ol>
-<li>在执行命令时，检查淘汰 key</li>
-</ol>
-</li>
+<li>1.定期执行 serverCron 时，检查淘汰 key</li>
+<li>2.在执行命令时，检查淘汰 key</li>
 </ul>
 <h3 id="_11">淘汰方式</h3>
 <p>Redis 中 key 的淘汰方式有两种，分别是同步删除淘汰和异步删除淘汰。在 serverCron 定期清理过期 key 时，如果设置了延迟过期配置 lazyfree-lazy-expire，
@@ -1718,7 +1723,7 @@ protocol buffers 序列化后的所生成的二进制消息非常紧凑，二进
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../../../career/give_and_take/" class="btn btn-neutral float-right" title="《give and take》">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../分布式技术原理与实战45讲/分布式技术原理与实战/" class="btn btn-neutral float-right" title="《分布式技术原理与实战45讲》">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../../../Gopher/Go同步和并发设计模式/note/" class="btn btn-neutral" title="《Go同步和并发设计模式》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -1750,7 +1755,7 @@ protocol buffers 序列化后的所生成的二进制消息非常紧凑，二进
         <span><a href="../../../Gopher/Go同步和并发设计模式/note/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../../../career/give_and_take/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../分布式技术原理与实战45讲/分布式技术原理与实战/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

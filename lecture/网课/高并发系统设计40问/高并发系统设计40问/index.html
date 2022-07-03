@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../../../img/favicon.ico">
-  <title>01 高并发系统：通用设计方法？ - PegasusWang的读书笔记</title>
+  <title>《高并发系统设计40问》 - PegasusWang的读书笔记</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../../../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "01 \u9ad8\u5e76\u53d1\u7cfb\u7edf\uff1a\u901a\u7528\u8bbe\u8ba1\u65b9\u6cd5\uff1f";
+    var mkdocs_page_name = "\u300a\u9ad8\u5e76\u53d1\u7cfb\u7edf\u8bbe\u8ba140\u95ee\u300b";
     var mkdocs_page_input_path = "lecture/\u7f51\u8bfe/\u9ad8\u5e76\u53d1\u7cfb\u7edf\u8bbe\u8ba140\u95ee/\u9ad8\u5e76\u53d1\u7cfb\u7edf\u8bbe\u8ba140\u95ee.md";
     var mkdocs_page_url = null;
   </script>
@@ -681,6 +681,237 @@
                     
     <a class="" href="../../300分钟吃透分布式缓存/300分钟吃透分布式缓存/">《300分钟吃透分布式缓存》</a>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../../分布式技术原理与实战45讲/分布式技术原理与实战/">《分布式技术原理与实战45讲》</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../架构设计面试精讲/架构设计面试精讲/">《架构设计面试精讲》</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">《高并发系统设计40问》</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#01">01 高并发系统：通用设计方法？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#02">02 架构分层</a></li>
+    
+
+    <li class="toctree-l3"><a href="#03">03 如何提升系统性能</a></li>
+    
+
+    <li class="toctree-l3"><a href="#04-ha">04 系统如何高可用(HA)</a></li>
+    
+
+    <li class="toctree-l3"><a href="#05">05 如何让系统易于扩展</a></li>
+    
+
+    <li class="toctree-l3"><a href="#07">07 如何减少频繁创建数据库连接的性能损耗？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#08">08 数据库优化方案(一): 如何主从分离</a></li>
+    
+
+    <li class="toctree-l3"><a href="#09">09 数据库优化方案(一): 如何分库分表</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_1">如何做垂直拆分</a></li>
+        
+            <li><a class="toctree-l4" href="#_2">如何对数据库做水平拆分</a></li>
+        
+            <li><a class="toctree-l4" href="#_3">引入问题解决</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#10-id">10 发号器：分库分表后 id 全局唯一性？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#11-nosql">11. NoSQL</a></li>
+    
+
+    <li class="toctree-l3"><a href="#12">12 缓存</a></li>
+    
+
+    <li class="toctree-l3"><a href="#13">13. 缓存使用姿势（一）：如何选择缓存读写策略？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#cache-aside">Cache Aside(旁路缓存)策略</a></li>
+        
+            <li><a class="toctree-l4" href="#readwrite-through">Read/Write Through(读穿/写穿) 策略</a></li>
+        
+            <li><a class="toctree-l4" href="#write-back">Write Back(写回) 策略</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#14">14. 缓存使用姿势（二）：缓存如何做到高可用？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_4">客户端方案</a></li>
+        
+            <li><a class="toctree-l4" href="#_5">中间代理方案</a></li>
+        
+            <li><a class="toctree-l4" href="#_6">服务端方案</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#15">15. 缓存使用姿势（三）：缓存穿透怎么办</a></li>
+    
+
+    <li class="toctree-l3"><a href="#16-cdn">16. CDN: 静态资源如何加速</a></li>
+    
+
+    <li class="toctree-l3"><a href="#17">17. 消息队列：秒杀如何处理上万次下单请求？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#18">18. 消息投递：如何保证消息仅仅被消费一次？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#19">19. 消息队列：如何降低延迟？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#20">20. 当问到项目经历时，面试官究竟想要了解什么？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#21-1">21. 系统架构：每秒 1 万次请求的系统要做服务化拆分么？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#22">22. 微服务架构：系统架构如何改造</a></li>
+    
+
+    <li class="toctree-l3"><a href="#23-rpc10-qps">23. RPC框架：10 万 qps 如何实现毫秒级服务调用？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#24">24. 注册中心：：分布式系统如何寻址？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#25-trace">25. 分布式 Trace: 横跨几十个分布式组件的慢请求如何排查？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#26">26. 负载均衡：怎么提升系统扩展能力</a></li>
+    
+
+    <li class="toctree-l3"><a href="#27-api">27. API网关</a></li>
+    
+
+    <li class="toctree-l3"><a href="#28">28. 多机房部署：跨地域分布式系统如何做？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#29-service-mesh">29. Service Mesh: 如何屏蔽服务化系统的服务治理细节</a></li>
+    
+
+    <li class="toctree-l3"><a href="#30">30. 服务端监控怎么做</a></li>
+    
+
+    <li class="toctree-l3"><a href="#31">31. 应用性能管理：使用体验如何监控？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#32">32. 压力测试：怎样设计全链路压测平台？</a></li>
+    
+
+    <li class="toctree-l3"><a href="#33">33. 配置管理</a></li>
+    
+
+    <li class="toctree-l3"><a href="#34">34. 降级熔断：如何屏蔽非核心系统故障影响？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_7">雪崩是如何发生的？</a></li>
+        
+            <li><a class="toctree-l4" href="#_8">熔断机制如何做？</a></li>
+        
+            <li><a class="toctree-l4" href="#_9">降级如何做？(返回降级数据、降频、异步写入)</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#35">35. 流量控制：高并发系统中我们如何操纵流量？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_10">什么是限流？</a></li>
+        
+            <li><a class="toctree-l4" href="#_11">限流算法</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#37">37. 计数系统设计(一)： 面对海量数据的计数器如何做？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_12">计数在业务上的特点：</a></li>
+        
+            <li><a class="toctree-l4" href="#_13">支持高并发的计数系统如何设计</a></li>
+        
+            <li><a class="toctree-l4" href="#_14">如何降低存储成本</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#38-50-qps">38. 计数系统设计(二)：50 万 qps 下如何设计未读数系统？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_15">系统通知的未读数要如何设计？</a></li>
+        
+            <li><a class="toctree-l4" href="#_16">信息流未读数设计方案</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#39">39. 信息流设计(一): 通用信息流系统的推模式如何做？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_17">设计信息流关注点</a></li>
+        
+            <li><a class="toctree-l4" href="#_18">基于推模式实现信息流系统</a></li>
+        
+            <li><a class="toctree-l4" href="#_19">推模式的问题和解决思路</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#40">40. 信息流设计(二): 信息流拉模式如何做？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#pull">使用拉(pull)模式设计信息流</a></li>
+        
+            <li><a class="toctree-l4" href="#_20">推拉结合的方案</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#41">41. 数据迁移如何做？</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#_21">如何平滑迁移数据库数据</a></li>
+        
+            <li><a class="toctree-l4" href="#_22">双写方案</a></li>
+        
+            <li><a class="toctree-l4" href="#_23">级联同步方案</a></li>
+        
+            <li><a class="toctree-l4" href="#_24">数据迁移时如何预热缓存</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#_25">结束语：学不可以已</a></li>
+    
+
+    </ul>
+                </li>
     </ul>
 	    </li>
           
@@ -776,8 +1007,12 @@
     <li><a href="../../../..">Docs</a> &raquo;</li>
     
       
+        
+          <li>技术演讲网课 &raquo;</li>
+        
+      
     
-    <li>01 高并发系统：通用设计方法？</li>
+    <li>《高并发系统设计40问》</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -999,10 +1234,12 @@
 <h1 id="18">18. 消息投递：如何保证消息仅仅被消费一次？</h1>
 <ol>
 <li>生产过程丢失: 重传</li>
-<li>消息队列中丢失。
-    1. 如果你需要确保消息一条都不能丢失，那么建议不要开启消息队列的同步刷盘，而是需要使用集群的方式来解决，可以配置当所有 ISR Follower 都接收到消息才返回成功。
-    2. 如果对消息的丢失有一定的容忍度，那么建议不部署集群，即使以集群方式部署，也建议配置只发送给一个 Follower 就可以返回成功了。
-    3. 我们的业务系统一般对于消息的丢失有一定的容忍度，比如说以上面的红包系统为例，如果红包消息丢失了，我们只要后续给没有发送红包的用户补发红包就好了。</li>
+<li>消息队列中丢失。<ul>
+<li>1.如果你需要确保消息一条都不能丢失，那么建议不要开启消息队列的同步刷盘，而是需要使用集群的方式来解决，可以配置当所有 ISR Follower 都接收到消息才返回成功。</li>
+<li>2.如果对消息的丢失有一定的容忍度，那么建议不部署集群，即使以集群方式部署，也建议配置只发送给一个 Follower 就可以返回成功了。</li>
+<li>3.我们的业务系统一般对于消息的丢失有一定的容忍度，比如说以上面的红包系统为例，如果红包消息丢失了，我们只要后续给没有发送红包的用户补发红包就好了。</li>
+</ul>
+</li>
 <li>消费者。一定要等到消息接收和处理完成后才能更新消费进度，但是消费可能重复</li>
 </ol>
 <p>如何保证只消费一次：幂等</p>
@@ -1428,6 +1665,15 @@ insert into inbox(userId, feedId, create_time) values(&quot;D&quot;, $feedId, $c
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../../career/give_and_take/" class="btn btn-neutral float-right" title="《give and take》">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../架构设计面试精讲/架构设计面试精讲/" class="btn btn-neutral" title="《架构设计面试精讲》"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
@@ -1450,6 +1696,10 @@ insert into inbox(userId, feedId, create_time) values(&quot;D&quot;, $feedId, $c
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="../../架构设计面试精讲/架构设计面试精讲/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../../../career/give_and_take/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
