@@ -150,6 +150,8 @@ pages:
       - 《Go同步和并发设计模式》: 'lecture/Gopher/Go同步和并发设计模式/note.md'
       - 《300分钟吃透分布式缓存》: 'lecture/网课/300分钟吃透分布式缓存/300分钟吃透分布式缓存.md'
       - 《分布式技术原理与实战45讲》: 'lecture/网课/分布式技术原理与实战45讲/分布式技术原理与实战.md'
+      - 《架构设计面试精讲》: 'lecture/网课/架构设计面试精讲/架构设计面试精讲.md'
+      - 《高并发系统设计40问》: 'lecture/网课/高并发系统设计40问/高并发系统设计40问.md'
     - 职场:
       - 《give and take》: 'career/give_and_take.md'
       - 《the_effective_engineer》: 'career/the_effective_engineer.md'
