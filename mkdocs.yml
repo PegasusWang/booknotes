@@ -152,6 +152,7 @@ pages:
       - 《分布式技术原理与实战45讲》: 'lecture/网课/分布式技术原理与实战45讲/分布式技术原理与实战.md'
       - 《架构设计面试精讲》: 'lecture/网课/架构设计面试精讲/架构设计面试精讲.md'
       - 《高并发系统设计40问》: 'lecture/网课/高并发系统设计40问/高并发系统设计40问.md'
+      - 《java并发编程78讲》: 'lecture/网课/java并发编程78讲/java并发编程78讲.md'
     - 职场:
       - 《give and take》: 'career/give_and_take.md'
       - 《the_effective_engineer》: 'career/the_effective_engineer.md'
