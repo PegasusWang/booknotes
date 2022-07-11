@@ -388,7 +388,7 @@ java.util.concurrent 里面的原子类基本都是自旋锁的实现。
 
 - put 操作有 modCount++ 非原子操作
 - 扩容期间取出来的值不准确
-- 同事 put 碰撞导致数据丢失
+- put 碰撞导致数据丢失
 - 可见性问题无法保证。一个线程操作这个容器时，其他线程能感知到本次操作
 - 死循环造成 cpu 100%
 
@@ -892,7 +892,6 @@ ConcurrentLinkedQueue, ConcurrentHashMap
 - ABA 问题。atomic 包中提供了 AtomicStampedReference 这个类，它是专门用来解决 ABA 问题的，解决思路正是利用版本号，AtomicStampedReference 会维护一种类似 `<Object,int>` 的数据结构
 - 自旋时间过长。CAS 往往是配合着循环来实现的，有的时候甚至是死循环，不停地进行重试，直到线程竞争不激烈的时候，才能修改成功。
   高并发场景下，通常 CAS 效率是不高的。
-
 - 范围不能灵活控制。CAS 的第三个缺点就是不能灵活控制线程安全的范围。
 
 
