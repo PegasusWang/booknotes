@@ -538,3 +538,121 @@ volatile 和原子类的使用场景是不一样的，如果我们有一个可�
 
 - 场景1，ThreadLocal 用作保存每个线程独享的对象，为每个线程都创建一个副本，这样每个线程都可以修改自己所拥有的副本, 而不会影响其他线程的副本，确保了线程安全。
 - 场景2，ThreadLocal 用作每个线程内需要独立保存信息，以便供其他方法更方便地获取该信息的场景。每个线程获取到的信息可能都是不一样的，前面执行的方法保存了信息后，后续方法可以通过 ThreadLocal 直接获取到，避免了传参，类似于全局变量的概念。
+
+
+# 45 ThreadLocal 是用来解决共享资源的多线程访问的问题吗？
+不是。每个线程中的资源不共享。
+
+它可以在 initialValue 中 new 出自己线程独享的资源，而多个线程之间，它们所访问的对象本身是不共享的，自然就不存在任何并发问题。这是 ThreadLocal 解决并发问题的最主要思路。
+
+如果我们把放到 ThreadLocal 中的资源用 static 修饰，让它变成一个共享资源的话，那么即便使用了 ThreadLocal，同样也会有线程安全问题。
+
+- ThreadLocal 是通过让每个线程独享自己的副本，避免了资源的竞争。
+- synchronized 主要用于临界资源的分配，在同一时刻限制最多只有一个线程能访问该资源。
+
+
+# 46 多个 ThreadLocal 在 Thread 中的 threadlocals 里是怎么存储的？
+
+一个 Thread 里面只有一个ThreadLocalMap ，而在一个 ThreadLocalMap 里面却可以有很多的 ThreadLocal，每一个 ThreadLocal 都对应一个 value。
+
+但是 ThreadLocalMap 解决 hash 冲突的方式是不一样的，它采用的是线性探测法。如果发生冲突，并不会用链表的形式往下链，而是会继续寻找下一个空的格子。这是 ThreadLocalMap 和 HashMap 在处理冲突时不一样的点。
+
+
+# 47 内存泄漏——为何每次用完 ThreadLocal 都要调用 remove()？
+
+内存泄漏指的是，当某一个对象不再有用的时候，占用的内存却不能被回收，这就叫作内存泄漏。
+
+Entry 的 key 要使用弱引用。在使用完了 ThreadLocal 之后，我们应该手动去调用它的 remove 方法，目的是防止内存泄漏的发生。
+
+(防止 key 和 value 的泄露)
+
+
+# 48 Callable 和 Runnable 的不同？
+
+现有的 Runnable 缺陷：
+
+- 不能返回一个返回值
+- 不能抛出 checked Exception
+
+```
+public interface Callable<V> {
+    V call() throws Exception;
+}
+```
+
+可以看出它也是一个 interface，并且它的 call 方法中已经声明了 throws Exception，前面还有一个 V 泛型的返回值，这就和之前的 Runnable 有很大的区别。
+实现 Callable 接口，就要实现 call 方法，这个方法的返回值是泛型 V，如果把 call 中计算得到的结果放到这个对象中，就可以利用 call 方法的返回值来获得子线程的执行结果了。
+
+最后总结一下 Callable 和 Runnable 的不同之处：
+
+- 方法名，Callable 规定的执行方法是 call()，而 Runnable 规定的执行方法是 run()；
+- 返回值，Callable 的任务执行后有返回值，而 Runnable 的任务执行后是没有返回值的；
+- 抛出异常，call() 方法可抛出异常，而 run() 方法是不能抛出受检查异常的；
+- 和 Callable 配合的有一个 Future 类，通过 Future 可以了解任务执行情况，或者取消任务的执行，还可获取任务执行的结果，这些功能都是 Runnable 做不到的，Callable 的功能要比 Runnable 强大。
+
+# 49 Future 的主要功能是什么？
+
+Future 的作用:
+
+Future 最主要的作用是，比如当做一定运算的时候，运算过程可能比较耗时，如果一直等待方法返回比较耗时。
+我们可以把运算的过程放到子线程去执行，再通过 Future 去控制子线程执行的计算过程，最后获取到计算结果。这样一来就可以把整个程序的运行效率提高，是一种异步的思想。
+
+- get() 获取结果: 任务执行完毕、任务还没有结果、任务抛异常、任务取消、任务想超时
+- isDone: 判断是否执行完毕(不代表成功执行了，只代表执行完毕)
+- cancel: 取消任务执行
+- isCancelled:  是否被取消
+
+
+# 50 使用 Future 有哪些注意点？Future 产生新的线程了吗？
+
+1. 当 for 循环批量获取 Future 的结果时容易 block，get 方法调用时应使用 timeout 限制
+2. Future 的生命周期不能后退，一旦完成了任务，它就永久停在了“已完成”的状态，不能从头再来，也不能让一个已经完成计算的 Future 再次重新执行任务。
+
+在把 Callable 提交到线程池后，真正执行 Callable 的其实还是线程池中的线程，而线程池中的线程是由 ThreadFactory 产生的，这里产生的新线程与 Callable、Future 都没有关系，所以 Future 并没有产生新的线程。
+
+
+# 51 如何利用 CompletableFuture 实现“旅游平台”问题？
+
+有超时的并行获取。
+
+- 线程池实现 
+- CountDownLatch
+- CompletableFuture
+
+
+# 52 信号量能被 FixedThreadPool 替代吗？
+
+### Semaphore 信号量
+
+信号量的一个最主要的作用就是，来控制那些需要限制并发访问量的资源。控制并发执行线程数
+
+- Semaphore(int permits, boolean fair)
+- acquire
+- release
+
+
+# 53 CountDownLatch 是如何安排线程执行顺序的？
+
+CountDownLatch 的核心思想，等到一个设定的数值达到之后，才能出发
+
+- 用法一：一个线程等待其他多个线程都执行完毕，再继续自己的工作
+- 用法二：多个线程等待某一个线程的信号，同时开始执行
+
+
+CountDownLatch 类在创建实例的时候，需要在构造函数中传入倒数次数，然后由需要等待的线程去调用 await 方法开始等待，
+而每一次其他线程调用了 countDown 方法之后，计数便会减 1，直到减为 0 时，之前等待的线程便会继续运行
+
+
+# 54 CyclicBarrier 和 CountdownLatch 有什么异同？
+
+CyclicBarrier 可以构造出一个集结点，当某一个线程执行 await() 的时候，它就会到这个集结点开始等待，等待这个栅栏被撤销。
+直到预定数量的线程都到了这个集结点之后，这个栅栏就会被撤销，之前等待的线程就在此刻统一出发，继续去执行剩下的任务。
+
+相同点：都能阻塞一个或一组线程，直到某个预设的条件达成发生，再统一出发。
+
+但是它们也有很多不同点，具体如下。
+
+- 作用对象不同：CyclicBarrier 要等固定数量的线程都到达了栅栏位置才能继续执行，而 CountDownLatch 只需等待数字倒数到 0，也就是说 CountDownLatch 作用于事件，但 CyclicBarrier 作用于线程；CountDownLatch 是在调用了 countDown 方法之后把数字倒数减 1，而 CyclicBarrier 是在某线程开始等待后把计数减 1。
+- 可重用性不同：CountDownLatch 在倒数到 0 并且触发门闩打开后，就不能再次使用了，除非新建一个新的实例；而 CyclicBarrier 可以重复使用，在刚才的代码中也可以看出，每 3 个同学
+  到了之后都能出发，并不需要重新新建实例。CyclicBarrier 还可以随时调用 reset 方法进行重置，如果重置时有线程已经调用了 await 方法并开始等待，那么这些线程则会抛出 BrokenBarrierException 异常。
+- 执行动作不同：CyclicBarrier 有执行动作 barrierAction，而 CountDownLatch 没这个功能。
