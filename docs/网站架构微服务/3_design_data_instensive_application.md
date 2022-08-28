@@ -228,7 +228,7 @@ log-based 重放消息就像读文件，不允许改变 log。唯一的影响是
 - initial snapshot
 - Log compaction: Kafka
 
-### Event Sourcing
+### Event Sourcing (事件溯源)
 
 - Deriving current state from the event log
 - Commands and events
@@ -280,3 +280,5 @@ used in spark streaming
 
 # 12 The Future of Data Systems
 ## Data Integration
+
+密码学审计与完整性检查通常依赖 默克尔树(Merkle tree)，这个是一颗散列值的树，能够用于高效地证明一条记录出现在一个数据集中。
