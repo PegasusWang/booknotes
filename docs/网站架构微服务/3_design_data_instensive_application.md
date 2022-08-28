@@ -150,10 +150,10 @@ MapReduce 遵守同样的unix哲学: 把输入当做不可变的并且避免有�
 
 有一些消息系统直接在生产者和消费者之间使用连接而不使用中转节点：
 
--   UDP  多路广播. 经常使用在需要低延迟的场合比如股票市场 feeds，一般生产者需要记住哪些包已经发了方便重试
--   无中间件的消息库比如 ZeroMQ
--   StatsD, Brubeck 使用 UDP 收集指标
--   如果消费者暴露了网络服务，生产者可以直接通过 HTTP  or RPC 请求 push 消息 (webhooks就是这种思想)
+- UDP 多路广播. 经常使用在需要低延迟的场合比如股票市场 feeds，一般生产者需要记住哪些包已经发了方便重试
+- 无中间件的消息库比如 ZeroMQ
+- StatsD, Brubeck 使用 UDP 收集指标
+- 如果消费者暴露了网络服务，生产者可以直接通过 HTTP  or RPC 请求 push 消息 (webhooks就是这种思想)
 
 ##### Message brokers
 
@@ -176,7 +176,7 @@ MapReduce 遵守同样的unix哲学: 把输入当做不可变的并且避免有�
 当多个消费者向同一个 topic 读取消息的时候，使用两种模式：
 
 -   Load balancing: broker 可能随意找一个消费者发，你可能想增加消费者并行处理
--   Fan-out: 每条信息发送给所有的消费者
+-   Fan-out: 每条信息发送给所有的消费者 (广播)
 
 ##### Acknowledgements and redelivery
 
@@ -207,11 +207,13 @@ log-based 支持辐射型消息，消费者可以独立读取 log
 分片是怎么知道哪些消息被处理了呢：通过当前消费者处理的偏移和分片记录的偏移，所有大于消费者已经处理的偏移的消息是未处理的。
 
 ##### Disk space usage
-通常使用环形 buffer 处理旧消息的丢弃问题
+通常使用环形 buffer 处理旧消息的丢弃问题(ring buffer)
 
 ##### When consumers cannot keep up with producers
 通常 log-based 代理使用 buffer 来处理消息堆积问题，一旦发现消费者大幅落后处理跟不上会发出警告，因为 buffer
 通常足够大，有时间在消息丢失之前人为干预修复慢消费者。
+
+消费者跟不上生产者：丢弃信息；进行缓冲；背压(backpressure)
 
 ##### Replaying old messages
 log-based 重放消息就像读文件，不允许改变 log。唯一的影响是会改变 offset，不过 offset

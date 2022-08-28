@@ -119,6 +119,7 @@ pages:
       - 《从0开始学架构》: '网站架构微服务/从0开始学架构/从0开始学架构.md'
       - 《web scalavility for startup engineers》: '网站架构微服务/web_scalavility_for_startup_engineers.md'
       - 《design_data_instensive_application》: '网站架构微服务/design_data_instensive_application.md'
+      - 《design_data_instensive_application2》: '网站架构微服务/2_design_data_instensive_application.md'
       - 《clean_architecture》: '网站架构微服务/clean_architecture.md'
       - 《微服务实战》: '网站架构微服务/微服务实战.md'
       - 《微服务设计》: '网站架构微服务/微服务设计.md'

@@ -45,6 +45,7 @@ Replication(副本)不同机器上保存同样的的数据。基于以下理由�
 
 处理 leader 的失败有些麻烦，需要一个 follower 被提升为新的 leader，client 需要被配置写入新的 leader，其他的 follower
 需要从新的 leader 读取数据变更。这种处理叫做 failover，可以手动或者自动处理：
+
 1. 确认 leader 故障。crash，断电，网络问题等等。通常用响应超时来检测
 2. 选取新的 leader
 3. 重新配置系统使用新的 leader。写入请求到新的 leader
@@ -102,7 +103,7 @@ follower，对用户而言数据好像丢失了。这个时候需要 read-after-
 
     更麻烦的是跨设备读取，比如在移动设备上更新了数据，在其他设备上要能看到更新。
 
-##### Monotonic Reads
+##### Monotonic Reads (单调读一致性)
 
 第二个异步复制会出现的问题是用户可能会看到某些数据『时间倒流』，从不同的 replica 中读取数据可能遇到。
 Monotonic Reads: 每个用户的读取都只从一个 relica 读。比如基于用户 id hash 来选取 replica 读取。
@@ -112,14 +113,14 @@ Monotonic Reads: 每个用户的读取都只从一个 relica 读。比如基于�
 第三个异步复制会碰到的反常的地方是：如果有些分片复制速度比其他慢，一个观察者可能会先看到回答，后看到问题（因果错乱）。
 避免这种反常的方式是：consistent prefix reads.  如果一系列写入操作按照确定顺序执行，其他人读取这些写入结果以相同顺序出现。
 
-保证写入操作有关联方都写入同一个 partition
+保证任何有因果相关的都写入到相同的分区。
 
 ##### Solutions for Replication Lag
 
 在一个最终一致性系统下，考虑应用在复制延迟过久（分钟到小时）的情况下如何表现是必要的。如果对用户来说很不友好，就应该考虑使用
 read-after-write 等保证用户体验。
 
-### Multi-Leader Replication
+### Multi-Leader Replication(多主复制)
 
 一主多从架构有个很明显的缺陷：只往一个 leader 写入。如果 leader 挂了或者无法连接了，就不能写入数据了。
 multi-leader(master-master/active replication): 多主架构就是为了解决这个问题。每个 leader 对于其他 leader 表现像 follower。
@@ -620,7 +621,7 @@ partial failutre: 分布式系统中经常出现一部分系统以一种不可�
 
 ##### Unreliable Networks
 
-如果一个发送了请求但是没有回应，无法区分到底是请求丢失、远程节点挂了还是响应丢失了。
+如果一个发送了请求但是没有回应，无法区分到底是请求丢失、远程节点挂了还是响应丢失了。通常用"超时"解决。
 
 ##### Network Faults in Practice
 
@@ -647,8 +648,21 @@ partial failutre: 分布式系统中经常出现一部分系统以一种不可�
 
 大部分现代计算机使用两种时钟：
 
--   Time-of-day clocks : 时间戳，返回从 epoch 开始的秒数。需要从 NTP 服务器同步信息
--   Monotoinc clocks: 经常用来衡量时间区间（time interva），例如超时或者服务器响应时间
+- Time-of-day clocks(日历时钟) : 返回从 epoch 开始的秒数(可能回拨)。需要从 NTP(网络时间协议) 服务器同步信息。
+  - linux的 clock_gettime(CLOCK_REALTIME) 或者 java System.currentTimeMillis()
+
+- Monotoinc clocks: 经常用来衡量时间区间（time interva），例如超时或者服务器响应时间。用来测量经过时间(elapsed time)
+  - linux的 clock_gettime(CLOCK_MONOTONIC) 或者 java System.nanoTime()
+
+时钟同步和准确性：
+
+- 计算机中的石英钟不够精确：它会 漂移（drifts，即运行速度快于或慢于预期）。时钟漂移取决于机器的温度。 Google 假设其服务器时钟漂移为 200 ppm（百万分之一），
+  相当于每 30 秒与服务器重新同步一次的时钟漂移为 6 毫秒，或者每天重新同步的时钟漂移为 17 秒
+- 如果计算机的时钟与 NTP 服务器的时钟差别太大，可能会拒绝同步，或者本地时钟将被强制重置【37】。任何观察重置前后时间的应用程序都可能会看到时间倒退或突然跳跃。
+- 移动设备上用户可以故意设置硬件的时钟为不正确的日期和时间
+
+所谓的 逻辑时钟（logic clock）【56,57】是基于递增计数器而不是振荡石英晶体，对于排序事件来说是更安全的选择（请参阅 “检测并发写入”）。
+逻辑时钟不测量一天中的时间或经过的秒数，而仅测量事件的相对顺序（无论一个事件发生在另一个事件之前还是之后）
 
 ##### Relying on Synchronized Clocks
 
@@ -664,30 +678,40 @@ google 在每个数据中心都有原子钟，允许时钟同步时间控制在 
 
 ### Knowledge, Truth, and Lies
 
+分布式系统与运行在单台计算机上的程序的不同之处：没有共享内存，只有通过可变延迟的不可靠网络传递的消息，系统可能遭受部分失效，
+不可靠的时钟和处理暂停。
+
 ##### The Truth is Defined by the Majority
 
-大部分分布式系统使用投票的方式选主
+大部分分布式系统使用投票的方式选主。最常见的法定人数是超过一半的绝对多数（尽管其他类型的法定人数也是可能的）。
+多数法定人数允许系统继续工作，如果单个节点发生故障（三个节点可以容忍单节点故障；五个节点可以容忍双节点故障）
 
-Fenching tokens: 每当一个节点从 lock server 获取到 契约的时候分配一个单调递增token，写入的时候server 会记住 token号，
+Fenching tokens(防护令牌): 每当一个节点从 lock server 获取到 契约的时候分配一个单调递增token，写入的时候server 会记住 token号，
 并且禁止 token 小于之前写入的 node 携带的 token 写入。
 
-### Byzantine Faults
+### Byzantine Faults(拜占庭故障)
 
 之前讨论的 Fenching tokens 可以发现并且阻塞意外的操作（节点自己没发现契约过期），但是阻止不了故意伪造假的 token 的情况。
 分布式系统难处理的一点就是节点可能撒谎，比如声称收到了一个特定消息但是实际上却没有，这种行为成为拜占庭故障，
 解决这种在不信任的环境中达成一致的问题叫做『拜占庭将军问题』(<https://yeasy.gitbooks.io/blockchain_guide/content/distribute_system/bft.html>)
 
+当一个系统在部分节点发生故障、不遵守协议、甚至恶意攻击、扰乱网络时仍然能继续正确工作，称之为 拜占庭容错（Byzantine fault-tolerant）
+
 ### System Model and Reality
 
--   Synchronous Model: bounded network delay,  bounded process pauses, bounded clock error （错误不会超过上界）
--   Partially Synchronous model: Synchronous most of time
--   Asynchronous Model: 不对时间做任何假设
+时序假设，三种系统模型是常用的：
+
+- Synchronous Model(同步模型): bounded network delay,  bounded process pauses, bounded clock error （错误不会超过上界）
+- Partially Synchronous model(部分同步): Synchronous most of time
+- Asynchronous Model(异步模型): 不对时间做任何假设
 
 三种最常见的节点故障：
 
--   Crash-stop faults: 算法假定节点只会因为一种方式失败:crashing。这意味着节点停止响应后就永远不再响应了
--   Crash-recovery faults: 节点一定时间内没响应，之后会恢复。节点应该有稳定的持久化存储保护 crash，内存中的状态可以丢失
--   Byzantine(arbitrary) faults: 节点可能做任何，比如欺骗其他节点
+- Crash-stop faults(崩溃-停止故障): 算法假定节点只会因为一种方式失败:crashing。这意味着节点停止响应后就永远不再响应了
+- Crash-recovery faults(崩溃-恢复故障): 节点一定时间内没响应，之后会恢复。节点应该有稳定的持久化存储保护 crash，内存中的状态可以丢失
+- Byzantine(arbitrary) faults: 节点可能做任何事情，比如欺骗其他节点
+
+真实系统的建模，局与偶崩溃-恢复的 部分同步模型通常是最有用的模型。
 
 ###### Correctness of an algorithm
 
@@ -698,7 +722,9 @@ Fenching tokens: 每当一个节点从 lock server 获取到 契约的时候分�
 -   Monotonic sequence: 如果请求 x 返回 tx, y 返回 ty，并且 x 在 y 开始前完成，那么 `tx < ty`
 -   Availability: 一个请求 fencing token 的节点在最终收到响应前不会crash
 
+
 # 9. Consistency and Consensus
+我们将假设 第八章 的所有问题都可能发生：网络中的数据包可能会丢失、重新排序、重复递送或任意延迟；时钟只是尽其所能地近似；且节点可以暂停（例如，由于垃圾收集）或随时崩溃。
 
 建立容错系统最好的方式是 寻找一些通用(general-purpose)的，包含有用保证的抽象，实现他们，让应用依赖这些保证。
 比如，分布式系统最重要的一抽象就是 consensus(一致性)，让所有节点达成一致。
@@ -707,13 +733,15 @@ Fenching tokens: 每当一个节点从 lock server 获取到 契约的时候分�
 
 大部分数据库复制的实现都至少保证了最终一致性，但是很多问题只有在系统错误或者高并发场景下才会暴露，而且很难用测试保证。 本章将讨论几种分布一致性模型。
 
-### Linearizability(Atomic consistency)
+### Linearizability(Atomic consistency) 线性一致性
 
 最终一致性实现中，如果从不同副本同时请求数据，可能得到不同结果，能不能使用一种方式就好比只从一个节点读数据呢？
 Linearizability (atomic consistency, strong consistency, immediate consistency, external consistency) 思想就是这样。
 当一个 client 完成写入，所有 clients 读取数据必须看到写入的值。
 
 ##### What Makes a System Linearizable ?
+
+线性一致性基本基本思想很简单：使系统看起来好像只有一个数据副本，而且所有操作都是原子的。
 
 如果一个读请求和写请求并发执行，它可能读到新值或者旧值。
 
@@ -741,14 +769,14 @@ Apache ZooKeeper, etcd 经常用来实现分布式锁和 leader 选举。
 
 ##### Implementating Linearizable Systems
 
-Linearizability 意味着：表现的数据像是只有一份拷贝。，并且所有在它上面的操作都是原子的。
+Linearizability 意味着：表现的数据像是只有一份拷贝，并且所有在它上面的操作都是原子的。
 通常让系统容错的方式是使用副本(replication)
 
-- Single-leader replication (potentially, linearizable): 
-一主多从架构中只有 leader 能写入，如果你从 leader 读，或者从同步更新的 follower 读，它们潜在是 linearizable
+- Single-leader replication (potentially, linearizable):可能线性一致。
+一主多从架构中只有 leader 能写入，如果你从 leader 读，或者从同步更新的 follower 读，它们潜在是 linearizable。异步复制故
+障切换可能丢失已经提交的写入，同时违反了持久性和线性一致性。
 
-- Consensus algorithms (Linearizable)
-通过一致性算法实现类似一主多从架构
+- Consensus algorithms (Linearizable): 通过一致性算法实现类似一主多从架构
 
 - Multi-leader replication (not linearizable)
 通常多主架构不是 Linearizable 的， 因为多主架构并发处理多个节点的写入需求并且异步复制到其他节点，可能造成冲突写入并且需要人工修复，无法实现 "single copy of data"
@@ -758,7 +786,6 @@ Linearizability 意味着：表现的数据像是只有一份拷贝。，并且�
 
 ##### Linearizability and quorums
 直觉上 strict quorum 读写能保证 linearizable, 但是当有网络延迟的时候，可能会出现竞争条件。
-
 
 ##### The Cost of Linearizability
 
@@ -793,11 +820,13 @@ linearizability,读写响应时间至少和不确定的网络延迟成正比。�
 
 从这两个排序概念看数据一致性模型：
 
-- Linearizability: linearizable 系统操作可以是全序的：系统表现像是只有一份数据拷贝，并且每个操作都是原子的，意味着两个操作我们可以说一个是在另一个之前发生的。
+- Linearizability: 线性一致系统中操作是全序的：系统表现像是只有一份数据拷贝，并且每个操作都是原子的，意味着两个操作我们可以说一个是在另一个之前发生的。
 - Causality: 两个事件是有序的如果它们因果相关，但是如果它们是并发的就是无法比较的。因果性定义了偏序关系，而不是全序。(想象git分之合并)
 
 ##### Linearizability is stronger than causal consistency
 Linearizability implies causality: 任意系统只要是 linearizable 将保持因果正确，但是会破坏性能和可用性。
+
+线性一致性隐藏着因果关系：任何线性一致的系统都可以保证因果性。
 
 ##### Capturing causal dependencies
 
@@ -827,12 +856,13 @@ Leslie Lamport 1978 年提出了一个用来生成因果一致的序列号的方
 尽管 Lamport timestamps 能保持因果一致，但是在分布式系统中是不够的。
 为了实现唯一性限制（比如姓名），仅仅有全序的操作关系是不够的，还需要知道什么时候被最终确定
 
-### Total Order Broadcast
+### Total Order Broadcast(全序广播)
 单主架构中通过选一个节点为 leader 并且在一个节点的单核 cpu
 上处理序列号问题，从而实现全序关系。挑战是如果一个节点处理能力不够或者leader挂了怎么办。分布式系统称这种问题叫做
 全序广播(total order broadcast) 或者 原子广播(atomic broadcast)，通常需要两个安全属性：
-- Reliable delivery : 没有信息丢失，如果一个消息发送给了一个节点，就被发送到所有节点
-- Totally ordered delivery: 消息被以同样的顺序发送到所有节点
+
+- Reliable delivery(可靠交付): 没有信息丢失，如果一个消息发送给了一个节点，就被发送到所有节点
+- Totally ordered delivery(全序交付): 消息被以同样的顺序发送到所有节点
 
 ##### Using total order broadcast
 一致性服务 ZooKeeper 和 etcd 实现了全序广播。全序广播可以用来实现 serializable transaction, lock service provides
@@ -854,7 +884,7 @@ fencing tokens
 timestamps 不需要保证，这就是全序广播(total order broadcast和时间戳排序(timestamp ordering)的区别。
 
 
-### Distributed Transactions and Consensus
+### Distributed Transactions and Consensus(分布式事务与共识)
 
 一致性问题看起来很简单：几个节点在某些事情上达成一致。在某些情况下一致性很重要：
 
@@ -888,7 +918,7 @@ commit。然后协调人跟踪每个节点的响应：
 如果在参与者回复了 yes 之后 协调人挂了，该数据库节点就无法知道到底要 commit 还是 abort，只能等协调人恢复过来。
 
 ##### Three-phase commit
-2PC 因为协调人可能出问题而等待协调人恢复，一般叫做 blocking commit protocol。这时候有人提出了 3PC，加上一个 perfect failure detector 
+2PC 因为协调人可能出问题而等待协调人恢复，一般叫做 blocking commit protocol。这时候有人提出了 3PC，加上一个 perfect failure detector
 检测哪个节点 crash 了。但在一些网络可能无线延迟的场景，依然是使用 2PC
 
 
@@ -905,6 +935,7 @@ commit。然后协调人跟踪每个节点的响应：
 XA transactions:  X/Open XA(short for eXtended Architecture): 一种跨技术之间实现两阶段提交的标准。被很多数据库和消息中间件支持
 
 分布式事务的限制：
+
 - 协调者是单点的，默认会有可用性问题，或者只有一个原始的副本支持
 - 很多服务端应用是无状态模型（http），如果协调人部署在应用里，会改变默认的部署方式，导致不再是无状态
 - XA 只保证了很多数据系统的最基础实现，无法检测不同系统死锁，没有一种协议来解决不同系统之间的冲突问题
@@ -912,10 +943,11 @@ XA transactions:  X/Open XA(short for eXtended Architecture): 一种跨技术之
 
 ### Fault-Tolerant Consensus
 一个一致性算法必须满足以下这些特性：
- - Uniform agreement: 没有两个节点决定不一致
- - Integrity: 没有节点做两次决定
- - Validity： 如果一个节点决定一个值 v，v 是被某些节点提议的
- - Termination：每个不 crash 的节点能最终决定一些值
+
+- Uniform agreement: 没有两个节点决定不一致
+- Integrity: 没有节点做两次决定
+- Validity： 如果一个节点决定一个值 v，v 是被某些节点提议的
+- Termination：每个不 crash 的节点能最终决定一些值
 
 ##### Consensus algorithms and total order broadcast
 最知名的容错一致性算法包括 Viewstamped Replication(VSR), Paxos, Raft, Zab，他们有相似性但是又不完全相同。
