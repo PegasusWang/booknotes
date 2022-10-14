@@ -648,10 +648,10 @@ partial failutre: 分布式系统中经常出现一部分系统以一种不可�
 
 大部分现代计算机使用两种时钟：
 
-- Time-of-day clocks(日历时钟) : 返回从 epoch 开始的秒数(可能回拨)。需要从 NTP(网络时间协议) 服务器同步信息。
+- Time-of-day clocks(日历时钟) : 返回从 epoch(UTC 时间 1970 年 1 月 1 日午夜)开始的秒数(可能回拨)。需要从 NTP(网络时间协议) 服务器同步信息。
   - linux的 clock_gettime(CLOCK_REALTIME) 或者 java System.currentTimeMillis()
 
-- Monotoinc clocks: 经常用来衡量时间区间（time interva），例如超时或者服务器响应时间。用来测量经过时间(elapsed time)
+- Monotoinc clocks: 经常用来衡量时间区间（time interval），例如超时或者服务器响应时间。用来测量经过时间(elapsed time)
   - linux的 clock_gettime(CLOCK_MONOTONIC) 或者 java System.nanoTime()
 
 时钟同步和准确性：
