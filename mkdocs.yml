@@ -155,6 +155,7 @@ pages:
       - 《架构设计面试精讲》: 'lecture/网课/架构设计面试精讲/架构设计面试精讲.md'
       - 《高并发系统设计40问》: 'lecture/网课/高并发系统设计40问/高并发系统设计40问.md'
       - 《java并发编程78讲》: 'lecture/网课/java并发编程78讲/java并发编程78讲.md'
+      - 《中间件核心技术与实战讲》: 'lecture/网课/中间件核心技术与实战/中间件核心技术与实战.md'
     - 职场:
       - 《give and take》: 'career/give_and_take.md'
       - 《the_effective_engineer》: 'career/the_effective_engineer.md'
