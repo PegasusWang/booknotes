@@ -8,7 +8,7 @@ markdown_extensions:
   - mdx_math:
       enable_dollar_delimiter: True  #for use of inline $..$
 
-pages:
+nav:
     - 简介: 'index.md'
     - 代码:
       - 《Work with legacy code》: 'code/work_with_legacy_code.md'
