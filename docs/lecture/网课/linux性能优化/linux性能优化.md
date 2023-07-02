@@ -123,3 +123,21 @@ open(dis, o_RDONLY|O_DIRECT|O_LARGEFILE, 0755)。使用了O_DIRECT 打开磁盘�
 僵尸进程：找到父进程，然后在父进程里解决。
 
 pstree -aps pid 可以找到  pid 父进程。然后看看父进程代码，是否调用 wait()/waitpid()，或是否注册SIGCHLD信号的处理函数。
+
+
+# 09 怎么理解软中断？
+
+- 上半部对应硬件中断，⽤来快速处理中断。包括网络收发、定时、调度、RCU 锁等各种类型
+- 下半部对应软中断，⽤来异步处理上半部未完成的⼯作。
+
+查看：
+
+- /proc/softirqs 软中断运行情况
+- /proc/interrups 硬中断运行情况
+
+
+# 10 软中断cpu使用率升高该怎么办
+
+- sar 系统活动报告工具
+- hping3 可以构造 tcp/ip 协议包的工具
+- tcpdump 网络抓包工具
