@@ -139,5 +139,37 @@ pstree -aps pid 可以找到  pid 父进程。然后看看父进程代码，是�
 # 10 软中断cpu使用率升高该怎么办
 
 - sar 系统活动报告工具
-- hping3 可以构造 tcp/ip 协议包的工具
+- hping3 可以构造 tcp/ip 协议包的工具。可以模拟 syn flood 攻击
 - tcpdump 网络抓包工具
+
+
+# 11 如何迅速分析系统 cpu 瓶颈
+
+cpu 性能指标：
+
+- cpu 使用率(用户cpu, 系统cpu, IOWAIT，软中断，硬中断，窃取 cpu，客户 cpu)
+- 平均负载 (大于 cpu 个数负载比较重了)
+- 进程上下文切换: 自愿上下文切换、非自愿上下文切换
+- CPU 缓存命中率
+
+性能工具：
+
+- 平均负载：uptime
+- 上下文切换：vmstat
+- cpu使用率升高：top, perf
+- 可不中断进程和僵尸进程：top  + strace + perf
+- 软中断：top + /proc/softirqs, sar, tcpdump
+
+性能指标和性能工具联系起来：
+
+- 从 cpu 性能指标出发。查看某个性能指标时，清楚知道哪些工具可以做到
+
+![](./根据指标找工具.png)
+
+- 知道工具能提供哪些指标
+
+![](./根据工具查指标.png)
+
+- 先尝试 top,vmstat,pidstat 基本包含了所有重要的 cpu 性能指标
+
+![](./cpu指标原理.png)
