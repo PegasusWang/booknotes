@@ -297,3 +297,48 @@ memleak 可以跟踪系统或指定进程的内存分配、释放请求。分配
 
 - df 查看文件系统的磁盘空间使用
 - 目录项和索引节点缓存。 slabtop
+
+
+# 24 Linux 磁盘 IO 是怎么工作的？(上)
+
+- 机械磁盘(HDD, Hard Disk Driver)。随机 IO 比连续 IO 慢很多
+- 固态磁盘(SSD, Solid State Disk)。
+
+linux内核支持 4 种 IO 调度算法，分别是：
+
+- NONE。不适用任何 IO 调度器
+- NOOP。先入先出队列，只做一些基本请求合并，常用于 ssd
+- CFQ。完全公平调度器
+- DeadLine: 分别为读写创建不同的IO队列
+
+存储系统 IO 的工作原理：
+
+- 文件系统层
+- 通用块层
+- 设备层
+
+# 25 Linux 磁盘 IO 是怎么工作的？(下)
+
+磁盘性能指标：
+
+- 使用率
+- 饱和度。繁忙程度
+- IOPS。每秒的IO请求数
+- 吞吐量，每秒 IO 请求大小
+- 响应时间
+
+fio 测试磁盘的 IOPS、吞吐量和响应时间等指标。
+
+磁盘 IO 观测：
+
+- iostat 每个磁盘使用率、IOPS、吞吐量等各种常见性能指标 (实际来自  /proc/diskstats)
+- pidstat, iotop 观测进程的 IO
+
+
+# 26 如何找出狂打日志的内鬼？
+
+- top 观察 cpu 和内存使用情况
+- iostat 观察磁盘 io 情况
+- pidstat, iotop 观察进程IO 情况
+- 读写文件必须通过系统调用，观察系统调可以知道系统正在写的文件。 strace -p pid
+- lsof -p pid 查看进程打开文件
