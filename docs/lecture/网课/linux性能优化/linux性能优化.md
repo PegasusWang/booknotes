@@ -342,3 +342,33 @@ fio 测试磁盘的 IOPS、吞吐量和响应时间等指标。
 - pidstat, iotop 观察进程IO 情况
 - 读写文件必须通过系统调用，观察系统调可以知道系统正在写的文件。 strace -p pid
 - lsof -p pid 查看进程打开文件
+
+# 27 为什么我的磁盘IO延迟很高
+
+大量读写临时文件。如果内存够用，建议放到内存中，减少磁盘 IO 瓶颈。
+
+- iostat -d -x 1 
+- pidstat -d 1
+- strace 
+- filetop 跟踪内核中文件的读写情况
+- opensnoop 可以找出文件路径
+
+# 28 一个 sql 查询 15 秒，怎么回事？
+
+- top/iostat 分析系统 cpu 和磁盘使用
+- pidstat 找到父进程
+- strace,lsof 找出mysqld 正在读取的文件，根据文件名字和刘静，找出操作的数据库和表
+- 慢查询 explain
+
+
+# 29 redis 响应延迟，如何解决？
+
+- 先看是否系统资源出现瓶颈。 cpu/内存/磁盘IO。top命令
+- iostat
+- pidstat -d 1 ，IO 请求来自哪些进程
+- strace + lsof 看看 redis-server 在写什么。 `strace -f -T -tt -p pid`
+- nsenter 进入容器命名空间。进入容器网络命名空间内部，才能看到完整的 tcp 连接
+- appendfsync 设置成了  always。redis 每次写操作都会触发 fdatasync 系统调用
+
+
+# 30 如何迅速分析系统的 IO 瓶颈在哪里？
