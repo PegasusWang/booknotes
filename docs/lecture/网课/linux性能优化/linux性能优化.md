@@ -503,3 +503,34 @@ C10M: (跳过内核协议栈)
 
 - DPDK，用户态网络标准
 - XDP (eXpress Data Path), linux内核提供的一种高性能网络数据路径
+
+
+# 36 怎么评估系统的网络性能？
+
+各协议层的性能测试
+
+- 转发性能： pktgen。linux 内核自带的高性能网络测试工具。测试 PPS
+- TCP/UDP性能：iperf3 或者  netperf
+- HTTP性能：ab, webbench 。 `ab -c 1000 -n 10000 http://192.168.0.30`
+- 应用负载性能。wrk, TCPCopy, Jmeter, LoadRunner
+
+
+# 37 DSN 解析时快时慢，该怎么办？
+
+dsn解析工具: nslookup, dig
+
+dnsmasq dns缓存服务。
+
+通过 dns 缓存、预取、HTTPDNS 等方法，优化 DNS 性能。
+
+
+# 38 使用 tcpdump 和 wireshark 分析网络流量
+
+`tcpdump -nn udp port 53 or host 35.180.27.188`
+
+用法： `tcpdump [选项][过滤表达式]`
+
+
+![](./tcpdump选项类.png)
+
+![](./tcpdump过滤表达式类.png)
