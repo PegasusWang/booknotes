@@ -172,7 +172,7 @@ RWMutex: 适合读多写少场景。可以获取多个读锁，除非锁用来�
 A rendezvous point for goroutine waiting for or announcing the occurrence of an event.
 
 ```
-for conditionTrue() == false{
+for conditionTrue() == false {
 	time.Sleep(1*time.Millisecond) //sleep多久是个问题，太久效率低下，太快消耗 cpu
 }
 ```
