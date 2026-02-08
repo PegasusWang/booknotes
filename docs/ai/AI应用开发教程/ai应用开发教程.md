@@ -413,12 +413,32 @@ runnable = (
 
 4.2 用 LCEL 实现 RAG
 4.3 用 LCEL 实现工厂模式
-4.4 存储与管理历史对话
+4.4 存储与管理历史对话。  from langchain_community.chat_message_histories imoprt SQLChatMessageHistory
+
+通过 LCEL 还可以实现：
+- 配置运行时变量
+- 故障回退
+- 并行调用
+- 逻辑分支
+- 动态创建
 
 # 37. 智能体架构 Agent
+5.1 什么是智能体 (Agent)
+将大语言模型作为一个推理引擎。给定一个任务，智能体自动生成完成任务所需的步骤，执行相应动作（例如选择并调用工具），直到任务完成。
 
+5.2 先定义一些工具：Tools
+  - 也可以是一个函数或三方 API
+  - 可以把一个 chain 或者 agent 的 run() 作为一个 Tool
+
+5.3 智能体类型 ReAct
+
+5.4 智能体类型 SelfAckWithSearch
 
 # 38 LangServe 和 LangChain.js
+
+LangServe 用于将Chain 或者 Runnable 部署成一个 Rest api 服务 (FastAPI )
+
+langchainjs js 版本
 
 
 # 39 认识大模型 Agent
