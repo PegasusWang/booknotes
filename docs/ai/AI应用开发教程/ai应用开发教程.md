@@ -271,24 +271,149 @@ game24_tot.py
 钉钉和百炼的连接到一起
 
 # 28. 提升索引准确率
+- 优化文本解析过程。 数据清洗 
+- 优化 chunk 切分模式。上下文感知，利用领域知识、基于固定大小切分
+- 自动合并检索
+- 选择更合适的 embedding 模型
+- 选择更适合业务的 rerank 模型
+- Raptor 用聚类为块建立索引
+
 
 # 29. 让问题更好理解
+用户提问的环节进行介入，让大模型更好理解问题。
+
+- Enrich 完善用户问题。通过大模型多次主动和用户沟通，不断收集信息，完善对用户真实意图的理解。
+  - 用户问题 -> LLM -> enriched 用户问题 -> RAG -> 输出答案
+- 让用户补全信息辅助业务调用。
+- multi-query 多路召回。一次性改写出多种用户问题。猜测用户回答，最后输出总结性答案。
 
 # 30. 改造信息抽取途径
 
+- Hyde 假设答案。生成假设答案，然后作为新问题去匹配新的文档块，再进行行总结。生成最终答案
+
+corrective retrieval augmented generation(CRAG)。搜索互联网的信息和知识库合并。
+- 向量相似度
+- 直接问大模型
+
+- self-rag。 在应用中设计反馈路径实现自我反思的策略。
+  - 相关性。我获取的这些材料和问题相关么
+  - 无幻觉。我的答案是不是按照材料写的来讲，还是我自己编造的？
+  - 已解答。我的答案是否解答了问题？
+
+- 从多种数据源获取资料。 NL2SQL
+
+专业领域的大模型问答或者死于知识开发思域助手。RAG 是好的选择
 
 # 31. Langchain 介绍
 
+- 如何使用 LangChain: 一套在大模型能力上封装的工具框架
+- 如何用几行代码实现一个复杂 AI 应用
+- 面向大模型的流程开发的过程抽象
+
+- LangChain 面向大模型的开发框架(SDK)
+- AGI 时代的软件工程的一个探索和原型
+- 学习 LangChain 更关注接口实现
+
 # 32. Langchain 核心组件
+language chain 大模型通信流程化
+
+1. 模型IO封装
+  - LLMS 大语言模型
+  - Chat Models: 一般基于 LLMs, 但是按照对话结构重新封装
+  - PromptTemplate: 提示词模板
+  - OutputParser: 解析输出
+
+2. 数据连接封装
+   - Document Loaders 各种格式文件的加载器
+   - Document Transformers 对文档常用操作，比如 split/filer/translate/extract metadata
+   - Text Embedding Models: 文本向量化表示
+   - Vectorstores: 面向检索的向量的存储
+   - Retrievers: 向量的检索
+
+3. 对话历史管理
+  - 对话历史的存储，加载和裁剪
+
+4. 架构封装
+  - chain : 实现一个功能或者一系列顺序功能组合
+  - Agent: 根据用户输入，自动归规划执行步骤、自动选择每一步工具，最终完成指定的功能
+    - Tools: 调用外部功能的函数。比如 google搜索/ 文件IO/ linxu shell 等
+    - Tookit: 操作某软件的一组工具集。比如操作db/gmail等
+
+5. Callbacks
+
+文档：
+
+- 功能模块 https://docs.langchain.com/oss/python/langchain/overview
+- api
+- 三方组件
+- 官方示例
+- 调试部署指导
 
 # 33. Langchain 的输入、输出封装
 
+1.1 模型 ai 封装。不同的模型，统一封装成一个接口，方便更换模型不用重构代码
+  - 模型Api LLM vs ChatModel 。 from langchain_openapi import ChatOpenAI
+  - 多轮对话 session 封装
+
+1.2 模型的输入与输出
+  - PromptTemplate 可以在模板里自定义变量
+  - ChatPromptTemplate 用模板表示的对话上下文
+  - MessagesPlaceholders 把多轮对话变成模板
+  - 从文件加载Prompt  模板
+
+1.3 结构化输出
+  - 直接输出 pydantic 对象
+  - 输出指定格式的 json 
+  - 使用 OutputParser 按照指定格式解析模型的输出。 OutputFixingPrser 利用大模型做格式自动纠错
+
+1.4 Function Calling
+  - from langchain_core.tools import tool。 装饰器
+
 # 34. Langchain 的数据连接封装
+
+2.1 文档加载器 Document Loaders
+  - PyMuPDFLoader
+
+2.2 文档处理器
+  - TextSplitter
+
+2.3 向量数据库与向量检索
+
 
 # 35. 对话历史管理
 
+3.1 历史记录的裁剪。 from langhcain_core.messages trim_messages
+
+3.2 过滤带标识的历史记录。 filter_messages
+
 
 # 36. Langchain Expression Language (LCEL)
+LangChain Expression Language(LCEL): 是一种声明式语言，可以轻松组合不同的调用顺序构成 Chain。 LCEL 创立之初就被设计为能
+够支持将原型投入生产环境，无需代码修改，从最简单的“提示+llm”链到最复杂的链。
+
+- 流支持。
+- 异步支持
+- 优化的并行执行
+- 重试和回退
+- 访问中间结果
+- 输入和输出模式
+- 无缝 LangSmith 跟踪集成
+- 无缝 LangServe 部署集成
+
+https://www.pinecone.io/learn/series/langchain/langchain-expression-language/
+https://blog.langchain.com/langchain-expression-language/
+
+lcel 表达式： 既定调用关系的 pipeline
+
+runnable = (
+  {"text": RunnablePassThrough()}  | prompt | structed_llm
+)
+
+使用 lcel 的价值，也就是 LangChain 的核心价值。
+
+4.2 用 LCEL 实现 RAG
+4.3 用 LCEL 实现工厂模式
+4.4 存储与管理历史对话
 
 # 37. 智能体架构 Agent
 
@@ -298,6 +423,8 @@ game24_tot.py
 
 # 39 认识大模型 Agent
 
+
 # 40 Agent Prompt 模板设计
+
 
 # 41 Agent Tuning
