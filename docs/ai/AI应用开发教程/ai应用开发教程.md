@@ -596,14 +596,67 @@ memory = ConversationBufferMemory(
 memory_key = "chat_history", return_messages=True
 )
 
-
 # 51 Agent 认知框架之 Plan-and-Execute
+- Plan-and-Execute
+计划与执行。比较复杂的项目管理或者需要多步骤决策场景比较合适。
 
+from langchain_experimental.plan_and_execute import PlanAndExecute, load_agent_executor
+
+- Self-Ask
+
+- Thinking and self-Refection
+
+- ReAct
 
 # 51 self-Ask
+允许大模型对自己提出问题并且回答，来增强对问题的理解以提高回答质量，需要深入分析或提供创造性解决方案比较合适。
+例如创意写作。
+
+from langchain.agents import AgentExecutor, create_self_ask_with_search_agent
+from langchain.tools.tavily_search import TavilyAnswer
 
 
 # 53 Thinking and self-Refection
 
+思考并且自我反思。 主要用于模拟和实现复杂决策流程，通过不断自我评估和调整，使系统能够学习并且改进决策过程，从而在面对复
+杂问题做出更有效的决策。
+
+
 # 54 ReAct 框架案例实现
+Reason + Act
+
+from langchain.agents import create_react_agent
+
+# 55 ReAct RAG Agent
+
+通过 llamindex 实现 ReAct RAG Agent
+
+加载数据
+from llama_index.core import SimpleDirectoryReader
+
+从文档创建索引
+from llama_index.core import VectorStoreIndex
+
+持久化索引 
+from llama_index.core import StorageContext 
+
+创建查询引擎
+from llama_index.core.tools import QueryEngineTool , ToolMetaData
+
+配置大模型
+from llama_index.llms.openapi import OpenAI
+
+创建 ReACT agent
+from llama_index.agent import ReActAgent
+
+让 agent 完成任务
+agent.chat("xxxx")
+
+# 56 Agent + RAG 定制个性化数字人项目1
+
+
+# 57 Agent + RAG 定制个性化数字人项目2
+
+
+# 58 Agent应用案例1-基础 官方基础应用案例
 
